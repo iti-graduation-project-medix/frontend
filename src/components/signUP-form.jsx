@@ -12,12 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Info, UploadCloud, XCircle } from "lucide-react";
+import { Info, UploadCloud, XCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function SignUpForm({ className, ...props }) {
   const [nationalIdFile, setNationalIdFile] = React.useState(null);
   const [workIdFile, setWorkIdFile] = React.useState(null);
+  const [currentStep, setCurrentStep] = React.useState(1);
 
   const handleFileChange = (e, setFile) => {
     if (e.target.files && e.target.files[0]) {
@@ -27,6 +28,14 @@ export function SignUpForm({ className, ...props }) {
 
   const handleFileClear = (setFile) => {
     setFile(null);
+  };
+
+  const nextStep = () => {
+    setCurrentStep(2);
+  };
+
+  const prevStep = () => {
+    setCurrentStep(1);
   };
 
   return (
@@ -42,9 +51,26 @@ export function SignUpForm({ className, ...props }) {
             </p>
           </CardHeader>
 
+          {/* Step Indicator - Only visible on small screens */}
+          <div className="flex items-center justify-center space-x-4 my-6 md:hidden">
+            <div className={`flex items-center ${currentStep === 1 ? 'text-primary' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${currentStep === 1 ? 'border-primary' : 'border-gray-300'}`}>
+                1
+              </div>
+              <span className="ml-2 text-sm">Personal Info</span>
+            </div>
+            <div className="w-12 h-0.5 bg-gray-300"></div>
+            <div className={`flex items-center ${currentStep === 2 ? 'text-primary' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${currentStep === 2 ? 'border-primary' : 'border-gray-300'}`}>
+                2
+              </div>
+              <span className="ml-2 text-sm">Documents</span>
+            </div>
+          </div>
+
           <form className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            {/* Personal Information - More compact layout */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Step 1: Personal Information */}
+            <div className={cn("md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6", currentStep === 2 ? "hidden md:grid" : "")}>
               <div className="space-y-2 col-span-2 md:col-span-1">
                 <Label htmlFor="name" className="text-gray-700 font-medium">
                   Full Name <span className="text-red-500">*</span>
@@ -70,6 +96,7 @@ export function SignUpForm({ className, ...props }) {
                   required
                 />
               </div>
+
               <div className="space-y-2 col-span-2 md:col-span-1">
                 <Label htmlFor="phone" className="text-gray-700 font-medium">
                   Phone <span className="text-red-500">*</span>
@@ -89,6 +116,38 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Calendar22 />
               </div>
+
+
+
+              {/* Password Section */}
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label htmlFor="password" className="text-gray-700 font-medium">
+                  Password <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create password"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+                <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <Info size={12} /> 8+ characters required
+                </p>
+              </div>
+
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">
+                  Confirm Password <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+              </div>
               <div className="space-y-2 col-span-2 md:col-span-1">
                 <Label htmlFor="gender" className="text-gray-700 font-medium">
                   Gender <span className="text-red-500">*</span>
@@ -106,50 +165,11 @@ export function SignUpForm({ className, ...props }) {
               </div>
             </div>
 
-            {/* Password Section - Side by side */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Step 2: Document Upload */}
+            <div className={cn("md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6", currentStep === 1 ? "hidden md:grid" : "")}>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700 font-medium">
-                  Password <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="Create password"
-                  className="border-gray-300 rounded-lg h-11"
-                  required
-                />
-                <p className="text-xs text-gray-500 flex items-center gap-1">
-                  <Info size={12} /> 8+ characters required
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label
-                  htmlFor="confirmPassword"
-                  className="text-gray-700 font-medium"
-                >
-                  Confirm Password <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Confirm password"
-                  className="border-gray-300 rounded-lg h-11"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Document Upload - Side by side layout */}
-            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="nationalIdFile"
-                  className="text-gray-700 font-medium"
-                >
-                  Upload National ID Card{" "}
-                  <span className="text-red-500">*</span>
+                <Label htmlFor="nationalIdFile" className="text-gray-700 font-medium">
+                  Upload National ID Card <span className="text-red-500">*</span>
                 </Label>
                 <label
                   htmlFor="nationalIdFile"
@@ -196,10 +216,7 @@ export function SignUpForm({ className, ...props }) {
               </div>
 
               <div className="space-y-2">
-                <Label
-                  htmlFor="workIdFile"
-                  className="text-gray-700 font-medium"
-                >
+                <Label htmlFor="workIdFile" className="text-gray-700 font-medium">
                   Upload Work ID Card
                 </Label>
                 <label
@@ -244,11 +261,9 @@ export function SignUpForm({ className, ...props }) {
                   />
                 </label>
               </div>
+
               <div className="space-y-2">
-                <Label
-                  htmlFor="nationalId"
-                  className="text-gray-700 font-medium"
-                >
+                <Label htmlFor="nationalId" className="text-gray-700 font-medium">
                   National ID <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -261,7 +276,42 @@ export function SignUpForm({ className, ...props }) {
               </div>
             </div>
 
-            <div className="md:col-span-2 pt-3">
+            {/* Navigation Buttons - Only visible on small screens */}
+            <div className="md:col-span-2 flex justify-between md:hidden">
+              {currentStep === 2 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={prevStep}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft size={16} />
+                  Previous
+                </Button>
+              ) : (
+                <div></div>
+              )}
+              {currentStep === 1 ? (
+                <Button
+                  type="button"
+                  onClick={nextStep}
+                  className="flex items-center gap-2"
+                >
+                  Next
+                  <ArrowRight size={16} />
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="bg-primary hover:bg-primary-hover py-5 text-base font-medium rounded-lg"
+                >
+                  Create Account
+                </Button>
+              )}
+            </div>
+
+            {/* Submit Button - Only visible on medium and larger screens */}
+            <div className="md:col-span-2 pt-3 hidden md:block">
               <Button
                 type="submit"
                 className="w-full bg-primary hover:bg-primary-hover py-5 text-base font-medium rounded-lg"

@@ -1,0 +1,295 @@
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar22 } from "./DatePicker";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Info, UploadCloud, XCircle } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+export function SignUpForm({ className, ...props }) {
+  const [nationalIdFile, setNationalIdFile] = React.useState(null);
+  const [workIdFile, setWorkIdFile] = React.useState(null);
+
+  const handleFileChange = (e, setFile) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleFileClear = (setFile) => {
+    setFile(null);
+  };
+
+  return (
+    <div className={cn("w-full max-w-5xl", className)} {...props}>
+      <Card className="overflow-hidden shadow-lg border-0">
+        <div className="p-6 md:p-8">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-2xl font-bold ">
+              Create Your Account
+            </CardTitle>
+            <p className="text-muted-foreground text-sm">
+              Fill out the form below to create your secure account
+            </p>
+          </CardHeader>
+
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+            {/* Personal Information - More compact layout */}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label htmlFor="name" className="text-gray-700 font-medium">
+                  Full Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label htmlFor="email" className="text-gray-700 font-medium">
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+              </div>
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label htmlFor="phone" className="text-gray-700 font-medium">
+                  Phone <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+1234567890"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label className="text-gray-700 font-medium">
+                  Date of Birth <span className="text-red-500">*</span>
+                </Label>
+                <Calendar22 />
+              </div>
+              <div className="space-y-2 col-span-2 md:col-span-1">
+                <Label htmlFor="gender" className="text-gray-700 font-medium">
+                  Gender <span className="text-red-500">*</span>
+                </Label>
+                <RadioGroup defaultValue="male" className="flex space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="male" id="gender-male" />
+                    <Label htmlFor="gender-male">Male</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="female" id="gender-female" />
+                    <Label htmlFor="gender-female">Female</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+
+            {/* Password Section - Side by side */}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700 font-medium">
+                  Password <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create password"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+                <p className="text-xs text-gray-500 flex items-center gap-1">
+                  <Info size={12} /> 8+ characters required
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="confirmPassword"
+                  className="text-gray-700 font-medium"
+                >
+                  Confirm Password <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="Confirm password"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Document Upload - Side by side layout */}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="nationalIdFile"
+                  className="text-gray-700 font-medium"
+                >
+                  Upload National ID Card{" "}
+                  <span className="text-red-500">*</span>
+                </Label>
+                <label
+                  htmlFor="nationalIdFile"
+                  className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                >
+                  {nationalIdFile ? (
+                    <div className="flex items-center justify-center space-x-2 p-4">
+                      <span className="text-sm text-gray-700 truncate">
+                        {nationalIdFile.name.slice(0, 30)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleFileClear(setNationalIdFile);
+                        }}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <XCircle size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <UploadCloud className="w-10 h-10 text-gray-400" />
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">
+                          Click to upload or drag and drop
+                        </span>
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        (Max file size: 5MB)
+                      </p>
+                    </div>
+                  )}
+                  <Input
+                    id="nationalIdFile"
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="hidden"
+                    required
+                    onChange={(e) => handleFileChange(e, setNationalIdFile)}
+                  />
+                </label>
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="workIdFile"
+                  className="text-gray-700 font-medium"
+                >
+                  Upload Work ID Card
+                </Label>
+                <label
+                  htmlFor="workIdFile"
+                  className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100"
+                >
+                  {workIdFile ? (
+                    <div className="flex items-center justify-center space-x-2 p-4">
+                      <span className="text-sm text-gray-700 truncate">
+                        {workIdFile.name.slice(0, 30)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleFileClear(setWorkIdFile);
+                        }}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <XCircle size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <UploadCloud className="w-10 h-10 text-gray-400" />
+                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span className="font-semibold">
+                          Click to upload or drag and drop
+                        </span>
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        (Max file size: 5MB)
+                      </p>
+                    </div>
+                  )}
+                  <Input
+                    id="workIdFile"
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, setWorkIdFile)}
+                  />
+                </label>
+              </div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="nationalId"
+                  className="text-gray-700 font-medium"
+                >
+                  National ID <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="nationalId"
+                  type="text"
+                  placeholder="ID number"
+                  className="border-gray-300 rounded-lg h-11"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="md:col-span-2 pt-3">
+              <Button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary-hover py-5 text-base font-medium rounded-lg"
+              >
+                Create Account
+              </Button>
+            </div>
+          </form>
+
+          <div className="mt-4 text-center text-sm text-gray-600">
+            Already have an account?{" "}
+            <a href="#" className="text-primary font-medium hover:underline">
+              Sign In
+            </a>
+          </div>
+        </div>
+      </Card>
+
+      <div className="text-gray-600 mt-4 text-center ">
+        By creating an account, you agree to our{" "}
+        <a href="#" className="text-blue-600 font-medium hover:underline">
+          Terms
+        </a>{" "}
+        and{" "}
+        <a href="#" className="text-blue-600 font-medium hover:underline">
+          Privacy Policy
+        </a>
+      </div>
+    </div>
+  );
+}

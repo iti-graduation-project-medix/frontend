@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginForm } from "./../components/login-form";
+import { LoginForm } from "../../components/login-form";
 
 function Login() {
   const navigate = useNavigate();

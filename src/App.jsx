@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
-import Login from "./pages/Login";
+import Login from "./pages/Login/Login";
+import Otp from "./pages/OTP/Otp";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/SignUp" element={<div>Sign Up</div>} />
           <Route path="/advertise" element={<div>Advertise</div>} />
+          <Route path="/otp" element={<Otp message="Reset Password"/>} />
         </Routes>
       </div>
     </Router>

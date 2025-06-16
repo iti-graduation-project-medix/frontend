@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import styles from "./navbar.module.css";
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -141,7 +142,7 @@ export default function Navbar() {
               </AnimatePresence>
             </>
           ) : (
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 max-sm:hidden">
               <MotionButton
                 whileTap="tap"
                 whileHover="hover"
@@ -237,6 +238,26 @@ export default function Navbar() {
                   >
                     Contact
                   </a>
+                </li>
+                <li className={`flex space-x-4 ${styles.centerBtns}`}>
+                  <div className={`flex space-x-4 ${styles.centerBtns}`}>
+                    <MotionButton
+                      whileTap="tap"
+                      whileHover="hover"
+                      variants={buttonVariants}
+                      className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                    >
+                      Login
+                    </MotionButton>
+                    <MotionButton
+                      whileTap="tap"
+                      whileHover="hover"
+                      variants={buttonVariants}
+                      className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                    >
+                      Sign up
+                    </MotionButton>
+                  </div>
                 </li>
               </ul>
             </motion.div>

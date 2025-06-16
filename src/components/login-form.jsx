@@ -3,13 +3,51 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
+
+const loginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
 
 export function LoginForm({ className, ...props }) {
+  const navigate = useNavigate();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: loginSchema,
+    onSubmit: (values) => {
+      // Here you would typically make an API call to authenticate
+      console.log("Form submitted:", values);
+      
+      // For demo purposes, we'll just store the user in localStorage
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          email: values.email,
+          name: values.email.split("@")[0], // Just for demo
+        })
+      );
+      
+      // Redirect to home page after successful login
+      navigate("/");
+    },
+  });
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form onSubmit={formik.handleSubmit} className="p-6 md:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -21,10 +59,19 @@ export function LoginForm({ className, ...props }) {
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.email}
+                  className={cn(
+                    formik.touched.email && formik.errors.email && "border-red-500"
+                  )}
                 />
+                {formik.touched.email && formik.errors.email && (
+                  <div className="text-sm text-red-500">{formik.errors.email}</div>
+                )}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -36,10 +83,32 @@ export function LoginForm({ className, ...props }) {
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
+                  className={cn(
+                    formik.touched.password &&
+                      formik.errors.password &&
+                      "border-red-500"
+                  )}
+                />
+                {formik.touched.password && formik.errors.password && (
+                  <div className="text-sm text-red-500">
+                    {formik.errors.password}
+                  </div>
+                )}
               </div>
-              <Button type="submit" variant="default" className="w-full">
-                Login
+              <Button
+                type="submit"
+                variant="default"
+                className="w-full"
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? "Logging in..." : "Login"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">

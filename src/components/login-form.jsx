@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -28,7 +28,7 @@ export function LoginForm({ className, ...props }) {
     onSubmit: (values) => {
       // Here you would typically make an API call to authenticate
       console.log("Form submitted:", values);
-      
+
       // For demo purposes, we'll just store the user in localStorage
       localStorage.setItem(
         "user",
@@ -37,7 +37,7 @@ export function LoginForm({ className, ...props }) {
           name: values.email.split("@")[0], // Just for demo
         })
       );
-      
+
       // Redirect to home page after successful login
       navigate("/");
     },
@@ -66,22 +66,26 @@ export function LoginForm({ className, ...props }) {
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
                   className={cn(
-                    formik.touched.email && formik.errors.email && "border-red-500"
+                    formik.touched.email &&
+                      formik.errors.email &&
+                      "border-red-500"
                   )}
                 />
                 {formik.touched.email && formik.errors.email && (
-                  <div className="text-sm text-red-500">{formik.errors.email}</div>
+                  <div className="text-sm text-red-500">
+                    {formik.errors.email}
+                  </div>
                 )}
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
+                  <Link
+                    to="/otp"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id="password"

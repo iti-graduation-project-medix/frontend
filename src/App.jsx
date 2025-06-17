@@ -1,4 +1,5 @@
 import Navbar from "./components/Navbar";
+import Advertise from "./pages/Advertise";
 import Login from "./pages/Login";
 
 export default function Page() {
@@ -6,6 +7,7 @@ export default function Page() {
     <>
       <Navbar />
       <Login />
+      <Advertise/>
     </>
   );
 }

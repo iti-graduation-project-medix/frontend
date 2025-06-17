@@ -1,4 +1,4 @@
-import Advertise from "./pages/Advertise";
+import Advertise from "./pages/Advertise/Advertise";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Login from "./pages/Login/Login";

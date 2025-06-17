@@ -6,6 +6,7 @@ import Otp from "./pages/OTP/Otp";
 
 export default function App() {
   return (
+
     <Router>
       <div className="min-h-screen bg-background">
         <Navbar />

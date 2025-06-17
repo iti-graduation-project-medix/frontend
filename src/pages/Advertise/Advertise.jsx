@@ -41,7 +41,10 @@ export default function Advertise() {
 
       {/* Contact Form Section */}
       <section className="max-w-5xl mx-auto mb-16 px-4">
-        <div className="bg-white rounded-2xl shadow-lg p-8 flex flex-col justify-center border border-gray-100 max-w-xl mx-auto">
+        <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative  overflow-hidden rounded-2xl shadow-lg p-8 flex flex-col justify-center border border-gray-100 max-w-xl mx-auto">
+          {/* Decorative Elements */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+          <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
           <h2 className="text-2xl font-bold mb-2 text-center">Get In Touch</h2>
           <p className="text-sm text-muted-foreground mb-6 text-center">
             Fill out the form below to learn more about our advertising
@@ -112,7 +115,7 @@ export default function Advertise() {
             </div>
             <button
               type="submit"
-              className="bg-primary hover:bg-primary-hover text-white font-bold py-3 px-6 rounded-lg w-full transition-all shadow-md"
+              className="bg-primary hover:bg-primary-hover text-white font-bold py-3 px-6 rounded-lg w-full transition-all shadow-md mb-11"
             >
               Submit Inquiry
             </button>

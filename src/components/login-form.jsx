@@ -47,7 +47,13 @@ export function LoginForm({ className, ...props }) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={formik.handleSubmit} className="p-6 md:p-8">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="p-6 md:p-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden"
+          >
+            {/* Decorative Elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+            <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>

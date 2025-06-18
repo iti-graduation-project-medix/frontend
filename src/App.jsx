@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Login from "./pages/Login/Login";
 import Otp from "./pages/OTP/Otp";
 import SignUp from "./pages/SignUp/SignUp";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/advertise" element={<Advertise />} />
           <Route path="/otp" element={<Otp message="Reset Password" />} />
+          <Route path="/reset" element={<ResetPassword />} />
         </Routes>
       </div>
     </Router>

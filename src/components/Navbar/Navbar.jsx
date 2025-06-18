@@ -218,6 +218,14 @@ export default function Navbar() {
                     Advertise
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/contact-us"
+                    className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >
+                    Contact
+                  </Link>
+                </li>
 
                 <li className={`flex space-x-4 ${styles.centerBtns}`}>
                   <div className={`flex space-x-4 ${styles.centerBtns}`}>
@@ -262,6 +270,14 @@ export default function Navbar() {
                 className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
               >
                 Advertise
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact-us"
+                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              >
+                Contact
               </Link>
             </li>
           </ul>

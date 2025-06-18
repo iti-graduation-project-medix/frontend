@@ -2,7 +2,13 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { toast } from "sonner";
@@ -21,40 +27,38 @@ const ContactSchema = Yup.object().shape({
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5 }
+  transition: { duration: 0.5 },
 };
 
 const staggerContainer = {
   animate: {
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const itemAnimation = {
   initial: { opacity: 0, y: 20 },
-  animate: { 
-    opacity: 1, 
+  animate: {
+    opacity: 1,
     y: 0,
     transition: {
       duration: 0.5,
-      ease: "easeOut"
-    }
-  }
+      ease: "easeOut",
+    },
+  },
 };
-
-
 
 export default function ContactUs() {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       // TODO: Replace with your actual API call
       // await sendContactForm(values);
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       toast.success("Message sent successfully!");
       resetForm();
     } catch (error) {
@@ -65,20 +69,20 @@ export default function ContactUs() {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen bg-gradient-to-b from-background to-muted/20"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto px-4 py-16 max-w-7xl">
-        <motion.div 
+        <motion.div
           className="text-center mb-16 px-4 sm:px-6 lg:px-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <motion.h1 
+          <motion.h1
             className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -86,28 +90,28 @@ export default function ContactUs() {
           >
             Contact Us
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="text-muted-foreground max-w-2xl mx-auto text-lg"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.4 }}
           >
-            Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            Have questions? We'd love to hear from you. Send us a message and
+            we'll respond as soon as possible.
           </motion.p>
         </motion.div>
 
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 px-4 sm:px-6 lg:px-8"
+        <motion.div
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 px-4 sm:px-6 lg:px-8"
           variants={staggerContainer}
           initial="initial"
           animate="animate"
         >
           {/* Contact Information */}
-          <motion.div 
-            className="h-full"
-            variants={itemAnimation}
-          >
-            <Card className="border-2 border-primary/10 hover:border-primary/20 transition-colors p-6 h-full">
+          <motion.div className="h-full" variants={itemAnimation}>
+            <Card className="border-2 border-primary/10 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden hover:border-primary/20 transition-colors p-6 h-full">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
               <CardHeader>
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -115,16 +119,18 @@ export default function ContactUs() {
                   transition={{ duration: 0.5, delay: 0.6 }}
                 >
                   <CardTitle className="text-2xl">Get in Touch</CardTitle>
-                  <CardDescription>We're here to help and answer any questions you might have.</CardDescription>
+                  <CardDescription>
+                    We're here to help and answer any questions you might have.
+                  </CardDescription>
                 </motion.div>
               </CardHeader>
               <CardContent className="space-y-6">
-                <motion.div 
+                <motion.div
                   className="flex items-center space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
                   whileHover={{ x: 10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <motion.div 
+                  <motion.div
                     className="p-3 rounded-full bg-primary/10"
                     whileHover={{ scale: 1.1 }}
                   >
@@ -136,12 +142,12 @@ export default function ContactUs() {
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   className="flex items-center space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
                   whileHover={{ x: 10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <motion.div 
+                  <motion.div
                     className="p-3 rounded-full bg-primary/10"
                     whileHover={{ scale: 1.1 }}
                   >
@@ -153,12 +159,12 @@ export default function ContactUs() {
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   className="flex items-center space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
                   whileHover={{ x: 10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <motion.div 
+                  <motion.div
                     className="p-3 rounded-full bg-primary/10"
                     whileHover={{ scale: 1.1 }}
                   >
@@ -167,19 +173,21 @@ export default function ContactUs() {
                   <div>
                     <h3 className="font-semibold text-lg">Address</h3>
                     <p className="text-muted-foreground">
-                      123 Business Street<br />
-                      Suite 100<br />
+                      123 Business Street
+                      <br />
+                      Suite 100
+                      <br />
                       City, State 12345
                     </p>
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   className="flex items-center space-x-4 p-4 rounded-lg hover:bg-muted/50 transition-colors"
                   whileHover={{ x: 10 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <motion.div 
+                  <motion.div
                     className="p-3 rounded-full bg-primary/10"
                     whileHover={{ scale: 1.1 }}
                   >
@@ -188,8 +196,10 @@ export default function ContactUs() {
                   <div>
                     <h3 className="font-semibold text-lg">Business Hours</h3>
                     <p className="text-muted-foreground">
-                      Monday - Friday: 9:00 AM - 6:00 PM<br />
-                      Saturday: 10:00 AM - 4:00 PM<br />
+                      Monday - Friday: 9:00 AM - 6:00 PM
+                      <br />
+                      Saturday: 10:00 AM - 4:00 PM
+                      <br />
                       Sunday: Closed
                     </p>
                   </div>
@@ -199,11 +209,10 @@ export default function ContactUs() {
           </motion.div>
 
           {/* Contact Form */}
-          <motion.div
-            variants={itemAnimation}
-            className="h-full"
-          >
-            <Card className="border-2 border-primary/10 hover:border-primary/20 transition-colors p-6 h-full">
+          <motion.div variants={itemAnimation} className="h-full">
+            <Card className="border-2 border-primary/10 hover:border-primary/20 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden transition-colors p-6 h-full">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
               <CardHeader>
                 <motion.div
                   initial={{ opacity: 0, x: 20 }}
@@ -211,7 +220,9 @@ export default function ContactUs() {
                   transition={{ duration: 0.5, delay: 0.6 }}
                 >
                   <CardTitle className="text-2xl">Send us a Message</CardTitle>
-                  <CardDescription>Fill out the form below and we'll get back to you shortly.</CardDescription>
+                  <CardDescription>
+                    Fill out the form below and we'll get back to you shortly.
+                  </CardDescription>
                 </motion.div>
               </CardHeader>
               <CardContent className="h-full">
@@ -227,7 +238,7 @@ export default function ContactUs() {
                 >
                   {({ errors, touched, isSubmitting }) => (
                     <Form className="space-y-6 h-full flex flex-col">
-                      <motion.div 
+                      <motion.div
                         className="space-y-2"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -242,7 +253,7 @@ export default function ContactUs() {
                         />
                         <AnimatePresence>
                           {errors.name && touched.name && (
-                            <motion.div 
+                            <motion.div
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
@@ -254,7 +265,7 @@ export default function ContactUs() {
                         </AnimatePresence>
                       </motion.div>
 
-                      <motion.div 
+                      <motion.div
                         className="space-y-2"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -270,7 +281,7 @@ export default function ContactUs() {
                         />
                         <AnimatePresence>
                           {errors.email && touched.email && (
-                            <motion.div 
+                            <motion.div
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
@@ -282,7 +293,7 @@ export default function ContactUs() {
                         </AnimatePresence>
                       </motion.div>
 
-                      <motion.div 
+                      <motion.div
                         className="space-y-2"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -297,7 +308,7 @@ export default function ContactUs() {
                         />
                         <AnimatePresence>
                           {errors.subject && touched.subject && (
-                            <motion.div 
+                            <motion.div
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
@@ -309,7 +320,7 @@ export default function ContactUs() {
                         </AnimatePresence>
                       </motion.div>
 
-                      <motion.div 
+                      <motion.div
                         className="space-y-2 flex-grow"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -324,7 +335,7 @@ export default function ContactUs() {
                         />
                         <AnimatePresence>
                           {errors.message && touched.message && (
-                            <motion.div 
+                            <motion.div
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
@@ -343,16 +354,20 @@ export default function ContactUs() {
                       >
                         <Button
                           type="submit"
-                          className="w-full h-12 text-lg font-semibold"
+                          className="w-full h-12 text-lg font-semibold mb-11"
                           disabled={isSubmitting}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
                           {isSubmitting ? (
-                            <motion.div 
+                            <motion.div
                               className="flex items-center gap-2"
                               animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              transition={{
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
                             >
                               <div className="h-5 w-5 rounded-full border-2 border-background border-t-transparent"></div>
                               Sending...

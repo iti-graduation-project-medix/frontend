@@ -28,26 +28,29 @@ function isValidDate(date) {
   return !isNaN(date.getTime());
 }
 
-export function Calendar28() {
+export function Calendar28({ value, onChange }) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState(new Date("2025-06-01"));
-  const [month, setMonth] = React.useState(date);
-  const [value, setValue] = React.useState(formatDate(date));
+  const [month, setMonth] = React.useState(value || new Date());
+
+  React.useEffect(() => {
+    if (value) setMonth(value);
+  }, [value]);
 
   return (
     <div className="flex flex-col gap-3">
       <div className="relative flex gap-2">
         <Input
           id="date"
-          value={value}
+          value={value ? formatDate(value) : ""}
           placeholder="June 01, 2025"
           className="bg-background pr-10 py-4 "
           onChange={(e) => {
             const newDate = new Date(e.target.value);
-            setValue(e.target.value);
             if (isValidDate(newDate)) {
-              setDate(newDate);
+              onChange(newDate);
               setMonth(newDate);
+            } else {
+              onChange(null);
             }
           }}
           onKeyDown={(e) => {
@@ -76,13 +79,12 @@ export function Calendar28() {
           >
             <Calendar
               mode="single"
-              selected={date}
+              selected={value}
               captionLayout="dropdown"
               month={month}
               onMonthChange={setMonth}
               onSelect={(selectedDate) => {
-                setDate(selectedDate);
-                setValue(formatDate(selectedDate));
+                onChange(selectedDate);
                 setOpen(false);
               }}
             />

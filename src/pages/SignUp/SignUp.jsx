@@ -7,7 +7,7 @@ export default function SignUp() {
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
         {/* Header */}
         <div className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold  mb-3">
+          <h1 className="text-3xl text-primary md:text-4xl font-bold  mb-3">
             Join Our Medical Community
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">

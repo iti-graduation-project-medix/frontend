@@ -8,6 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ResetPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -45,9 +46,12 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col gap-6">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <Card className="relative w-full max-w-sm overflow-hidden shadow-lg border-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        {/* Decorative Circles */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
+        <div className="relative p-8">
           <Formik
             initialValues={{ email: "" }}
             validationSchema={ResetPasswordSchema}
@@ -106,7 +110,7 @@ export default function ResetPassword() {
             )}
           </Formik>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

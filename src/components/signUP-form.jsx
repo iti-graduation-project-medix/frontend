@@ -13,24 +13,145 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+let userSchema = Yup.object().shape({
+  name: Yup.string()
+    .required("Name is required")
+    .min(3, "Name must be at least 3 characters")
+    .max(40, "Name must be at most 40 characters"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  phone: Yup.string()
+    .required("phone number is required  ")
+    .matches(
+      /^(010|011|012|015)[0-9]{8}$/,
+      "the phone number must be egyptian phone number "
+    ),
+  password: Yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Confirm Password is required"),
+  dateOfBirth: Yup.date().required("Date of birth is required"),
+  gender: Yup.string().required("Gender is required"),
+  uploadNationalId: Yup.mixed()
+    .required("National ID is required")
+    .test("fileExists", "You must upload a file", (value) => {
+      return value && value.length > 0;
+    })
+    .test(
+      "fileType",
+      "Only image files (jpg, jpeg, png) are allowed",
+      (value) => {
+        return (
+          value &&
+          value.length > 0 &&
+          ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type)
+        );
+      }
+    ),
+
+  uploadWorkId: Yup.mixed()
+    .required("Work ID is required")
+    .test("fileExists", "You must upload a file", (value) => {
+      return value && value.length > 0;
+    })
+    .test(
+      "fileType",
+      "Only image files (jpg, jpeg, png) are allowed",
+      (value) => {
+        return (
+          value &&
+          value.length > 0 &&
+          ["image/jpeg", "image/png", "image/jpg"].includes(value[0].type)
+        );
+      }
+    ),
+
+  nationalId: Yup.string()
+    .required("nationalId is required")
+    .matches(/^[0-9]{14}$/, "nationalId must be 14 digits"),
+  acceptPolicy: Yup.boolean()
+    .oneOf([true], "You must accept the privacy policy")
+    .required("You must accept the privacy policy"),
+});
 
 export function SignUpForm({ className, ...props }) {
-  const [nationalIdFile, setNationalIdFile] = React.useState(null);
-  const [workIdFile, setWorkIdFile] = React.useState(null);
   const [currentStep, setCurrentStep] = React.useState(1);
 
-  const handleFileChange = (e, setFile) => {
+  // Formik initialization at the top level
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
+      dateOfBirth: null,
+      gender: "",
+      uploadNationalId: null,
+      uploadWorkId: null,
+      nationalId: "",
+      acceptPolicy: false,
+    },
+    validationSchema: userSchema,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+    validateOnMount: true,
+  });
+
+  // Helper: Check if step 1 is valid
+  const isStep1Valid = () => {
+    const step1Fields = [
+      "name",
+      "email",
+      "phone",
+      "password",
+      "confirmPassword",
+      "dateOfBirth",
+      "gender",
+    ];
+    // Check for errors in step 1 fields and that all are filled
+    for (let field of step1Fields) {
+      if (!formik.values[field]) return false; // not filled
+      if (formik.errors[field]) return false; // has error
+    }
+    return true;
+  };
+
+  // File input handlers for Formik
+  const handleFileChange = (e, field) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      formik.setFieldValue(field, e.target.files);
     }
   };
 
-  const handleFileClear = (setFile) => {
-    setFile(null);
+  const handleFileClear = (field) => {
+    formik.setFieldValue(field, null);
   };
 
-  const nextStep = () => {
-    setCurrentStep(2);
+  // Step navigation
+  const nextStep = async () => {
+    // Mark all step 1 fields as touched
+    formik.setTouched({
+      name: true,
+      email: true,
+      phone: true,
+      password: true,
+      confirmPassword: true,
+      dateOfBirth: true,
+      gender: true,
+    });
+    // Validate the form
+    await formik.validateForm();
+    if (isStep1Valid()) {
+      setCurrentStep(2);
+    }
   };
 
   const prevStep = () => {
@@ -87,7 +208,10 @@ export function SignUpForm({ className, ...props }) {
             </div>
           </div>
 
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          <form
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"
+            onSubmit={formik.handleSubmit}
+          >
             {/* Step 1: Personal Information */}
             <div
               className={cn(
@@ -101,11 +225,19 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Input
                   id="name"
+                  name="name"
                   type="text"
                   placeholder="John Doe"
-                  className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
-                  required
+                  className="border-gray-300 rounded-lg h-11  focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.name}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -114,11 +246,19 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="john@example.com"
                   className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
-                  required
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.email && formik.errors.email && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.email}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -127,11 +267,18 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Input
                   id="phone"
-                  type="tel"
-                  placeholder="+1234567890"
+                  name="phone"
+                  placeholder="+201234567890"
                   className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
-                  required
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.phone && formik.errors.phone && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.phone}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -139,8 +286,18 @@ export function SignUpForm({ className, ...props }) {
                   Date of Birth <span className="text-red-500">*</span>
                 </Label>
                 <div className="bg-white/80  rounded-lg border border-gray-300">
-                  <Calendar28 />
+                  <Calendar28
+                    value={formik.values.dateOfBirth}
+                    onChange={(date) =>
+                      formik.setFieldValue("dateOfBirth", date)
+                    }
+                  />
                 </div>
+                {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.dateOfBirth}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -148,7 +305,14 @@ export function SignUpForm({ className, ...props }) {
                   Gender <span className="text-red-500">*</span>
                 </Label>
                 <div className="  p-3">
-                  <RadioGroup defaultValue="male" className="flex space-x-4">
+                  <RadioGroup
+                    name="gender"
+                    value={formik.values.gender}
+                    onValueChange={(value) =>
+                      formik.setFieldValue("gender", value)
+                    }
+                    className="flex space-x-4"
+                  >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="male" id="gender-male" />
                       <Label htmlFor="gender-male">Male</Label>
@@ -159,6 +323,11 @@ export function SignUpForm({ className, ...props }) {
                     </div>
                   </RadioGroup>
                 </div>
+                {formik.touched.gender && formik.errors.gender && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.gender}
+                  </div>
+                )}
               </div>
 
               {/* Password Section */}
@@ -168,14 +337,22 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   placeholder="Create password"
                   className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
-                  required
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
                 <p className="text-xs text-gray-500 flex items-center gap-1">
                   <Info size={12} /> 8+ characters required
                 </p>
+                {formik.touched.password && formik.errors.password && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.password}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -187,11 +364,20 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Input
                   id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
                   placeholder="Confirm password"
                   className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
-                  required
+                  value={formik.values.confirmPassword}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword && (
+                    <div className="text-red-500 text-xs">
+                      {formik.errors.confirmPassword}
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -214,16 +400,17 @@ export function SignUpForm({ className, ...props }) {
                   htmlFor="nationalIdFile"
                   className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-colors"
                 >
-                  {nationalIdFile ? (
+                  {formik.values.uploadNationalId &&
+                  formik.values.uploadNationalId.length > 0 ? (
                     <div className="flex items-center justify-center space-x-2 p-4">
                       <span className="text-sm text-gray-700 truncate">
-                        {nationalIdFile.name.slice(0, 30)}
+                        {formik.values.uploadNationalId[0].name.slice(0, 30)}
                       </span>
                       <button
                         type="button"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleFileClear(setNationalIdFile);
+                          handleFileClear("uploadNationalId");
                         }}
                         className="text-gray-500 hover:text-gray-700"
                       >
@@ -235,7 +422,7 @@ export function SignUpForm({ className, ...props }) {
                       <UploadCloud className="w-10 h-10 text-gray-400" />
                       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                         <span className="font-semibold">
-                          Click to upload or drag and drop
+                          Click to upload image
                         </span>
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -245,13 +432,19 @@ export function SignUpForm({ className, ...props }) {
                   )}
                   <Input
                     id="nationalIdFile"
+                    name="uploadNationalId"
                     type="file"
-                    accept="image/*,.pdf"
+                    accept="image/*"
                     className="hidden"
-                    required
-                    onChange={(e) => handleFileChange(e, setNationalIdFile)}
+                    onChange={(e) => handleFileChange(e, "uploadNationalId")}
                   />
                 </label>
+                {formik.touched.uploadNationalId &&
+                  formik.errors.uploadNationalId && (
+                    <div className="text-red-500 text-xs">
+                      {formik.errors.uploadNationalId}
+                    </div>
+                  )}
               </div>
 
               <div className="space-y-2">
@@ -265,16 +458,17 @@ export function SignUpForm({ className, ...props }) {
                   htmlFor="workIdFile"
                   className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-colors"
                 >
-                  {workIdFile ? (
+                  {formik.values.uploadWorkId &&
+                  formik.values.uploadWorkId.length > 0 ? (
                     <div className="flex items-center justify-center space-x-2 p-4">
                       <span className="text-sm text-gray-700 truncate">
-                        {workIdFile.name.slice(0, 30)}
+                        {formik.values.uploadWorkId[0].name.slice(0, 30)}
                       </span>
                       <button
                         type="button"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleFileClear(setWorkIdFile);
+                          handleFileClear("uploadWorkId");
                         }}
                         className="text-gray-500 hover:text-gray-700"
                       >
@@ -286,7 +480,7 @@ export function SignUpForm({ className, ...props }) {
                       <UploadCloud className="w-10 h-10 text-gray-400" />
                       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                         <span className="font-semibold">
-                          Click to upload or drag and drop
+                          Click to upload image
                         </span>
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -296,12 +490,18 @@ export function SignUpForm({ className, ...props }) {
                   )}
                   <Input
                     id="workIdFile"
+                    name="uploadWorkId"
                     type="file"
-                    accept="image/*,.pdf"
+                    accept="image/*"
                     className="hidden"
-                    onChange={(e) => handleFileChange(e, setWorkIdFile)}
+                    onChange={(e) => handleFileChange(e, "uploadWorkId")}
                   />
                 </label>
+                {formik.touched.uploadWorkId && formik.errors.uploadWorkId && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.uploadWorkId}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -313,13 +513,58 @@ export function SignUpForm({ className, ...props }) {
                 </Label>
                 <Input
                   id="nationalId"
+                  name="nationalId"
                   type="text"
                   placeholder="ID number"
                   className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
-                  required
+                  value={formik.values.nationalId}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
+                {formik.touched.nationalId && formik.errors.nationalId && (
+                  <div className="text-red-500 text-xs">
+                    {formik.errors.nationalId}
+                  </div>
+                )}
               </div>
             </div>
+
+            {/* Privacy Policy Checkbox - only show on step 2 */}
+            {currentStep === 2 && (
+              <>
+                <div className="md:col-span-2 flex items-center space-x-2 mt-2">
+                  <input
+                    id="acceptPolicy"
+                    name="acceptPolicy"
+                    type="checkbox"
+                    checked={formik.values.acceptPolicy}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className="h-4 w-4"
+                  />
+                  <label
+                    htmlFor="acceptPolicy"
+                    className="text-sm text-gray-700"
+                  >
+                    I accept the{" "}
+                    <a
+                      href="/privacy"
+                      className="text-primary underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Privacy Policy
+                    </a>
+                    <span className="text-red-500">*</span>
+                  </label>
+                </div>
+                {formik.touched.acceptPolicy && formik.errors.acceptPolicy && (
+                  <div className="text-red-500 text-xs md:col-span-2">
+                    {formik.errors.acceptPolicy}
+                  </div>
+                )}
+              </>
+            )}
 
             {/* Navigation Buttons - Only visible on small screens */}
             <div className="md:col-span-2 flex justify-between md:hidden">
@@ -340,7 +585,10 @@ export function SignUpForm({ className, ...props }) {
                 <Button
                   type="button"
                   onClick={nextStep}
-                  className="flex items-center gap-2 bg-secondary hover:bg-secondary-hover text-zinc-950 hover:text-white"
+                  className={`flex items-center gap-2 bg-secondary hover:bg-secondary-hover text-zinc-950 hover:text-white ${
+                    !isStep1Valid() ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={!isStep1Valid()}
                 >
                   <p>Next</p>
                   <ArrowRight size={16} />
@@ -348,7 +596,10 @@ export function SignUpForm({ className, ...props }) {
               ) : (
                 <Button
                   type="submit"
-                  className="bg-primary hover:bg-primary-hover text-white py-5 text-base font-medium rounded-lg"
+                  className={`bg-primary hover:bg-primary-hover text-white py-5 text-base font-medium rounded-lg ${
+                    !formik.isValid ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={!formik.isValid}
                 >
                   Create Account
                 </Button>
@@ -359,7 +610,10 @@ export function SignUpForm({ className, ...props }) {
             <div className="md:col-span-2 pt-3 hidden md:block">
               <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary-hover text-white py-5 text-base font-medium rounded-lg"
+                className={`w-full bg-primary hover:bg-primary-hover text-white py-5 text-base font-medium rounded-lg ${
+                  !formik.isValid ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={!formik.isValid}
               >
                 Create Account
               </Button>

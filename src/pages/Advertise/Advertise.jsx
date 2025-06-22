@@ -2,13 +2,16 @@ import React, { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { initFlowbite } from "flowbite";
 import { useFormik } from "formik";
+import { useAdvertise } from "../../store/useAdvertise";
 import * as Yup from "yup";
+import { sendAdvertise } from "../../api/advertise";
 
+  
 const advertiseSchema = Yup.object().shape({
-  name: Yup.string()
+  fullName: Yup.string()
     .min(3, "Name must be at least 3 characters")
     .required("Name is required"),
-  phoneNumber: Yup.string()
+  phone: Yup.string()
     .min(11, "Phone number must be at least 11 characters")
     .required("Phone number is required"),
   email: Yup.string()
@@ -18,25 +21,28 @@ const advertiseSchema = Yup.object().shape({
 });
 
 export default function Advertise() {
+  const { advertise, setAdvertise } = useAdvertise();
+
   useEffect(() => {
     initFlowbite();
   }, []);
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      phoneNumber: "",
+      fullName: "",
+      phone: "",
       email: "",
       message: "",
     },
     validationSchema: advertiseSchema,
     onSubmit: (values, { resetForm }) => {
       console.log("Form submitted:", values);
+      sendAdvertise(values).then((res) => console.log(res)).catch((err) => console.log(err));
       localStorage.setItem(
         "advertise_request",
         JSON.stringify({
-          name: values.name,
-          phoneNumber: values.phoneNumber,
+          fullName: values.fullName,
+          phone: values.phone,
           email: values.email,
           message: values.message,
         })
@@ -95,57 +101,57 @@ export default function Advertise() {
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="w-full">
                   <label
-                    htmlFor="name"
+                    htmlFor="fullName"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Full Name
                   </label>
                   <input
                     type="text"
-                    id="name"
+                    id="fullName"
                     className={cn(
                       "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5",
                       {
                         "border-red-500":
-                          formik.touched.name && formik.errors.name,
+                          formik.touched.fullName && formik.errors.fullName,
                       }
                     )}
                     placeholder="Full Name"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.name}
+                    value={formik.values.fullName}
                   />
-                  {formik.touched.name && formik.errors.name && (
+                  {formik.touched.fullName && formik.errors.fullName && (
                     <div className="text-sm text-red-500">
-                      {formik.errors.name}
+                      {formik.errors.fullName}
                     </div>
                   )}
                 </div>
                 <div className="w-full">
                   <label
-                    htmlFor="phoneNumber"
+                    htmlFor="phone"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
                     Contact Number
                   </label>
                   <input
                     type="text"
-                    id="phoneNumber"
+                    id="phone"
                     className={cn(
                       "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5",
                       {
                         "border-red-500":
-                          formik.touched.phoneNumber && formik.errors.phoneNumber,
+                          formik.touched.phone && formik.errors.phone,
                       }
                     )}
                     placeholder="Your best contact number"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.phoneNumber}
+                    value={formik.values.phone}
                   />
-                  {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+                  {formik.touched.phone && formik.errors.phone && (
                     <div className="text-sm text-red-500">
-                      {formik.errors.phoneNumber}
+                      {formik.errors.phone}
                     </div>
                   )}
                 </div>

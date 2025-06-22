@@ -58,10 +58,15 @@ export default function Navbar() {
           href="https://flowbite.com/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img src="MedixNewLogo.png" className="h-6" alt="Flowbite Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            Medix
+          <img src="DawabackNewLogo.png" className="h-10" alt="Flowbite Logo" />
+           <div className="flex flex-col mb-2">
+            <span className="font-bold  text-2xl  whitespace-nowrap text-primary dark:text-white">
+            Dawaback
           </span>
+          <p className="text-sm text-gray-500  leading-0 mt-1 dark:text-gray-400">
+            Before it expires, Dawaback it
+          </p>
+           </div>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {isLoggedIn ? (
@@ -158,7 +163,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
                 Sign up
               </MotionLink>
@@ -200,7 +205,7 @@ export default function Navbar() {
               variants={mobileMenuVariants}
               className="items-center justify-between w-full md:hidden md:w-auto md:order-1"
             >
-              <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg  md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              <ul className="flex flex-col  font-medium p-4 md:p-0 mt-4 border rounded-lg  md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                 <li>
                   <Link
                     to="/"

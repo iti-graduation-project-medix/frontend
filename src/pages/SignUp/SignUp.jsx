@@ -36,7 +36,7 @@ export default function SignUp() {
                     />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-800">
-                    Welcome to Medix
+                    Welcome to Dawaback
                   </h2>
                 </div>
 

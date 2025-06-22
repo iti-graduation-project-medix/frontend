@@ -69,11 +69,11 @@ export default function Advertise() {
             </span>
           </div>
           <h1 className="text-5xl font-extrabold mb-2 text-primary">
-            Advertise with Medix
+            Advertise with Dawaback
           </h1>
           <p className="text-md text-muted-foreground mb-6">
             Reach health-conscious customers and grow your pharmaceutical or
-            healthcare brand with Medix, your trusted online medical pharmacy.
+            healthcare brand with Dawaback, your trusted online medical pharmacy.
           </p>
         </div>
       </section>
@@ -224,7 +224,7 @@ export default function Advertise() {
               Frequently Asked Questions
             </h3>
             <p className="text-muted-foreground text-sm text-center mb-6">
-              Find answers to common questions about advertising with Medix
+              Find answers to common questions about advertising with Dawaback
             </p>
             <div id="accordion-open" data-accordion="open">
               {/* Q1 */}
@@ -260,7 +260,7 @@ export default function Advertise() {
                 aria-labelledby="accordion-open-heading-1"
               >
                 <div className="p-5 border border-b-0 border-gray-200">
-                  Medix offers banner ads, sponsored content, product highlights,
+                  Dawaback offers banner ads, sponsored content, product highlights,
                   and custom campaigns tailored to pharmacy and healthcare brands.
                 </div>
               </div>
@@ -371,7 +371,7 @@ export default function Advertise() {
                 aria-labelledby="accordion-open-heading-4"
               >
                 <div className="p-5 border border-t-0 border-gray-200">
-                  Yes, Medix allows targeting by age, location, health interests,
+                  Yes, Dawaback allows targeting by age, location, health interests,
                   and more to ensure your ads reach the right audience.
                 </div>
               </div>
@@ -454,11 +454,11 @@ export default function Advertise() {
         </div>
       </section>
 
-      {/* Why Advertise with Medix */}
+      {/* Why Advertise with Dawaback */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-1">
-            Why Advertise with Medix?
+            Why Advertise with Dawaback?
           </h2>
           <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
             Unlock unique benefits for your pharmacy or healthcare brand.
@@ -508,7 +508,7 @@ export default function Advertise() {
                 Boost Brand Trust & Visibility
               </h5>
               <p className="text-gray-700">
-                Showcase your pharmacy or healthcare brand on Medix, building
+                Showcase your pharmacy or healthcare brand on Dawaback, building
                 trust with a community that values safety, reliability, and
                 professional care.
               </p>
@@ -557,10 +557,10 @@ export default function Advertise() {
                 </svg>
               </div>
               <h5 className="mb-2 text-xl font-bold tracking-tight text-gray-900">
-                Engage the Medix Community
+                Engage the Dawaback Community
               </h5>
               <p className="text-gray-700">
-                Interact with a vibrant community of users who rely on Medix for
+                Interact with a vibrant community of users who rely on Dawaback for
                 their pharmacy needs, health advice, and wellness products.
               </p>
             </div>
@@ -611,7 +611,7 @@ export default function Advertise() {
                 Expert Support & Partnership
               </h5>
               <p className="text-gray-700">
-                Receive guidance from Medix's pharmacy and marketing experts at
+                Receive guidance from Dawaback's pharmacy and marketing experts at
                 every step, from campaign setup to optimization and compliance.
               </p>
             </div>

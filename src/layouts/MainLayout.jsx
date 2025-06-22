@@ -1,30 +1,29 @@
-import { Home } from "lucide-react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from './../pages/Login/Login';
-import SignUp from './../pages/SignUp/SignUp';
+import Home from "./../pages/Home/Home";
+import Login from "./../pages/Login/Login";
+import SignUp from "./../pages/SignUp/SignUp";
 import Advertise from "../pages/Advertise/Advertise";
-import ContactUs from './../pages/ContactUs/ContactUs';
-import ResetPassword from './../pages/ResetPassword/ResetPassword';
-import Otp from './../pages/OTP/Otp';
+import ContactUs from "./../pages/ContactUs/ContactUs";
+import ResetPassword from "./../pages/ResetPassword/ResetPassword";
+import Otp from "./../pages/OTP/Otp";
 import SharedLayout from "./SharedLayout";
-
 
 export default function MainLayout() {
   return (
-        <Router>
+    <Router>
       <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<SharedLayout />}>
-          <Route index element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/advertise" element={<Advertise />} />
-          <Route path="/otp" element={<Otp message="Reset Password" />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/reset" element={<ResetPassword />} />
+            <Route index element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/advertise" element={<Advertise />} />
+            <Route path="/otp" element={<Otp message="Reset Password" />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/reset" element={<ResetPassword />} />
           </Route>
         </Routes>
       </div>
     </Router>
-  )
+  );
 }

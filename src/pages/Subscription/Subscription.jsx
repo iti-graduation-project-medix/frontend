@@ -1,6 +1,7 @@
 import React from "react";
 import Pricing from "../../components/pricing";
 import Accordion from "../../components/ui/Accordion";
+import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 
 const accordionItems = [
   {
@@ -33,12 +34,19 @@ const accordionItems = [
   }
 ];
 
-
 export default function Subscription() {
   return (
     <div className="max-w-3xl mx-auto space-y-8 py-8">
       <Pricing />
-      <Accordion items={accordionItems} />
+      <Card className="py-6 max-sm:mx-4">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold text-black m-auto">Frequently Asked Questions</CardTitle>
+          <span className="text-center">Find answers to common questions about advertising with Dawaback</span>
+        </CardHeader>
+        <CardContent>
+          <Accordion items={accordionItems} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

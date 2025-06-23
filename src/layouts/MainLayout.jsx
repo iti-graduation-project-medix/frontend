@@ -8,6 +8,8 @@ import ResetPassword from "./../pages/ResetPassword/ResetPassword";
 import Otp from "./../pages/OTP/Otp";
 import SharedLayout from "./SharedLayout";
 import Deals from "../pages/Deals/Deals";
+import Subscription from "../pages/Subscription/Subscription";
+
 
 export default function MainLayout() {
   return (
@@ -19,6 +21,7 @@ export default function MainLayout() {
             <Route path="/login" element={<Login />} />
             <Route path="/SignUp" element={<SignUp />} />
             <Route path="/advertise" element={<Advertise />} />
+            <Route path="/subscription" element={<Subscription />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
              <Route path="/deals" element={<Deals />} />

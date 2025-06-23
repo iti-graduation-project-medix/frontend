@@ -1,4 +1,3 @@
-import { LoginForm } from "@/components/login-form";
 import { GalleryVerticalEnd } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card} from "@/components/ui/card";
 
 const ResetPasswordSchema = Yup.object().shape({
   email: Yup.string()

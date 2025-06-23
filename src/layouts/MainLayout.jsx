@@ -19,12 +19,13 @@ export default function MainLayout() {
           <Route path="/" element={<SharedLayout />}>
             <Route index element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/SignUp" element={<SignUp />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/advertise" element={<Advertise />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
-            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/contact" element={<ContactUs />} />
              <Route path="/deals" element={<Deals />} />
+             <Route path="/deals/edit/:id" element={<div />} />
             <Route path="/reset" element={<ResetPassword />} />
           </Route>
         </Routes>

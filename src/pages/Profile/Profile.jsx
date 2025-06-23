@@ -41,7 +41,7 @@ export default function Profile() {
           <Button
             key={tab.key}
             variant={activeTab === tab.key ? "secondary" : "ghost"}
-            className={`rounded-md px-6 capitalize flex items-center text-base font-semibold transition-all duration-150 ${activeTab === tab.key ? 'shadow' : ''}`}
+            className={`rounded-md bg-[#d0d2f8] px-6 capitalize flex items-center text-base font-semibold transition-all duration-150 ${activeTab === tab.key ? 'shadow' : ''}`}
             disabled={activeTab === tab.key}
             onClick={() => setActiveTab(tab.key)}
           >

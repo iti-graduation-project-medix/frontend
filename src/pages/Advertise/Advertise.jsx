@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { initFlowbite } from "flowbite";
 import { useFormik } from "formik";
-import { useAdvertise } from "../../store/useAdvertise";
 import * as Yup from "yup";
-import { sendAdvertise } from "../../api/advertise";
+import { requestAdvertise } from "../../api/advertise";
+import { Card } from "../../components/ui/card";
 
   
 const advertiseSchema = Yup.object().shape({
@@ -17,11 +17,11 @@ const advertiseSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  message: Yup.string().required("Message is required").max(2500, "Message maximum length is 2500 characters"),
+  content: Yup.string().required("Message is required").max(2500, "Message maximum length is 2500 characters"),
 });
 
 export default function Advertise() {
-  const { advertise, setAdvertise } = useAdvertise();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     initFlowbite();
@@ -32,22 +32,29 @@ export default function Advertise() {
       fullName: "",
       phone: "",
       email: "",
-      message: "",
+      content: "",
     },
     validationSchema: advertiseSchema,
-    onSubmit: (values, { resetForm }) => {
-      console.log("Form submitted:", values);
-      sendAdvertise(values).then((res) => console.log(res)).catch((err) => console.log(err));
-      localStorage.setItem(
-        "advertise_request",
-        JSON.stringify({
-          fullName: values.fullName,
-          phone: values.phone,
-          email: values.email,
-          message: values.message,
-        })
-      );
-      resetForm();
+    onSubmit: async (values, { resetForm }) => {
+      setIsSubmitting(true);
+      try {
+        const res = await requestAdvertise(values);
+        console.log("Form submitted:", res.data);
+        localStorage.setItem(
+          "advertise_request",
+          JSON.stringify({
+            fullName: values.fullName,
+            phone: values.phone,
+            email: values.email,
+            content: values.content,
+          })
+        );
+        resetForm();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsSubmitting(false);
+      }
     },
   });
 
@@ -186,37 +193,64 @@ export default function Advertise() {
               </div>
               <div>
                 <label
-                  htmlFor="message"
+                  htmlFor="content"
                   className="block mb-2 text-sm font-medium text-gray-900"
                 >
                   Message or Product/Service Details
                 </label>
                 <textarea
-                  id="message"
+                  id="content"
                   rows="8"
                   className={cn(
                     "bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5",
                     {
                       "border-red-500":
-                        formik.touched.message && formik.errors.message,
+                        formik.touched.content && formik.errors.content,
                     }
                   )}
                   placeholder="Tell us about your advertising needs..."
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.message}
+                  value={formik.values.content}
                 ></textarea>
-                {formik.touched.message && formik.errors.message && (
+                {formik.touched.content && formik.errors.content && (
                   <div className="text-sm text-red-500">
-                    {formik.errors.message}
+                    {formik.errors.content}
                   </div>
                 )}
               </div>
               <button
                 type="submit"
-                className="bg-primary cursor-pointer hover:bg-primary-hover text-white font-bold py-3 px-6 rounded-lg w-full transition-all shadow-md mb-11"
+                disabled={isSubmitting}
+                className="bg-primary cursor-pointer hover:bg-primary-hover text-white font-bold py-3 px-6 rounded-lg w-full transition-all shadow-md mb-11 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Submit Inquiry
+                {isSubmitting ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Submitting...
+                  </>
+                ) : (
+                  "Submit Inquiry"
+                )}
               </button>
             </form>
           </div>

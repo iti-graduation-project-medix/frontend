@@ -7,6 +7,7 @@ import ContactUs from "./../pages/ContactUs/ContactUs";
 import ResetPassword from "./../pages/ResetPassword/ResetPassword";
 import Otp from "./../pages/OTP/Otp";
 import SharedLayout from "./SharedLayout";
+import Deals from "../pages/Deals/Deals";
 
 export default function MainLayout() {
   return (
@@ -20,6 +21,7 @@ export default function MainLayout() {
             <Route path="/advertise" element={<Advertise />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
+             <Route path="/deals" element={<Deals />} />
             <Route path="/reset" element={<ResetPassword />} />
           </Route>
         </Routes>

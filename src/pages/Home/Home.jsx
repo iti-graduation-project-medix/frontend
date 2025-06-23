@@ -8,23 +8,38 @@ import {Footer7} from '../../components/footer7'
 import {howWeWorkSteps,faqItems,testimonials} from './homeUtilities'
 import 'flowbite';
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useInView } from "../../hooks/useInView";
+
 
 
 
 
 export default function Home() {
+
   const MotionLink = motion(Link);
   const buttonVariants = { tap: { scale: 0.95 }, hover: { scale: 1.05 } };
 
  const [openIndex, setOpenIndex] = useState(null);
   const [current, setCurrent] = useState(0);
 
+  const [headerRef, headerInView] = useInView();
+  const [previewRef, previewInView] = useInView();
+const [whoWeAreRef, whoWeAreInView] = useInView();
+const [featuresRef, featuresInView] = useInView();
+const [featuresCardsRef, featuresCardsInView] = useInView();
+const [stepsRef, stepsInView] = useInView();
+const [stepsCardsRef, stepsCardsInView] = useInView();
+const [missionRef, missionInView] = useInView();
+const [visionRef, visionInView] = useInView();
+const [faqRef, faqInView] = useInView();
+const [testimonialRef, testimonialInView] = useInView();
+const [newsletterRef, newsletterInView] = useInView();
+const [footerRef, footerInView] = useInView();
+
    useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % testimonials.length);
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval); // تنظيف الانترفال عند إلغاء المكون
   }, []);
@@ -39,7 +54,15 @@ export default function Home() {
 
   return (
     <div className="min-h-screen font-sans">
-      {/* Hero Section */}
+     
+     
+  <motion.header
+      ref={headerRef}
+      initial={{ opacity: 0, y: 30 }}
+      animate={headerInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 1.5, ease: "easeOut" }}
+    >
+ {/* Hero Section */}
       <header
         className="relative h-screen min-h-[500px] flex items-center justify-center text-white text-center px-4 overflow-hidden"
         style={{
@@ -78,9 +101,17 @@ export default function Home() {
             </MotionLink>
           </div>
         </div>
-      </header>
-     
+      </header>  
+        </motion.header>
+
+
       <main>
+        <motion.div
+  ref={previewRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={previewInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
         {/* Preview Section */}
         <section className="pt-16 md:pt-16 px-14 text-center text-[color:var(--card-foreground)] transition-colors duration-300">
           <div className="container mx-auto max-w-4xl">
@@ -95,8 +126,15 @@ export default function Home() {
             </p>
           </div>
         </section>
+</motion.div>
 
 
+        <motion.div
+  ref={whoWeAreRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
         {/* Who We Are */}
    <section className="py-12 lg:py-12  px-14  md:px-14 text-[color:var(--card-foreground)] transition-colors duration-300">
   <div className="container mx-auto flex flex-col lg:flex-row items-center lg:items-stretch  px-5 gap-10">
@@ -139,7 +177,16 @@ export default function Home() {
 
   </div>
 </section>
+</motion.div>
 
+
+
+      <motion.div
+  ref={featuresRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
    {/* Services / Features */}
        
         <section className="py-24 px-4  text-[color:var(--card-foreground)]">
@@ -157,6 +204,12 @@ export default function Home() {
       Explore a range of powerful tools designed to simplify, optimize, and scale your pharmaceutical operations.
     </p>
 
+  <motion.div
+  ref={featuresCardsRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
       {features.map((feature, idx) => (
         <div
@@ -180,10 +233,17 @@ export default function Home() {
         </div>
       ))}
     </div>
+    </motion.div>
   </div>
 </section>
+</motion.div>
 
-
+      <motion.div
+  ref={stepsRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
 {/* steps */}
 <div className="min-h-screen bg-gray-50">
   <section className="py-10 px-2 bg-white font-sans text-center relative">
@@ -206,6 +266,12 @@ export default function Home() {
       </p>
     </div>
 
+  <motion.div
+  ref={stepsCardsRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
     {/* Steps Cards */}
     <div className="flex flex-wrap justify-center gap-10 relative pt-5 z-10">
       {howWeWorkSteps.map((step, index) => (
@@ -268,11 +334,18 @@ export default function Home() {
         </svg>
       </div>
     </div>
+    </motion.div>
   </section>
 </div>
+</motion.div>
 
 
-
+      <motion.div
+  ref={missionRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={missionInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
 {/* mission */}
 <section className="bg-white py-20 px-2 font-sans">
   <div className="max-w-8xl px-5 mx-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative lg:px-4">
@@ -305,7 +378,8 @@ export default function Home() {
     </div>
     </div>
 
-    {/* Right Box - White Overlapping */}
+ 
+   {/* Right Box - White Overlapping */}
     <div className="bg-background min-h-[340px] text-left p-6 lg:p-8 rounded-md shadow-2xl col-span-12 lg:col-span-5 -mt-20 lg:mt-0 z-10 lg:ml-[-220px]">
   <Badge
     variant="outline"
@@ -327,8 +401,14 @@ export default function Home() {
 
   </div>
 </section>
+</motion.div>
 
-
+      <motion.div
+  ref={faqRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={faqInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
 {/* frequently questions */}
      <section className="relative font-sans  py-24 px-6 md:px-14 overflow-hidden">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -392,10 +472,16 @@ export default function Home() {
         </div>
       </div>
     </section>
+    </motion.div>
 
 
 
-
+      <motion.div
+  ref={testimonialRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={testimonialInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
     {/* testimonials */}
      <section className="max-w-screen-md mb-14  mx-auto text-center relative overflow-hidden p-6">
       <figure>
@@ -430,6 +516,14 @@ export default function Home() {
         </figcaption>
       </figure>
     </section>
+    </motion.div>
+
+          <motion.div
+  ref={newsletterRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={newsletterInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
         {/* newaletter */}
      <section
       className="bg-cover bg-center py-20 text-white"
@@ -455,13 +549,19 @@ export default function Home() {
 Subscribe Now            </MotionLink>
       </div>
     </section>
+    </motion.div>
 
 
-
-{/* Footer */}
+        <motion.div
+  ref={footerRef}
+  initial={{ opacity: 0, y: 80 }}
+  animate={footerInView ? { opacity: 1, y: 0 } : {}}
+  transition={{ duration: 1.5, ease: "easeOut" }}
+>
 <footer>
     <Footer7 />
 </footer>
+</motion.div>
 
       </main>
     </div>

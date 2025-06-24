@@ -16,6 +16,7 @@ import {
   ShoppingCart,
   XCircle,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const DealCard = ({ deal }) => {
   const getStatusPill = (status) => {
@@ -50,7 +51,14 @@ const DealCard = ({ deal }) => {
     <Card className="flex flex-col justify-between py-4">
       <CardHeader>
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-bold">{deal.name}</CardTitle>
+          <CardTitle className="flex flex-col text-lg font-bold">
+            {deal.name}
+            {deal.isNew && (
+              <Badge className="bg-green-100 text-green-800 hover:bg-green-100/80">
+                 New
+              </Badge>
+            )}
+          </CardTitle>
           <Badge
             variant={deal.type === "Sell" ? "default" : "secondary"}
             className="whitespace-nowrap text-white"
@@ -59,8 +67,8 @@ const DealCard = ({ deal }) => {
           </Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-4">
+      <CardContent style={{ marginTop: "-10px" }}>
+        <div className="grid grid-cols-2 gap-4  text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Package size={16} />
             <span>Quantity: {deal.quantity}</span>
@@ -69,18 +77,13 @@ const DealCard = ({ deal }) => {
             <Calendar size={16} />
             <span>Expires: {deal.expires}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <CreditCard size={16} />
             <span>Min Price: {deal.minPrice}</span>
           </div>
           <div className="flex items-center gap-2">
             <ShoppingCart size={16} />
             <span>Offers: {deal.offers}</span>
-            {deal.isNew && (
-              <Badge className="bg-green-100 text-green-800 hover:bg-green-100/80">
-                New
-              </Badge>
-            )}
           </div>
         </div>
         <div className="flex justify-between items-center mt-4 pt-4 border-t">
@@ -88,7 +91,12 @@ const DealCard = ({ deal }) => {
           {deal.status === "Active" && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
-                <Pencil className="mr-2 h-4 w-4" /> Edit
+                <Link
+                  className="flex items-center"
+                  to={`/deals/edit/${deal.id}`}
+                >
+                  <Pencil className="mr-2 h-4 w-4" /> Edit
+                </Link>
               </Button>
               <Button variant="destructive" size="sm">
                 <XCircle className="mr-2 h-4 w-4" /> Close
@@ -101,4 +109,4 @@ const DealCard = ({ deal }) => {
   );
 };
 
-export default DealCard; 
+export default DealCard;

@@ -14,10 +14,17 @@ import * as Yup from "yup";
 import { toast } from "sonner";
 import { Mail, Phone, MapPin, Send, Clock, Building2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { requestContact } from "@/api/contact";
 
 const ContactSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
+  phone: Yup.string()
+    .matches(
+      /^1[0-9]{9}$/,
+      "Phone number must be 10 digits and start with 1 (e.g., 1002708889)"
+    )
+    .required("Phone number is required"),
   subject: Yup.string().required("Subject is required"),
   message: Yup.string()
     .min(10, "Message must be at least 10 characters")
@@ -53,16 +60,13 @@ const itemAnimation = {
 export default function ContactUs() {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      // TODO: Replace with your actual API call
-      // await sendContactForm(values);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      // Prepend '+20' to the phone number
+      const payload = { ...values, phone: `+20${values.phone}` };
+      await requestContact(payload);
       toast.success("Message sent successfully!");
       resetForm();
     } catch (error) {
-      toast.error(error.message || "Failed to send message");
+      toast.error(error?.response?.data?.message || error.message || "Failed to send message");
     } finally {
       setSubmitting(false);
     }
@@ -109,7 +113,7 @@ export default function ContactUs() {
         >
           {/* Contact Information */}
           <motion.div className="h-full" variants={itemAnimation}>
-            <Card className="border-2 border-primary/10 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden hover:border-primary/20 transition-colors p-6 h-full">
+            <Card className="border-2 border-primary/10 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden hover:border-primary/20 transition-colors p-6 h-full min-h-[400px] lg:h-[500px]">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
               <CardHeader>
@@ -230,6 +234,7 @@ export default function ContactUs() {
                   initialValues={{
                     name: "",
                     email: "",
+                    phone: "",
                     subject: "",
                     message: "",
                   }}
@@ -260,6 +265,52 @@ export default function ContactUs() {
                               className="text-sm text-red-500"
                             >
                               {errors.name}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+
+                      <motion.div
+                        className="space-y-2"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.85 }}
+                      >
+                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                          Phone Number
+                        </label>
+                        <div
+                          className="flex items-center group border border-primary/30 rounded-lg transition-all duration-200 bg-white focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary"
+                        >
+                          <span
+                            className="px-4 py-2 bg-primary/10 border-r border-primary/30 rounded-l-lg text-primary font-semibold text-base transition-colors duration-200 group-focus-within:bg-primary/20 group-hover:bg-primary/20 select-none"
+                            style={{ minWidth: '56px', textAlign: 'center' }}
+                          >
+                            +20
+                          </span>
+                          <Field
+                            as={Input}
+                            id="phone"
+                            name="phone"
+                            placeholder="1234567890"
+                            disabled={isSubmitting}
+                            className="h-12 rounded-l-none rounded-r-lg border-0 focus:ring-0 focus:border-0 text-base shadow-none"
+                            maxLength={10}
+                            pattern="1[0-9]{9}"
+                            inputMode="numeric"
+                            autoComplete="tel"
+                            aria-label="Egyptian phone number, 10 digits after +20"
+                          />
+                        </div>
+                        <AnimatePresence>
+                          {errors.phone && touched.phone && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              className="text-sm text-red-500"
+                            >
+                              {errors.phone}
                             </motion.div>
                           )}
                         </AnimatePresence>
@@ -362,7 +413,6 @@ export default function ContactUs() {
                           {isSubmitting ? (
                             <motion.div
                               className="flex items-center gap-2"
-                              animate={{ rotate: 360 }}
                               transition={{
                                 duration: 1,
                                 repeat: Infinity,

@@ -12,6 +12,7 @@ import Subscription from "../pages/Subscription/Subscription";
 import Notfound from "../pages/not-found/notFound";
 import DealFormPage from "../pages/DealForm/DealFormPage";
 import Profile from "../pages/Profile/Profile";
+import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
 
 
 export default function MainLayout() {
@@ -31,6 +32,7 @@ export default function MainLayout() {
             <Route path="/deals" element={<Deals />} />
             <Route path="/deals/edit/:id" element={<div />} />
             <Route path="/reset" element={<ResetPassword />} />
+            <Route path="/confirm-password" element={<ConfirmPassword/>} />
             <Route path="/deal-form" element={<DealFormPage />} />
             <Route path="*" element={<Notfound />} />
           </Route>

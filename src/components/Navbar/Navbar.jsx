@@ -5,6 +5,9 @@ import styles from "./navbar.module.css";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { usePharmacist } from "../../store/usePharmacist";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { FiBell, FiMessageSquare } from "react-icons/fi";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,7 +26,11 @@ export default function Navbar() {
 
   useEffect(() => {
     if (user && token) {
-      fetchPharmacistDetails(user, token);
+      // Ensure we always pass the user id, not the whole object
+      const userId = typeof user === 'object' && user !== null ? user.id : user;
+      if (userId) {
+        fetchPharmacistDetails(userId, token);
+      }
     }
   }, [user, token, fetchPharmacistDetails]);
 
@@ -69,6 +76,12 @@ export default function Navbar() {
     hover: { scale: 1.05 },
   };
 
+  const getInitials = (name = "") => {
+    const words = name.trim().split(" ");
+    const firstTwo = words.slice(0, 2);
+    return firstTwo.map(word => word[0]?.toUpperCase()).join("");
+  };
+
   return (
     <nav className=" border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -89,6 +102,35 @@ export default function Navbar() {
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {isAuthenticated ? (
             <>
+              <Button variant="ghost" size="icon" className="mr-2">
+                <FiMessageSquare className="w-5 h-5" />
+                <span className="sr-only">Messages</span>
+              </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="mr-2">
+                    <FiBell className="w-5 h-5" />
+                    <span className="sr-only">Notifications</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-80 p-0">
+                  <div className="p-4 border-b font-semibold text-base">Notifications</div>
+                  <ul className="divide-y">
+                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
+                      <span className="font-medium">Welcome!</span> This is a demo notification.
+                    </li>
+                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
+                      <span className="font-medium">System:</span> Your profile was updated successfully.
+                    </li>
+                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
+                      <span className="font-medium">Reminder:</span> Check your messages for new offers.
+                    </li>
+                  </ul>
+                  <div className="p-2 text-center border-t">
+                    <Link to="/notifications" className="text-primary text-sm hover:underline">View all notifications</Link>
+                  </div>
+                </PopoverContent>
+              </Popover>
               <motion.button
                 type="button"
                 className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
@@ -98,15 +140,11 @@ export default function Navbar() {
                 variants={buttonVariants}
               >
                 <span className="sr-only">Open user menu</span>
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-gray-500"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                </div>
+                <Avatar className="w-8 h-8">
+                  <AvatarFallback>
+                    {getInitials(pharmacistDetails?.fullName || "User")}
+                  </AvatarFallback>
+                </Avatar>
               </motion.button>
               <AnimatePresence>
                 {isUserMenuOpen && (

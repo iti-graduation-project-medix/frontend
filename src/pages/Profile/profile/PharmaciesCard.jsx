@@ -39,13 +39,13 @@ export default function PharmaciesCard({pharmacistDetails}) {
 
   const handleConfirmDelete = async () => {
     if (pharmacyToDelete) {
+      setShowDeleteModal(false);
+      setPharmacyToDelete(null);
       try {
         await deletePharmacyById(pharmacyToDelete, token);
       } catch (error) {
         console.error('Failed to delete pharmacy:', error);
       }
-      setShowDeleteModal(false);
-      setPharmacyToDelete(null);
     }
   };
 

@@ -171,7 +171,7 @@ export default function Deals() {
                 <SelectContent>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="expired">Expired</SelectItem>
-                  <SelectItem value="closed">closed</SelectItem>
+                  <SelectItem value="closed">Closed</SelectItem>
                 </SelectContent>
               </Select>
              <div className="flex flex-col md:flex-row items-center gap-2">

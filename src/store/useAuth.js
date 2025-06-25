@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { signIn } from '../api/auth/SignIn';
+import { resetPassword, confirmOtp, confirmPassword } from '../api/auth/ResetPassword';
 
 export const useAuth = create((set, get) => ({
   user: null,
@@ -38,6 +39,48 @@ export const useAuth = create((set, get) => ({
         error: error.message || 'Login failed',
         isAuthenticated: false,
       });
+      throw error;
+    }
+  },
+
+  // Reset Password action
+  resetPassword: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      if (data.email) sessionStorage.setItem('resetEmail', data.email);
+      const response = await resetPassword(data);
+      set({ isLoading: false, error: null });
+      return response;
+    } catch (error) {
+      set({ isLoading: false, error: error.message || 'Reset password failed' });
+      throw error;
+    }
+  },
+
+  // Confirm OTP action
+  confirmOtp: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      if (data.email) sessionStorage.setItem('resetEmail', data.email);
+      const response = await confirmOtp(data);
+      set({ isLoading: false, error: null });
+      return response;
+    } catch (error) {
+      set({ isLoading: false, error: error.message || 'OTP confirmation failed' });
+      throw error;
+    }
+  },
+
+  // Confirm Password action
+  confirmPassword: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      if (data.email) sessionStorage.setItem('resetEmail', data.email);
+      const response = await confirmPassword(data);
+      set({ isLoading: false, error: null });
+      return response;
+    } catch (error) {
+      set({ isLoading: false, error: error.message || 'Password confirmation failed' });
       throw error;
     }
   },

@@ -8,10 +8,11 @@ import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Card } from "@/components/ui/card";
+import { useAuth } from "@/store/useAuth";
 
 const ConfirmPasswordSchema = Yup.object().shape({
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
+    .min(6, "Password must be at least 8 characters")
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
@@ -21,17 +22,17 @@ const ConfirmPasswordSchema = Yup.object().shape({
 export default function ConfirmPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { confirmPassword } = useAuth();
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setIsLoading(true);
-      // TODO: Replace with your actual API call
-      // await confirmPassword(values.password);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const email = sessionStorage.getItem("resetEmail");
+      if (!email) throw new Error("No email found in session");
+      await confirmPassword({ email, newPassword: values.password });
       toast.success("Password confirmed successfully!");
       resetForm();
-      // Optionally navigate to login or another page
-      // navigate("/login");
+      navigate("/login");
     } catch (error) {
       toast.error(error.message || "Failed to confirm password");
     } finally {

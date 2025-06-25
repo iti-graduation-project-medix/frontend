@@ -7,14 +7,16 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
+import { useAuth } from "@/store/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function Otp({ message }) {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const { confirmOtp } = useAuth();
+  const navigate = useNavigate();
 
   const handleComplete = (value) => {
     setOtp(value);
@@ -26,16 +28,14 @@ export default function Otp({ message }) {
 
   const handleSubmit = async () => {
     if (otp.length !== 6) return;
-
     setIsLoading(true);
     try {
-      // Add your OTP verification logic here
-      console.log("Verifying OTP:", otp);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const email = sessionStorage.getItem("resetEmail");
+      if (!email) throw new Error("No email found in session");
+      await confirmOtp({ email, otp });
+      navigate("/confirm-password");
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      toast.error("Failed to verify OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -58,17 +58,11 @@ export default function Otp({ message }) {
 
   const handleResendOTP = async () => {
     if (resendDisabled) return;
-
     try {
       // Add your resend OTP logic here
-      console.log("Resending OTP...");
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success("OTP has been resent successfully!");
       startResendCountdown();
     } catch (error) {
-      console.error("Error resending OTP:", error);
-      toast.error("Failed to resend OTP. Please try again.");
+      console.error("Failed to resend OTP:", error);
     }
   };
 
@@ -139,7 +133,6 @@ export default function Otp({ message }) {
           </div>
         </div>
       </motion.div>
-      <Toaster position="top-center" />
     </div>
   );
 }

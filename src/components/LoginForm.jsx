@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../store/useAuth";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -18,6 +19,7 @@ const loginSchema = Yup.object().shape({
 
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();
+  const { login, isLoading, error, clearError } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -25,21 +27,15 @@ export function LoginForm({ className, ...props }) {
       password: "",
     },
     validationSchema: loginSchema,
-    onSubmit: (values) => {
-      // Here you would typically make an API call to authenticate
-      console.log("Form submitted:", values);
-
-      // For demo purposes, we'll just store the user in localStorage
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          email: values.email,
-          name: values.email.split("@")[0], // Just for demo
-        })
-      );
-
-      // Redirect to home page after successful login
-      navigate("/");
+    onSubmit: async (values) => {
+      try {
+        clearError();
+        await login(values);
+        navigate("/");
+      } catch (error) {
+        console.error("Login error:", error);
+        // Error is handled by the store
+      }
     },
   });
 
@@ -61,6 +57,11 @@ export function LoginForm({ className, ...props }) {
                   Login to your Dawaback account
                 </p>
               </div>
+              {error && (
+                <div className="text-sm text-red-500 bg-red-50 p-3 rounded-md">
+                  Password is incorrect
+                </div>
+              )}
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -87,7 +88,7 @@ export function LoginForm({ className, ...props }) {
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <Link
-                    to="/otp"
+                    to="/reset"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
@@ -116,9 +117,9 @@ export function LoginForm({ className, ...props }) {
                 type="submit"
                 variant="default"
                 className="w-full"
-                disabled={formik.isSubmitting}
+                disabled={isLoading || formik.isSubmitting}
               >
-                {formik.isSubmitting ? "Logging in..." : "Login"}
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
               <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
                 <span className="bg-card text-muted-foreground relative z-10 px-2">
@@ -156,9 +157,9 @@ export function LoginForm({ className, ...props }) {
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <Link to="/signup" className="underline underline-offset-4">
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
           </form>

@@ -1,5 +1,4 @@
-import React from "react";
-import Pricing from "../../components/pricing";
+import Pricing from "../../components/Pricing";
 import Accordion from "../../components/ui/Accordion";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";
 

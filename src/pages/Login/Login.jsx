@@ -1,17 +1,23 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginForm } from "../../components/login-form";
+import { LoginForm } from "../../components/LoginForm";
+import { useAuth } from "../../store/useAuth";
 
 function Login() {
   const navigate = useNavigate();
+  const { isAuthenticated, initializeAuth } = useAuth();
+
+  useEffect(() => {
+    // Initialize auth state from localStorage
+    initializeAuth();
+  }, [initializeAuth]);
 
   useEffect(() => {
     // Check if user is already logged in
-    const user = localStorage.getItem("user");
-    if (user) {
+    if (isAuthenticated) {
       navigate("/");
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className=" flex min-h-svh flex-col items-center justify-center p-6 md:p-10">

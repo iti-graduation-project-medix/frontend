@@ -2,22 +2,51 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import styles from "./navbar.module.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "../../store/useAuth";
+import { usePharmacist } from "../../store/usePharmacist";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { FiBell } from "react-icons/fi";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, isAuthenticated, logout, initializeAuth,token } = useAuth();
+
+  const navigate = useNavigate();
   const MotionLink = motion(Link);
+  const { 
+    pharmacistDetails, 
+    isLoading, 
+    error, 
+    fetchPharmacistDetails,
+    clearError 
+  } = usePharmacist();
+
+  // For demo: hardcoded messages count
+  const messagesCount = 3;
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(!!user);
-  }, []);
+    if (user && token) {
+      // Ensure we always pass the user id, not the whole object
+      const userId = typeof user === 'object' && user !== null ? user.id : user;
+      if (userId) {
+        fetchPharmacistDetails(userId, token);
+      }
+    }
+  }, [user, token, fetchPharmacistDetails]);
+
+  useEffect(() => {
+    // Initialize auth state from localStorage
+    initializeAuth();
+  }, [initializeAuth]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
+    logout();
     setIsUserMenuOpen(false);
+    navigate("/")
   };
 
   const mobileMenuVariants = {
@@ -51,6 +80,12 @@ export default function Navbar() {
     hover: { scale: 1.05 },
   };
 
+  const getInitials = (name = "") => {
+    const words = name.trim().split(" ");
+    const firstTwo = words.slice(0, 2);
+    return firstTwo.map(word => word[0]?.toUpperCase()).join("");
+  };
+
   return (
     <nav className=" border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -69,26 +104,52 @@ export default function Navbar() {
            </div>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" className="mr-2">
+                    <FiBell className="w-5 h-5" />
+                    <span className="sr-only">Notifications</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-80 p-0">
+                  <div className="p-4 border-b font-semibold text-base">Notifications</div>
+                  <ul className="divide-y">
+                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
+                      <span className="font-medium">Welcome!</span> This is a demo notification.
+                    </li>
+                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
+                      <span className="font-medium">System:</span> Your profile was updated successfully.
+                    </li>
+                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
+                      <span className="font-medium">Reminder:</span> Check your messages for new offers.
+                    </li>
+                  </ul>
+                  <div className="p-2 text-center border-t">
+                    <Link to="/notifications" className="text-primary text-sm hover:underline">View all notifications</Link>
+                  </div>
+                </PopoverContent>
+              </Popover>
               <motion.button
                 type="button"
-                className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
               >
                 <span className="sr-only">Open user menu</span>
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-gray-500"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                </div>
+                <Avatar className="w-10 h-10">
+                  <AvatarFallback>
+                    {getInitials(pharmacistDetails?.fullName || "User")}
+                  </AvatarFallback>
+                </Avatar>
+                {messagesCount > 0 && (
+                  <span className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow">
+                    {messagesCount}
+                  </span>
+                )}
               </motion.button>
               <AnimatePresence>
                 {isUserMenuOpen && (
@@ -101,15 +162,26 @@ export default function Navbar() {
                   >
                     <div className="px-4 py-3">
                       <span className="block text-sm text-gray-900 dark:text-white">
-                        {JSON.parse(localStorage.getItem("user"))?.name ||
-                          "User"}
+                        {pharmacistDetails?.fullName || "User"}
                       </span>
                       <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                        {JSON.parse(localStorage.getItem("user"))?.email ||
-                          "user@example.com"}
+                        {pharmacistDetails?.email || "user@example.com"}
                       </span>
                     </div>
                     <ul className="py-2" aria-labelledby="user-menu-button">
+                      <li>
+                        <Link
+                          to="/messages"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                        >
+                          Messages
+                          {messagesCount > 0 && (
+                            <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
+                              {messagesCount}
+                            </Badge>
+                          )}
+                        </Link>
+                      </li>
                       <li>
                         <Link
                           href="#"
@@ -120,7 +192,7 @@ export default function Navbar() {
                       </li>
                       <li>
                         <Link
-                          href="#"
+                          to="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
                           Settings
@@ -225,35 +297,37 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    to="/contact-us"
+                    to="/contact"
                     className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     Contact
                   </Link>
                 </li>
 
-                <li className={`flex space-x-4 ${styles.centerBtns}`}>
-                  <div className={`flex space-x-4 ${styles.centerBtns}`}>
-                    <MotionLink
-                      to={"login"}
-                      whileTap="tap"
-                      whileHover="hover"
-                      variants={buttonVariants}
-                      className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-blue-800"
-                    >
-                      Login
-                    </MotionLink>
-                    <MotionLink
-                      to={"SignUp"}
-                      whileTap="tap"
-                      whileHover="hover"
-                      variants={buttonVariants}
-                      className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                    >
-                      Sign up
-                    </MotionLink>
-                  </div>
-                </li>
+                {!isAuthenticated && (
+                  <li className={`flex space-x-4 ${styles.centerBtns}`}>
+                    <div className={`flex space-x-4 ${styles.centerBtns}`}>
+                      <MotionLink
+                        to={"login"}
+                        whileTap="tap"
+                        whileHover="hover"
+                        variants={buttonVariants}
+                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-blue-800"
+                      >
+                        Login
+                      </MotionLink>
+                      <MotionLink
+                        to={"SignUp"}
+                        whileTap="tap"
+                        whileHover="hover"
+                        variants={buttonVariants}
+                        className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                      >
+                        Sign up
+                      </MotionLink>
+                    </div>
+                  </li>
+                )}
               </ul>
             </motion.div>
           )}
@@ -279,7 +353,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                to="/contact-us"
+                to="/contact"
                 className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
               >
                 Contact

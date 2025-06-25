@@ -18,7 +18,7 @@ import { ArrowUpDown, Search } from "lucide-react";
 import DealCard from "../../components/DealCard";
 import { useState } from "react";
 
-const deals =     [
+const deals = [
   {
     id: 1,
     name: "Metformin 850mg",
@@ -85,17 +85,46 @@ const deals =     [
     status: "Active",
     isNew: false,
   },
-]
+];
 
 export default function Deals() {
-  const [searchDeal,setSearchDeal]=useState("")
-  const filteredDeals = deals.filter(deal => 
-    deal.name.toLowerCase().includes(searchDeal.toLowerCase())
-  )
-  
-  const handleSearch=(e)=>{
-    setSearchDeal(e.target.value)
+  const [searchDeal, setSearchDeal] = useState("");
+  const [status, setStatus] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
+
+  let filteredDeals = deals.filter((deal) => {
+    return (
+      deal.name.toLowerCase().includes(searchDeal.toLowerCase()) &&
+      deal.status.toLowerCase().includes(status.toLowerCase())
+    );
+  });
+
+  if (sortOrder === "asc") {
+    filteredDeals = [...filteredDeals].sort(
+      (a, b) => new Date(a.expires).getTime() - new Date(b.expires).getTime()
+    );
+  } else if (sortOrder === "desc") {
+    filteredDeals = [...filteredDeals].sort(
+      (a, b) => new Date(b.expires).getTime() - new Date(a.expires).getTime()
+    );
   }
+
+  const handleSearch = (e) => {
+    setSearchDeal(e.target.value);
+  };
+  const handleStatuses = (val) => {
+    val === "all" ? setStatus("") : setStatus(val);
+  };
+  const handleExpiry = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const handleClearFilters = () => {
+    setSearchDeal("");
+    setStatus("");
+    setSortOrder("asc");
+  };
+
   return (
     <div className="min-h-screen">
       <section className="py-10 px-4 text-foreground">
@@ -159,30 +188,46 @@ export default function Deals() {
 
           {/* Filters */}
           <Card className="p-4 mb-8">
-            <div className="flex flex-col md:flex-row items-center gap-4">
-              <div className="relative w-full md:w-1/3">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="w-full flex items-center gap-2">
+                <div className="relative w-full md:w-1/2">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input onChange={handleSearch} placeholder="Search medicine..." className="pl-10" />
+                <Input
+                  onChange={handleSearch}
+                  placeholder="Search deal..."
+                  className="pl-10"
+                />
               </div>
-              <Select>
+              <Select onValueChange={handleStatuses}>
                 <SelectTrigger className="w-full md:w-auto">
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="active">Active</SelectItem>
                   <SelectItem value="expired">Expired</SelectItem>
                   <SelectItem value="closed">Closed</SelectItem>
                 </SelectContent>
               </Select>
-             <div className="flex flex-col md:flex-row items-center gap-2">
-               <Button variant="outline" className="w-full md:w-auto">
-                <ArrowUpDown className="mr-2 h-4 w-4" />
-                Expiry Date
-              </Button>
-              <Button variant="outline" className="w-full md:w-auto">
-                Clear Filters
-              </Button>
-             </div>
+              </div>
+              <div className="flex flex-col md:flex-row items-center gap-2">
+                <Button
+                  onClick={handleExpiry}
+                  variant="outline"
+                  className="w-full md:w-auto"
+                >
+                  <ArrowUpDown className="mr-1 h-4 w-4" />
+                  Expiry Date {sortOrder === "asc" && "(↑)"}
+                  {sortOrder === "desc" && "(↓)"}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full md:w-auto"
+                  onClick={handleClearFilters}
+                >
+                  Clear Filters
+                </Button>
+              </div>
             </div>
           </Card>
           {/* Deals Grid */}

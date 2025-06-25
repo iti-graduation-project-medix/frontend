@@ -13,7 +13,7 @@ import Notfound from "../pages/not-found/notFound";
 import DealFormPage from "../pages/DealForm/DealFormPage";
 import Profile from "../pages/Profile/Profile";
 import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
-
+import { DealDetails } from "../pages/Deals/DealDetails";
 
 export default function MainLayout() {
   return (
@@ -25,14 +25,14 @@ export default function MainLayout() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/advertise" element={<Advertise />} />
-            <Route path="/profile" element={<Profile/>} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/deals" element={<Deals />} />
-            <Route path="/deals/edit/:id" element={<div />} />
+            <Route path="/deals/:id" element={<DealDetails />} />
             <Route path="/reset" element={<ResetPassword />} />
-            <Route path="/confirm-password" element={<ConfirmPassword/>} />
+            <Route path="/confirm-password" element={<ConfirmPassword />} />
             <Route path="/deal-form" element={<DealFormPage />} />
             <Route path="*" element={<Notfound />} />
           </Route>

@@ -2,14 +2,30 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import styles from "./navbar.module.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
+import { usePharmacist } from "../../store/usePharmacist";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout, initializeAuth } = useAuth();
+  const { user, isAuthenticated, logout, initializeAuth,token } = useAuth();
+
+  const navigate = useNavigate();
   const MotionLink = motion(Link);
+  const { 
+    pharmacistDetails, 
+    isLoading, 
+    error, 
+    fetchPharmacistDetails,
+    clearError 
+  } = usePharmacist();
+
+  useEffect(() => {
+    if (user && token) {
+      fetchPharmacistDetails(user, token);
+    }
+  }, [user, token, fetchPharmacistDetails]);
 
   useEffect(() => {
     // Initialize auth state from localStorage
@@ -19,6 +35,7 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
+    navigate("/")
   };
 
   const mobileMenuVariants = {
@@ -102,10 +119,10 @@ export default function Navbar() {
                   >
                     <div className="px-4 py-3">
                       <span className="block text-sm text-gray-900 dark:text-white">
-                        {user?.name || "User"}
+                        {pharmacistDetails?.fullName || "User"}
                       </span>
                       <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                        {user?.email || "user@example.com"}
+                        {pharmacistDetails?.email || "user@example.com"}
                       </span>
                     </div>
                     <ul className="py-2" aria-labelledby="user-menu-button">
@@ -119,7 +136,7 @@ export default function Navbar() {
                       </li>
                       <li>
                         <Link
-                          href="#"
+                          to="/profile"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
                           Settings

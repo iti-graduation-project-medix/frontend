@@ -88,8 +88,8 @@ export default function Profile() {
       {/* Account Status */}
       <div className="flex items-center gap-2 mb-8">
         <span className="font-medium text-base">Account Status:</span>
-        <Badge variant={pharmacistDetails?.status === 'verified' ? 'default' : 'secondary'}>
-          {pharmacistDetails?.status === 'verified' ? 'Verified' : 'Under Review'}
+        <Badge variant={pharmacistDetails?.role === 'pharmacist' ? 'success' : 'secondary'}>
+          {pharmacistDetails?.role === 'pharmacist' ? 'Verified' : 'Under Review'}
         </Badge>
       </div>
       

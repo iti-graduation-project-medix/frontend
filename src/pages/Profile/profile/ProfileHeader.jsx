@@ -3,6 +3,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { PiTagChevronBold } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 export default function ProfileHeader({pharmacistDetails}) {
   // Add null check and default values
@@ -27,10 +28,10 @@ export default function ProfileHeader({pharmacistDetails}) {
           <p className="text-muted-foreground text-sm">Manage your account settings and preferences</p>
         </div>
       </div>
-      <Button className="h-10 px-6 rounded-lg font-semibold text-base shadow-md flex items-center">
-        <PiTagChevronBold size={18}/>
+      <Link to="/deals" className="bg-primary text-white h-10 px-6 rounded-lg font-semibold text-base shadow-md flex items-center">
+        <PiTagChevronBold className="mr-2" size={18}/>
         My Deals
-      </Button>
+      </Link>
     </div>
   );
 } 

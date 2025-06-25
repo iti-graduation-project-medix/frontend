@@ -8,15 +8,21 @@ import { Link } from "react-router-dom";
 export default function ProfileHeader({pharmacistDetails}) {
   // Add null check and default values
   const details = pharmacistDetails || {};
-  
+  const getInitials = (name = "") => {
+    const words = name.trim().split(' ');
+    const firstTwo = words.slice(0, 2);
+    return firstTwo.map(word => word[0]?.toUpperCase()).join('');
+  };
+  const initials = getInitials(details.fullName || "");
+
   console.log(pharmacistDetails)
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-4">
         <div className="relative">
           <Avatar className="size-16 shadow-md">
-            <AvatarImage src="/public/avatars/client1.webp" alt="Profile" />
-            <AvatarFallback>JD</AvatarFallback>
+            {/* <AvatarImage src="/public/avatars/client1.webp" alt="Profile" /> */}
+            <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           {/* Verified badge */}
           <span className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-md">

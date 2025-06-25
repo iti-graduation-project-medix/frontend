@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Card} from "@/components/ui/card";
+import { useAuth } from "@/store/useAuth";
 
 const ResetPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -18,26 +19,21 @@ const ResetPasswordSchema = Yup.object().shape({
 export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { resetPassword } = useAuth();
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setIsLoading(true);
-      // TODO: Replace with your actual API call
-      // await resetPassword(values.email);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await resetPassword({ email: values.email });
       toast.success("Password reset instructions sent to your email");
-      // Navigate to OTP page with email as state
-      navigate("/otp", { 
-        state: { 
+      navigate("/otp", {
+        state: {
           email: values.email,
-          purpose: "reset-password"
-        } 
+          purpose: "reset-password",
+        },
       });
     } catch (error) {
-      toast.error(error.message || "Failed to send reset instructions");
+      toast.error("Failed to send reset instructions");
     } finally {
       setIsLoading(false);
       setSubmitting(false);

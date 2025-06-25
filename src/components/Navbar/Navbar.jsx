@@ -3,20 +3,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import styles from "./navbar.module.css";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../store/useAuth";
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, isAuthenticated, logout, initializeAuth } = useAuth();
   const MotionLink = motion(Link);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    setIsLoggedIn(!!user);
-  }, []);
+    // Initialize auth state from localStorage
+    initializeAuth();
+  }, [initializeAuth]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setIsLoggedIn(false);
+    logout();
     setIsUserMenuOpen(false);
   };
 
@@ -69,7 +70,7 @@ export default function Navbar() {
            </div>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <motion.button
                 type="button"
@@ -101,12 +102,10 @@ export default function Navbar() {
                   >
                     <div className="px-4 py-3">
                       <span className="block text-sm text-gray-900 dark:text-white">
-                        {JSON.parse(localStorage.getItem("user"))?.name ||
-                          "User"}
+                        {user?.name || "User"}
                       </span>
                       <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                        {JSON.parse(localStorage.getItem("user"))?.email ||
-                          "user@example.com"}
+                        {user?.email || "user@example.com"}
                       </span>
                     </div>
                     <ul className="py-2" aria-labelledby="user-menu-button">
@@ -232,28 +231,30 @@ export default function Navbar() {
                   </Link>
                 </li>
 
-                <li className={`flex space-x-4 ${styles.centerBtns}`}>
-                  <div className={`flex space-x-4 ${styles.centerBtns}`}>
-                    <MotionLink
-                      to={"login"}
-                      whileTap="tap"
-                      whileHover="hover"
-                      variants={buttonVariants}
-                      className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-blue-800"
-                    >
-                      Login
-                    </MotionLink>
-                    <MotionLink
-                      to={"SignUp"}
-                      whileTap="tap"
-                      whileHover="hover"
-                      variants={buttonVariants}
-                      className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                    >
-                      Sign up
-                    </MotionLink>
-                  </div>
-                </li>
+                {!isAuthenticated && (
+                  <li className={`flex space-x-4 ${styles.centerBtns}`}>
+                    <div className={`flex space-x-4 ${styles.centerBtns}`}>
+                      <MotionLink
+                        to={"login"}
+                        whileTap="tap"
+                        whileHover="hover"
+                        variants={buttonVariants}
+                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-blue-800"
+                      >
+                        Login
+                      </MotionLink>
+                      <MotionLink
+                        to={"SignUp"}
+                        whileTap="tap"
+                        whileHover="hover"
+                        variants={buttonVariants}
+                        className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                      >
+                        Sign up
+                      </MotionLink>
+                    </div>
+                  </li>
+                )}
               </ul>
             </motion.div>
           )}

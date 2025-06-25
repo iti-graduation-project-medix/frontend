@@ -5,7 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { FaEnvelope } from "react-icons/fa";
 
-export default function ContactInfoCard() {
+export default function ContactInfoCard({pharmacistDetails}) {
+  // Add null check and default values
+  const details = pharmacistDetails || {};
+  
   return (
     <Card className="mb-8 p-6 shadow-lg rounded-2xl border border-gray-200">
       <CardHeader className="pb-2">
@@ -22,11 +25,11 @@ export default function ContactInfoCard() {
         <form className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
           <div className="flex flex-col gap-1">
             <Label htmlFor="email" className="text-xs font-medium uppercase">Email</Label>
-            <Input id="email" type="email" defaultValue="john@example.com" className="mt-1" />
+            <Input id="email" type="email" defaultValue={details.email || ""} className="mt-1" />
           </div>
           <div className="flex flex-col gap-1">
             <Label htmlFor="phone" className="text-xs font-medium uppercase">Phone Number</Label>
-            <Input id="phone" type="tel" defaultValue="01012345678" className="mt-1" />
+            <Input id="phone" type="tel" defaultValue={details.phone || "01012345678"} className="mt-1" />
           </div>
         </form>
       </CardContent>

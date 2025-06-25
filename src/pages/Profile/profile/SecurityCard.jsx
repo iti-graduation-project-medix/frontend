@@ -5,7 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { FaLock } from "react-icons/fa";
 
-export default function SecurityCard() {
+export default function SecurityCard({pharmacistDetails}) {
+  // Add null check and default values
+  const details = pharmacistDetails || {};
+  
   return (
     <Card className="p-6 shadow-lg rounded-2xl border border-gray-200 max-w-xl mx-auto">
       <CardHeader className="pb-2">

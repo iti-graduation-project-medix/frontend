@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { PiTagChevronBold } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
 
-export default function ProfileHeader() {
+export default function ProfileHeader({pharmacistDetails}) {
+  // Add null check and default values
+  const details = pharmacistDetails || {};
+  
+  console.log(pharmacistDetails)
   return (
     <div className="flex items-center justify-between mb-6">
       <div className="flex items-center gap-4">

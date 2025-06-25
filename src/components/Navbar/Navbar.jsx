@@ -6,8 +6,9 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { usePharmacist } from "../../store/usePharmacist";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { FiBell, FiMessageSquare } from "react-icons/fi";
+import { FiBell } from "react-icons/fi";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,6 +24,9 @@ export default function Navbar() {
     fetchPharmacistDetails,
     clearError 
   } = usePharmacist();
+
+  // For demo: hardcoded messages count
+  const messagesCount = 3;
 
   useEffect(() => {
     if (user && token) {
@@ -102,10 +106,6 @@ export default function Navbar() {
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {isAuthenticated ? (
             <>
-              <Button variant="ghost" size="icon" className="mr-2">
-                <FiMessageSquare className="w-5 h-5" />
-                <span className="sr-only">Messages</span>
-              </Button>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="ghost" size="icon" className="mr-2">
@@ -133,18 +133,23 @@ export default function Navbar() {
               </Popover>
               <motion.button
                 type="button"
-                className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                className="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 relative"
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
               >
                 <span className="sr-only">Open user menu</span>
-                <Avatar className="w-8 h-8">
+                <Avatar className="w-10 h-10">
                   <AvatarFallback>
                     {getInitials(pharmacistDetails?.fullName || "User")}
                   </AvatarFallback>
                 </Avatar>
+                {messagesCount > 0 && (
+                  <span className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow">
+                    {messagesCount}
+                  </span>
+                )}
               </motion.button>
               <AnimatePresence>
                 {isUserMenuOpen && (
@@ -164,6 +169,19 @@ export default function Navbar() {
                       </span>
                     </div>
                     <ul className="py-2" aria-labelledby="user-menu-button">
+                      <li>
+                        <Link
+                          to="/messages"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                        >
+                          Messages
+                          {messagesCount > 0 && (
+                            <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
+                              {messagesCount}
+                            </Badge>
+                          )}
+                        </Link>
+                      </li>
                       <li>
                         <Link
                           href="#"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,8 @@ import PersonalInfoCard from "./profile/PersonalInfoCard";
 import ContactInfoCard from "./profile/ContactInfoCard";
 import SecurityCard from "./profile/SecurityCard";
 import PharmaciesCard from "./profile/PharmaciesCard";
+import { useAuth } from "../../store/useAuth";
+import { usePharmacist } from "../../store/usePharmacist";
 
 const TABS = [
   { key: "profile", label: "Profile", icon: <FaUser size={18} className="mr-2 text-primary" /> },
@@ -25,16 +27,72 @@ const TABS = [
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("profile");
+  const { user, token } = useAuth();
+  const { 
+    pharmacistDetails, 
+    isLoading, 
+    error, 
+    fetchPharmacistDetails,
+    clearError 
+  } = usePharmacist();
+
+  useEffect(() => {
+    if (user && token) {
+      fetchPharmacistDetails(user, token);
+    }
+  }, [user, token, fetchPharmacistDetails]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto py-10 px-2 md:px-0">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading pharmacist details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="max-w-4xl mx-auto py-10 px-2 md:px-0">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="text-red-500 mb-4">
+              <FaUserMd size={48} className="mx-auto" />
+            </div>
+            <p className="text-red-600 mb-4">{error}</p>
+            <Button onClick={() => {
+              clearError();
+              if (user && token) {
+                fetchPharmacistDetails(user, token);
+              }
+            }}>
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-2 md:px-0">
       {/* Top Bar with My Deals and Verified Badge */}
-      <ProfileHeader />
+      <ProfileHeader pharmacistDetails={pharmacistDetails} />
+      
       {/* Account Status */}
       <div className="flex items-center gap-2 mb-8">
         <span className="font-medium text-base">Account Status:</span>
-        <Badge variant="secondary">Under Review</Badge>
+        <Badge variant={pharmacistDetails?.status === 'verified' ? 'default' : 'secondary'}>
+          {pharmacistDetails?.status === 'verified' ? 'Verified' : 'Under Review'}
+        </Badge>
       </div>
+      
       {/* Tabs */}
       <div className="flex gap-3 mb-10 justify-center">
         {TABS.map((tab) => (
@@ -50,6 +108,7 @@ export default function Profile() {
           </Button>
         ))}
       </div>
+      
       {/* Tab Content */}
       <AnimatePresence mode="wait">
         {activeTab === "profile" && (
@@ -60,8 +119,8 @@ export default function Profile() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            <PersonalInfoCard />
-            <ContactInfoCard />
+            <PersonalInfoCard pharmacistDetails={pharmacistDetails} />
+            <ContactInfoCard pharmacistDetails={pharmacistDetails} />
           </motion.div>
         )}
         {activeTab === "security" && (
@@ -72,7 +131,7 @@ export default function Profile() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            <SecurityCard />
+            <SecurityCard pharmacistDetails={pharmacistDetails} />
           </motion.div>
         )}
         {activeTab === "pharmacies" && (
@@ -83,7 +142,7 @@ export default function Profile() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            <PharmaciesCard />
+            <PharmaciesCard pharmacistDetails={pharmacistDetails} />
           </motion.div>
         )}
       </AnimatePresence>

@@ -5,7 +5,10 @@ import Accordion from "@/components/ui/Accordion";
 import { FaClinicMedical } from "react-icons/fa";
 import { RiCapsuleLine } from "react-icons/ri";
 
-export default function PharmaciesCard() {
+export default function PharmaciesCard({pharmacistDetails}) {
+  // Add null check and default values
+  const details = pharmacistDetails || {};
+  
   return (
     <Card className="p-8 shadow-2xl rounded-2xl border border-gray-200 max-w-2xl mx-auto bg-white">
       <CardHeader className="pb-2 border-b mb-4">

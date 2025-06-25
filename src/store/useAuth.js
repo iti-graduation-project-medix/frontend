@@ -64,7 +64,7 @@ export const useAuth = create((set, get) => ({
     if (user && token) {
       set({
         user: JSON.parse(user),
-        token: token,
+        token: JSON.parse(token),
         isAuthenticated: true,
       });
     }

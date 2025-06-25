@@ -7,8 +7,6 @@ import {
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
 import { useAuth } from "@/store/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -35,11 +33,9 @@ export default function Otp({ message }) {
       const email = sessionStorage.getItem("resetEmail");
       if (!email) throw new Error("No email found in session");
       await confirmOtp({ email, otp });
-      toast.success("OTP verified successfully!");
       navigate("/confirm-password");
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      toast.error("Failed to verify OTP. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -64,10 +60,9 @@ export default function Otp({ message }) {
     if (resendDisabled) return;
     try {
       // Add your resend OTP logic here
-      toast.success("OTP has been resent successfully!");
       startResendCountdown();
     } catch (error) {
-      toast.error("Failed to resend OTP. Please try again.");
+      console.error("Failed to resend OTP:", error);
     }
   };
 
@@ -138,7 +133,6 @@ export default function Otp({ message }) {
           </div>
         </div>
       </motion.div>
-      <Toaster position="top-center" />
     </div>
   );
 }

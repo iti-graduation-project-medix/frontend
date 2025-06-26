@@ -115,6 +115,29 @@ export default function AddPharmacy() {
   const [searchBox, setSearchBox] = useState(null);
   const inputRef = useRef(null);
 
+  const isAddMode = !id;
+  const hasMaxPharmacies = isAddMode && Array.isArray(pharmacies) && pharmacies.length >= 2;
+
+  if (hasMaxPharmacies) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-lg w-full p-8 text-center shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-red-600">Limit Reached</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg mb-4">
+              You have already registered the maximum number of pharmacies (2).
+            </p>
+            <p className="text-gray-500">
+              If you need to update your existing pharmacies, please use the edit option.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   // Find the pharmacy if editing
   useEffect(() => {
     if (id && Array.isArray(pharmacies)) {

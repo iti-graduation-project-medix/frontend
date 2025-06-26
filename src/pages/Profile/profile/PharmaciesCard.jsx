@@ -188,12 +188,14 @@ export default function PharmaciesCard({ pharmacistDetails }) {
           </div>
         )}
         <div className="pt-6 flex gap-2 justify-end max-sm:flex-col max-sm:w-full">
-          <Button
-            className="px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-full"
-            variant="outline"
-          >
-            Edit Pharmacy
-          </Button>
+          <Link to={`/add-pharmacy/${pharmacy.id}`}>
+            <Button
+              className="px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-full"
+              variant="outline"
+            >
+              Edit Pharmacy
+            </Button>
+          </Link>
           <Button
             className="px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-full"
             variant="destructive"

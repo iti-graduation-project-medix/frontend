@@ -229,7 +229,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             My Pharmacies
           </span>
           <Link
-            to="/deal-form"
+            to="/add-pharmacy"
             className="bg-primary text-white px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-50 max-sm:m-auto"
           >
             Add Pharmacy

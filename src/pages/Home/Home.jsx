@@ -43,23 +43,10 @@ export default function Home() {
 
   const { text, name, role, img } = testimonials[current];
 
-  return (
-    <div className="min-h-screen font-sans">
-      <motion.header
-        ref={headerRef}
-        initial={{ opacity: 0, y: 30 }}
-        animate={headerInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-      >
+  return <div className="min-h-screen font-sans">
+      <motion.header ref={headerRef} initial={{ opacity: 0, y: 30 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
         {/* Hero Section */}
-        <header
-          className="relative h-screen min-h-[500px] flex items-center justify-center text-white text-center px-4 overflow-hidden"
-          style={{
-            backgroundImage: `url(/imgs/drug-store.jpg)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center"
-          }}
-        >
+        <header className="relative h-screen min-h-[500px] flex items-center justify-center text-white text-center px-4 overflow-hidden" style={{ backgroundImage: `url(/imgs/drug-store.jpg)`, backgroundSize: "cover", backgroundPosition: "center" }}>
           <div className="absolute inset-0 bg-black opacity-60 z-10" />
           <div className="relative z-20 max-w-5xl mx-auto p-4 md:p-8">
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight drop-shadow-lg">
@@ -69,23 +56,11 @@ export default function Home() {
               Connect with companies to exchange or bid on near-expiry
               medications efficiently and compliantly.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <MotionLink
-                to="/join-pharmacy"
-                whileTap="tap"
-                whileHover="hover"
-                variants={buttonVariants}
-                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-              >
+            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <MotionLink to="/join-pharmacy" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 w-auto">
                 Join as Pharmacy
               </MotionLink>
-              <MotionLink
-                to="/join-company"
-                whileTap="tap"
-                whileHover="hover"
-                variants={buttonVariants}
-                className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2"
-              >
+              <MotionLink to="/join-company" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-6 py-2 w-auto">
                 Join as Company
               </MotionLink>
             </div>
@@ -94,12 +69,7 @@ export default function Home() {
       </motion.header>
 
       <main>
-        <motion.div
-          ref={previewRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={previewInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={previewRef} initial={{ opacity: 0, y: 80 }} animate={previewInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* Preview Section */}
           <section className="pt-16 md:pt-16 px-14 text-center text-[color:var(--card-foreground)] transition-colors duration-300">
             <div className="container mx-auto max-w-4xl">
@@ -117,69 +87,57 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div
-          ref={whoWeAreRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={whoWeAreRef} initial={{ opacity: 0, y: 80 }} animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* Who We Are */}
-          <section className="py-12 lg:py-12  px-14  md:px-14 text-[color:var(--card-foreground)] transition-colors duration-300">
-            <div className="container mx-auto flex flex-col lg:flex-row items-center lg:items-stretch  px-5 gap-10">
-              {/* Text Content - Left Side */}
-              <div className="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left order-2 lg:order-1">
-                <Badge
-                  variant="outline"
-                  className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                >
+          <section className="py-12 px-6 sm:px-10 md:px-14 text-[color:var(--card-foreground)] transition-colors duration-300">
+            <div className="container mx-auto flex flex-col lg:flex-row items-center gap-12">
+              {/* Text Content */}
+              <div className="w-full lg:w-1/2 flex flex-col text-center lg:text-left">
+                <Badge variant="outline" className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full mx-auto lg:mx-0">
                   Who We Are
                 </Badge>
-                <h3 className="text-3xl lg:text-4xl w-xl font-bold text-[color:var(--primary)] mb-8 leading-tight">
+
+                <h3 className="text-3xl md:text-4xl font-bold text-[color:var(--primary)] mb-6 leading-tight order-1">
                   Bridging Sustainability with Pharmacy
                 </h3>
 
-                <p className="text-lg w-xl leading-relaxed text-[color:var(--muted-foreground)]">
+                {/* Image between title and paragraphs in small screens */}
+                <div className="w-full flex justify-center my-6 order-2 lg:hidden">
+                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full overflow-hidden shadow-lg">
+                    <img src="/imgs/whoWeAre.png" alt="About MediExchange" className="object-cover w-full h-full" />
+                  </div>
+                </div>
+
+                {/* Paragraphs */}
+                <p className="text-base md:text-lg leading-relaxed text-[color:var(--muted-foreground)] mb-4 order-3">
                   Founded on the principles of sustainability and resource
                   optimization within the pharmaceutical supply chain,
-                  MediExchange provides a trusted marketplace designed to extend
-                  the lifecycle of valuable medications and reduce the
+                  MediExchange provides a trusted marketplace designed to
+                  extend the lifecycle of valuable medications and reduce the
                   environmental and economic burden of disposal.
                 </p>
-
-                <p className="text-lg w-xl leading-relaxed text-[color:var(--muted-foreground)] mt-4">
-                  Our mission is to create a more resilient and efficient system
-                  for all stakeholders.
+                <p className="text-base md:text-lg leading-relaxed text-[color:var(--muted-foreground)] order-4">
+                  Our mission is to create a more resilient and efficient
+                  system for all stakeholders.
                 </p>
               </div>
 
-              {/* Big Circular Image - Right Side */}
-              <div className="w-full lg:w-1/2 hidden lg:flex items-center justify-center order-1 lg:order-2">
-                <div className="w-[500px] h-[500px] xl:w-[600px] xl:h-[600px] rounded-full overflow-hidden">
-                  <img
-                    src="/imgs/whoWeAre.png"
-                    alt="About MediExchange"
-                    className="object-cover w-full h-full"
-                  />
+              {/* Image on right for large screens */}
+              <div className="w-full lg:w-1/2 hidden lg:flex items-center justify-center">
+                <div className="w-[400px] h-[400px] xl:w-[500px] xl:h-[500px] rounded-full overflow-hidden shadow-lg">
+                  <img src="/imgs/whoWeAre.png" alt="About MediExchange" className="object-cover w-full h-full" />
                 </div>
               </div>
             </div>
           </section>
         </motion.div>
 
-        <motion.div
-          ref={featuresRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={featuresInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={featuresRef} initial={{ opacity: 0, y: 80 }} animate={featuresInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* Services / Features */}
 
           <section className="py-24 px-4  text-[color:var(--card-foreground)]">
             <div className="max-w-7xl mx-auto text-center">
-              <Badge
-                variant="outline"
-                className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-              >
+              <Badge variant="outline" className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
                 Our Features
               </Badge>
               <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
@@ -190,12 +148,7 @@ export default function Home() {
                 optimize, and scale your pharmaceutical operations.
               </p>
 
-              <motion.div
-                ref={featuresCardsRef}
-                initial={{ opacity: 0, y: 80 }}
-                animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-              >
+              <motion.div ref={featuresCardsRef} initial={{ opacity: 0, y: 80 }} animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
                   {features.map((feature, idx) =>
                     <div
@@ -224,20 +177,12 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div
-          ref={stepsRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={stepsInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={stepsRef} initial={{ opacity: 0, y: 80 }} animate={stepsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* steps */}
           <div className="min-h-screen bg-gray-50">
             <section className="py-10 px-2 bg-white font-sans text-center relative">
               <div className="mb-16 text-center">
-                <Badge
-                  variant="outline"
-                  className="mx-auto mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                >
+                <Badge variant="outline" className="mx-auto mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
                   Our Working Process
                 </Badge>
 
@@ -253,12 +198,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <motion.div
-                ref={stepsCardsRef}
-                initial={{ opacity: 0, y: 80 }}
-                animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-              >
+              <motion.div ref={stepsCardsRef} initial={{ opacity: 0, y: 80 }} animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
                 {/* Steps Cards */}
                 <div className="flex flex-wrap justify-center gap-10 relative pt-5 z-10">
                   {howWeWorkSteps.map((step, index) =>
@@ -302,22 +242,12 @@ export default function Home() {
 
                   {/* SVG Curved Dotted Line */}
                   <div className="hidden lg:block absolute top-[120px] left-0 right-0 w-full z-0">
-                    <svg
-                      viewBox="0 0 1000 150"
-                      preserveAspectRatio="none"
-                      className="w-full h-12"
-                    >
-                      <path
-                        d="M 20 75 
+                    <svg viewBox="0 0 1000 150" preserveAspectRatio="none" className="w-full h-12">
+                      <path d="M 20 75 
                Q 120 0, 250 75 
                T 480 75 
                T 710 75 
-               T 940 75"
-                        fill="none"
-                        stroke="#a8a5a5"
-                        strokeWidth="2"
-                        strokeDasharray="6,6"
-                      />
+               T 940 75" fill="none" stroke="#a8a5a5" strokeWidth="2" strokeDasharray="6,6" />
                     </svg>
                   </div>
                 </div>
@@ -326,83 +256,55 @@ export default function Home() {
           </div>
         </motion.div>
 
-        <motion.div
-          ref={missionRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={missionInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
-          {/* mission */}
-          <section className="bg-white py-20 px-2 font-sans">
-            <div className="max-w-8xl px-5 mx-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative lg:px-4">
-              {/* Left Box - Blue Background */}
-              <div className="bg-[#eff0fc]/90 text-white p-8 rounded-lg shadow-lg col-span-12 lg:col-span-7">
-                <div className="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left order-2 lg:order-1">
-                  <Badge
-                    variant="outline"
-                    className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                  >
+        <motion.div ref={missionRef} initial={{ opacity: 0, y: 80 }} animate={missionInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+          {/* mission & vision */}
+          <section className="bg-white py-20 px-6 font-sans">
+            <div className="max-w-8xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 md:gap-6 gap-0 items-center relative">
+              {/* Left Box - Mission */}
+              <div className="bg-[#eff0fc]/90 md:pr-30 sm:pr-8  text-white p-8 py-16 rounded-lg shadow-lg col-span-12 lg:col-span-7">
+                <div className="flex justify-center md:justify-start">
+                  <Badge variant="outline" className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
                     Our Mission
                   </Badge>
-                  <h3 className="text-3xl lg:text-4xl w-xl font-bold text-[color:var(--foreground)] mb-8 leading-tight">
-                    Advancing Pharmacy Through Circular Innovation
-                  </h3>
-                  <p className="text-lg w-lg leading-relaxed text-[color:var(--muted-foreground)]">
-                    At MediExchange, we are reimagining the pharmaceutical
-                    supply chain by extending the life of medications and
-                    minimizing waste. Our mission is to enable pharmacies to
-                    redistribute surplus inventory safely, sustainably, and
-                    responsibly.
-                  </p>
-
-                  <p className="text-lg w-lg leading-relaxed text-[color:var(--muted-foreground)] mt-4">
-                    We aim to build a connected ecosystem that prioritizes
-                    access, efficiency, and environmental stewardship—empowering
-                    healthcare providers to make a greater impact with fewer
-                    resources.
-                  </p>
                 </div>
+
+                <h3 className="text-3xl lg:text-4xl font-bold text-[color:var(--foreground)] mb-6 leading-tight text-center md:text-left">
+                  Advancing Pharmacy Through Circular Innovation
+                </h3>
+
+                <p className="text-base lg:text-lg leading-relaxed text-[color:var(--muted-foreground)] break-words text-center md:text-left">
+                  At MediExchange, we are reimagining the pharmaceutical
+                  supply chain...
+                </p>
               </div>
 
-              {/* Right Box - White Overlapping */}
-              <div className="bg-background min-h-[340px] text-left p-6 lg:p-8 rounded-md shadow-2xl col-span-12 lg:col-span-5 -mt-20 lg:mt-0 z-10 lg:ml-[-220px]">
-                <Badge
-                  variant="outline"
-                  className="self-center mb-4 lg:self-start bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                >
-                  Our Vision
-                </Badge>
+              {/* Right Box - Vision */}
+              <div className="bg-background text-left p-6 lg:p-8 rounded-md shadow-2xl col-span-12 lg:col-span-5 md:mt-6 mt-6 lg:mt-0 lg:ml-[-100px] z-10">
+                <div className="flex justify-center md:justify-start">
+                  <Badge variant="outline" className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
+                    Our Vision
+                  </Badge>
+                </div>
 
-                <h3 className="text-3xl lg:text-4xl w-xl font-bold text-[color:var(--primary)] mb-8 leading-tight">
+                <h3 className="text-3xl lg:text-4xl font-bold text-[color:var(--primary)] mb-6 leading-tight text-center md:text-left">
                   Shaping a Sustainable Future for Pharma
                 </h3>
 
-                <p className="text-lg w-xl leading-relaxed text-[color:var(--muted-foreground)]">
-                  We envision a future where pharmacies collaborate to reduce
-                  waste, optimize inventory, and ensure life-saving medications
-                  are never discarded unnecessarily.
+                <p className="text-base lg:text-lg leading-relaxed text-[color:var(--muted-foreground)] break-words text-center md:text-left">
+                  We envision a future where pharmacies collaborate...
                 </p>
               </div>
             </div>
           </section>
         </motion.div>
 
-        <motion.div
-          ref={faqRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={faqInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={faqRef} initial={{ opacity: 0, y: 80 }} animate={faqInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* frequently questions */}
           <section className="relative font-sans  py-24 px-6 md:px-14 overflow-hidden">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               {/* Left Image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  src="/imgs/faqs.jpg"
-                  alt="Opening and Visiting Hours"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
+                <img src="/imgs/faqs.jpg" alt="Opening and Visiting Hours" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/10" />
               </div>
 
@@ -427,16 +329,8 @@ export default function Home() {
                 <div className="space-y-4">
                   {faqItems.map((item, index) => {
                     const isOpen = openIndex === index;
-                    return (
-                      <div
-                        key={index}
-                        className="border border-gray-300 rounded-xl overflow-hidden transition-all duration-300"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => toggleAccordion(index)}
-                          className="w-full flex justify-between items-center text-left px-5 py-4 bg-white hover:bg-[#eff1fb] transition-colors font-medium text-gray-900"
-                        >
+                    return <div key={index} className="border border-gray-300 rounded-xl overflow-hidden transition-all duration-300">
+                        <button type="button" onClick={() => toggleAccordion(index)} className="w-full flex justify-between items-center text-left px-5 py-4 bg-white hover:bg-[#eff1fb] transition-colors font-medium text-gray-900">
                           <span>
                             {item.question}
                           </span>
@@ -445,15 +339,10 @@ export default function Home() {
                           </span>
                         </button>
 
-                        <div
-                          className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${isOpen
-                            ? "max-h-40 py-4 opacity-100"
-                            : "max-h-0 opacity-0"} text-sm text-gray-600 bg-white`}
-                        >
+                        <div className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-h-40 py-4 opacity-100" : "max-h-0 opacity-0"} text-sm text-gray-600 bg-white`}>
                           {item.answer}
                         </div>
-                      </div>
-                    );
+                      </div>;
                   })}
                 </div>
               </div>
@@ -461,22 +350,11 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div
-          ref={testimonialRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={testimonialInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={testimonialRef} initial={{ opacity: 0, y: 80 }} animate={testimonialInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* testimonials */}
           <section className="max-w-screen-md mb-14  mx-auto text-center relative overflow-hidden p-6">
             <figure>
-              <svg
-                className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-600"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 18 14"
-              >
+              <svg className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 14">
                 <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z" />
               </svg>
               <blockquote>
@@ -485,11 +363,7 @@ export default function Home() {
                 </p>
               </blockquote>
               <figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
-                <img
-                  className="w-6 h-6 rounded-full"
-                  src={img}
-                  alt={`${name} profile picture`}
-                />
+                <img className="w-6 h-6 rounded-full" src={img} alt={`${name} profile picture`} />
                 <div className="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
                   <cite className="pe-3 font-medium text-gray-900 dark:text-white">
                     {name}
@@ -503,40 +377,18 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div
-          ref={newsletterRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={newsletterInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        >
+        <motion.div ref={newsletterRef} initial={{ opacity: 0, y: 80 }} animate={newsletterInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
           {/* newaletter */}
-          <section
-            className="bg-cover bg-center py-20 text-white"
-            style={{
-              backgroundImage: "url('/imgs/newsletter.jpg')", // غيّري المسار حسب مكان الصورة
-              backgroundColor: "rgba(175, 180, 240, 0.5)",
-              backgroundBlendMode: "multiply"
-            }}
-          >
+          <section className="bg-cover bg-center py-20 text-white" style={{ backgroundImage: "url('/imgs/newsletter.jpg')", backgroundColor: "rgba(175, 180, 240, 0.5)", backgroundBlendMode: "multiply" } // غيّري المسار حسب مكان الصورة
+            }>
             <div className="max-w-xl mx-auto text-center space-y-6 px-4">
-              <Input
-                type="email"
-                placeholder="Enter your Email Address"
-                className="bg-transparent border-b border-white rounded-none text-white placeholder-white text-center focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-              <MotionLink
-                to="/join-pharmacy"
-                whileTap="tap"
-                whileHover="hover"
-                variants={buttonVariants}
-                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-              >
+              <Input type="email" placeholder="Enter your Email Address" className="bg-transparent border-b border-white rounded-none text-white placeholder-white text-center focus-visible:ring-0 focus-visible:ring-offset-0" />
+              <MotionLink to="/join-pharmacy" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
                 Subscribe Now{" "}
               </MotionLink>
             </div>
           </section>
         </motion.div>
       </main>
-    </div>
-  );
+    </div>;
 }

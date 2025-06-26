@@ -164,12 +164,13 @@ export default function PharmaciesCard({pharmacistDetails}) {
           </div>
         )}
         <div className="pt-6 flex justify-end gap-2">
-          <Button 
-            className="px-5 py-2 rounded-md text-sm h-9 font-semibold"
-            variant="outline"
+          <Link
+            to={`/add-pharmacy/${pharmacy.id}`}
+            className="px-5 py-2 rounded-md text-sm h-9 font-semibold border border-gray-300 bg-white text-gray-900 hover:bg-gray-100 transition-colors flex items-center justify-center"
+            style={{ textDecoration: 'none' }}
           >
             Edit Pharmacy
-          </Button>
+          </Link>
           <Button 
             className="px-5 py-2 rounded-md text-sm h-9 font-semibold"
             variant="destructive"
@@ -201,7 +202,7 @@ export default function PharmaciesCard({pharmacistDetails}) {
             </span>
             My Pharmacies
           </span>
-          <Link to="/deal-form" className="bg-primary text-white px-5 py-2 rounded-md text-sm h-9 font-semibold">Add Pharmacy</Link>
+          <Link to="/add-pharmacy" className="bg-primary text-white px-5 py-2 rounded-md text-sm h-9 font-semibold">Add Pharmacy</Link>
         </div>
         <span className="text-xs text-muted-foreground mt-2 block">
           Note: At max 2 pharmacies can be added to each doctor. 

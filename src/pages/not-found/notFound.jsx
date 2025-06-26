@@ -30,31 +30,6 @@ export default function NotFound() {
     },
   };
 
-  const pillVariants = {
-    hidden: { 
-      opacity: 0, 
-      scale: 0.8,
-      rotate: -10 
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      rotate: 0,
-      transition: {
-        duration: 1,
-        ease: "easeOut",
-      },
-    },
-    hover: {
-      scale: 1.05,
-      rotate: [0, -5, 5, 0],
-      transition: {
-        duration: 0.6,
-        ease: "easeInOut",
-      },
-    },
-  };
-
   const floatingVariants = {
     animate: {
       y: [-10, 10, -10],
@@ -76,23 +51,17 @@ export default function NotFound() {
       >
         <div className="relative p-8 md:p-12">
           <div className="text-center">
-           
-
             {/* Main Illustration */}
-            <motion.div
-              variants={pillVariants}
-              whileHover="hover"
-              className="mb-8 flex justify-center"
-            >
+            <motion.div whileHover="hover" className="mb-8 flex justify-center">
               <motion.div
                 variants={floatingVariants}
                 animate="animate"
                 className="relative"
               >
                 <img
-                  src="/medical-pill-broken-svgrepo-com.svg"
+                  src="/404 Error Page not Found with people connecting a plug-cuate.svg"
                   alt="Broken Medical Pill"
-                  className="w-32 h-32 md:w-40 md:h-40 drop-shadow-lg"
+                  className="w-32 h-32 md:w-80 md:h-80 drop-shadow-lg"
                 />
               </motion.div>
             </motion.div>
@@ -102,10 +71,7 @@ export default function NotFound() {
               variants={itemVariants}
               className="text-4xl md:text-6xl font-extrabold text-gray-800 mb-4 leading-tight"
             >
-              Oops! This page is{" "}
-              <span className="text-primary">
-                out of stock
-              </span>
+              Oops! This <span className="text-primary"> shelf is empty!</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -114,7 +80,6 @@ export default function NotFound() {
               className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed"
             >
               The page you're looking for seems to have expired or been moved
-            
             </motion.p>
 
             {/* Action Buttons */}
@@ -122,7 +87,6 @@ export default function NotFound() {
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-            
               <Button
                 variant="outline"
                 onClick={() => navigate(-1)}

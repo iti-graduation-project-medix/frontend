@@ -18,6 +18,8 @@ import { UploadCloud, XCircle, Search } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "sonner";
+import { usePharmacies } from "@/store/usePharmcies";
+import { useAuth } from "@/store/useAuth";
 
 // Sample medicine data - in real app this would come from API
 const medicines = [
@@ -40,30 +42,12 @@ let dealSchema = Yup.object().shape({
   expiryDate: Yup.date()
     .required("Expiry date is required")
     .min(new Date(), "Expiry date must be in the future"),
-
   description: Yup.string()
     .required("Description is required")
     .min(10, "Description must be at least 10 characters")
     .max(500, "Description must be at most 500 characters"),
-  medicineImages: Yup.mixed()
-    .required("At least one medicine image is required")
-    .test("fileExists", "You must upload at least one file", (value) => {
-      return value && value.length > 0;
-    })
-    .test("fileCount", "Maximum 5 images allowed", (value) => {
-      if (!value || value.length === 0) return false;
-      return value.length <= 5;
-    })
-    .test(
-      "fileType",
-      "Only image files (jpg, jpeg, png) are allowed",
-      (value) => {
-        if (!value || value.length === 0) return false;
-        return value.every((file) =>
-          ["image/jpeg", "image/png", "image/jpg"].includes(file.type)
-        );
-      }
-    ),
+  pharmacyId: Yup.string().required("Pharmacy is required"),
+  boxStatus: Yup.string().required("Box status is required"),
   dealType: Yup.string().required("Deal type is required"),
 });
 
@@ -71,6 +55,14 @@ export function DealForm({ className, ...props }) {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filteredMedicines, setFilteredMedicines] = React.useState(medicines);
   const [isSelectOpen, setIsSelectOpen] = React.useState(false);
+  const { pharmacies, fetchPharmacies } = usePharmacies();
+  const { user, token } = useAuth();
+
+  React.useEffect(() => {
+    if (token && user) {
+      fetchPharmacies(token, user);
+    }
+  }, [token, user, fetchPharmacies]);
 
   // Filter medicines based on search term
   React.useEffect(() => {
@@ -87,7 +79,8 @@ export function DealForm({ className, ...props }) {
       expiryDate: null,
       marketPrice: "",
       description: "",
-      medicineImages: null,
+      pharmacyId: "",
+      boxStatus: "",
       dealType: "",
     },
     validationSchema: dealSchema,
@@ -109,28 +102,6 @@ export function DealForm({ className, ...props }) {
     },
     validateOnMount: true,
   });
-
-  // File input handlers for Formik
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const files = Array.from(e.target.files);
-
-      // Check if adding these files would exceed the 5 file limit
-      const currentFiles = formik.values.medicineImages || [];
-      const totalFiles = currentFiles.length + files.length;
-
-      if (totalFiles > 5) {
-        toast.error("Maximum 5 images allowed. Please select fewer files.");
-        return;
-      }
-
-      formik.setFieldValue("medicineImages", [...currentFiles, ...files]);
-    }
-  };
-
-  const handleFileClear = () => {
-    formik.setFieldValue("medicineImages", null);
-  };
 
   return (
     <div className={cn("w-full", className)} {...props}>
@@ -295,86 +266,67 @@ export function DealForm({ className, ...props }) {
               )}
             </div>
 
-            {/* Medicine Images Upload */}
-            <div className="space-y-2 col-span-2">
-              <Label
-                htmlFor="medicineImages"
-                className="text-gray-700 font-medium"
-              >
-                Upload Medicine Images <span className="text-red-500">*</span>
+            {/* Pharmacy Select */}
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label htmlFor="pharmacyId" className="text-gray-700 font-medium">
+                Pharmacy <span className="text-red-500">*</span>
               </Label>
-              <label
-                htmlFor="medicineImages"
-                className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-colors"
+              <Select
+                value={formik.values.pharmacyId}
+                onValueChange={(value) =>
+                  formik.setFieldValue("pharmacyId", value)
+                }
               >
-                {formik.values.medicineImages &&
-                formik.values.medicineImages.length > 0 ? (
-                  <div className="flex flex-wrap items-center justify-center gap-2 p-4">
-                    {formik.values.medicineImages.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center space-x-2 bg-gray-100 rounded px-2 py-1"
-                      >
-                        <span className="text-sm text-gray-700 truncate max-w-20">
-                          {file.name.slice(0, 20)}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const newFiles =
-                              formik.values.medicineImages.filter(
-                                (_, i) => i !== index
-                              );
-                            formik.setFieldValue(
-                              "medicineImages",
-                              newFiles.length > 0 ? newFiles : null
-                            );
-                          }}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          <XCircle size={16} />
-                        </button>
-                      </div>
+                <SelectTrigger className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm w-full ">
+                  <SelectValue
+                    placeholder={
+                      pharmacies && pharmacies.length > 0
+                        ? "Select pharmacy"
+                        : "No pharmacies found"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent className="max-h-80 w-[400px]">
+                  {pharmacies &&
+                    pharmacies.length > 0 &&
+                    pharmacies.map((pharmacy) => (
+                      <SelectItem key={pharmacy.id} value={pharmacy.id}>
+                        {pharmacy.name}
+                      </SelectItem>
                     ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    <UploadCloud className="w-10 h-10 text-gray-400" />
-                    <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">
-                        Click to upload images
-                      </span>
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      (Max 5 images, 5MB each)
-                    </p>
-                  </div>
-                )}
-                <Input
-                  id="medicineImages"
-                  name="medicineImages"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-              <div className="flex justify-between items-center text-xs text-gray-500">
-                <span>
-                  {formik.values.medicineImages
-                    ? formik.values.medicineImages.length
-                    : 0}
-                  /5 images uploaded
-                </span>
-                {formik.touched.medicineImages &&
-                  formik.errors.medicineImages && (
-                    <span className="text-red-500">
-                      {formik.errors.medicineImages}
-                    </span>
-                  )}
-              </div>
+                </SelectContent>
+              </Select>
+              {formik.touched.pharmacyId && formik.errors.pharmacyId && (
+                <div className="text-red-500 text-xs">
+                  {formik.errors.pharmacyId}
+                </div>
+              )}
+            </div>
+
+            {/* Box Status Select */}
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label htmlFor="boxStatus" className="text-gray-700 font-medium">
+                Medicine Box Status <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                value={formik.values.boxStatus}
+                onValueChange={(value) =>
+                  formik.setFieldValue("boxStatus", value)
+                }
+              >
+                <SelectTrigger className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm w-full ">
+                  <SelectValue placeholder="Select box status" />
+                </SelectTrigger>
+                <SelectContent className="max-h-80 w-[400px]">
+                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="damaged">Damaged</SelectItem>
+                </SelectContent>
+              </Select>
+              {formik.touched.boxStatus && formik.errors.boxStatus && (
+                <div className="text-red-500 text-xs">
+                  {formik.errors.boxStatus}
+                </div>
+              )}
             </div>
 
             {/* Deal Type */}

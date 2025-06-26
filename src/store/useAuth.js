@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { signIn } from '../api/auth/SignIn';
 import { resetPassword, confirmOtp, confirmPassword } from '../api/auth/ResetPassword';
+import { changePassword } from '../api/auth/ChangePassword';
 
 export const useAuth = create((set, get) => ({
   user: null,
@@ -81,6 +82,20 @@ export const useAuth = create((set, get) => ({
       return response;
     } catch (error) {
       set({ isLoading: false, error: error.message || 'Password confirmation failed' });
+      throw error;
+    }
+  },
+
+  // Change Password action
+  changePassword: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const token = get().token;
+      const response = await changePassword(data, token);
+      set({ isLoading: false, error: null });
+      return response;
+    } catch (error) {
+      set({ isLoading: false, error: error.message || 'Change password failed' });
       throw error;
     }
   },

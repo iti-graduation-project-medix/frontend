@@ -229,8 +229,11 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             My Pharmacies
           </span>
           <Link
-            to="/add-pharmacy"
-            className="bg-primary text-white px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-50 max-sm:m-auto"
+            to={safePharmacies.length >= 2 ? '#' : '/add-pharmacy'}
+            className={`bg-primary text-white px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-50 max-sm:m-auto ${safePharmacies.length >= 2 ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+            title={safePharmacies.length >= 2 ? 'You can only add up to 2 pharmacies.' : ''}
+            tabIndex={safePharmacies.length >= 2 ? -1 : 0}
+            aria-disabled={safePharmacies.length >= 2}
           >
             Add Pharmacy
           </Link>

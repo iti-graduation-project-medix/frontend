@@ -4,7 +4,7 @@ import {
   Card,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +12,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import { ArrowUpDown, Search } from "lucide-react";
 import DealCard from "../../components/DealCard";
@@ -28,7 +28,7 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 8,
     status: "Expired",
-    isNew: false,
+    isNew: false
   },
   {
     id: 2,
@@ -39,7 +39,7 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 4,
     status: "Expired",
-    isNew: false,
+    isNew: false
   },
   {
     id: 3,
@@ -50,7 +50,7 @@ const deals = [
     minPrice: "EGP90.00",
     offers: 6,
     status: "Active",
-    isNew: true,
+    isNew: true
   },
   {
     id: 4,
@@ -61,7 +61,7 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 1,
     status: "Closed",
-    isNew: false,
+    isNew: false
   },
   {
     id: 5,
@@ -72,7 +72,7 @@ const deals = [
     minPrice: "EGP60.00",
     offers: 1,
     status: "Active",
-    isNew: false,
+    isNew: false
   },
   {
     id: 6,
@@ -83,8 +83,8 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 2,
     status: "Active",
-    isNew: false,
-  },
+    isNew: false
+  }
 ];
 
 export default function Deals() {
@@ -92,7 +92,7 @@ export default function Deals() {
   const [status, setStatus] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
-  let filteredDeals = deals.filter((deal) => {
+  let filteredDeals = deals.filter(deal => {
     return (
       deal.name.toLowerCase().includes(searchDeal.toLowerCase()) &&
       deal.status.toLowerCase().includes(status.toLowerCase())
@@ -109,10 +109,10 @@ export default function Deals() {
     );
   }
 
-  const handleSearch = (e) => {
+  const handleSearch = e => {
     setSearchDeal(e.target.value);
   };
-  const handleStatuses = (val) => {
+  const handleStatuses = val => {
     val === "all" ? setStatus("") : setStatus(val);
   };
   const handleExpiry = () => {
@@ -191,24 +191,24 @@ export default function Deals() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div className="w-full flex items-center gap-2">
                 <div className="relative w-full md:w-1/2">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  onChange={handleSearch}
-                  placeholder="Search deal..."
-                  className="pl-10"
-                />
-              </div>
-              <Select onValueChange={handleStatuses}>
-                <SelectTrigger className="w-full md:w-auto">
-                  <SelectValue placeholder="All Statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="expired">Expired</SelectItem>
-                  <SelectItem value="closed">Closed</SelectItem>
-                </SelectContent>
-              </Select>
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    onChange={handleSearch}
+                    placeholder="Search deal..."
+                    className="pl-10"
+                  />
+                </div>
+                <Select onValueChange={handleStatuses}>
+                  <SelectTrigger className="w-full md:w-auto">
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="expired">Expired</SelectItem>
+                    <SelectItem value="closed">Closed</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col md:flex-row items-center gap-2">
                 <Button
@@ -232,9 +232,9 @@ export default function Deals() {
           </Card>
           {/* Deals Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDeals.map((deal, index) => (
+            {filteredDeals.map((deal, index) =>
               <DealCard key={index} deal={deal} />
-            ))}
+            )}
           </div>
         </div>
       </section>

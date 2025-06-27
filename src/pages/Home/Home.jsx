@@ -60,9 +60,9 @@ export default function Home() {
               <MotionLink to="/join-pharmacy" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 w-auto">
                 Join as Pharmacy
               </MotionLink>
-              <MotionLink to="/join-company" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-6 py-2 w-auto">
+              {/* <MotionLink to="/join-company" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-6 py-2 w-auto">
                 Join as Company
-              </MotionLink>
+              </MotionLink> */}
             </div>
           </div>
         </header>

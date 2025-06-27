@@ -93,7 +93,7 @@ export default function Navbar() {
           href="https://flowbite.com/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img src="DawabackNewLogo.png" className="h-10" alt="Flowbite Logo" />
+          <img src="/DawabackNewLogo.png" className="h-10" alt="Flowbite Logo" />
            <div className="flex flex-col mb-2">
             <span className="font-bold  text-2xl  whitespace-nowrap text-primary dark:text-white">
             Dawaback

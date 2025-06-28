@@ -116,7 +116,17 @@ export default function AddPharmacy() {
   const inputRef = useRef(null);
 
   const isAddMode = !id;
-  const hasMaxPharmacies = isAddMode && Array.isArray(pharmacies) && pharmacies.length >= 2;
+  const pharmaciesLoaded = Array.isArray(pharmacies);
+
+  if (!pharmaciesLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <span>Loading...</span>
+      </div>
+    );
+  }
+
+  const hasMaxPharmacies = isAddMode && pharmacies.length >= 2;
 
   if (hasMaxPharmacies) {
     return (
@@ -140,7 +150,7 @@ export default function AddPharmacy() {
 
   // Find the pharmacy if editing
   useEffect(() => {
-    if (id && Array.isArray(pharmacies)) {
+    if (id && pharmaciesLoaded) {
       const pharm = pharmacies.find((p) => String(p.id) === String(id));
       if (pharm) {
         setInitialValues({
@@ -162,7 +172,7 @@ export default function AddPharmacy() {
         setExistingImages(Array.isArray(pharm.imagesUrls) ? pharm.imagesUrls : []);
       }
     }
-  }, [id, pharmacies]);
+  }, [id, pharmacies, pharmaciesLoaded]);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
@@ -208,7 +218,7 @@ export default function AddPharmacy() {
           setMarker(null);
         }
         setTimeout(() => {
-          navigate("/profile");
+          navigate("/settings");
         }, 1200);
       } catch (err) {
         setSubmitError(

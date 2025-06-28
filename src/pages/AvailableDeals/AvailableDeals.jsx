@@ -60,9 +60,11 @@ function MedicineDealCard({ deal }) {
           <span className="flex items-center gap-1"><Calendar size={16}/> Exp: {deal.expires}</span>
           {deal.soon && <span className="ml-2 text-xs text-orange-500 font-semibold">Soon</span>}
         </div>
-        <div className="mb-2">
-          <span className="text-blue-600 text-sm font-semibold">Min Price: {deal.minPrice}</span>
-        </div>
+        {deal.type === 'Sell' && (
+          <div className="mb-2">
+            <span className="text-blue-600 text-sm font-semibold">Min Price: {deal.minPrice}</span>
+          </div>
+        )}
         <div className="mb-3">
           <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100 text-gray-700 font-medium">
             {deal.type === 'Sell' ? 'Sell' : 'Exchange'}

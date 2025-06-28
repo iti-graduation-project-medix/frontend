@@ -14,24 +14,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { UploadCloud, XCircle, Search } from "lucide-react";
+import { UploadCloud, XCircle, Search, Loader2 } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "sonner";
 import { usePharmacies } from "@/store/usePharmcies";
 import { useAuth } from "@/store/useAuth";
-
-// Sample medicine data - in real app this would come from API
-const medicines = [
-  { id: 1, name: "Paracetamol 500mg", category: "Pain Relief" },
-  { id: 2, name: "Ibuprofen 400mg", category: "Pain Relief" },
-  { id: 3, name: "Amoxicillin 250mg", category: "Antibiotics" },
-  { id: 4, name: "Omeprazole 20mg", category: "Gastric" },
-  { id: 5, name: "Metformin 500mg", category: "Diabetes" },
-  { id: 6, name: "Amlodipine 5mg", category: "Cardiovascular" },
-  { id: 7, name: "Cetirizine 10mg", category: "Allergy" },
-  { id: 8, name: "Vitamin D3 1000IU", category: "Vitamins" },
-];
+import { useDeals } from "@/store/useDeals";
+import { fetchDrugs } from "@/api/drugs";
+import { useDebounce } from "@/hooks/useDebounce";
 
 let dealSchema = Yup.object().shape({
   medicineName: Yup.string().required("Medicine name is required"),
@@ -49,14 +40,93 @@ let dealSchema = Yup.object().shape({
   pharmacyId: Yup.string().required("Pharmacy is required"),
   boxStatus: Yup.string().required("Box status is required"),
   dealType: Yup.string().required("Deal type is required"),
+  minPrice: Yup.number()
+    .required("Minimum price is required")
+    .positive("Minimum price must be positive")
+    .min(1, "Minimum price must be at least 1"),
+  medicineType: Yup.string().required("Medicine type is required"),
 });
 
 export function DealForm({ className, ...props }) {
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [filteredMedicines, setFilteredMedicines] = React.useState(medicines);
+  const [drugs, setDrugs] = React.useState([]);
+  const [filteredDrugs, setFilteredDrugs] = React.useState([]);
+  const [isLoadingDrugs, setIsLoadingDrugs] = React.useState(false);
   const [isSelectOpen, setIsSelectOpen] = React.useState(false);
   const { pharmacies, fetchPharmacies } = usePharmacies();
   const { user, token } = useAuth();
+  const { createDeal, isSubmitting, error, clearError } = useDeals();
+
+  // Memoized search function to prevent infinite re-renders
+  const searchDrugs = React.useCallback(
+    async (searchValue) => {
+      if (!token) {
+        console.log("No token available for search");
+        return;
+      }
+
+      try {
+        console.log("Searching for:", searchValue);
+        setIsLoadingDrugs(true);
+        const response = await fetchDrugs(token, {
+          search: searchValue,
+          size: 20,
+        });
+        console.log("Search response:", response);
+        const fetchedDrugs = response.data?.drugs || [];
+        console.log("Search results:", fetchedDrugs);
+        setFilteredDrugs(fetchedDrugs);
+      } catch (error) {
+        console.error("Error searching drugs:", error);
+        setFilteredDrugs([]);
+      } finally {
+        setIsLoadingDrugs(false);
+      }
+    },
+    [token]
+  );
+
+  // Debounced search function
+  const debouncedSearch = useDebounce(searchDrugs, 300);
+
+  // Load initial drugs when component mounts
+  React.useEffect(() => {
+    const loadInitialDrugs = async () => {
+      if (!token) {
+        console.log("No token available, skipping initial drug load");
+        return;
+      }
+
+      try {
+        console.log("Loading initial drugs...");
+        setIsLoadingDrugs(true);
+        const response = await fetchDrugs(token, { size: 20 });
+        console.log("Initial drugs response:", response);
+        const fetchedDrugs = response.data?.drugs || [];
+        console.log("Fetched drugs:", fetchedDrugs);
+        setDrugs(fetchedDrugs);
+        setFilteredDrugs(fetchedDrugs);
+      } catch (error) {
+        console.error("Error loading initial drugs:", error);
+        setDrugs([]);
+        setFilteredDrugs([]);
+      } finally {
+        setIsLoadingDrugs(false);
+      }
+    };
+
+    loadInitialDrugs();
+  }, [token]);
+
+  // Handle search term changes
+  React.useEffect(() => {
+    if (searchTerm.trim()) {
+      debouncedSearch(searchTerm);
+    } else {
+      // When search is cleared, show all drugs
+      setFilteredDrugs(drugs);
+    }
+  }, [searchTerm, drugs, debouncedSearch]);
 
   React.useEffect(() => {
     if (token && user) {
@@ -64,31 +134,33 @@ export function DealForm({ className, ...props }) {
     }
   }, [token, user, fetchPharmacies]);
 
-  // Filter medicines based on search term
-  React.useEffect(() => {
-    const filtered = medicines.filter((medicine) =>
-      medicine.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredMedicines(filtered);
-  }, [searchTerm]);
+  // Handle form submission
+  const handleSubmit = async (values) => {
+    try {
+      // Clear any previous errors
+      clearError();
 
-  const formik = useFormik({
-    initialValues: {
-      medicineName: "",
-      quantity: "",
-      expiryDate: null,
-      marketPrice: "",
-      description: "",
-      pharmacyId: "",
-      boxStatus: "",
-      dealType: "",
-    },
-    validationSchema: dealSchema,
-    onSubmit: (values) => {
-      console.log(values);
+      // Map form values to backend DTO structure
+      const dealData = {
+        medicineName: values.medicineName,
+        quantity: parseInt(values.quantity),
+        expiryDate: values.expiryDate,
+        price: parseFloat(values.minPrice),
+        description: values.description,
+        pharmacyId: values.pharmacyId,
+        boxStatus: values.boxStatus,
+        dealType: values.dealType,
+        dosageForm: values.medicineType,
+      };
+
+      console.log("Submitting deal data:", dealData);
+
+      // Call the API to create the deal
+      const response = await createDeal(dealData);
+
+      // Show success message
       toast.success("Deal posted successfully!", {
-        description:
-          "Your medicine deal has been posted and is now visible to other users.",
+        description: "Your medicine deal has been posted and is now visible to other users.",
         duration: 5000,
         position: "top-center",
         style: {
@@ -99,7 +171,47 @@ export function DealForm({ className, ...props }) {
         className: "text-white",
         descriptionClassName: "text-white/90 font-medium",
       });
+
+      // Reset form
+      formik.resetForm();
+      
+      return response;
+    } catch (error) {
+      console.error("Error creating deal:", error);
+      
+      // Show error message
+      toast.error("Failed to post deal", {
+        description: error.message || "Something went wrong. Please try again.",
+        duration: 5000,
+        position: "top-center",
+        style: {
+          background: "#ef4444",
+          color: "white",
+          border: "1px solid #dc2626",
+        },
+        className: "text-white",
+        descriptionClassName: "text-white/90 font-medium",
+      });
+      
+      throw error;
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      medicineName: "",
+      quantity: "",
+      expiryDate: null,
+      marketPrice: "",
+      minPrice: "",
+      medicineType: "",
+      description: "",
+      pharmacyId: "",
+      boxStatus: "",
+      dealType: "",
     },
+    validationSchema: dealSchema,
+    onSubmit: handleSubmit,
     validateOnMount: true,
   });
 
@@ -157,16 +269,36 @@ export function DealForm({ className, ...props }) {
                     </div>
                   </div>
                   <div className="max-h-60 overflow-y-auto">
-                    {filteredMedicines.map((medicine) => (
-                      <SelectItem key={medicine.id} value={medicine.name}>
-                        <div>
-                          <div className="font-medium">{medicine.name}</div>
-                          <div className="text-xs text-gray-500">
-                            {medicine.category}
+                    {isLoadingDrugs ? (
+                      <div className="flex items-center justify-center py-4">
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        <span className="text-sm text-gray-500">
+                          {searchTerm.trim()
+                            ? "Searching..."
+                            : "Loading drugs..."}
+                        </span>
+                      </div>
+                    ) : filteredDrugs.length > 0 ? (
+                      filteredDrugs.map((drug) => (
+                        <SelectItem key={drug.id} value={drug.drugName}>
+                          <div>
+                            <div className="font-medium">{drug.drugName}</div>
                           </div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                        </SelectItem>
+                      ))
+                    ) : searchTerm.trim() ? (
+                      <div className="py-4 text-center text-sm text-gray-500">
+                        No drugs found for "{searchTerm}"
+                      </div>
+                    ) : drugs.length === 0 ? (
+                      <div className="py-4 text-center text-sm text-gray-500">
+                        No drugs available
+                      </div>
+                    ) : (
+                      <div className="py-4 text-center text-sm text-gray-500">
+                        Start typing to search for drugs
+                      </div>
+                    )}
                   </div>
                 </SelectContent>
               </Select>
@@ -199,6 +331,46 @@ export function DealForm({ className, ...props }) {
               )}
             </div>
 
+            {/* Medicine Type */}
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label
+                htmlFor="medicineType"
+                className="text-gray-700 font-medium"
+              >
+                Medicine Type <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                value={formik.values.medicineType}
+                onValueChange={(value) =>
+                  formik.setFieldValue("medicineType", value)
+                }
+              >
+                <SelectTrigger className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm w-full">
+                  <SelectValue placeholder="Select medicine type" />
+                </SelectTrigger>
+                <SelectContent className="max-h-80 w-[400px]">
+                  <SelectItem value="tablet">Tablet</SelectItem>
+                  <SelectItem value="capsule">Capsule</SelectItem>
+                  <SelectItem value="syrup">Syrup</SelectItem>
+                  <SelectItem value="injection">Injection</SelectItem>
+                  <SelectItem value="ointment">Ointment</SelectItem>
+                  <SelectItem value="cream">Cream</SelectItem>
+                  <SelectItem value="gel">Gel</SelectItem>
+                  <SelectItem value="spray">Spray</SelectItem>
+                  <SelectItem value="drops">Drops</SelectItem>
+                  <SelectItem value="suppository">Suppository</SelectItem>
+                  <SelectItem value="powder">Powder</SelectItem>
+                  <SelectItem value="inhaler">Inhaler</SelectItem>
+                  <SelectItem value="patch">Patch</SelectItem>
+                </SelectContent>
+              </Select>
+              {formik.touched.medicineType && formik.errors.medicineType && (
+                <div className="text-red-500 text-xs">
+                  {formik.errors.medicineType}
+                </div>
+              )}
+            </div>
+
             {/* Expiry Date */}
             <div className="space-y-2 col-span-2 md:col-span-1">
               <Label className="text-gray-700 font-medium">
@@ -223,7 +395,8 @@ export function DealForm({ className, ...props }) {
                 htmlFor="marketPrice"
                 className="text-gray-700 font-medium"
               >
-                Market Price (EGP) <span className="text-red-500">*</span>
+                Market Price (EGP){" "}
+                <span className="text-gray-400 text-xs">(Info only)</span>
               </Label>
               <Input
                 id="marketPrice"
@@ -236,6 +409,30 @@ export function DealForm({ className, ...props }) {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
+            </div>
+
+            {/* Minimum Price */}
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <Label htmlFor="minPrice" className="text-gray-700 font-medium">
+                Minimum Price (EGP) <span className="text-red-500">*</span>
+              </Label>
+              <Input
+                id="minPrice"
+                name="minPrice"
+                type="number"
+                step="0.01"
+                min="0.01"
+                placeholder="Enter minimum price"
+                className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                value={formik.values.minPrice}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.minPrice && formik.errors.minPrice && (
+                <div className="text-red-500 text-xs">
+                  {formik.errors.minPrice}
+                </div>
+              )}
             </div>
 
             {/* Description */}
@@ -318,7 +515,7 @@ export function DealForm({ className, ...props }) {
                   <SelectValue placeholder="Select box status" />
                 </SelectTrigger>
                 <SelectContent className="max-h-80 w-[400px]">
-                  <SelectItem value="new">New</SelectItem>
+                  <SelectItem value="good">Good</SelectItem>
                   <SelectItem value="damaged">Damaged</SelectItem>
                 </SelectContent>
               </Select>
@@ -369,11 +566,18 @@ export function DealForm({ className, ...props }) {
               <Button
                 type="submit"
                 className={`w-full bg-primary hover:bg-primary-hover cursor-pointer text-white py-5 mb-10 text-base font-medium rounded-lg ${
-                  !formik.isValid ? "opacity-50 cursor-not-allowed" : ""
+                  !formik.isValid || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-                disabled={!formik.isValid}
+                disabled={!formik.isValid || isSubmitting}
               >
-                Post Deal
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Posting Deal...
+                  </>
+                ) : (
+                  "Post Deal"
+                )}
               </Button>
             </div>
           </form>

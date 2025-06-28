@@ -4,7 +4,7 @@ import {
   Card,
   CardDescription,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,12 +12,13 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { ArrowUpDown, Search } from "lucide-react";
 import DealCard from "../../components/DealCard";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDeals } from "../../store/useDeals";
 
 const deals = [
   {
@@ -29,7 +30,7 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 8,
     status: "Expired",
-    isNew: false
+    isNew: false,
   },
   {
     id: 2,
@@ -40,7 +41,7 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 4,
     status: "Expired",
-    isNew: false
+    isNew: false,
   },
   {
     id: 3,
@@ -51,7 +52,7 @@ const deals = [
     minPrice: "EGP90.00",
     offers: 6,
     status: "Active",
-    isNew: true
+    isNew: true,
   },
   {
     id: 4,
@@ -62,7 +63,7 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 1,
     status: "Closed",
-    isNew: false
+    isNew: false,
   },
   {
     id: 5,
@@ -73,7 +74,7 @@ const deals = [
     minPrice: "EGP60.00",
     offers: 1,
     status: "Active",
-    isNew: false
+    isNew: false,
   },
   {
     id: 6,
@@ -84,8 +85,8 @@ const deals = [
     minPrice: "EGP200.00",
     offers: 2,
     status: "Active",
-    isNew: false
-  }
+    isNew: false,
+  },
 ];
 
 export default function Deals() {
@@ -94,7 +95,7 @@ export default function Deals() {
   const [sortOrder, setSortOrder] = useState("asc");
   const [dealsData, setDealsData] = useState(deals);
 
-  let filteredDeals = dealsData.filter(deal => {
+  let filteredDeals = dealsData.filter((deal) => {
     return (
       deal.name.toLowerCase().includes(searchDeal.toLowerCase()) &&
       deal.status.toLowerCase().includes(status.toLowerCase())
@@ -111,10 +112,10 @@ export default function Deals() {
     );
   }
 
-  const handleSearch = e => {
+  const handleSearch = (e) => {
     setSearchDeal(e.target.value);
   };
-  const handleStatuses = val => {
+  const handleStatuses = (val) => {
     val === "all" ? setStatus("") : setStatus(val);
   };
   const handleExpiry = () => {
@@ -128,27 +129,36 @@ export default function Deals() {
   };
 
   const handleCloseDeal = (dealId) => {
-    setDealsData(prevDeals => 
-      prevDeals.map(deal => 
-        deal.id === dealId 
-          ? { ...deal, status: "Closed" }
-          : deal
+    setDealsData((prevDeals) =>
+      prevDeals.map((deal) =>
+        deal.id === dealId ? { ...deal, status: "Closed" } : deal
       )
     );
   };
 
   // Calculate stats dynamically
-  const activeDealsCount = dealsData.filter(deal => deal.status === "Active").length;
-  const closedDealsCount = dealsData.filter(deal => deal.status === "Closed").length;
-  const expiredDealsCount = dealsData.filter(deal => deal.status === "Expired").length;
+  const activeDealsCount = dealsData.filter(
+    (deal) => deal.status === "Active"
+  ).length;
+  const closedDealsCount = dealsData.filter(
+    (deal) => deal.status === "Closed"
+  ).length;
+  const expiredDealsCount = dealsData.filter(
+    (deal) => deal.status === "Expired"
+  ).length;
+  let { deals: lol } = useDeals();
+  console.log(lol);
 
   return (
     <div className="min-h-screen">
       <section className="py-10 px-4 text-foreground">
         <div className="max-w-6xl mx-auto flex flex-row justify-between items-center">
           <h1 className="text-4xl font-bold">My Deals</h1>
-          <Link to={'/deals/new'}>
-            <Button><PlusCircle className="h-4 w-4" />Create New Deal</Button>
+          <Link to={"/deals/new"}>
+            <Button>
+              <PlusCircle className="h-4 w-4" />
+              Create New Deal
+            </Button>
           </Link>
         </div>
       </section>
@@ -249,9 +259,9 @@ export default function Deals() {
           </Card>
           {/* Deals Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDeals.map((deal, index) =>
+            {filteredDeals.map((deal, index) => (
               <DealCard key={index} deal={deal} onClose={handleCloseDeal} />
-            )}
+            ))}
           </div>
         </div>
       </section>

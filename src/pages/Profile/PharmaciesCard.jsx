@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import Accordion from "@/components/ui/Accordion";
 import { FaClinicMedical } from "react-icons/fa";
 import { RiCapsuleLine } from "react-icons/ri";
-import { useAuth } from "../../../store/useAuth";
-import { usePharmacies } from "../../../store/usePharmcies";
+import { useAuth } from "../../store/useAuth";
+import { usePharmacies } from "../../store/usePharmcies";
 import ConfirmDialog from "./ConfirmDialog";
 import { Link } from "react-router-dom";
 

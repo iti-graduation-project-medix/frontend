@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const DealCard = ({ deal }) => {
+const DealCard = ({ deal, onClose }) => {
   const getStatusPill = (status) => {
     switch (status) {
       case "Active":
@@ -98,7 +98,11 @@ const DealCard = ({ deal }) => {
                   <Pencil className="mr-2 h-4 w-4" /> Edit
                 </Link>
               </Button>
-              <Button variant="destructive" size="sm">
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={() => onClose && onClose(deal.id)}
+              >
                 <XCircle className="mr-2 h-4 w-4" /> Close
               </Button>
             </div>

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { PlusCircle, BarChart3, Activity, AlertTriangle } from "lucide-react";
+import { PlusCircle, CheckCircle, TrendingUp, Clock } from "lucide-react";
 import {
   Card,
   CardDescription,
@@ -17,6 +17,7 @@ import {
 import { ArrowUpDown, Search } from "lucide-react";
 import DealCard from "../../components/DealCard";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const deals = [
   {
@@ -91,8 +92,9 @@ export default function Deals() {
   const [searchDeal, setSearchDeal] = useState("");
   const [status, setStatus] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [dealsData, setDealsData] = useState(deals);
 
-  let filteredDeals = deals.filter(deal => {
+  let filteredDeals = dealsData.filter(deal => {
     return (
       deal.name.toLowerCase().includes(searchDeal.toLowerCase()) &&
       deal.status.toLowerCase().includes(status.toLowerCase())
@@ -125,46 +127,61 @@ export default function Deals() {
     setSortOrder("asc");
   };
 
+  const handleCloseDeal = (dealId) => {
+    setDealsData(prevDeals => 
+      prevDeals.map(deal => 
+        deal.id === dealId 
+          ? { ...deal, status: "Closed" }
+          : deal
+      )
+    );
+  };
+
+  // Calculate stats dynamically
+  const activeDealsCount = dealsData.filter(deal => deal.status === "Active").length;
+  const closedDealsCount = dealsData.filter(deal => deal.status === "Closed").length;
+  const expiredDealsCount = dealsData.filter(deal => deal.status === "Expired").length;
+
   return (
     <div className="min-h-screen">
       <section className="py-10 px-4 text-foreground">
         <div className="max-w-6xl mx-auto flex flex-row justify-between items-center">
           <h1 className="text-4xl font-bold">My Deals</h1>
-          <Button>
-            <PlusCircle className="mr-2 h-4 w-4" /> Create New Deal
-          </Button>
+          <Link to={'/deals/new'}>
+            <Button><PlusCircle className="h-4 w-4" />Create New Deal</Button>
+          </Link>
         </div>
       </section>
       <section className="py-5 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Stats Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-            <Card className="py-4 border-l-8 border-blue-500 bg-gradient-to-br from-blue-50 to-white shadow-lg">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <BarChart3 className="w-8 h-8 text-blue-500" />
-                </div>
-                <div>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Total Deals
-                  </CardTitle>
-                  <CardDescription className="text-3xl font-bold">
-                    12
-                  </CardDescription>
-                </div>
-              </CardHeader>
-            </Card>
             <Card className="py-4 border-l-8 border-green-500 bg-gradient-to-br from-green-50 to-white shadow-lg">
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="bg-green-100 p-3 rounded-full">
-                  <Activity className="w-8 h-8 text-green-500" />
+                  <TrendingUp className="w-8 h-8 text-green-500" />
                 </div>
                 <div>
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     Active Deals
                   </CardTitle>
                   <CardDescription className="text-3xl font-bold">
-                    8
+                    {activeDealsCount}
+                  </CardDescription>
+                </div>
+              </CardHeader>
+            </Card>
+            <Card className="py-4 border-l-8 border-blue-500 bg-gradient-to-br from-blue-50 to-white shadow-lg">
+              <CardHeader className="flex flex-row items-center gap-4">
+                <div className="bg-blue-100 p-3 rounded-full">
+                  <CheckCircle className="w-8 h-8 text-blue-500" />
+                </div>
+                <div>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    Closed Deals
+                  </CardTitle>
+                  <CardDescription className="text-3xl font-bold">
+                    {closedDealsCount}
                   </CardDescription>
                 </div>
               </CardHeader>
@@ -172,14 +189,14 @@ export default function Deals() {
             <Card className="py-4 border-l-8 border-red-500 bg-gradient-to-br from-red-50 to-white shadow-lg">
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="bg-red-100 p-3 rounded-full">
-                  <AlertTriangle className="w-8 h-8 text-red-500" />
+                  <Clock className="w-8 h-8 text-red-500" />
                 </div>
                 <div>
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     Expired Deals
                   </CardTitle>
                   <CardDescription className="text-3xl font-bold">
-                    2
+                    {expiredDealsCount}
                   </CardDescription>
                 </div>
               </CardHeader>
@@ -233,7 +250,7 @@ export default function Deals() {
           {/* Deals Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredDeals.map((deal, index) =>
-              <DealCard key={index} deal={deal} />
+              <DealCard key={index} deal={deal} onClose={handleCloseDeal} />
             )}
           </div>
         </div>

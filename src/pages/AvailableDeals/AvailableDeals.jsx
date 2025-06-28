@@ -3,7 +3,9 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Package } from 'lucide-react';
+import { Calendar, Package, Tag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
 
 const mockDeals = [
   {
@@ -15,6 +17,8 @@ const mockDeals = [
     minPrice: 'EGP18.75',
     description: 'Bulk sale of high-quality Amoxicillin.',
     pharmacy: 'City Pharmacy Central',
+    location: 'Cairo',
+    status: 'active',
     verified: true,
     pharmacyAvatar: '/public/avatars/client1.webp',
   },
@@ -27,6 +31,8 @@ const mockDeals = [
     minPrice: 'EGP9.50',
     description: 'Excess stock of Lisinopril.',
     pharmacy: 'Health Hub Dispensary',
+    location: 'Alexandria',
+    status: 'expired',
     verified: true,
     pharmacyAvatar: '/public/avatars/client2.webp',
     soon: true,
@@ -40,47 +46,125 @@ const mockDeals = [
     minPrice: 'EGP0.00',
     description: 'Looking to exchange for Atorvastatin.',
     pharmacy: 'Village Drug Store',
+    location: 'Giza',
+    status: 'closed',
     verified: false,
     pharmacyAvatar: '/public/avatars/client3.webp',
+  },
+  {
+    id: 4,
+    name: 'Ibuprofen 400mg Tablets',
+    type: 'Both',
+    quantity: 300,
+    expires: '12/31/2024',
+    minPrice: 'EGP12.00',
+    description: 'Available for sale or exchange with other pain medications.',
+    pharmacy: 'Community Pharmacy',
+    location: 'Cairo',
+    status: 'active',
+    verified: true,
+    pharmacyAvatar: '/public/avatars/client4.webp',
   },
 ];
 
 function MedicineDealCard({ deal }) {
+    const navigate = useNavigate()
+
+  const handleViewDetails = (dealId) => {
+    navigate(`/all-deals/${dealId}`);
+  };
+
   return (
-    <div className="bg-white rounded-xl border shadow flex flex-col h-full">
-      <div className="p-5 flex-1 flex flex-col">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="font-bold text-lg text-gray-900">{deal.name}</h2>
-          <Badge className={deal.type === 'Sell' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}>
-            {deal.type}
-          </Badge>
-        </div>
-        <div className="flex items-center text-gray-500 text-sm gap-4 mb-2">
-          <span className="flex items-center gap-1"><Package size={16}/> Qty: {deal.quantity}</span>
-          <span className="flex items-center gap-1"><Calendar size={16}/> Exp: {deal.expires}</span>
-          {deal.soon && <span className="ml-2 text-xs text-orange-500 font-semibold">Soon</span>}
-        </div>
-        {deal.type === 'Sell' && (
-          <div className="mb-2">
-            <span className="text-blue-600 text-sm font-semibold">Min Price: {deal.minPrice}</span>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group">
+      <div className="p-6 flex-1 flex flex-col">
+        {/* Header with badge */}
+        <div className="flex items-start justify-between mb-4">
+          <h2 className="font-bold text-lg text-gray-900 leading-tight pr-2">{deal.name}</h2>
+          <div className="flex flex-col gap-2 items-end">
+            <Badge className={`${
+              deal.type === 'Sell' 
+                ? 'bg-blue-50 text-blue-700 border-blue-200' 
+                : deal.type === 'Exchange' 
+                ? 'bg-green-50 text-green-700 border-green-200' 
+                : 'bg-yellow-50 text-yellow-700 border-yellow-200'
+            } border font-medium`}>
+              {deal.type}
+            </Badge>
+            <Badge className={`${
+              deal.status === 'active' 
+                ? 'bg-green-50 text-green-700 border-green-200' 
+                : deal.status === 'closed' 
+                ? 'bg-red-50 text-red-700 border-red-200' 
+                : 'bg-orange-50 text-orange-700 border-orange-200'
+            } border font-medium text-xs`}>
+              {deal.status}
+            </Badge>
           </div>
-        )}
-        <div className="mb-3">
-          <span className="inline-block px-2 py-1 text-xs rounded bg-gray-100 text-gray-700 font-medium">
-            {deal.type === 'Sell' ? 'Sell' : 'Exchange'}
-          </span>
         </div>
-        <div className="text-gray-700 text-sm mb-4 flex-1">
+
+        {/* Deal info with icons */}
+        <div className="space-y-3 mb-4">
+          <div className="flex items-center text-gray-600 text-sm">
+            <Package size={16} className="mr-2 text-gray-400" />
+            <span className="font-medium">Quantity:</span>
+            <span className="ml-1 text-gray-900">{deal.quantity}</span>
+          </div>
+          <div className="flex items-center text-gray-600 text-sm">
+            <Calendar size={16} className="mr-2 text-gray-400" />
+            <span className="font-medium">Expires:</span>
+            <span className="ml-1 text-gray-900">{deal.expires}</span>
+            {deal.soon && (
+              <span className="ml-2 px-2 py-0.5 text-xs bg-orange-100 text-orange-700 rounded-full font-medium">
+                Soon
+              </span>
+            )}
+          </div>
+          {(deal.type === 'Sell' || deal.type === 'Both') && (
+            <div className="flex items-center text-gray-600 text-sm">
+              <Tag size={16} className="mr-2 text-gray-400" />
+              <span className="font-medium">Price:</span>
+              <span className="ml-1 text-gray-900 font-semibold">{deal.minPrice}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Description */}
+        <div className="text-gray-700 text-sm mb-4 flex-1 leading-relaxed">
           {deal.description}
         </div>
-        <div className="flex items-center gap-2 mt-auto">
-          <img src={deal.pharmacyAvatar} alt="avatar" className="w-7 h-7 rounded-full border" />
-          <span className="text-sm font-medium text-gray-900">{deal.pharmacy}</span>
-          {deal.verified && <span className="ml-1 text-xs text-green-600 font-semibold">Verified</span>}
+
+        {/* Pharmacy info */}
+        <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+          <div className="relative">
+            <img 
+              src={deal.pharmacyAvatar} 
+              alt="avatar" 
+              className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover" 
+            />
+            {deal.verified && (
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div className="flex-1">
+            <span className="text-sm font-medium text-gray-900 block">{deal.pharmacy}</span>
+            <span className="text-xs text-gray-500">{deal.location}</span>
+          </div>
         </div>
       </div>
-      <div className="p-4 pt-0">
-        <Button className="w-full" variant="outline">View Details</Button>
+
+      {/* Action button */}
+      <div className="p-6 pt-0">
+        <Button 
+          className="w-full transition-colors duration-200" 
+          variant="outline"
+          onClick={() => handleViewDetails(deal.id)}
+        >
+          View Details
+        </Button>
       </div>
     </div>
   );
@@ -91,10 +175,13 @@ export default function AvailableDeals() {
   const [type, setType] = useState('');
   const [location, setLocation] = useState('');
   const [company, setCompany] = useState('');
+  const [status, setStatus] = useState('');
 
   const filteredDeals = mockDeals.filter(deal =>
     deal.name.toLowerCase().includes(search.toLowerCase()) &&
-    (type ? deal.type === type : true)
+    (type && type !== 'all' ? deal.type === type : true) &&
+    (location && location !== 'all' ? deal.location === location : true) &&
+    (status && status !== 'all' ? deal.status === status : true)
   );
 
   return (
@@ -112,8 +199,10 @@ export default function AvailableDeals() {
             <SelectValue placeholder="Type" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">All Types</SelectItem>
             <SelectItem value="Sell">Sell</SelectItem>
             <SelectItem value="Exchange">Exchange</SelectItem>
+            <SelectItem value="Both">Both</SelectItem>
           </SelectContent>
         </Select>
         <Select value={location} onValueChange={setLocation}>
@@ -121,8 +210,10 @@ export default function AvailableDeals() {
             <SelectValue placeholder="Location" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">All Locations</SelectItem>
             <SelectItem value="Cairo">Cairo</SelectItem>
             <SelectItem value="Alexandria">Alexandria</SelectItem>
+            <SelectItem value="Giza">Giza</SelectItem>
           </SelectContent>
         </Select>
         <Select value={company} onValueChange={setCompany}>
@@ -134,7 +225,18 @@ export default function AvailableDeals() {
             <SelectItem value="Novartis">Novartis</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={() => { setSearch(''); setType(''); setLocation(''); setCompany(''); }}>
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-full md:w-40">
+            <SelectValue placeholder="Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="closed">Closed</SelectItem>
+            <SelectItem value="expired">Expired</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button className="lg:ms-auto" variant="outline" onClick={() => { setSearch(''); setType(''); setLocation(''); setCompany(''); setStatus(''); }}>
           Reset Filters
         </Button>
       </div>

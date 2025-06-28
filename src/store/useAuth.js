@@ -133,3 +133,6 @@ export const useAuth = create((set, get) => ({
     set({ error: null });
   },
 }));
+
+// Initialize auth state when the app loads
+useAuth.getState().initializeAuth();

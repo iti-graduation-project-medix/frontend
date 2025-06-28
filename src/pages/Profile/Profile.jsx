@@ -11,11 +11,11 @@ import { RiCapsuleLine } from "react-icons/ri";
 import { PiTagChevronBold } from "react-icons/pi";
 import { motion, AnimatePresence } from "framer-motion";
 import { BsPatchCheckFill } from "react-icons/bs";
-import ProfileHeader from "./profile/ProfileHeader";
-import PersonalInfoCard from "./profile/PersonalInfoCard";
-import ContactInfoCard from "./profile/ContactInfoCard";
-import SecurityCard from "./profile/SecurityCard";
-import PharmaciesCard from "./profile/PharmaciesCard";
+import ProfileHeader from "./ProfileHeader";
+import PersonalInfoCard from "./PersonalInfoCard";
+import ContactInfoCard from "./ContactInfoCard";
+import SecurityCard from "./SecurityCard";
+import PharmaciesCard from "./PharmaciesCard";
 import { useAuth } from "../../store/useAuth";
 import { usePharmacist } from "../../store/usePharmacist";
 

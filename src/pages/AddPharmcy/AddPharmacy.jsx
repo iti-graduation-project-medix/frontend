@@ -88,9 +88,10 @@ const PharmacySchema = Yup.object().shape({
 const LIBRARIES = ["places"];
 
 export default function AddPharmacy() {
-  const { pharmacies, addPharmacy, updatePharmacyById, isLoading } =
+  // Always call hooks first, regardless of conditions
+  const { pharmacies, addPharmacy, updatePharmacyById, isLoading, fetchPharmacies } =
     usePharmacies();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [mapCenter] = useState(defaultCenter);
   const [marker, setMarker] = useState(null);
   const [submitError, setSubmitError] = useState("");
@@ -113,40 +114,25 @@ export default function AddPharmacy() {
   });
   const [existingImages, setExistingImages] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const inputRef = useRef(null);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+    libraries: LIBRARIES,
+  });
+
+  // Fetch pharmacies when component mounts
+  useEffect(() => {
+    if (token && user) {
+      fetchPharmacies(token, user);
+    }
+  }, [token, user, fetchPharmacies]);
 
   const isAddMode = !id;
   const pharmaciesLoaded = Array.isArray(pharmacies);
-
-  if (!pharmaciesLoaded) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span>Loading...</span>
-      </div>
-    );
-  }
-
-  const hasMaxPharmacies = isAddMode && pharmacies.length >= 2;
-
-  if (hasMaxPharmacies) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-lg w-full p-8 text-center shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-red-600">Limit Reached</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg mb-4">
-              You have already registered the maximum number of pharmacies (2).
-            </p>
-            <p className="text-gray-500">
-              If you need to update your existing pharmacies, please use the edit option.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const hasMaxPharmacies = isAddMode && pharmaciesLoaded && pharmacies.length >= 2;
 
   // Find the pharmacy if editing
   useEffect(() => {
@@ -174,17 +160,13 @@ export default function AddPharmacy() {
     }
   }, [id, pharmacies, pharmaciesLoaded]);
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
-    libraries: LIBRARIES,
-  });
-
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
     validationSchema: PharmacySchema,
     onSubmit: async (values, { resetForm }) => {
       setSubmitError("");
+      setIsSubmitting(true);
       try {
         // Transform values to match backend
         const formData = new FormData();
@@ -217,14 +199,14 @@ export default function AddPharmacy() {
           resetForm();
           setMarker(null);
         }
-        setTimeout(() => {
-          navigate("/settings");
-        }, 1200);
+        // Navigate immediately to prevent limit reached message from showing
+        navigate("/settings");
       } catch (err) {
         setSubmitError(
           err?.message ||
             (id ? "Failed to update pharmacy" : "Failed to add pharmacy")
         );
+        setIsSubmitting(false);
       }
     },
   });
@@ -266,6 +248,39 @@ export default function AddPharmacy() {
     });
     setSearchBox(autocomplete);
   }, [isLoaded, searchBox, formik]);
+
+  // Show loading state while pharmacies are loading or being fetched
+  if (!pharmaciesLoaded || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show limit reached message
+  if (hasMaxPharmacies && !isSubmitting && !formik.isSubmitting && !isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-lg w-full p-8 text-center shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-red-600">Limit Reached</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg mb-4">
+              You have already registered the maximum number of pharmacies (2).
+            </p>
+            <p className="text-gray-500">
+              If you need to update your existing pharmacies, please use the edit option.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <>

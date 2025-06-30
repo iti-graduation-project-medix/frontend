@@ -32,7 +32,7 @@ export default function SecurityCard({ pharmacistDetails }) {
   });
 
   return (
-    <Card className="p-6 shadow-lg rounded-2xl border border-gray-200 max-w-xl mx-auto">
+    <Card className="p-6 max-sm:px-0 shadow-lg rounded-2xl border border-gray-200 max-w-xl mx-auto">
       <CardHeader className="pb-2">
         <CardTitle>
           <span className="inline-flex items-center gap-3 font-bold text-lg tracking-wide">

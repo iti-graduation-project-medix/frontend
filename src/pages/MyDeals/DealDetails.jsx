@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { CalendarX, Package, Banknote, ShieldCheck, MapPin, MessageCircle, CheckCircle2, Map, User2, Pill } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { useDeals } from "@/store/useDeals";
 import { shallow } from "zustand/shallow";
 
@@ -107,13 +108,13 @@ export default function DealDetails() {
               </div>
             </div>
             {/* Mobile Chat Button */}
-            <button
+            <Button
               onClick={handleChat}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-4 w-full justify-center block md:hidden"
             >
               <MessageCircle className="w-5 h-5" />
               CHAT WITH DOCTOR
-            </button>
+            </Button>
           </section>
 
           {/* Pharmacy Info Section */}
@@ -164,21 +165,22 @@ export default function DealDetails() {
               <span className="text-lg font-bold text-blue-900">{deal.postedBy.fullName}</span>
               {deal.postedBy.isIdVerified && <CheckCircle2 className="w-5 h-5 text-green-500" title="Verified" />}
             </div>
-            <button
+            <Button
               onClick={handleChat}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-3 w-full justify-center hidden md:flex"
             >
               <MessageCircle className="w-5 h-5" />
               Chat with {deal.postedBy.fullName.split(' ')[0]}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleProfile}
               className="flex items-center gap-2 border border-blue-600 text-blue-700 hover:bg-blue-50 font-semibold px-6 py-3 rounded-xl shadow-sm transition-all text-base mt-2 w-full justify-center"
               title="View all deals by this doctor"
+              variant="outline"
             >
               <User2 className="w-5 h-5" />
               View Doctor Profile
-            </button>
+            </Button>
           </section>
         </aside>
       </div>

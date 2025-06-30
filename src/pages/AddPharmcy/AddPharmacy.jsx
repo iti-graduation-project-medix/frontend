@@ -200,7 +200,7 @@ export default function AddPharmacy() {
           setMarker(null);
         }
         // Navigate immediately to prevent limit reached message from showing
-        navigate("/settings");
+          navigate("/settings");
       } catch (err) {
         setSubmitError(
           err?.message ||

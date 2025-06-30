@@ -39,6 +39,7 @@ export default function MainLayout() {
             <Route path="/reset" element={<ResetPassword />} />
             <Route path="/confirm-password" element={<ConfirmPassword />} />
             <Route path="/deals/new" element={<ProtectedRoute><DealFormPage /></ProtectedRoute> } />
+            <Route path="/deals/edit/:id" element={<ProtectedRoute><DealFormPage /></ProtectedRoute> } />
             <Route path="/add-pharmacy" element={<ProtectedRoute><AddPharmacy /></ProtectedRoute> } />
             <Route path="/add-pharmacy/:id" element={<ProtectedRoute><AddPharmacy /></ProtectedRoute> } />
              <Route path="/all-deals" element={<ProtectedRoute><AvailableDeals /></ProtectedRoute> } />

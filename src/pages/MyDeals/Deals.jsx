@@ -44,7 +44,7 @@ const deals = [
     isNew: false,
   },
   {
-    id: 3,
+    id: "1cbf957d-8959-4385-aee3-bda1e3129fe0",
     name: "Albuterol Inhaler",
     type: "Sell",
     quantity: 20,

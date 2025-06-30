@@ -79,6 +79,7 @@ export const updateDealStatus = async (dealId, isClosed) => {
   }
 };
 
+
 // Keep the existing function for backward compatibility
 export const requestAdvertise = (data) => axios.post(`${baseURL}/api/v1/advertisement-request`, data);
 

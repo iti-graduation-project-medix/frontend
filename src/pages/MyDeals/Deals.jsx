@@ -16,99 +16,39 @@ import {
 } from "@/components/ui/select";
 import { ArrowUpDown, Search } from "lucide-react";
 import DealCard from "../../components/DealCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDeals } from "../../store/useDeals";
-
-const deals = [
-  {
-    id: 1,
-    name: "Metformin 850mg",
-    type: "Sell",
-    quantity: 200,
-    expires: "2023-08-01",
-    minPrice: "EGP200.00",
-    offers: 8,
-    status: "Expired",
-    isNew: false,
-  },
-  {
-    id: 2,
-    name: "Omeprazole 20mg",
-    type: "Exchange",
-    quantity: 120,
-    expires: "2023-12-31",
-    minPrice: "EGP200.00",
-    offers: 4,
-    status: "Expired",
-    isNew: false,
-  },
-  {
-    id: 3,
-    name: "Albuterol Inhaler",
-    type: "Sell",
-    quantity: 20,
-    expires: "2024-07-25",
-    minPrice: "EGP90.00",
-    offers: 6,
-    status: "Active",
-    isNew: true,
-  },
-  {
-    id: 4,
-    name: "Sertraline 50mg",
-    type: "Exchange",
-    quantity: 30,
-    expires: "2024-09-10",
-    minPrice: "EGP200.00",
-    offers: 1,
-    status: "Closed",
-    isNew: false,
-  },
-  {
-    id: 5,
-    name: "Prednisone 10mg",
-    type: "Sell",
-    quantity: 40,
-    expires: "2024-10-05",
-    minPrice: "EGP60.00",
-    offers: 1,
-    status: "Active",
-    isNew: false,
-  },
-  {
-    id: 6,
-    name: "Lisinopril 10mg",
-    type: "Exchange",
-    quantity: 50,
-    expires: "2024-11-15",
-    minPrice: "EGP200.00",
-    offers: 2,
-    status: "Active",
-    isNew: false,
-  },
-];
 
 export default function Deals() {
   const [searchDeal, setSearchDeal] = useState("");
   const [status, setStatus] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
-  const [dealsData, setDealsData] = useState(deals);
 
-  let filteredDeals = dealsData.filter((deal) => {
+  // Use store
+  const { deals, isLoading, error, fetchUserDeals,updateDealStatus } = useDeals();
+
+  useEffect(() => {
+    fetchUserDeals();
+  }, [fetchUserDeals]);
+
+  let filteredDeals = (deals || []).filter((deal) => {
+    const dealStatus = deal.isClosed ? "Closed" : 
+      new Date(deal.expiryDate) < new Date() ? "Expired" : "Active";
+    
     return (
-      deal.name.toLowerCase().includes(searchDeal.toLowerCase()) &&
-      deal.status.toLowerCase().includes(status.toLowerCase())
+      (deal.medicineName?.toLowerCase() || "").includes(searchDeal.toLowerCase()) &&
+      dealStatus.toLowerCase().includes(status.toLowerCase())
     );
   });
 
   if (sortOrder === "asc") {
     filteredDeals = [...filteredDeals].sort(
-      (a, b) => new Date(a.expires).getTime() - new Date(b.expires).getTime()
+      (a, b) => new Date(a.expiryDate).getTime() - new Date(b.expiryDate).getTime()
     );
   } else if (sortOrder === "desc") {
     filteredDeals = [...filteredDeals].sort(
-      (a, b) => new Date(b.expires).getTime() - new Date(a.expires).getTime()
+      (a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime()
     );
   }
 
@@ -129,25 +69,19 @@ export default function Deals() {
   };
 
   const handleCloseDeal = (dealId) => {
-    setDealsData((prevDeals) =>
-      prevDeals.map((deal) =>
-        deal.id === dealId ? { ...deal, status: "Closed" } : deal
-      )
-    );
+  updateDealStatus(dealId,true);
   };
 
   // Calculate stats dynamically
-  const activeDealsCount = dealsData.filter(
-    (deal) => deal.status === "Active"
+  const activeDealsCount = (deals || []).filter(
+    (deal) => !deal.isClosed && new Date(deal.expiryDate) >= new Date()
   ).length;
-  const closedDealsCount = dealsData.filter(
-    (deal) => deal.status === "Closed"
+  const closedDealsCount = (deals || []).filter(
+    (deal) => deal.isClosed
   ).length;
-  const expiredDealsCount = dealsData.filter(
-    (deal) => deal.status === "Expired"
+  const expiredDealsCount = (deals || []).filter(
+    (deal) => !deal.isClosed && new Date(deal.expiryDate) < new Date()
   ).length;
-  let { deals: lol } = useDeals();
-  console.log(lol);
 
   return (
     <div className="min-h-screen">
@@ -221,6 +155,7 @@ export default function Deals() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     onChange={handleSearch}
+                    value={searchDeal}
                     placeholder="Search deal..."
                     className="pl-10"
                   />
@@ -257,12 +192,24 @@ export default function Deals() {
               </div>
             </div>
           </Card>
+          {/* Loading and Error States */}
+          {isLoading && (
+            <div className="text-center py-8 text-lg text-muted-foreground">Loading deals...</div>
+          )}
+          {error && (
+            <div className="text-center py-8 text-lg text-red-500">{error}</div>
+          )}
           {/* Deals Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDeals.map((deal, index) => (
-              <DealCard key={index} deal={deal} onClose={handleCloseDeal} />
-            ))}
-          </div>
+          {!isLoading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredDeals.map((deal, index) => (
+                <DealCard key={deal.id || index} deal={deal} onClose={handleCloseDeal} />
+              ))}
+              {filteredDeals.length === 0 && (
+                <div className="col-span-full text-center text-muted-foreground py-8">No deals found.</div>
+              )}
+            </div>
+          )}
         </div>
       </section>
     </div>

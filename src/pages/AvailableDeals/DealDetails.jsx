@@ -3,7 +3,6 @@ import { CalendarX, Package, Banknote, ShieldCheck, MapPin, MessageCircle, Check
 import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useDeals } from "@/store/useDeals";
-import { shallow } from "zustand/shallow";
 
 
 

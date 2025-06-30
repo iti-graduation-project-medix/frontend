@@ -12,11 +12,11 @@ import Subscription from "../pages/Subscription/Subscription";
 import DealFormPage from "../pages/DealForm/DealFormPage";
 import Profile from "../pages/Profile/Profile";
 import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
-import DealDetails from "../pages/MyDeals/DealDetails";
 import AddPharmacy from "../pages/AddPharmcy/AddPharmacy";
 import NotFound from "../pages/NotFound/notFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AvailableDeals from "../pages/AvailableDeals/AvailableDeals";
+import DealDetails from "../pages/AvailableDeals/DealDetails";
 
 
 

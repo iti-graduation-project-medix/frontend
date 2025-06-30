@@ -7,6 +7,7 @@ import {
   deleteDeal, 
   updateDealStatus 
 } from '../api/deals';
+import { getUserDeals } from '../api/profile/UserDeals';
 
 export const useDeals = create((set, get) => ({
   deals: [],
@@ -65,6 +66,32 @@ export const useDeals = create((set, get) => ({
       set({
         isLoading: false,
         error: error.message || 'Failed to fetch deals',
+      });
+      throw error;
+    }
+  },
+
+    fetchUserDeals: async (queryParams = {}) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      const response = await getUserDeals(queryParams);
+      const { deals, total, page, totalPages } = response.data;
+      
+      set({
+        deals: deals || [],
+        totalDeals: total || 0,
+        currentPage: page || 1,
+        totalPages: totalPages || 1,
+        isLoading: false,
+        error: null,
+      });
+      
+      return response;
+    } catch (error) {
+      set({
+        isLoading: false,
+        error: error.message || 'Failed to fetch user deals',
       });
       throw error;
     }

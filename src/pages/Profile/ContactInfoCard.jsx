@@ -16,7 +16,7 @@ export default function ContactInfoCard({ pharmacistDetails }) {
   const details = pharmacistDetails || {};
 
   return (
-    <Card className="mb-8 p-6 shadow-lg rounded-2xl border border-gray-200">
+    <Card className="mb-8 p-6 max-sm:px-0 shadow-lg rounded-2xl border border-gray-200">
       <CardHeader className="pb-2">
         <CardTitle>
           <span className="inline-flex items-center gap-3 font-bold text-lg tracking-wide">

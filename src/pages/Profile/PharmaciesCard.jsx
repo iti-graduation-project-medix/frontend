@@ -132,7 +132,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
       </span>
     ),
     content: (
-      <div className="bg-gray-50 rounded-xl shadow-md p-6 border border-gray-100">
+      <div className="bg-gray-50 rounded-xl shadow-md p-6 border border-gray-100 mt-2 ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
           <div className="flex flex-col gap-1 pb-2 border-b last:border-b-0">
             <span className="text-xs text-muted-foreground font-medium uppercase">
@@ -235,7 +235,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   }));
 
   return (
-    <Card className="p-8 shadow-2xl rounded-2xl border border-gray-200 max-w-2xl mx-auto bg-white">
+    <Card className="p-8 max-sm:px-0 shadow-2xl rounded-2xl border border-gray-200 max-w-2xl mx-auto bg-white">
       <ConfirmDialog
         open={showDeleteModal}
         onOpenChange={setShowDeleteModal}
@@ -282,7 +282,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             } added)`}
         </span>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 max-sm:px-3">
         <div className="flex flex-col gap-8">
           {safePharmacies.length === 0 ? (
             <div className="text-center py-8">
@@ -296,7 +296,9 @@ export default function PharmaciesCard({ pharmacistDetails }) {
               </p>
             </div>
           ) : (
-            <Accordion items={accordionItems} />
+            <div className="w-full">
+              <Accordion items={accordionItems} />
+            </div>
           )}
         </div>
       </CardContent>

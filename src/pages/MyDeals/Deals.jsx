@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDeals } from "../../store/useDeals";
 
+
 export default function Deals() {
   const [searchDeal, setSearchDeal] = useState("");
   const [status, setStatus] = useState("");

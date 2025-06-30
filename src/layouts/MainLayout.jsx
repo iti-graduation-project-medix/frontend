@@ -16,7 +16,7 @@ import AddPharmacy from "../pages/AddPharmcy/AddPharmacy";
 import NotFound from "../pages/NotFound/notFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AvailableDeals from "../pages/AvailableDeals/AvailableDeals";
-import DealDetails from "../pages/MyDeals/DealDetails";
+import DealDetails from "../pages/AvailableDeals/DealDetails";
 
 
 

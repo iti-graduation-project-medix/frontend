@@ -75,16 +75,14 @@ export const useDeals = create((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      const response = await getDeal(dealId);
-      const deal = response.data.deal;
-      
+      const token = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : undefined;
+      const deal = await getDeal(dealId, token);
       set({
         currentDeal: deal,
         isLoading: false,
         error: null,
       });
-      
-      return response;
+      return deal;
     } catch (error) {
       set({
         isLoading: false,

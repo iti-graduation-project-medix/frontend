@@ -12,7 +12,7 @@ import Subscription from "../pages/Subscription/Subscription";
 import DealFormPage from "../pages/DealForm/DealFormPage";
 import Profile from "../pages/Profile/Profile";
 import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
-import { DealDetails } from "../pages/MyDeals/DealDetails";
+import DealDetails from "../pages/MyDeals/DealDetails";
 import AddPharmacy from "../pages/AddPharmcy/AddPharmacy";
 import NotFound from "../pages/NotFound/notFound";
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -35,7 +35,7 @@ export default function MainLayout() {
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route path="/deals" element={<ProtectedRoute><Deals /></ProtectedRoute> } />
-            <Route path="/all-deals/:id" element={<ProtectedRoute><DealDetails /></ProtectedRoute> } />
+            <Route path="/all-deals/:dealId" element={<ProtectedRoute><DealDetails /></ProtectedRoute> } />
             <Route path="/reset" element={<ResetPassword />} />
             <Route path="/confirm-password" element={<ConfirmPassword />} />
             <Route path="/deals/new" element={<ProtectedRoute><DealFormPage /></ProtectedRoute> } />

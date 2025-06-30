@@ -40,10 +40,18 @@ export const getDeals = async (queryParams = {}) => {
 };
 
 // Get a single deal by ID
-export const getDeal = async (dealId) => {
+export const getDeal = async (dealId, token) => {
   try {
-    const response = await api.get(`/deals/${dealId}`);
-    return response.data;
+    if (token) {
+      const response = await api.get(
+        `/deals/${dealId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      return response.data.data.deal;
+    } else {
+      const response = await api.get(`/deals/${dealId}`);
+      return response.data.data.deal;
+    }
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch deal');
   }

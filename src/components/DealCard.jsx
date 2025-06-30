@@ -15,6 +15,9 @@ import {
   Pencil,
   ShoppingCart,
   XCircle,
+  MessageSquare,
+  Pill,
+  Building2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -29,10 +32,10 @@ const DealCard = ({ deal, onClose }) => {
   // Helper function to determine status
   const getDealStatus = (deal) => {
     if (deal.isClosed) return "Closed";
-    
+
     const expiryDate = new Date(deal.expiryDate);
     const now = new Date();
-    
+
     if (expiryDate < now) return "Expired";
     return "Active";
   };
@@ -79,34 +82,49 @@ const DealCard = ({ deal, onClose }) => {
             variant={deal.dealType === "sell" ? "default" : "secondary"}
             className="whitespace-nowrap text-white"
           >
-            {deal.dealType === "sell" ? "Sell" : deal.dealType === "exchange" ? "Exchange" : "Both"}
+            {deal.dealType === "sell"
+              ? "Sell"
+              : deal.dealType === "exchange"
+              ? "Exchange"
+              : "Both"}
           </Badge>
         </div>
       </CardHeader>
       <CardContent style={{ marginTop: "-10px" }}>
         <div className="grid grid-cols-2 gap-4  text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
+            <CreditCard size={16} />
+            <span>Price: EGP {parseFloat(deal.price || 0).toFixed(2)}</span>
+          </div>
+          <div className="flex items-center gap-2">
             <Package size={16} />
             <span>Quantity: {deal.quantity || 0}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar size={16} />
-            <span>Expires: {formatDate(deal.expiryDate)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <CreditCard size={16} />
-            <span>Price: EGP {parseFloat(deal.price || 0).toFixed(2)}</span>
+            <span>Created: {formatDate(deal.createdAt)}</span>
           </div>
           <div className="flex items-center gap-2">
-            <ShoppingCart size={16} />
+            <Calendar size={16} />
+            <span>Expires: {formatDate(deal.expiryDate)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Pill size={16} />
             <span>Form: {deal.dosageForm || "N/A"}</span>
           </div>
-        </div>
-        {deal.description && (
-          <div className="mt-2 text-sm text-muted-foreground">
-            <span className="font-medium">Description:</span> {deal.description}
+          <div className="flex items-center gap-2">
+            <MessageSquare size={16} />
+            <span>Offers: {deal.offersCount || 0}</span>
           </div>
-        )}
+          <div className="flex items-center gap-2">
+            <Package size={16} />
+            <span>Box: {deal.boxStatus || "N/A"}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Building2 size={16} />
+            <span>Pharmacy: {deal.pharmacy?.name || "N/A"}</span>
+          </div>
+        </div>
         <div className="flex justify-between items-center mt-4 pt-4 border-t">
           <div>{getStatusPill(status)}</div>
           {status === "Active" && (
@@ -119,8 +137,8 @@ const DealCard = ({ deal, onClose }) => {
                   <Pencil className="mr-2 h-4 w-4" /> Edit
                 </Link>
               </Button>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 size="sm"
                 onClick={() => onClose && onClose(deal.id)}
               >
@@ -135,4 +153,3 @@ const DealCard = ({ deal, onClose }) => {
 };
 
 export default DealCard;
-

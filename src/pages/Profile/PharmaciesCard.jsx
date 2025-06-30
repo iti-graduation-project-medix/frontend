@@ -14,6 +14,7 @@ import { useAuth } from "../../store/useAuth";
 import { usePharmacies } from "../../store/usePharmcies";
 import ConfirmDialog from "./ConfirmDialog";
 import { Link } from "react-router-dom";
+import ListPharmacyForSaleModal from "./ListPharmacyForSaleModal";
 
 export default function PharmaciesCard({ pharmacistDetails }) {
   // Add null check and default values
@@ -31,6 +32,9 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pharmacyToDelete, setPharmacyToDelete] = useState(null);
+  // List for Sale modal state
+  const [showListModal, setShowListModal] = useState(false);
+  const [pharmacyToList, setPharmacyToList] = useState(null);
 
   useEffect(() => {
     if (user && token) {
@@ -58,6 +62,22 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
     setPharmacyToDelete(null);
+  };
+
+  const handleListClick = (pharmacyId) => {
+    setPharmacyToList(pharmacyId);
+    setShowListModal(true);
+  };
+
+  const handleListSubmit = async (formData) => {
+    try {
+      // TODO: Implement the API call to list pharmacy for sale
+      console.log('Submitting pharmacy listing:', formData);
+      setShowListModal(false);
+      setPharmacyToList(null);
+    } catch (error) {
+      console.error('Failed to list pharmacy:', error);
+    }
   };
 
   // Loading state
@@ -203,6 +223,12 @@ export default function PharmaciesCard({ pharmacistDetails }) {
           >
             Delete
           </Button>
+          <Button
+            className="px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-full bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={() => handleListClick(pharmacy.id)}
+          >
+            List for Sale
+          </Button>
         </div>
       </div>
     ),
@@ -219,6 +245,14 @@ export default function PharmaciesCard({ pharmacistDetails }) {
         confirmText="Delete"
         cancelText="Cancel"
       />
+
+      <ListPharmacyForSaleModal
+        open={showListModal}
+        onOpenChange={setShowListModal}
+        onSubmit={handleListSubmit}
+        initialPharmacy={pharmacyToList}
+      />
+
       <CardHeader className="pb-2 border-b mb-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <span className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">

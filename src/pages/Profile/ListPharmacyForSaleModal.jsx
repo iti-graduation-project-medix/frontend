@@ -12,6 +12,7 @@ export default function ListPharmacyForSaleModal({ open, onOpenChange, onSubmit,
   const [saleType, setSaleType] = useState("");
   const [excelFile, setExcelFile] = useState(null);
   const [previewData, setPreviewData] = useState(null);
+  const [price, setPrice] = useState("");
 
   const handleFilePreview = async (file) => {
     try {
@@ -67,6 +68,7 @@ export default function ListPharmacyForSaleModal({ open, onOpenChange, onSubmit,
     setSaleType("");
     setExcelFile(null);
     setPreviewData(null);
+    setPrice("");
     onOpenChange(false);
   };
 
@@ -75,6 +77,7 @@ export default function ListPharmacyForSaleModal({ open, onOpenChange, onSubmit,
     const formData = new FormData();
     formData.append("monthlySales", monthlySales);
     formData.append("saleType", saleType);
+    formData.append("price", price);
     if (excelFile) {
       formData.append("medicinesList", excelFile);
     }
@@ -91,6 +94,18 @@ export default function ListPharmacyForSaleModal({ open, onOpenChange, onSubmit,
         
         <div className="px-6 py-4 overflow-y-auto flex-1">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div>
+              <Label htmlFor="price" className="mb-2.5">Pharmacy Price</Label>
+              <Input
+                id="price"
+                type="number"
+                value={price}
+                onChange={e => setPrice(e.target.value)}
+                placeholder="Enter pharmacy price"
+                required
+              />
+            </div>
+
             <div>
               <Label htmlFor="monthlySales" className="mb-2.5">Monthly Sales</Label>
               <Input

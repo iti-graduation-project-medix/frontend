@@ -1,245 +1,187 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
-import { CalendarClock, CalendarX, Package, Banknote } from "lucide-react"; // استيراد الأيقونات
+import React, { useEffect } from "react";
+import { CalendarX, Package, Banknote, ShieldCheck, MapPin, MessageCircle, CheckCircle2, Map, User2, Pill } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useDeals } from "@/store/useDeals";
+import { shallow } from "zustand/shallow";
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
 
-export function DealDetails() {
-  const product = { name: "Metformin Hydrochloride 500mg Tablets", seller: "City Central Pharmacy", postedBy: "City Central Pharmacy", postedByVerified: true, dealDetails: { quantity: "5 boxes (1000 tablets total)", expiryDate: "2025-10-31", minimumPrice: "25.00 EGP", description: "Surplus stock of Metformin 500mg tablets. High quality, securely stored. Available for immediate sale. Contact for bulk discounts." }, statusInfo: { postedDate: "2024-07-15", expiryDate: "2025-10-31" }, images: [{ src: "/deal-details/drug2.png", alt: "Metformin tablets in packaging" }], sellerInformation: { name: "City Central Pharmacy", rating: "4.9/5 (120 reviews)", location: "123 Main St, Metropolis" } };
 
-  return <div className="container  mx-auto px-16 max-w-7xl">
-      <div className="min-h-screen bg-gray-100 py-8 lg:py-12">
-        <div className="container mx-auto px-4 max-w-5xl">
-          {/* Links */}
+export default function DealDetails() {
+  const { dealId } = useParams();
+  const navigate = useNavigate();
+  const deal = useDeals(state => state.currentDeal);
+  const isLoading = useDeals(state => state.isLoading);
+  const error = useDeals(state => state.error);
+  const fetchDeal = useDeals(state => state.fetchDeal); 
 
-          <nav className="mb-6 text-base text-[color:var(--muted-foreground)]" aria-label="Breadcrumb">
-            <ol className="list-none p-0 inline-flex items-center space-x-1 md:space-x-2">
-              <li>
-                <Link to="/" className="hover:text-[color:var(--primary-hover)] font-semibold transition-colors duration-200">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <span className="text-[color:var(--muted-foreground)]">
-                  /
+  
+
+  useEffect(() => {
+  if (dealId) {
+    fetchDeal(dealId);
+  }
+}, [dealId]);
+
+  // Avatar logic (same as ProfileHeader)
+  const getInitials = (name) => {
+    if (!name) return "?";
+    const parts = name.split(" ");
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "?";
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+  const initials = getInitials(deal?.postedBy?.fullName);
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center min-h-[60vh] text-blue-700 text-lg font-bold">Loading</div>;
+  }
+  if (error) {
+    return <div className="flex justify-center items-center min-h-[60vh] text-red-600 text-lg font-bold">{error}</div>;
+  }
+  if (!deal) {
+    return <div className="flex justify-center items-center min-h-[60vh] text-gray-500 text-lg font-bold">No Data With This Deal_ID</div>;
+  }
+
+  const handleChat = () => {
+    navigate(`/chat/${encodeURIComponent(deal.postedBy.fullName)}`);
+  };
+  const handleProfile = () => {
+    navigate(`/profile/${encodeURIComponent(deal.postedBy.fullName.replace(/\s+/g, '-').toLowerCase())}`);
+  };
+
+  // Google Maps direction link
+  const pharmacyAddress = `${deal.pharmacy.addressLine1} ${deal.pharmacy.addressLine2} ${deal.pharmacy.city} ${deal.pharmacy.governorate}`;
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacyAddress)}`;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-6 px-2 sm:px-4 flex justify-center items-start">
+      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {/* Left Column: Medicine & Pharmacy Info */}
+        <main className="md:col-span-2 flex flex-col gap-6 md:gap-8 order-1 md:order-1">
+          {/* Medicine Info Section */}
+          <section className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 flex flex-col gap-4 border-b-4 border-blue-100">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-blue-800 mb-1">{deal.medicineName}</h1>
+                <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+                  {deal.dealType}
                 </span>
-              </li>
-              <li>
-                <Link to="/deals" className="hover:text-[color:var(--primary-hover)] font-semibold transition-colors duration-200">
-                  Deals
-                </Link>
-              </li>
-              <li>
-                <span className="text-[color:var(--muted-foreground)]">
-                  /
-                </span>
-              </li>
-              <li>
-                <span className="text-[color:var(--foreground)] font-bold">
-                  {product.name}
-                </span>
-              </li>
-            </ol>
-          </nav>
-
-          {/* Product Title Section */}
-
-          <div className="bg-white p-6 shadow-xl border-l-8 border-primary rounded-lg mb-6">
-            <div className="text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-semibold text-primary mb-8">
-                {product.name}
-              </h1>
-              <div className="flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start text-sm text-gray-600 gap-2">
-                <Badge className="whitespace-nowrap text-white me-0 md:me-4">
-                  Sell
-                </Badge>
-                <span className="flex items-center">
-                  Posted By: {product.postedBy}
-                  {product.postedByVerified && <svg className="w-4 h-4 text-green-500 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>}
-                </span>
+              </div>
+              <div className="flex items-center gap-3 mt-2 md:mt-0">
+                <ShieldCheck className={`w-5 h-5 ${deal.isValid ? 'text-green-500' : 'text-gray-400'}`} />
+                <span className="text-xs text-gray-600 font-medium">{deal.isValid ? 'Valid' : 'Not Valid'}</span>
+                <span className="ml-4 text-xs text-gray-500">{deal.dosageForm}</span>
               </div>
             </div>
-          </div>
-
-          <div className="space-y-2 mt-8">
-            {/* Row 1 */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start mt-16">
-              {/* Left 2/3 */}
-              <div className="lg:col-span-2 space-y-6">
-                <section className="max-w-6xl mx-auto mb-8">
-                  <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden rounded-3xl shadow-xl border border-gray-100 p-8">
-                    {/* دوائر زخرفية */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mt-16 -mr-16 opacity-40 -z-10" />
-                    <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -mb-20 -ml-20 opacity-40 -z-10" />
-
-                    {/* العنوان */}
-                    <h2 className="text-3xl font-extrabold mb-8 text-primary text-center">
-                      Deal Overview
-                    </h2>
-
-                    {/* العناصر */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
-                      {/* الكمية */}
-                      <div className="flex flex-col items-center text-center gap-3">
-                        <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center shadow-md">
-                          <Package className="w-7 h-7" />
-                        </div>
-                        <div>
-                          <p className="text-sm mb-2 font-semibold text-muted-foreground">
-                            Quantity
-                          </p>
-                          <p className="text-lg font-bold">
-                            {product.dealDetails.quantity}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* تاريخ الانتهاء */}
-                      <div className="flex flex-col items-center text-center gap-3">
-                        <div className="w-14 h-14 rounded-full bg-destructive/10  text-secondary flex items-center justify-center shadow-md">
-                          <CalendarX className="w-7 h-7 text-red-400" />
-                        </div>
-                        <div>
-                          <p className="text-sm mb-2  font-semibold text-muted-foreground">
-                            Expiry Date
-                          </p>
-                          <p className="text-lg font-bold">
-                            {product.dealDetails.expiryDate}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* السعر الأدنى */}
-                      <div className="flex flex-col items-center text-center gap-3">
-                        <div className="w-14 h-14 rounded-full bg-secondary/10 text-secondary flex items-center justify-center shadow-md">
-                          <Banknote className="w-7 h-7  rotate-90" />
-                        </div>
-                        <div>
-                          <p className="text-sm mb-2 font-semibold text-muted-foreground">
-                            Minimum Price
-                          </p>
-                          <p className="text-lg font-bold">
-                            {product.dealDetails.minimumPrice}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Package className="w-5 h-5" />
+                  <span className="font-semibold">Quantity:</span>
+                  <span>{deal.quantity}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700">
+                  <Banknote className="w-5 h-5" />
+                  <span className="font-semibold">Price:</span>
+                  <span>{deal.price} EGP</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700">
+                  <CalendarX className="w-5 h-5" />
+                  <span className="font-semibold">Expiry:</span>
+                  <span>{new Date(deal.expiryDate).toLocaleDateString()}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700">
+                  <span className="font-semibold">Box Status:</span>
+                  <span className={deal.boxStatus === 'damaged' ? 'text-red-500' : 'text-green-600'}>{deal.boxStatus}</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-700">
+                  <span className="font-semibold">Status:</span>
+                  <span className={deal.isClosed ? 'text-red-500' : 'text-green-600'}>{deal.isClosed ? 'Closed' : 'Open'}</span>
+                </div>
               </div>
-
-              {/* Right 1/3 */}
-
-              <div className="relative  ">
-                {/* دوائر زخرفية */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mt-16 -mr-16 opacity-40 -z-10" />
-                <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -mb-20 -ml-20 opacity-40 -z-10" />
-                <div className="bg-gradient-to-br from-blue-50  via-white to-indigo-50 pt-20 pb-6 px-6 rounded-2xl shadow-xl text-center border border-gray-100">
-                  {/* صورة البائع */}
-                  <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 z-20">
-                    <img src="/avatars/client1.webp" alt="Seller Avatar" className="w-24 h-24 rounded-full border-4 border-white shadow-lg" />
-                  </div>
-
-                  {/* معلومات البائع */}
-                  <h2 className="text-2xl font-bold text-gray-900 mb-1  relative z-10">
-                    {product.sellerInformation.name}
-                  </h2>
-
-                  {/* Rating */}
-                  <div className="flex justify-center items-center text-gray-700 my-4 relative z-10">
-                    <svg className="w-5 h-5 text-yellow-400 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.783.57-1.838-.197-1.538-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z" />
-                    </svg>
-                    <span className="text-sm">
-                      {product.sellerInformation.rating}
-                    </span>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex justify-center items-center text-gray-600 text-sm relative z-10">
-                    <svg className="w-4 h-4 text-gray-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
-                    <span>
-                      {product.sellerInformation.location}
-                    </span>
-                  </div>
-                  <Button className="w-full h-12  mt-8 text-lg font-medium rounded-xl bg-gradient-to-r from-primary to-indigo-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-md transition duration-300">
-                    💬 Chat with Seller
-                  </Button>
+              <div className="flex flex-col gap-2">
+                <div className="bg-blue-50 rounded-lg p-4 h-full flex flex-col justify-center">
+                  <h2 className="text-lg font-semibold text-blue-700 mb-2">Description</h2>
+                  <p className="text-gray-700 text-sm leading-relaxed">{deal.description}</p>
                 </div>
               </div>
             </div>
+            {/* Mobile Chat Button */}
+            <button
+              onClick={handleChat}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-4 w-full justify-center block md:hidden"
+            >
+              <MessageCircle className="w-5 h-5" />
+              CHAT WITH DOCTOR
+            </button>
+          </section>
 
-            {/* Row 2 */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start  mt-2">
-              {/* Left 2/3 */}
-              <div className="lg:col-span-2 space-y-6">
-                <Card className="p-6 bg-gradient-to-br from-blue-50 to-white shadow-lg mb-8">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-primary col-span-1 text-center md:text-left">
-                      Deal Details
-                    </h2>
-
-                    <p className="col-span-2 text-muted-foreground text-sm md:text-base leading-relaxed">
-                      {product.dealDetails.description}
-                    </p>
-                  </div>
-                </Card>
-              </div>
-
-              {/* Right 1/3 */}
-
-              <div className="lg:col-span-1 space-y-6 w-full">
-                <Card className="p-6 md:p-6 py-19 bg-gradient-to-br from-blue-50 to-white shadow-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Posted Item */}
-                    <div className="flex flex-col items-center">
-                      <div className="bg-blue-100 p-4 rounded-full mb-4">
-                        <CalendarClock className="w-10 h-10 text-primary" />
-                      </div>
-                      <div className="text-center">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Posted
-                        </CardTitle>
-                        <CardDescription className="text-lg font-bold">
-                          {product.statusInfo.postedDate}
-                        </CardDescription>
-                      </div>
-                    </div>
-
-                    {/* Expires Item */}
-                    <div className="flex flex-col items-center">
-                      <div className="bg-destructive/10  p-4 rounded-full mb-4">
-                        <CalendarX className="w-10 h-10 text-red-400" />
-                      </div>
-
-                      <div className="text-center">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                          Expires
-                        </CardTitle>
-                        <CardDescription className="text-lg font-bold">
-                          {product.statusInfo.expiryDate}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              {/* ........ */}
+          {/* Pharmacy Info Section */}
+          <section className="bg-gray-50 rounded-2xl p-4 sm:p-6 flex flex-col gap-3 border border-blue-100">
+            <div className="flex items-center gap-2 mb-2">
+              <MapPin className="w-5 h-5 text-blue-400" />
+              <span className="font-bold text-blue-800 text-lg">Pharmacy Info</span>
             </div>
-          </div>
-        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm mb-2">
+              <div><span className="font-semibold">Name:</span> {deal.pharmacy.name}</div>
+              <div><span className="font-semibold">License #:</span> {deal.pharmacy.licenseNum}</div>
+              <div><span className="font-semibold">Phone:</span> {deal.pharmacy.pharmacyPhone}</div>
+              <div><span className="font-semibold">Working Hours:</span> {deal.pharmacy.startHour} - {deal.pharmacy.endHour}</div>
+              <div className="col-span-2"><span className="font-semibold">Address:</span> {deal.pharmacy.addressLine1} {deal.pharmacy.addressLine2}</div>
+              <div><span className="font-semibold">City:</span> {deal.pharmacy.city}</div>
+              <div><span className="font-semibold">Governorate:</span> {deal.pharmacy.governorate}</div>
+              <div><span className="font-semibold">Zip Code:</span> {deal.pharmacy.zipCode}</div>
+            </div>
+            <div className="flex justify-end mt-2">
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-all text-sm"
+              >
+                <Map className="w-4 h-4" />
+                Get Directions
+              </a>
+            </div>
+          </section>
+        </main>
+
+        {/* Right Column: Doctor Info (on mobile: order-last) */}
+        <aside className="md:col-span-1 flex flex-col items-center md:items-stretch gap-6 order-2 md:order-2 mt-8 md:mt-0 md:sticky md:top-8">
+          <section className="bg-white border rounded-2xl p-6 flex flex-col items-center gap-2">
+            <div className="flex items-center gap-2 mb-2">
+              <User2 className="w-5 h-5 text-blue-400" />
+              <span className="font-bold text-blue-800 text-lg">Doctor Info</span>
+            </div>
+            <Avatar className="size-20 shadow-md mb-2">
+              {deal.postedBy.profilePhotoUrl ? (
+                <AvatarImage src={deal.postedBy.profilePhotoUrl} alt={deal.postedBy.fullName} />
+              ) : (
+                <AvatarFallback>{initials}</AvatarFallback>
+              )}
+            </Avatar>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-lg font-bold text-blue-900">{deal.postedBy.fullName}</span>
+              {deal.postedBy.isIdVerified && <CheckCircle2 className="w-5 h-5 text-green-500" title="Verified" />}
+            </div>
+            <button
+              onClick={handleChat}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-3 w-full justify-center hidden md:flex"
+            >
+              <MessageCircle className="w-5 h-5" />
+              Chat with {deal.postedBy.fullName.split(' ')[0]}
+            </button>
+            <button
+              onClick={handleProfile}
+              className="flex items-center gap-2 border border-blue-600 text-blue-700 hover:bg-blue-50 font-semibold px-6 py-3 rounded-xl shadow-sm transition-all text-base mt-2 w-full justify-center"
+              title="View all deals by this doctor"
+            >
+              <User2 className="w-5 h-5" />
+              View Doctor Profile
+            </button>
+          </section>
+        </aside>
       </div>
-    </div>;
+    </div>
+  );
 }

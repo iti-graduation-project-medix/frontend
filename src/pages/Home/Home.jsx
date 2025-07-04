@@ -10,6 +10,38 @@ import { Input } from "@/components/ui/input";
 import { useInView } from "../../hooks/useInView";
 
 export default function Home() {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBtn, setShowInstallBtn] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = e => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBtn(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choiceResult => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted the install prompt");
+        } else {
+          console.log("User dismissed the install prompt");
+        }
+        setDeferredPrompt(null);
+        setShowInstallBtn(false);
+      });
+    }
+  };
+
   const MotionLink = motion(Link);
   const buttonVariants = { tap: { scale: 0.95 }, hover: { scale: 1.05 } };
 
@@ -43,23 +75,92 @@ export default function Home() {
 
   const { text, name, role, img } = testimonials[current];
 
-  return <div className="min-h-screen font-sans">
-      <motion.header ref={headerRef} initial={{ opacity: 0, y: 30 }} animate={headerInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+  return (
+    <div className="min-h-screen font-sans">
+      <motion.header
+        ref={headerRef}
+        initial={{ opacity: 0, y: 30 }}
+        animate={headerInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+      >
         {/* Hero Section */}
-        <header className="relative h-screen min-h-[500px] flex items-center justify-center text-white text-center px-4 overflow-hidden" style={{ backgroundImage: `url(/imgs/drug-store.jpg)`, backgroundSize: "cover", backgroundPosition: "center" }}>
+        <header
+          className="relative h-screen min-h-[500px] flex items-center justify-center text-white text-center px-4 overflow-hidden"
+          style={{
+            backgroundImage: `url(/imgs/drug-store.webp)`,
+            backgroundSize: "cover",
+            backgroundPosition: "center"
+          }}
+        >
           <div className="absolute inset-0 bg-black opacity-60 z-10" />
           <div className="relative z-20 max-w-5xl mx-auto p-4 md:p-8">
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight drop-shadow-lg">
               Optimize Your Pharmacy Inventory
             </h1>
             <p className="text-lg md:text-xl lg:text-2xl mb-10 max-w-3xl mx-auto opacity-90 font-light drop-shadow-md">
-              Connect with companies to exchange or bid on near-expiry
-              medications efficiently and compliantly.
+              Connect with companies to exchange or bid on near-expiry medications efficiently and
+              compliantly.
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <MotionLink to="/join-pharmacy" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 w-auto">
-                Join as Pharmacy
+              <MotionLink
+                to="/join-pharmacy"
+                whileTap="tap"
+                whileHover="hover"
+                variants={buttonVariants}
+                className="flex items-center gap-2 text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 w-auto"
+              >
+                <svg
+                  className="w-5 h-5 text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M11.403 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6.403a3.01 3.01 0 0 1-1.743-1.612l-3.025 3.025A3 3 0 1 1 9.99 9.768l3.025-3.025A3.01 3.01 0 0 1 11.403 5Z"
+                    clipRule="evenodd"
+                  />
+                  <path
+                    fillRule="evenodd"
+                    d="M13.232 4a1 1 0 0 1 1-1H20a1 1 0 0 1 1 1v5.768a1 1 0 1 1-2 0V6.414l-6.182 6.182a1 1 0 0 1-1.414-1.414L17.586 5h-3.354a1 1 0 0 1-1-1Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span>Join as Pharmacy</span>
               </MotionLink>
+
+              {/* install button */}
+              {showInstallBtn &&
+                <motion.button
+                  className="bg-yellow-500 px-6 py-2 rounded-lg text-sm hover:bg-yellow-600 cursor-pointer flex items-center gap-2"
+                  onClick={handleInstallClick}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <svg
+                    className="w-5 h-5 text-white"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z"
+                      clipRule="evenodd"
+                    />
+                    <path
+                      fillRule="evenodd"
+                      d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="text-white font-medium">Install App</span>
+                </motion.button>}
               {/* <MotionLink to="/join-company" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-6 py-2 w-auto">
                 Join as Company
               </MotionLink> */}
@@ -69,7 +170,12 @@ export default function Home() {
       </motion.header>
 
       <main>
-        <motion.div ref={previewRef} initial={{ opacity: 0, y: 80 }} animate={previewInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={previewRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={previewInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* Preview Section */}
           <section className="pt-16 md:pt-16 px-14 text-center text-[color:var(--card-foreground)] transition-colors duration-300">
             <div className="container mx-auto max-w-4xl">
@@ -77,23 +183,30 @@ export default function Home() {
                 Bridging the Gap for Pharmaceutical Inventory
               </h2>
               <p className="text-lg md:text-xl text-[color:var(--muted-foreground)] max-w-3xl mx-auto leading-relaxed">
-                MediExchange is a secure online platform connecting pharmacies
-                and companies for the ethical and efficient handling of
-                near-expiry and surplus medications through a transparent
-                exchange and bidding system. Reduce waste, recover value, and
-                access needed stock.
+                MediExchange is a secure online platform connecting pharmacies and companies for the
+                ethical and efficient handling of near-expiry and surplus medications through a
+                transparent exchange and bidding system. Reduce waste, recover value, and access
+                needed stock.
               </p>
             </div>
           </section>
         </motion.div>
 
-        <motion.div ref={whoWeAreRef} initial={{ opacity: 0, y: 80 }} animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={whoWeAreRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* Who We Are */}
           <section className="py-12 px-6 sm:px-10 md:px-14 text-[color:var(--card-foreground)] transition-colors duration-300">
             <div className="container mx-auto flex flex-col lg:flex-row items-center gap-12">
               {/* Text Content */}
               <div className="w-full lg:w-1/2 flex flex-col text-center lg:text-left">
-                <Badge variant="outline" className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full mx-auto lg:mx-0">
+                <Badge
+                  variant="outline"
+                  className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full mx-auto lg:mx-0"
+                >
                   Who We Are
                 </Badge>
 
@@ -102,53 +215,73 @@ export default function Home() {
                 </h3>
 
                 {/* Image between title and paragraphs in small screens */}
-                <div className="w-full flex justify-center my-6 order-2 lg:hidden">
-                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-full overflow-hidden shadow-lg">
-                    <img src="/imgs/whoWeAre.png" alt="About MediExchange" className="object-cover w-full h-full" />
+                <div className="w-full flex justify-center my-6 order-2 lg:hidden shadow-none">
+                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 shadow-none  overflow-hidden">
+                    <img
+                      src="/imgs/whoWeAre.png"
+                      alt="About MediExchange"
+                      className="object-cover w-full h-full shadow-none"
+                    />
                   </div>
                 </div>
 
                 {/* Paragraphs */}
                 <p className="text-base md:text-lg leading-relaxed text-[color:var(--muted-foreground)] mb-4 order-3">
-                  Founded on the principles of sustainability and resource
-                  optimization within the pharmaceutical supply chain,
-                  MediExchange provides a trusted marketplace designed to
-                  extend the lifecycle of valuable medications and reduce the
-                  environmental and economic burden of disposal.
+                  Founded on the principles of sustainability and resource optimization within the
+                  pharmaceutical supply chain, MediExchange provides a trusted marketplace designed
+                  to extend the lifecycle of valuable medications and reduce the environmental and
+                  economic burden of disposal.
                 </p>
                 <p className="text-base md:text-lg leading-relaxed text-[color:var(--muted-foreground)] order-4">
-                  Our mission is to create a more resilient and efficient
-                  system for all stakeholders.
+                  Our mission is to create a more resilient and efficient system for all
+                  stakeholders.
                 </p>
               </div>
 
               {/* Image on right for large screens */}
               <div className="w-full lg:w-1/2 hidden lg:flex items-center justify-center">
-                <div className="w-[400px] h-[400px] xl:w-[500px] xl:h-[500px] rounded-full overflow-hidden shadow-lg">
-                  <img src="/imgs/whoWeAre.png" alt="About MediExchange" className="object-cover w-full h-full" />
+                <div className="w-[400px] h-[400px] xl:w-[500px] xl:h-[500px]  overflow-hidden ">
+                  <img
+                    src="/imgs/whoWeAre.png"
+                    alt="About MediExchange"
+                    className="object-cover w-full h-full"
+                  />
                 </div>
               </div>
             </div>
           </section>
         </motion.div>
 
-        <motion.div ref={featuresRef} initial={{ opacity: 0, y: 80 }} animate={featuresInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={featuresRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={featuresInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* Services / Features */}
 
           <section className="py-24 px-4  text-[color:var(--card-foreground)]">
             <div className="max-w-7xl mx-auto text-center">
-              <Badge variant="outline" className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
+              <Badge
+                variant="outline"
+                className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
+              >
                 Our Features
               </Badge>
               <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
                 Discover Our Platform Features
               </h2>
               <p className="text-lg text-[color:var(--muted-foreground)] max-w-2xl mx-auto mb-16">
-                Explore a range of powerful tools designed to simplify,
-                optimize, and scale your pharmaceutical operations.
+                Explore a range of powerful tools designed to simplify, optimize, and scale your
+                pharmaceutical operations.
               </p>
 
-              <motion.div ref={featuresCardsRef} initial={{ opacity: 0, y: 80 }} animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+              <motion.div
+                ref={featuresCardsRef}
+                initial={{ opacity: 0, y: 80 }}
+                animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+              >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
                   {features.map((feature, idx) =>
                     <div
@@ -177,28 +310,38 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div ref={stepsRef} initial={{ opacity: 0, y: 80 }} animate={stepsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={stepsRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* steps */}
           <div className="min-h-screen bg-gray-50">
             <section className="py-10 px-2 bg-white font-sans text-center relative">
               <div className="mb-16 text-center">
-                <Badge variant="outline" className="mx-auto mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
+                <Badge
+                  variant="outline"
+                  className="mx-auto mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
+                >
                   Our Working Process
                 </Badge>
 
-                <h2 className="text-4xl text-[#2b2b64] font-bold mb-4">
-                  How We Work
-                </h2>
+                <h2 className="text-4xl text-[#2b2b64] font-bold mb-4">How We Work</h2>
 
                 <p className="text-base text-gray-600 leading-relaxed max-w-2xl mx-auto">
-                  At MediExchange, our process is built for clarity and
-                  collaboration. From identifying your needs to delivering
-                  impactful results, we ensure every step is efficient,
-                  transparent, and aligned with your goals.
+                  At MediExchange, our process is built for clarity and collaboration. From
+                  identifying your needs to delivering impactful results, we ensure every step is
+                  efficient, transparent, and aligned with your goals.
                 </p>
               </div>
 
-              <motion.div ref={stepsCardsRef} initial={{ opacity: 0, y: 80 }} animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+              <motion.div
+                ref={stepsCardsRef}
+                initial={{ opacity: 0, y: 80 }}
+                animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+              >
                 {/* Steps Cards */}
                 <div className="flex flex-wrap justify-center gap-10 relative pt-5 z-10">
                   {howWeWorkSteps.map((step, index) =>
@@ -243,11 +386,17 @@ export default function Home() {
                   {/* SVG Curved Dotted Line */}
                   <div className="hidden lg:block absolute top-[120px] left-0 right-0 w-full z-0">
                     <svg viewBox="0 0 1000 150" preserveAspectRatio="none" className="w-full h-12">
-                      <path d="M 20 75 
-               Q 120 0, 250 75 
-               T 480 75 
-               T 710 75 
-               T 940 75" fill="none" stroke="#a8a5a5" strokeWidth="2" strokeDasharray="6,6" />
+                      <path
+                        d="M 20 75
+               Q 120 0, 250 75
+               T 480 75
+               T 710 75
+               T 940 75"
+                        fill="none"
+                        stroke="#a8a5a5"
+                        strokeWidth="2"
+                        strokeDasharray="6,6"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -256,14 +405,22 @@ export default function Home() {
           </div>
         </motion.div>
 
-        <motion.div ref={missionRef} initial={{ opacity: 0, y: 80 }} animate={missionInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={missionRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={missionInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* mission & vision */}
           <section className="bg-white py-20 px-6 font-sans">
             <div className="max-w-8xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 md:gap-6 gap-0 items-center relative">
               {/* Left Box - Mission */}
               <div className="bg-[#eff0fc]/90 md:pr-30 sm:pr-8  text-white p-8 py-16 rounded-lg shadow-lg col-span-12 lg:col-span-7">
                 <div className="flex justify-center md:justify-start">
-                  <Badge variant="outline" className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
+                  <Badge
+                    variant="outline"
+                    className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
+                  >
                     Our Mission
                   </Badge>
                 </div>
@@ -273,15 +430,17 @@ export default function Home() {
                 </h3>
 
                 <p className="text-base lg:text-lg leading-relaxed text-[color:var(--muted-foreground)] break-words text-center md:text-left">
-                  At MediExchange, we are reimagining the pharmaceutical
-                  supply chain...
+                  At MediExchange, we are reimagining the pharmaceutical supply chain...
                 </p>
               </div>
 
               {/* Right Box - Vision */}
               <div className="bg-background text-left p-6 lg:p-8 rounded-md shadow-2xl col-span-12 lg:col-span-5 md:mt-6 mt-6 lg:mt-0 lg:ml-[-100px] z-10">
                 <div className="flex justify-center md:justify-start">
-                  <Badge variant="outline" className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full">
+                  <Badge
+                    variant="outline"
+                    className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
+                  >
                     Our Vision
                   </Badge>
                 </div>
@@ -298,13 +457,22 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div ref={faqRef} initial={{ opacity: 0, y: 80 }} animate={faqInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={faqRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={faqInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* frequently questions */}
           <section className="relative font-sans  py-24 px-6 md:px-14 overflow-hidden">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               {/* Left Image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img src="/imgs/faqs.jpg" alt="Opening and Visiting Hours" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                <img
+                  src="/imgs/faqs.webp"
+                  alt="Opening and Visiting Hours"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                />
                 <div className="absolute inset-0 bg-black/10" />
               </div>
 
@@ -321,16 +489,23 @@ export default function Home() {
                 </h2>
 
                 <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  We provide the best service nationwide. Here’s why patients
-                  choose our hospital:
+                  We provide the best service nationwide. Here’s why patients choose our hospital:
                 </p>
 
                 {/* Accordion */}
                 <div className="space-y-4">
                   {faqItems.map((item, index) => {
                     const isOpen = openIndex === index;
-                    return <div key={index} className="border border-gray-300 rounded-xl overflow-hidden transition-all duration-300">
-                        <button type="button" onClick={() => toggleAccordion(index)} className="w-full flex justify-between items-center text-left px-5 py-4 bg-white hover:bg-[#eff1fb] transition-colors font-medium text-gray-900">
+                    return (
+                      <div
+                        key={index}
+                        className="border border-gray-300 rounded-xl overflow-hidden transition-all duration-300"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleAccordion(index)}
+                          className="w-full flex justify-between items-center text-left px-5 py-4 bg-white hover:bg-[#eff1fb] transition-colors font-medium text-gray-900"
+                        >
                           <span>
                             {item.question}
                           </span>
@@ -339,10 +514,15 @@ export default function Home() {
                           </span>
                         </button>
 
-                        <div className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-h-40 py-4 opacity-100" : "max-h-0 opacity-0"} text-sm text-gray-600 bg-white`}>
+                        <div
+                          className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${isOpen
+                            ? "max-h-40 py-4 opacity-100"
+                            : "max-h-0 opacity-0"} text-sm text-gray-600 bg-white`}
+                        >
                           {item.answer}
                         </div>
-                      </div>;
+                      </div>
+                    );
                   })}
                 </div>
               </div>
@@ -350,11 +530,22 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div ref={testimonialRef} initial={{ opacity: 0, y: 80 }} animate={testimonialInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={testimonialRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={testimonialInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* testimonials */}
           <section className="max-w-screen-md mb-14  mx-auto text-center relative overflow-hidden p-6">
             <figure>
-              <svg className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 14">
+              <svg
+                className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-600"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                viewBox="0 0 18 14"
+              >
                 <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z" />
               </svg>
               <blockquote>
@@ -377,18 +568,41 @@ export default function Home() {
           </section>
         </motion.div>
 
-        <motion.div ref={newsletterRef} initial={{ opacity: 0, y: 80 }} animate={newsletterInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 1.5, ease: "easeOut" }}>
+        <motion.div
+          ref={newsletterRef}
+          initial={{ opacity: 0, y: 80 }}
+          animate={newsletterInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        >
           {/* newaletter */}
-          <section className="bg-cover bg-center py-20 text-white" style={{ backgroundImage: "url('/imgs/newsletter.jpg')", backgroundColor: "rgba(175, 180, 240, 0.5)", backgroundBlendMode: "multiply" } // غيّري المسار حسب مكان الصورة
-            }>
+          <section
+            className="bg-cover bg-center py-20 text-white"
+            style={{
+              backgroundImage: "url('/imgs/newsletter.webp')",
+              backgroundColor: "rgba(175, 180, 240, 0.5)",
+              backgroundBlendMode: "multiply"
+            } // غيّري المسار حسب مكان الصورة
+            }
+          >
             <div className="max-w-xl mx-auto text-center space-y-6 px-4">
-              <Input type="email" placeholder="Enter your Email Address" className="bg-transparent border-b border-white rounded-none text-white placeholder-white text-center focus-visible:ring-0 focus-visible:ring-offset-0" />
-              <MotionLink to="/join-pharmacy" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">
+              <Input
+                type="email"
+                placeholder="Enter your Email Address"
+                className="bg-transparent border-b border-white rounded-none text-white placeholder-white text-center focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+              <MotionLink
+                to="/join-pharmacy"
+                whileTap="tap"
+                whileHover="hover"
+                variants={buttonVariants}
+                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
+              >
                 Subscribe Now{" "}
               </MotionLink>
             </div>
           </section>
         </motion.div>
       </main>
-    </div>;
+    </div>
+  );
 }

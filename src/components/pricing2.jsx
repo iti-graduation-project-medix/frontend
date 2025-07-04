@@ -25,8 +25,8 @@ const Pricing2 = ({
       id: "plus",
       name: "Plus",
       description: "For personal use",
-      monthlyPrice: "EGP50",
-      yearlyPrice: "EGP200",
+      monthlyPrice: "EGP200",
+      yearlyPrice: "EGP400",
       features: [
         { text: "Add 2 Pharmacy" },
         { text: "Add Unlimited Deals" },
@@ -41,8 +41,8 @@ const Pricing2 = ({
       id: "pro",
       name: "Pro",
       description: "For professionals",
-      monthlyPrice: "EGP100",
-      yearlyPrice: "EGP500",
+      monthlyPrice: "EGP400",
+      yearlyPrice: "EGP2000",
       features: [
         { text: "Up to 5 Pharmacies" },
         { text: "List Pharmacy For Sale" },

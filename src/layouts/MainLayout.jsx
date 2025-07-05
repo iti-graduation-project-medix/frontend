@@ -19,6 +19,8 @@ import AvailableDeals from "../pages/AvailableDeals/AvailableDeals";
 import DealDetails from "../pages/AvailableDeals/DealDetails";
 import PharmaciesForSale from "../pages/PharmaciesForSale/PharmaciesForSale";
 import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
+import SuccessPayment from "../pages/SuccessPayment/SuccessPayment";
+import FailedPayment from "../pages/FailedPayment/FailedPayment";
 
 export default function MainLayout() {
   return (

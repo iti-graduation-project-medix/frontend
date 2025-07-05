@@ -89,8 +89,13 @@ const LIBRARIES = ["places"];
 
 export default function AddPharmacy() {
   // Always call hooks first, regardless of conditions
-  const { pharmacies, addPharmacy, updatePharmacyById, isLoading, fetchPharmacies } =
-    usePharmacies();
+  const {
+    pharmacies,
+    addPharmacy,
+    updatePharmacyById,
+    isLoading,
+    fetchPharmacies,
+  } = usePharmacies();
   const { token, user } = useAuth();
   const [mapCenter] = useState(defaultCenter);
   const [marker, setMarker] = useState(null);
@@ -132,7 +137,8 @@ export default function AddPharmacy() {
 
   const isAddMode = !id;
   const pharmaciesLoaded = Array.isArray(pharmacies);
-  const hasMaxPharmacies = isAddMode && pharmaciesLoaded && pharmacies.length >= 2;
+  const hasMaxPharmacies =
+    isAddMode && pharmaciesLoaded && pharmacies.length >= 2;
 
   // Find the pharmacy if editing
   useEffect(() => {
@@ -149,13 +155,28 @@ export default function AddPharmacy() {
           city: pharm.city || "",
           governorate: pharm.governorate || "",
           zipCode: pharm.zipCode || "",
-          location: pharm.location && pharm.location.coordinates ? { lat: pharm.location.coordinates[1], lng: pharm.location.coordinates[0] } : null,
+          location:
+            pharm.location && pharm.location.coordinates
+              ? {
+                  lat: pharm.location.coordinates[1],
+                  lng: pharm.location.coordinates[0],
+                }
+              : null,
           startHour: pharm.startHour || "",
           endHour: pharm.endHour || "",
           images: null,
         });
-        setMarker(pharm.location && pharm.location.coordinates ? { lat: pharm.location.coordinates[1], lng: pharm.location.coordinates[0] } : null);
-        setExistingImages(Array.isArray(pharm.imagesUrls) ? pharm.imagesUrls : []);
+        setMarker(
+          pharm.location && pharm.location.coordinates
+            ? {
+                lat: pharm.location.coordinates[1],
+                lng: pharm.location.coordinates[0],
+              }
+            : null
+        );
+        setExistingImages(
+          Array.isArray(pharm.imagesUrls) ? pharm.imagesUrls : []
+        );
       }
     }
   }, [id, pharmacies, pharmaciesLoaded]);
@@ -200,7 +221,7 @@ export default function AddPharmacy() {
           setMarker(null);
         }
         // Navigate immediately to prevent limit reached message from showing
-          navigate("/settings");
+        navigate("/settings");
       } catch (err) {
         setSubmitError(
           err?.message ||
@@ -267,14 +288,17 @@ export default function AddPharmacy() {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="max-w-lg w-full p-8 text-center shadow-xl">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-red-600">Limit Reached</CardTitle>
+            <CardTitle className="text-2xl font-bold text-red-600">
+              Limit Reached
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-lg mb-4">
               You have already registered the maximum number of pharmacies (2).
             </p>
             <p className="text-gray-500">
-              If you need to update your existing pharmacies, please use the edit option.
+              If you need to update your existing pharmacies, please use the
+              edit option.
             </p>
           </CardContent>
         </Card>
@@ -701,7 +725,9 @@ export default function AddPharmacy() {
                             className="absolute top-1 right-1 bg-white/80 rounded-full p-0.5 hover:bg-red-100"
                             onClick={(e) => {
                               e.preventDefault();
-                              setExistingImages(existingImages.filter((_, i) => i !== idx));
+                              setExistingImages(
+                                existingImages.filter((_, i) => i !== idx)
+                              );
                             }}
                           >
                             <XCircle size={16} className="text-red-500" />

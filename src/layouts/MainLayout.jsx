@@ -17,8 +17,8 @@ import NotFound from "../pages/NotFound/notFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AvailableDeals from "../pages/AvailableDeals/AvailableDeals";
 import DealDetails from "../pages/AvailableDeals/DealDetails";
-
-
+import PharmaciesForSale from "../pages/PharmaciesForSale/PharmaciesForSale";
+import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
 
 export default function MainLayout() {
   return (
@@ -30,19 +30,91 @@ export default function MainLayout() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/advertise" element={<Advertise />} />
-            <Route path="/settings" element={<ProtectedRoute><Profile /></ProtectedRoute> } />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/deals" element={<ProtectedRoute><Deals /></ProtectedRoute> } />
-            <Route path="/all-deals/:dealId" element={<ProtectedRoute><DealDetails /></ProtectedRoute> } />
+            <Route
+              path="/deals"
+              element={
+                <ProtectedRoute>
+                  <Deals />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/all-deals/:dealId"
+              element={
+                <ProtectedRoute>
+                  <DealDetails />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/reset" element={<ResetPassword />} />
             <Route path="/confirm-password" element={<ConfirmPassword />} />
-            <Route path="/deals/new" element={<ProtectedRoute><DealFormPage /></ProtectedRoute> } />
-            <Route path="/deals/edit/:id" element={<ProtectedRoute><DealFormPage /></ProtectedRoute> } />
-            <Route path="/add-pharmacy" element={<ProtectedRoute><AddPharmacy /></ProtectedRoute> } />
-            <Route path="/add-pharmacy/:id" element={<ProtectedRoute><AddPharmacy /></ProtectedRoute> } />
-             <Route path="/all-deals" element={<ProtectedRoute><AvailableDeals /></ProtectedRoute> } />
+            <Route
+              path="/deals/new"
+              element={
+                <ProtectedRoute>
+                  <DealFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deals/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <DealFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-pharmacy"
+              element={
+                <ProtectedRoute>
+                  <AddPharmacy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-pharmacy/:id"
+              element={
+                <ProtectedRoute>
+                  <AddPharmacy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/all-deals"
+              element={
+                <ProtectedRoute>
+                  <AvailableDeals />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pharmacies-for-sale"
+              element={
+                <ProtectedRoute>
+                  <PharmaciesForSale />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pharmacies-for-sale/:id"
+              element={
+                <ProtectedRoute>
+                  <PharmacyDetails />
+                </ProtectedRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

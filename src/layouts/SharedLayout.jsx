@@ -9,7 +9,7 @@ export default function SharedLayout() {
       <Navbar />
       <Outlet />
       <Toaster />
-      <Footer/>
+      <Footer />
     </>
   );
 }

@@ -21,6 +21,7 @@ import PharmaciesForSale from "../pages/PharmaciesForSale/PharmaciesForSale";
 import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
 import SuccessPayment from "../pages/SuccessPayment/SuccessPayment";
 import FailedPayment from "../pages/FailedPayment/FailedPayment";
+import Chat from "../pages/Chat/Chat";
 
 export default function MainLayout() {
   return (
@@ -114,6 +115,14 @@ export default function MainLayout() {
               element={
                 <ProtectedRoute>
                   <PharmacyDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute>
+                  <Chat />
                 </ProtectedRoute>
               }
             />

@@ -7,24 +7,28 @@ import { useAuth } from "../../store/useAuth";
 import { usePharmacist } from "../../store/usePharmacist";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { FiBell } from "react-icons/fi";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout, initializeAuth,token } = useAuth();
+  const { user, isAuthenticated, logout, initializeAuth, token } = useAuth();
   const userMenuRef = useRef(null);
   const userButtonRef = useRef(null);
 
   const navigate = useNavigate();
   const MotionLink = motion(Link);
-  const { 
-    pharmacistDetails, 
-    isLoading, 
-    error, 
+  const {
+    pharmacistDetails,
+    isLoading,
+    error,
     fetchPharmacistDetails,
-    clearError 
+    clearError,
   } = usePharmacist();
 
   // For demo: hardcoded messages count
@@ -33,7 +37,7 @@ export default function Navbar() {
   useEffect(() => {
     if (user && token) {
       // Ensure we always pass the user id, not the whole object
-      const userId = typeof user === 'object' && user !== null ? user.id : user;
+      const userId = typeof user === "object" && user !== null ? user.id : user;
       if (userId) {
         fetchPharmacistDetails(userId, token);
       }
@@ -59,16 +63,16 @@ export default function Navbar() {
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isUserMenuOpen]);
 
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
-    navigate("/")
+    navigate("/");
   };
 
   const mobileMenuVariants = {
@@ -105,7 +109,7 @@ export default function Navbar() {
   const getInitials = (name = "") => {
     const words = name.trim().split(" ");
     const firstTwo = words.slice(0, 2);
-    return firstTwo.map(word => word[0]?.toUpperCase()).join("");
+    return firstTwo.map((word) => word[0]?.toUpperCase()).join("");
   };
 
   return (
@@ -115,15 +119,19 @@ export default function Navbar() {
           href="https://flowbite.com/"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
-          <img src="/DawabackNewLogo.png" className="h-10" alt="Flowbite Logo" />
-           <div className="flex flex-col mb-2">
+          <img
+            src="/DawabackNewLogo.png"
+            className="h-10"
+            alt="Flowbite Logo"
+          />
+          <div className="flex flex-col mb-2">
             <span className="font-bold  text-2xl  whitespace-nowrap text-primary dark:text-white">
-            Dawaback
-          </span>
-          <p className="text-sm text-gray-500  leading-0 mt-1 dark:text-gray-400">
-            Before it expires, Dawaback it
-          </p>
-           </div>
+              Dawaback
+            </span>
+            <p className="text-sm text-gray-500  leading-0 mt-1 dark:text-gray-400">
+              Before it expires, Dawaback it
+            </p>
+          </div>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {isAuthenticated ? (
@@ -136,20 +144,30 @@ export default function Navbar() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-80 p-0">
-                  <div className="p-4 border-b font-semibold text-base">Notifications</div>
+                  <div className="p-4 border-b font-semibold text-base">
+                    Notifications
+                  </div>
                   <ul className="divide-y">
                     <li className="p-4 hover:bg-muted cursor-pointer text-sm">
-                      <span className="font-medium">Welcome!</span> This is a demo notification.
+                      <span className="font-medium">Welcome!</span> This is a
+                      demo notification.
                     </li>
                     <li className="p-4 hover:bg-muted cursor-pointer text-sm">
-                      <span className="font-medium">System:</span> Your profile was updated successfully.
+                      <span className="font-medium">System:</span> Your profile
+                      was updated successfully.
                     </li>
                     <li className="p-4 hover:bg-muted cursor-pointer text-sm">
-                      <span className="font-medium">Reminder:</span> Check your messages for new offers.
+                      <span className="font-medium">Reminder:</span> Check your
+                      messages for new offers.
                     </li>
                   </ul>
                   <div className="p-2 text-center border-t">
-                    <Link to="/notifications" className="text-primary text-sm hover:underline">View all notifications</Link>
+                    <Link
+                      to="/notifications"
+                      className="text-primary text-sm hover:underline"
+                    >
+                      View all notifications
+                    </Link>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -195,7 +213,7 @@ export default function Navbar() {
                     <ul className="py-2" aria-labelledby="user-menu-button">
                       <li>
                         <Link
-                          to="/messages"
+                          to="/chat"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
@@ -374,7 +392,7 @@ export default function Navbar() {
                 </li>
                 <li>
                   <Link
-                    to="/messages"
+                    to="/chat"
                     className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
                     Messages

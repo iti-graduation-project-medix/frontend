@@ -7,6 +7,7 @@ import { Calendar, Package, Tag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDeals } from '../../store/useDeals';
 import MedicineDealCard from '@/components/MedicineDealCard';
+import MedicineDealCardSkeleton from '@/components/MedicineDealCardSkeleton';
 
 export default function AvailableDeals() {
   const [search, setSearch] = useState('');
@@ -61,28 +62,10 @@ export default function AvailableDeals() {
       
       {/* Loading state */}
       {isLoading && (
-        <div className="py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(9)].map((_, i) => (
-              <div
-                key={i}
-                className="rounded-xl bg-gradient-to-r from-sky-100 via-sky-200 to-sky-100 animate-pulse h-56 flex flex-col justify-center items-center shadow relative overflow-hidden"
-              >
-                <div className="w-20 h-6 rounded-full bg-sky-200 mb-4" />
-                <div className="w-32 h-4 rounded-full bg-sky-100 mb-2" />
-                <div className="w-24 h-4 rounded-full bg-sky-100 mb-2" />
-                <div className="w-16 h-4 rounded-full bg-sky-100 mb-2" />
-                <div className="w-10 h-10 rounded-full bg-sky-200 mt-4" />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent animate-[shimmer_1.5s_infinite]" style={{backgroundSize:'200% 100%'}} />
-              </div>
-            ))}
-          </div>
-          <style>{`
-            @keyframes shimmer {
-              0% { background-position: -200% 0; }
-              100% { background-position: 200% 0; }
-            }
-          `}</style>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(9)].map((_, i) => (
+            <MedicineDealCardSkeleton key={i} />
+          ))}
         </div>
       )}
 

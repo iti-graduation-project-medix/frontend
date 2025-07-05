@@ -68,12 +68,6 @@ const Pricing2 = ({
   };
 
   const handleSubscribe = async (planId) => {
-    let user = null;
-    try {
-      user = JSON.parse(localStorage.getItem("user"));
-    } catch {
-      user = null;
-    }
     if (!user) {
       navigate("/login");
       return;
@@ -81,7 +75,7 @@ const Pricing2 = ({
     try {
       setLoadingPlan(planId);
       const res = await subscribe({
-        userId: user.id,
+        userId: user,
         planName: planIdMap[planId],
         planType: isYearly ? "yearly" : "monthly",
       });

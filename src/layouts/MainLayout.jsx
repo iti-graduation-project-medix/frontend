@@ -38,7 +38,7 @@ export default function MainLayout() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/subscription" element={<FailedPayment />} />
+            <Route path="/subscription" element={<Subscription />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route

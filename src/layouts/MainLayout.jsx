@@ -10,10 +10,8 @@ import SharedLayout from "./SharedLayout";
 import Deals from "../pages/MyDeals/Deals";
 import Subscription from "../pages/Subscription/Subscription";
 import DealFormPage from "../pages/DealForm/DealFormPage";
-import Profile from "../pages/Profile/Profile";
 import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
 import AddPharmacy from "../pages/AddPharmcy/AddPharmacy";
-import NotFound from "../pages/NotFound/notFound";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AvailableDeals from "../pages/AvailableDeals/AvailableDeals";
 import DealDetails from "../pages/AvailableDeals/DealDetails";
@@ -21,6 +19,9 @@ import PharmaciesForSale from "../pages/PharmaciesForSale/PharmaciesForSale";
 import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
 import SuccessPayment from "../pages/SuccessPayment/SuccessPayment";
 import FailedPayment from "../pages/FailedPayment/FailedPayment";
+import Settings from "../pages/Settings/Settings";
+import Profile from "../pages/Profile/Profile";
+import NotFound from "../pages/NotFound/NotFound";
 
 export default function MainLayout() {
   return (
@@ -36,7 +37,7 @@ export default function MainLayout() {
               path="/settings"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <Settings />
                 </ProtectedRoute>
               }
             />
@@ -114,6 +115,14 @@ export default function MainLayout() {
               element={
                 <ProtectedRoute>
                   <PharmacyDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/:id"
+              element={
+                <ProtectedRoute>
+                  <Profile />
                 </ProtectedRoute>
               }
             />

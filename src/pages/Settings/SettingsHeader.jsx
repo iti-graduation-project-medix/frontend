@@ -5,7 +5,7 @@ import { PiTagChevronBold } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-export default function ProfileHeader({ pharmacistDetails }) {
+export default function SettingsHeader({ pharmacistDetails }) {
   // Add null check and default values
   const details = pharmacistDetails || {};
   const getInitials = (name = "") => {

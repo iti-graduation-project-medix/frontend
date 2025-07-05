@@ -87,25 +87,25 @@ export default defineConfig({
           },
 
           {
-            src: "/icons/windows11/Square150x150Logo.scale-100.png",
+            src: "/windows11/Square150x150Logo.scale-100.png",
             sizes: "150x150",
             type: "image/png",
             purpose: "any"
           },
           {
-            src: "/icons/windows11/Square150x150Logo.scale-150.png",
+            src: "/windows11/Square150x150Logo.scale-150.png",
             sizes: "225x225",
             type: "image/png",
             purpose: "any"
           },
           {
-            src: "/icons/windows11/Square150x150Logo.scale-200.png",
+            src: "/windows11/Square150x150Logo.scale-200.png",
             sizes: "300x300",
             type: "image/png",
             purpose: "any"
           },
           {
-            src: "/icons/windows11/Square150x150Logo.scale-400.png",
+            src: "/windows11/Square150x150Logo.scale-400.png",
             sizes: "600x600",
             type: "image/png",
             purpose: "any"

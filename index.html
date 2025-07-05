@@ -9,7 +9,6 @@
 
   <!-- iOS Icon -->
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Dawaback App">
 
 
@@ -20,7 +19,10 @@
 
 <body>
   <div id="root"></div>
-  <script src="node_modules/flowbite/dist/flowbite.min.js"></script>
+  <script type="module">
+    import 'flowbite';
+  </script>
+  <!-- <script type="module" src="node_modules/flowbite/dist/flowbite.min.js"></script> -->
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

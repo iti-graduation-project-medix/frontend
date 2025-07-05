@@ -1,16 +1,77 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { getPharmacyById } from "../../api/pharmacies";
-import ImageGallery from "../../components/PharmacyDetails/ImageGallery";
-import PharmacyInfo from "../../components/PharmacyDetails/PharmacyInfo";
-import PharmacyDetailsTable from "../../components/PharmacyDetails/PharmacyDetailsTable";
-import MapSection from "../../components/PharmacyDetails/MapSection";
-import OwnerInfo from "../../components/PharmacyDetails/OwnerInfo";
-import ContactOptions from "../../components/PharmacyDetails/ContactOptions";
-import DownloadButton from "../../components/PharmacyDetails/DownloadButton";
-import AreaRatings from "../../components/PharmacyDetails/AreaRatings";
-import RelatedListings from "../../components/PharmacyDetails/RelatedListings";
+
+// Lazy load components for better performance
+const ImageGallery = lazy(() =>
+  import("../../components/PharmacyDetails/ImageGallery")
+);
+const PharmacyInfo = lazy(() =>
+  import("../../components/PharmacyDetails/PharmacyInfo")
+);
+const PharmacyDetailsTable = lazy(() =>
+  import("../../components/PharmacyDetails/PharmacyDetailsTable")
+);
+const MapSection = lazy(() =>
+  import("../../components/PharmacyDetails/MapSection")
+);
+const OwnerInfo = lazy(() =>
+  import("../../components/PharmacyDetails/OwnerInfo")
+);
+const ContactOptions = lazy(() =>
+  import("../../components/PharmacyDetails/ContactOptions")
+);
+const DownloadButton = lazy(() =>
+  import("../../components/PharmacyDetails/DownloadButton")
+);
+const AreaRatings = lazy(() =>
+  import("../../components/PharmacyDetails/AreaRatings")
+);
+const RelatedListings = lazy(() =>
+  import("../../components/PharmacyDetails/RelatedListings")
+);
+
+// Loading Skeleton Component
+const LoadingSkeleton = () => (
+  <div className="min-h-screen bg-background py-6 px-2 sm:px-4 flex flex-col items-center">
+    <div className="w-full max-w-6xl flex flex-col gap-8">
+      {/* Image Gallery Skeleton */}
+      <div className="w-full h-96 bg-gray-200 rounded-xl animate-pulse"></div>
+
+      {/* Pharmacy Info and Owner Info Skeleton */}
+      <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex-1">
+          <div className="h-32 bg-gray-200 rounded-xl animate-pulse"></div>
+        </div>
+        <div className="lg:w-80 flex justify-end">
+          <div className="w-80 h-48 bg-gray-200 rounded-xl animate-pulse"></div>
+        </div>
+      </div>
+
+      {/* Details Table Skeleton */}
+      <div className="h-48 bg-gray-200 rounded-xl animate-pulse"></div>
+
+      {/* Map Skeleton */}
+      <div className="h-64 bg-gray-200 rounded-xl animate-pulse"></div>
+
+      {/* Download Button Skeleton */}
+      <div className="h-16 bg-gray-200 rounded-xl animate-pulse"></div>
+
+      {/* Related Listings Skeleton */}
+      <div className="h-64 bg-gray-200 rounded-xl animate-pulse"></div>
+    </div>
+  </div>
+);
+
+// Component Wrapper with Suspense
+const SuspenseWrapper = ({ children }) => (
+  <Suspense
+    fallback={<div className="h-32 bg-gray-200 rounded-xl animate-pulse"></div>}
+  >
+    {children}
+  </Suspense>
+);
 
 export default function PharmacyDetails() {
   const { id } = useParams();
@@ -41,13 +102,11 @@ export default function PharmacyDetails() {
       </div>
     );
   }
+
   if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[60vh] text-blue-700 text-lg font-bold">
-        Loading...
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
+
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-[60vh] text-red-600 text-lg font-bold">
@@ -55,6 +114,7 @@ export default function PharmacyDetails() {
       </div>
     );
   }
+
   if (!pharmacy) {
     return (
       <div className="flex justify-center items-center min-h-[60vh] text-gray-500 text-lg font-bold">
@@ -66,27 +126,50 @@ export default function PharmacyDetails() {
   return (
     <div className="min-h-screen bg-background py-6 px-2 sm:px-4 flex flex-col items-center">
       <div className="w-full max-w-6xl flex flex-col gap-8">
-        <ImageGallery images={pharmacy.imagesUrls} />
+        <SuspenseWrapper>
+          <ImageGallery images={pharmacy.imagesUrls} />
+        </SuspenseWrapper>
 
         {/* Pharmacy info and owner info side by side */}
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="flex-1">
-            <PharmacyInfo pharmacy={pharmacy} />
+            <SuspenseWrapper>
+              <PharmacyInfo pharmacy={pharmacy} />
+            </SuspenseWrapper>
           </div>
-          <div className="lg:w-80">
-            <OwnerInfo owner={pharmacy.owner} />
+          <div className="lg:w-80 flex justify-end">
+            <SuspenseWrapper>
+              <OwnerInfo owner={pharmacy.owner} />
+            </SuspenseWrapper>
           </div>
         </div>
 
-        <PharmacyDetailsTable pharmacy={pharmacy} />
-        <MapSection
-          location={pharmacy.location}
-          address={pharmacy.addressLine1}
-        />
-        <ContactOptions owner={pharmacy.owner} />
-        <DownloadButton saleFileUrl={pharmacy.saleFileUrl} />
-        {/* <AreaRatings /> */}
-        <RelatedListings pharmacy={pharmacy} />
+        <SuspenseWrapper>
+          <PharmacyDetailsTable pharmacy={pharmacy} />
+        </SuspenseWrapper>
+
+        <SuspenseWrapper>
+          <MapSection
+            location={pharmacy.location}
+            address={pharmacy.addressLine1}
+          />
+        </SuspenseWrapper>
+
+        <SuspenseWrapper>
+          <ContactOptions owner={pharmacy.owner} />
+        </SuspenseWrapper>
+
+        <SuspenseWrapper>
+          <DownloadButton saleFileUrl={pharmacy.saleFileUrl} />
+        </SuspenseWrapper>
+
+        {/* <SuspenseWrapper>
+          <AreaRatings />
+        </SuspenseWrapper> */}
+
+        <SuspenseWrapper>
+          <RelatedListings pharmacy={pharmacy} />
+        </SuspenseWrapper>
       </div>
     </div>
   );

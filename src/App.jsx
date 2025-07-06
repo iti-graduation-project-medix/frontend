@@ -1,5 +1,7 @@
 import MainLayout from "./layouts/MainLayout";
 import OfflinePage from "./components/OfflinePage";
+import InstallApp from "./components/InstallApp";
+import DownloadApp from "./components/DownloadApp";
 import { useOffline } from "./hooks/useOffline";
 
 export default function App() {
@@ -7,8 +9,24 @@ export default function App() {
   const currentPath = window.location.pathname;
 
   // Allow home page to show in offline mode
-  if (isOffline && currentPath !== "/" ) {
-    return <OfflinePage />;
+  if (isOffline && currentPath !== "/") {
+    return (
+      <>
+        <OfflinePage />
+        <InstallApp />
+        <DownloadApp />
+      </>
+    );
+  }
+
+   if (isOffline && currentPath == "/" ) {
+     return (
+      <>
+        <MainLayout />
+         <InstallApp />
+         <DownloadApp />
+       </>
+    );
   }
   if (isOffline && currentPath !== "/deals" ) {
     return <OfflinePage />;
@@ -23,6 +41,8 @@ export default function App() {
   return (
     <>
       <MainLayout />
+      <InstallApp />
+      <DownloadApp />
     </>
   );
 }

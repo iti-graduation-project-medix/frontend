@@ -1,4 +1,6 @@
 import React from 'react';
+import InstallApp from './InstallApp';
+import DownloadApp from './DownloadApp';
 
 const OfflinePage = () => {
   const handleRetry = () => {
@@ -46,6 +48,12 @@ const OfflinePage = () => {
           الصفحة الرئيسية متاحة في الوضع offline
         </div>
       </div>
+
+      {/* Install App Button */}
+      <InstallApp />
+
+      {/* Download App Button */}
+      <DownloadApp />
     </div>
   );
 };

@@ -7,15 +7,21 @@ import ContactUs from "./../pages/ContactUs/ContactUs";
 import ResetPassword from "./../pages/ResetPassword/ResetPassword";
 import Otp from "./../pages/OTP/Otp";
 import SharedLayout from "./SharedLayout";
-import Deals from "../pages/Deals/Deals";
+import Deals from "../pages/MyDeals/Deals";
 import Subscription from "../pages/Subscription/Subscription";
-import Notfound from "../pages/not-found/notFound";
 import DealFormPage from "../pages/DealForm/DealFormPage";
-import Profile from "../pages/Profile/Profile";
 import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
-import { DealDetails } from "../pages/Deals/DealDetails";
-import AddPharmacy from "../pages/add pharmacies/AddPharmacy";
-
+import AddPharmacy from "../pages/AddPharmcy/AddPharmacy";
+import ProtectedRoute from "../components/ProtectedRoute";
+import AvailableDeals from "../pages/AvailableDeals/AvailableDeals";
+import DealDetails from "../pages/AvailableDeals/DealDetails";
+import PharmaciesForSale from "../pages/PharmaciesForSale/PharmaciesForSale";
+import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
+import SuccessPayment from "../pages/SuccessPayment/SuccessPayment";
+import FailedPayment from "../pages/FailedPayment/FailedPayment";
+import Settings from "../pages/Settings/Settings";
+import Profile from "../pages/Profile/Profile";
+import NotFound from "../pages/NotFound/NotFound";
 
 export default function MainLayout() {
   return (
@@ -27,18 +33,100 @@ export default function MainLayout() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/advertise" element={<Advertise />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/subscription" element={<Subscription />} />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/deals" element={<Deals />} />
-            <Route path="/deals/:id" element={<DealDetails />} />
+            <Route
+              path="/deals"
+              element={
+                <ProtectedRoute>
+                  <Deals />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/all-deals/:dealId"
+              element={
+                <ProtectedRoute>
+                  <DealDetails />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/reset" element={<ResetPassword />} />
             <Route path="/confirm-password" element={<ConfirmPassword />} />
-            <Route path="/deal-form" element={<DealFormPage />} />
-            <Route path="/add-pharmacy" element={<AddPharmacy />} />
-            <Route path="/add-pharmacy/:id" element={<AddPharmacy />} />
-            <Route path="*" element={<Notfound />} />
+            <Route
+              path="/deals/new"
+              element={
+                <ProtectedRoute>
+                  <DealFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/deals/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <DealFormPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-pharmacy"
+              element={
+                <ProtectedRoute>
+                  <AddPharmacy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-pharmacy/:id"
+              element={
+                <ProtectedRoute>
+                  <AddPharmacy />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/all-deals"
+              element={
+                <ProtectedRoute>
+                  <AvailableDeals />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pharmacies-for-sale"
+              element={
+                <ProtectedRoute>
+                  <PharmaciesForSale />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/pharmacies-for-sale/:id"
+              element={
+                <ProtectedRoute>
+                  <PharmacyDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile/:id"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </div>

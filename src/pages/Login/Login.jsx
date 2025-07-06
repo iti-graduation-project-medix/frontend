@@ -15,7 +15,7 @@ function Login() {
   useEffect(() => {
     // Check if user is already logged in
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/all-deals");
     }
   }, [isAuthenticated, navigate]);
 

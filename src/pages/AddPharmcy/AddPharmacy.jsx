@@ -88,9 +88,15 @@ const PharmacySchema = Yup.object().shape({
 const LIBRARIES = ["places"];
 
 export default function AddPharmacy() {
-  const { pharmacies, addPharmacy, updatePharmacyById, isLoading } =
-    usePharmacies();
-  const { token } = useAuth();
+  // Always call hooks first, regardless of conditions
+  const {
+    pharmacies,
+    addPharmacy,
+    updatePharmacyById,
+    isLoading,
+    fetchPharmacies,
+  } = usePharmacies();
+  const { token, user } = useAuth();
   const [mapCenter] = useState(defaultCenter);
   const [marker, setMarker] = useState(null);
   const [submitError, setSubmitError] = useState("");
@@ -113,34 +119,30 @@ export default function AddPharmacy() {
   });
   const [existingImages, setExistingImages] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const inputRef = useRef(null);
 
-  const isAddMode = !id;
-  const hasMaxPharmacies = isAddMode && Array.isArray(pharmacies) && pharmacies.length >= 2;
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+    libraries: LIBRARIES,
+  });
 
-  if (hasMaxPharmacies) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-lg w-full p-8 text-center shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-red-600">Limit Reached</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-lg mb-4">
-              You have already registered the maximum number of pharmacies (2).
-            </p>
-            <p className="text-gray-500">
-              If you need to update your existing pharmacies, please use the edit option.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // Fetch pharmacies when component mounts
+  useEffect(() => {
+    if (token && user) {
+      fetchPharmacies(token, user);
+    }
+  }, [token, user, fetchPharmacies]);
+
+  const isAddMode = !id;
+  const pharmaciesLoaded = Array.isArray(pharmacies);
+  const hasMaxPharmacies =
+    isAddMode && pharmaciesLoaded && pharmacies.length >= 2;
 
   // Find the pharmacy if editing
   useEffect(() => {
-    if (id && Array.isArray(pharmacies)) {
+    if (id && pharmaciesLoaded) {
       const pharm = pharmacies.find((p) => String(p.id) === String(id));
       if (pharm) {
         setInitialValues({
@@ -153,21 +155,31 @@ export default function AddPharmacy() {
           city: pharm.city || "",
           governorate: pharm.governorate || "",
           zipCode: pharm.zipCode || "",
-          location: pharm.location && pharm.location.coordinates ? { lat: pharm.location.coordinates[1], lng: pharm.location.coordinates[0] } : null,
+          location:
+            pharm.location && pharm.location.coordinates
+              ? {
+                  lat: pharm.location.coordinates[1],
+                  lng: pharm.location.coordinates[0],
+                }
+              : null,
           startHour: pharm.startHour || "",
           endHour: pharm.endHour || "",
           images: null,
         });
-        setMarker(pharm.location && pharm.location.coordinates ? { lat: pharm.location.coordinates[1], lng: pharm.location.coordinates[0] } : null);
-        setExistingImages(Array.isArray(pharm.imagesUrls) ? pharm.imagesUrls : []);
+        setMarker(
+          pharm.location && pharm.location.coordinates
+            ? {
+                lat: pharm.location.coordinates[1],
+                lng: pharm.location.coordinates[0],
+              }
+            : null
+        );
+        setExistingImages(
+          Array.isArray(pharm.imagesUrls) ? pharm.imagesUrls : []
+        );
       }
     }
-  }, [id, pharmacies]);
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
-    libraries: LIBRARIES,
-  });
+  }, [id, pharmacies, pharmaciesLoaded]);
 
   const formik = useFormik({
     initialValues,
@@ -175,6 +187,7 @@ export default function AddPharmacy() {
     validationSchema: PharmacySchema,
     onSubmit: async (values, { resetForm }) => {
       setSubmitError("");
+      setIsSubmitting(true);
       try {
         // Transform values to match backend
         const formData = new FormData();
@@ -207,14 +220,14 @@ export default function AddPharmacy() {
           resetForm();
           setMarker(null);
         }
-        setTimeout(() => {
-          navigate("/profile");
-        }, 1200);
+        // Navigate immediately to prevent limit reached message from showing
+        navigate("/settings");
       } catch (err) {
         setSubmitError(
           err?.message ||
             (id ? "Failed to update pharmacy" : "Failed to add pharmacy")
         );
+        setIsSubmitting(false);
       }
     },
   });
@@ -256,6 +269,42 @@ export default function AddPharmacy() {
     });
     setSearchBox(autocomplete);
   }, [isLoaded, searchBox, formik]);
+
+  // Show loading state while pharmacies are loading or being fetched
+  if (!pharmaciesLoaded || isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show limit reached message
+  if (hasMaxPharmacies && !isSubmitting && !formik.isSubmitting && !isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="max-w-lg w-full p-8 text-center shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-red-600">
+              Limit Reached
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-lg mb-4">
+              You have already registered the maximum number of pharmacies (2).
+            </p>
+            <p className="text-gray-500">
+              If you need to update your existing pharmacies, please use the
+              edit option.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -676,7 +725,9 @@ export default function AddPharmacy() {
                             className="absolute top-1 right-1 bg-white/80 rounded-full p-0.5 hover:bg-red-100"
                             onClick={(e) => {
                               e.preventDefault();
-                              setExistingImages(existingImages.filter((_, i) => i !== idx));
+                              setExistingImages(
+                                existingImages.filter((_, i) => i !== idx)
+                              );
                             }}
                           >
                             <XCircle size={16} className="text-red-500" />

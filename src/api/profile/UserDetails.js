@@ -19,9 +19,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const getUserDeals = async (queryParams={}) => {
+export const getUserDetails = async (id) => {
   try {
-    const response = await api.get(`/user/deals`, { params: queryParams });
+    const response = await api.get(`/user/${id}`);
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || 'Failed to fetch user deals');

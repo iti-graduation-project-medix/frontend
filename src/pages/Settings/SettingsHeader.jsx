@@ -5,7 +5,7 @@ import { PiTagChevronBold } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-export default function ProfileHeader({ pharmacistDetails }) {
+export default function SettingsHeader({ pharmacistDetails }) {
   // Add null check and default values
   const details = pharmacistDetails || {};
   const getInitials = (name = "") => {
@@ -51,7 +51,7 @@ export default function ProfileHeader({ pharmacistDetails }) {
         className="bg-primary text-white h-10 px-6 rounded-lg font-semibold text-base shadow-md flex items-center w-full sm:w-auto sm:ml-4"
       >
         <PiTagChevronBold className="mr-2" size={18} />
-        Deals
+        My Deals
       </Link>
     </div>
   );

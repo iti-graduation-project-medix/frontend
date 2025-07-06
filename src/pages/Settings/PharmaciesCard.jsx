@@ -10,10 +10,11 @@ import { Button } from "@/components/ui/button";
 import Accordion from "@/components/ui/Accordion";
 import { FaClinicMedical } from "react-icons/fa";
 import { RiCapsuleLine } from "react-icons/ri";
-import { useAuth } from "../../../store/useAuth";
-import { usePharmacies } from "../../../store/usePharmcies";
+import { useAuth } from "../../store/useAuth";
+import { usePharmacies } from "../../store/usePharmcies";
 import ConfirmDialog from "./ConfirmDialog";
 import { Link } from "react-router-dom";
+import ListPharmacyForSaleModal from "./ListPharmacyForSaleModal";
 
 export default function PharmaciesCard({ pharmacistDetails }) {
   // Add null check and default values
@@ -31,6 +32,9 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [pharmacyToDelete, setPharmacyToDelete] = useState(null);
+  // List for Sale modal state
+  const [showListModal, setShowListModal] = useState(false);
+  const [pharmacyToList, setPharmacyToList] = useState(null);
 
   useEffect(() => {
     if (user && token) {
@@ -58,6 +62,22 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   const handleCancelDelete = () => {
     setShowDeleteModal(false);
     setPharmacyToDelete(null);
+  };
+
+  const handleListClick = (pharmacyId) => {
+    setPharmacyToList(pharmacyId);
+    setShowListModal(true);
+  };
+
+  const handleListSubmit = async (formData) => {
+    try {
+      // TODO: Implement the API call to list pharmacy for sale
+      console.log('Submitting pharmacy listing:', formData);
+      setShowListModal(false);
+      setPharmacyToList(null);
+    } catch (error) {
+      console.error('Failed to list pharmacy:', error);
+    }
   };
 
   // Loading state
@@ -112,7 +132,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
       </span>
     ),
     content: (
-      <div className="bg-gray-50 rounded-xl shadow-md p-6 border border-gray-100">
+      <div className="bg-gray-50 rounded-xl shadow-md p-6 border border-gray-100 mt-2 ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
           <div className="flex flex-col gap-1 pb-2 border-b last:border-b-0">
             <span className="text-xs text-muted-foreground font-medium uppercase">
@@ -203,13 +223,19 @@ export default function PharmaciesCard({ pharmacistDetails }) {
           >
             Delete
           </Button>
+          <Button
+            className="px-5 py-2 rounded-md text-sm h-9 font-semibold max-sm:w-full bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={() => handleListClick(pharmacy.id)}
+          >
+            List for Sale
+          </Button>
         </div>
       </div>
     ),
   }));
 
   return (
-    <Card className="p-8 shadow-2xl rounded-2xl border border-gray-200 max-w-2xl mx-auto bg-white">
+    <Card className="p-8 max-sm:px-0 shadow-2xl rounded-2xl border border-gray-200 max-w-2xl mx-auto bg-white">
       <ConfirmDialog
         open={showDeleteModal}
         onOpenChange={setShowDeleteModal}
@@ -219,6 +245,14 @@ export default function PharmaciesCard({ pharmacistDetails }) {
         confirmText="Delete"
         cancelText="Cancel"
       />
+
+      <ListPharmacyForSaleModal
+        open={showListModal}
+        onOpenChange={setShowListModal}
+        onSubmit={handleListSubmit}
+        initialPharmacy={pharmacyToList}
+      />
+
       <CardHeader className="pb-2 border-b mb-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <span className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
@@ -248,7 +282,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             } added)`}
         </span>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 max-sm:px-3">
         <div className="flex flex-col gap-8">
           {safePharmacies.length === 0 ? (
             <div className="text-center py-8">
@@ -262,7 +296,9 @@ export default function PharmaciesCard({ pharmacistDetails }) {
               </p>
             </div>
           ) : (
-            <Accordion items={accordionItems} />
+            <div className="w-full">
+              <Accordion items={accordionItems} />
+            </div>
           )}
         </div>
       </CardContent>

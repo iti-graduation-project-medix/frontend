@@ -47,20 +47,27 @@
 :root {
   --radius: 0.625rem;
   --background: #f7f8fa;
-  --foreground: #27364c; /* Text Main */
+  --foreground: #27364c;
+  /* Text Main */
 
-  --primary: #636ae8; /* Purple */
-  --primary-hover: #4f57ba; /* Darker Purple */
-  --secondary: #feb73f; /* Yellow */
-  --secondary-hover: #d39b39; /* Darker Yellow */
+  --primary: #636ae8;
+  /* Purple */
+  --primary-hover: #4f57ba;
+  /* Darker Purple */
+  --secondary: #feb73f;
+  /* Yellow */
+  --secondary-hover: #d39b39;
+  /* Darker Yellow */
 
   --card: #ffffff;
   --card-foreground: #27364c;
   --popover: #ffffff;
   --popover-foreground: #27364c;
 
-  --primary-foreground: #ffffff; /* Text on Primary */
-  --secondary-foreground: #27364c; /* Text on Secondary */
+  --primary-foreground: #ffffff;
+  /* Text on Primary */
+  --secondary-foreground: #27364c;
+  /* Text on Secondary */
 
   --muted: #f0f0f0;
   --muted-foreground: #6b7280;
@@ -136,6 +143,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

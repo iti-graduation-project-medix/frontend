@@ -1,7 +1,6 @@
 import MainLayout from "./layouts/MainLayout";
 import OfflinePage from "./components/OfflinePage";
 import InstallApp from "./components/InstallApp";
-import DownloadApp from "./components/DownloadApp";
 import { useOffline } from "./hooks/useOffline";
 
 export default function App() {
@@ -14,18 +13,16 @@ export default function App() {
       <>
         <OfflinePage />
         <InstallApp />
-        <DownloadApp />
       </>
     );
   }
 
-   if (isOffline && currentPath == "/" ) {
-     return (
+  if (isOffline && currentPath == "/" ) {
+    return (
       <>
         <MainLayout />
-         <InstallApp />
-         <DownloadApp />
-       </>
+        <InstallApp />
+      </>
     );
   }
   if (isOffline && currentPath !== "/deals" ) {
@@ -42,7 +39,6 @@ export default function App() {
     <>
       <MainLayout />
       <InstallApp />
-      <DownloadApp />
     </>
   );
 }

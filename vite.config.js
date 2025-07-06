@@ -16,7 +16,7 @@ export default defineConfig({
         type: "classic"
       },
       workbox: {
-        globPatterns: ["**/*.{js,jsx,css,ico,png,svg,webmanifest,html}"],
+        globPatterns: ["**/*.{js,jsx,css,ico,png,svg,webmanifest,html,webp}"],
         additionalManifestEntries: []
       },
       injectRegister: "auto",

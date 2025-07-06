@@ -348,6 +348,11 @@ const useChat = create((set, get) => ({
     }
     set({ socket: null, activeChat: null, messages: {} });
   },
+
+  getTotalUnread: () => {
+    const chats = get().chats || [];
+    return chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
+  },
 }));
 
 export default useChat;

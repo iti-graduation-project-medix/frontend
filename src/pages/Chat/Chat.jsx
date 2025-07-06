@@ -97,12 +97,12 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex">
+    <div className="h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex  rounded-lg">
       {/* Chat List Sidebar */}
       <div
         className={`${
           showSidebar ? "flex" : "hidden"
-        } md:flex w-full md:w-96 bg-white/80 backdrop-blur-sm border-r border-gray-200/50 flex-col shadow-xl`}
+        } md:flex w-full md:w-96 bg-white/80 backdrop-blur-sm border-r border-gray-200/50 flex-col `}
       >
         {/* Header */}
         <div className="p-6 border-b border-gray-200/50 bg-white/90">
@@ -302,29 +302,6 @@ export default function Chat() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="hover:bg-gray-100"
-                  >
-                    <Phone className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="hover:bg-gray-100"
-                  >
-                    <Video className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="hover:bg-gray-100"
-                  >
-                    <MoreVertical className="h-5 w-5" />
-                  </Button>
-                </div>
               </div>
             </div>
 
@@ -396,7 +373,7 @@ export default function Chat() {
             </div>
 
             {/* Message Input */}
-            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-6 shadow-lg">
+            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-6 ">
               <div className="flex items-end gap-4">
                 <Button
                   variant="ghost"
@@ -414,13 +391,7 @@ export default function Chat() {
                     className="min-h-[60px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none"
                   />
                 </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-gray-100"
-                >
-                  <Smile className="h-5 w-5" />
-                </Button>
+
                 <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim()}

@@ -13,6 +13,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
+import useChat from "../../store/useChat";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,8 +32,10 @@ export default function Navbar() {
     clearError,
   } = usePharmacist();
 
-  // For demo: hardcoded messages count
-  const messagesCount = 3;
+  // Use real unread messages count from chat store
+  const unreadCount = useChat((state) =>
+    state.getTotalUnread ? state.getTotalUnread() : 0
+  );
 
   useEffect(() => {
     if (user && token) {
@@ -186,9 +189,9 @@ export default function Navbar() {
                     {getInitials(pharmacistDetails?.fullName || "User")}
                   </AvatarFallback>
                 </Avatar>
-                {messagesCount > 0 && (
+                {unreadCount > 0 && (
                   <span className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow">
-                    {messagesCount}
+                    {unreadCount}
                   </span>
                 )}
               </motion.button>
@@ -218,9 +221,9 @@ export default function Navbar() {
                           className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
                           Messages
-                          {messagesCount > 0 && (
+                          {unreadCount > 0 && (
                             <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
-                              {messagesCount}
+                              {unreadCount}
                             </Badge>
                           )}
                         </Link>

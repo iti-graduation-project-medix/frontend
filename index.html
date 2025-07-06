@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dawaback</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script src="node_modules/flowbite/dist/flowbite.min.js"></script>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- iOS Icon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180.png">
+  <meta name="apple-mobile-web-app-title" content="Dawaback App">
+
+  <!-- Windows (optional meta tags for better appearance) -->
+  <meta name="msapplication-TileColor" content="#a35c7a">
+  <title>Dawaback</title>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module">
+    import 'flowbite';
+  </script>
+  <!-- <script type="module" src="node_modules/flowbite/dist/flowbite.min.js"></script> -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

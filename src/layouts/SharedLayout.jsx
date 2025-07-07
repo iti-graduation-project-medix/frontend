@@ -4,7 +4,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { Footer } from "../components/Footer/Footer";
 import OfflineIndicator from "../components/OfflineIndicator";
 
-
 export default function SharedLayout() {
   return (
     <>
@@ -13,7 +12,7 @@ export default function SharedLayout() {
 
       <Outlet />
       <Toaster />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

@@ -15,6 +15,8 @@ const useChat = create((set, get) => ({
   error: null,
   socket: null,
   totalUnreadCount: 0, // Add this for reactive updates
+  isWidgetOpen: false,
+  setIsWidgetOpen: (open) => set({ isWidgetOpen: open }),
 
   // Helper function to get current user ID
   getCurrentUserId: () => {

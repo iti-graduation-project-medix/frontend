@@ -13,6 +13,8 @@ import {
   Check,
   CheckCheck,
   Package,
+  User2,
+  X,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -33,11 +35,21 @@ import { ChatMessageList } from "../../components/ui/chat/chat-message-list.jsx"
 import { ChatInput } from "../../components/ui/chat/chat-input.jsx";
 import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
+import DealInfoBar from "../../components/ui/chat/DealInfoBar";
+import { Link } from "react-router-dom";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [showSidebar, setShowSidebar] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mode, setMode] = useState("list"); // 'list' or 'chat'
+
+  // Responsive: on mobile, widget is full width, bottom 90% height
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+
+  // Responsive widget size
+  const widgetWidth = "w-full max-w-[400px]";
+  const widgetHeight = "h-[70vh] max-h-[600px]";
 
   const { user, isAuthenticated } = useAuth();
   const {
@@ -54,6 +66,8 @@ export default function Chat() {
     initializeSocket,
     getCurrentUserId,
     socket,
+    isWidgetOpen,
+    setIsWidgetOpen,
   } = useChat();
 
   // Emit leaveRoom when activeChat changes or on unmount
@@ -101,15 +115,19 @@ export default function Chat() {
     }
   };
 
+  // When a chat is selected, switch to chat mode
   const handleChatSelect = async (chat) => {
     try {
       await selectChat(chat);
-      if (window.innerWidth < 768) {
-        setShowSidebar(false);
-      }
+      setMode("chat");
     } catch (error) {
       console.error("Error selecting chat:", error);
     }
+  };
+
+  // Back button handler
+  const handleBackToList = () => {
+    setMode("list");
   };
 
   const currentMessages = activeChat ? messages[activeChat.roomId] || [] : [];
@@ -122,60 +140,66 @@ export default function Chat() {
     );
   }
 
-  return (
-    <div className="h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex  rounded-lg">
-      {/* Chat List Sidebar */}
-      <div
-        className={`${
-          showSidebar ? "flex" : "hidden"
-        } md:flex w-full md:w-96 bg-white/80 backdrop-blur-sm border-r border-gray-200/50 flex-col `}
-      >
-        {/* Header */}
-        <div className="p-6 border-b border-gray-200/50 bg-white/90">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Messages</h1>
-                <p className="text-sm text-gray-500">
-                  Chat with buyers & sellers
-                </p>
-              </div>
-            </div>
-            <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-              <MoreVertical className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search conversations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all"
-            />
-          </div>
-        </div>
+  // Floating button (bottom right)
+  const FloatingButton = (
+    <button
+      onClick={() => setIsWidgetOpen(true)}
+      className="fixed z-50 bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg p-4 flex items-center justify-center transition-all"
+      aria-label="Open Chat"
+    >
+      <MessageCircle className="w-7 h-7" />
+    </button>
+  );
 
-        {/* Chat List */}
-        <div className="flex-1 overflow-y-auto">
-          {loading ? (
-            <div className="p-6 space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-white/80 shadow animate-pulse"
-                >
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 w-2/3 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                    <div className="h-3 w-1/2 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                  </div>
+  // Layout: only one view at a time
+  const chatContent = (
+    <div className="flex flex-col h-full w-full">
+      {mode === "list" && (
+        <div className="flex flex-col h-full w-full">
+          {/* Chat List Sidebar (full widget area) */}
+          <div className="p-6 border-b border-gray-200/50 bg-white/90">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <MessageCircle className="w-6 h-6 text-white" />
                 </div>
-              ))}
-              <style>{`
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+                  <p className="text-sm text-gray-500">
+                    Chat with buyers & sellers
+                  </p>
+                </div>
+              </div>
+              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
+                <MoreVertical className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search conversations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all"
+              />
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {loading ? (
+              <div className="p-6 space-y-4">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 shadow animate-pulse"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-2/3 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
+                      <div className="h-3 w-1/2 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
+                    </div>
+                  </div>
+                ))}
+                <style>{`
                 .shimmer {
                   background-size: 200% 100%;
                   animation: shimmer 1.5s infinite linear;
@@ -185,195 +209,174 @@ export default function Chat() {
                   100% { background-position: 200% 0; }
                 }
               `}</style>
-            </div>
-          ) : chats.length > 0 ? (
-            <div className="p-2">
-              {chats.map((chat) => {
-                // Format last message time
-                let lastMsgTime = "";
-                if (chat.lastMessage?.sentAt) {
-                  const date = new Date(chat.lastMessage.sentAt);
-                  const now = new Date();
-                  if (
-                    date.getDate() === now.getDate() &&
-                    date.getMonth() === now.getMonth() &&
-                    date.getFullYear() === now.getFullYear()
-                  ) {
-                    // Same day: show time
-                    lastMsgTime = date.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    });
-                  } else {
-                    // Different day: show date
-                    lastMsgTime = date.toLocaleDateString();
+              </div>
+            ) : chats.length > 0 ? (
+              <div className="p-2">
+                {chats.map((chat) => {
+                  // Format last message time
+                  let lastMsgTime = "";
+                  if (chat.lastMessage?.sentAt) {
+                    const date = new Date(chat.lastMessage.sentAt);
+                    const now = new Date();
+                    if (
+                      date.getDate() === now.getDate() &&
+                      date.getMonth() === now.getMonth() &&
+                      date.getFullYear() === now.getFullYear()
+                    ) {
+                      lastMsgTime = date.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      });
+                    } else {
+                      lastMsgTime = date.toLocaleDateString();
+                    }
                   }
-                }
-                return (
-                  <div
-                    key={chat.roomId}
-                    onClick={() => handleChatSelect(chat)}
-                    className={`p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50/80 ${
-                      activeChat?.roomId === chat.roomId
-                        ? "bg-blue-50/80 border border-blue-200"
-                        : ""
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-12 w-12 ring-2 ring-white shadow-sm">
-                        <AvatarImage
-                          src={chat.otherUser?.profilePhotoUrl}
-                          alt={chat.otherUser?.fullName}
-                        />
-                        <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
-                          {chat.otherUser?.fullName
-                            ?.split(" ")
-                            .map((n) => n[0])
-                            .join("") || "U"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-semibold text-gray-900 truncate">
-                            {chat.otherUser?.fullName || "Unknown User"}
-                          </h3>
-                          <span className="text-xs text-gray-500">
-                            {lastMsgTime}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-gray-600 truncate">
-                              {chat.lastMessage?.text || "No messages yet"}
-                            </p>
-                            {chat.deal && (
-                              <div className="flex items-center gap-1 mt-1">
-                                <Package className="w-3 h-3 text-gray-400" />
-                                <span className="text-xs text-gray-500 truncate">
-                                  {chat.deal.title || "Deal"}
-                                </span>
-                              </div>
+                  return (
+                    <div
+                      key={chat.roomId}
+                      onClick={() => handleChatSelect(chat)}
+                      className={`p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50/80 ${
+                        activeChat?.roomId === chat.roomId
+                          ? "bg-blue-50/80 border border-blue-200"
+                          : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-12 w-12 ring-2 ring-white shadow-sm">
+                          <AvatarImage
+                            src={chat.otherUser?.profilePhotoUrl}
+                            alt={chat.otherUser?.fullName}
+                          />
+                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
+                            {chat.otherUser?.fullName
+                              ?.split(" ")
+                              .map((n) => n[0])
+                              .join("") || "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold text-gray-900 truncate">
+                              {chat.otherUser?.fullName || "Unknown User"}
+                            </h3>
+                            <span className="text-xs text-gray-500">
+                              {lastMsgTime}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-gray-600 truncate">
+                                {chat.lastMessage?.text || "No messages yet"}
+                              </p>
+                              {chat.deal && (
+                                <div className="flex items-center gap-1 mt-1">
+                                  <Package className="w-3 h-3 text-gray-400" />
+                                  <span className="text-xs text-gray-500 truncate">
+                                    {chat.deal.title || "Deal"}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            {chat.unreadCount > 0 && (
+                              <Badge className="bg-blue-500 text-white text-xs px-2 py-1 ml-2">
+                                {chat.unreadCount}
+                              </Badge>
                             )}
                           </div>
-                          {chat.unreadCount > 0 && (
-                            <Badge className="bg-blue-500 text-white text-xs px-2 py-1 ml-2">
-                              {chat.unreadCount}
-                            </Badge>
-                          )}
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="p-6 text-center">
-              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-8 w-8 text-gray-400" />
+                  );
+                })}
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No conversations yet
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Start a chat by clicking "Chat with me" on any deal or pharmacy
-                listing
-              </p>
-              <Button
-                onClick={() => window.history.back()}
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
-              >
-                Browse Listings
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Main Chat Area */}
-      <div
-        className={`${
-          !showSidebar ? "flex" : "hidden"
-        } md:flex flex-1 flex-col bg-white/60 backdrop-blur-sm`}
-      >
-        {activeChat ? (
-          <>
-            {/* Chat Header */}
-            <div className="bg-white/90 backdrop-blur-sm border-b border-gray-200/50 p-6 shadow-sm">
-              <div className="flex items-center gap-4">
+            ) : (
+              <div className="p-6 text-center">
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="h-8 w-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No conversations yet
+                </h3>
+                <p className="text-gray-500 mb-4">
+                  Start a chat by clicking "Chat with me" on any deal or
+                  pharmacy listing
+                </p>
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden hover:bg-gray-100"
-                  onClick={() => setShowSidebar(true)}
+                  onClick={() => window.history.back()}
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  Browse Listings
                 </Button>
-                <Avatar className="h-12 w-12 ring-2 ring-white shadow-lg">
-                  <AvatarImage
-                    src={activeChat.otherUser?.profilePhotoUrl}
-                    alt={activeChat.otherUser?.fullName}
-                  />
-                  <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
-                    {activeChat.otherUser?.fullName
-                      ?.split(" ")
-                      .map((n) => n[0])
-                      .join("") || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <h2 className="font-semibold text-gray-900 text-lg">
-                    {activeChat.otherUser?.fullName || "Unknown User"}
-                  </h2>
-                  <div className="flex items-center gap-3">
-                    <Badge
-                      variant="secondary"
-                      className="text-xs bg-gray-100 text-gray-700"
-                    >
-                      {activeChat.otherUser?.role || "User"}
-                    </Badge>
-                    {activeChat.deal && (
-                      <Badge
-                        variant="outline"
-                        className="text-xs border-blue-200 text-blue-700 bg-blue-50"
-                      >
-                        <Package className="w-3 h-3 mr-1" />
-                        {activeChat.deal.title || "Deal"}
-                      </Badge>
-                    )}
-                    <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Online
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Error Display */}
-            {error && (
-              <div className="bg-red-50 border-l-4 border-red-400 p-4 mx-4 mt-4 rounded">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <div className="w-5 h-5 bg-red-400 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">!</span>
-                    </div>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-red-700">{error}</p>
-                    <button
-                      onClick={clearError}
-                      className="text-sm text-red-600 hover:text-red-500 mt-1"
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
               </div>
             )}
-
-            {/* Messages */}
-            <div className="flex-1 overflow-hidden bg-gradient-to-b from-transparent to-gray-50/30">
+          </div>
+        </div>
+      )}
+      {mode === "chat" && (
+        <div className="flex flex-col h-full w-full">
+          {/* Back button and header (compact, all in one row) */}
+          <div className="flex items-center gap-2 p-3 bg-white border-b border-gray-200/50 shrink-0">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleBackToList}
+              className="hover:bg-gray-100"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <Avatar className="h-9 w-9 ring-2 ring-white shadow-lg">
+              <AvatarImage
+                src={activeChat.otherUser?.profilePhotoUrl}
+                alt={activeChat.otherUser?.fullName}
+              />
+              <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
+                {activeChat.otherUser?.fullName
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("") || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-gray-900 text-base truncate">
+                  {activeChat.otherUser?.fullName || "Unknown User"}
+                </span>
+                <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Online
+                </span>
+              </div>
+            </div>
+            <Link
+              to={`/profile/${activeChat.otherUser?.id}`}
+              className="px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
+            >
+              <User2 className="w-4 h-4" />
+              Profile
+            </Link>
+          </div>
+          {/* Deal Info Banner (compact, collapsible) */}
+          {activeChat?.deal && (
+            <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border-b border-blue-100 text-sm shrink-0">
+              <Package className="w-5 h-5 text-blue-500" />
+              <span className="font-semibold text-blue-900 truncate flex-1">
+                {activeChat.deal.medicineName ||
+                  activeChat.deal.title ||
+                  "Deal"}
+              </span>
+              <Link
+                to={`/all-deals/${activeChat.deal.id}`}
+                className="px-3 py-1 rounded bg-blue-500 text-white text-xs font-semibold hover:bg-blue-600 transition"
+              >
+                View
+              </Link>
+              {/* Collapsible toggle (optional, can add details on click) */}
+            </div>
+          )}
+          {/* Main Chat Area: messages and input */}
+          <div className="flex-1 min-h-0 flex flex-col">
+            {/* Messages (scrollable) */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1">
               <ChatMessageList className="h-full">
                 {currentMessages.map((msg) => (
                   <ChatBubble
@@ -416,9 +419,8 @@ export default function Chat() {
                 ))}
               </ChatMessageList>
             </div>
-
-            {/* Message Input */}
-            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-6 ">
+            {/* Input (always visible at bottom) */}
+            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-3 shrink-0">
               <div className="flex items-end gap-4">
                 <Button
                   variant="ghost"
@@ -433,10 +435,9 @@ export default function Chat() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="min-h-[60px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none"
+                    className="min-h-[40px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none"
                   />
                 </div>
-
                 <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim()}
@@ -446,25 +447,59 @@ export default function Chat() {
                 </Button>
               </div>
             </div>
-          </>
-        ) : (
-          // Empty state when no chat is selected
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <MessageCircle className="h-10 w-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Select a conversation
-              </h3>
-              <p className="text-gray-500 max-w-md">
-                Start a chat by clicking "Chat with me" on any deal or pharmacy
-                listing
-              </p>
-            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
+  );
+
+  // Responsive: on mobile, widget is full width, bottom 90% height
+  const mobileWidgetStyle = isMobile
+    ? {
+        width: "100vw",
+        right: 0,
+        left: 0,
+        bottom: 0,
+        height: "90vh",
+        borderRadius: 0,
+      }
+    : {};
+
+  // Floating chat widget
+  const FloatingWidget = (
+    <div
+      className={
+        `fixed z-50 bottom-0 left-0 ` +
+        `flex flex-col ` +
+        `bg-white ` +
+        `overflow-hidden animate-fade-in-up ` +
+        `w-screen h-[90vh] rounded-none border-0 shadow-none ` +
+        `sm:bottom-6 sm:left-6 sm:w-full sm:max-w-[400px] sm:h-[70vh] sm:max-h-[600px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-blue-100`
+      }
+    >
+      {/* Header with close button */}
+      <div className="flex items-center justify-between p-4 sm:p-3 bg-blue-600 text-white">
+        <div className="flex items-center gap-2">
+          <MessageCircle className="w-7 h-7 sm:w-6 sm:h-6" />
+          <span className="font-bold text-lg">Chat</span>
+        </div>
+        <button
+          onClick={() => setIsWidgetOpen(false)}
+          className="p-2 sm:p-1 rounded hover:bg-blue-700 transition"
+          aria-label="Close Chat"
+        >
+          <X className="w-6 h-6 sm:w-5 sm:h-5" />
+        </button>
+      </div>
+      {/* Main chat content */}
+      <div className="flex flex-col flex-1 min-h-0 w-full">{chatContent}</div>
+    </div>
+  );
+
+  return (
+    <>
+      {!isWidgetOpen && FloatingButton}
+      {isWidgetOpen && <div style={mobileWidgetStyle}>{FloatingWidget}</div>}
+    </>
   );
 }

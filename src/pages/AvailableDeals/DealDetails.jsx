@@ -53,7 +53,7 @@ export default function DealDetails() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] text-blue-700 text-lg font-bold">
+      <div className="flex justify-center items-center min-h-[60vh] text-primary text-lg font-bold">
         Loading
       </div>
     );
@@ -110,18 +110,18 @@ export default function DealDetails() {
   )}`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-6 px-2 sm:px-4 flex justify-center items-start">
+    <div className="min-h-screen py-6 px-2 sm:px-4 flex  justify-center items-start">
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         {/* Left Column: Medicine & Pharmacy Info */}
         <main className="md:col-span-2 flex flex-col gap-6 md:gap-8 order-1 md:order-1">
           {/* Medicine Info Section */}
-          <section className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 flex flex-col gap-4 border-b-4 border-blue-100">
+          <section className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 flex flex-col gap-4 border-b-4 border-primary/20">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-blue-800 mb-1">
+                <h1 className="text-2xl font-bold text-primary mb-1">
                   {deal.medicineName}
                 </h1>
-                <span className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+                <span className="inline-block bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
                   {deal.dealType}
                 </span>
               </div>
@@ -180,8 +180,8 @@ export default function DealDetails() {
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <div className="bg-blue-50 rounded-lg p-4 h-full flex flex-col justify-center">
-                  <h2 className="text-lg font-semibold text-blue-700 mb-2">
+                <div className="bg-primary/5 rounded-lg p-4 h-full flex flex-col justify-center">
+                  <h2 className="text-lg font-semibold text-primary mb-2">
                     Description
                   </h2>
                   <p className="text-gray-700 text-sm leading-relaxed">
@@ -193,7 +193,7 @@ export default function DealDetails() {
             {/* Mobile Chat Button */}
             <Button
               onClick={handleChat}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-4 w-full justify-center block md:hidden"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-4 w-full justify-center block md:hidden"
             >
               <MessageCircle className="w-5 h-5" />
               CHAT WITH DOCTOR
@@ -201,10 +201,10 @@ export default function DealDetails() {
           </section>
 
           {/* Pharmacy Info Section */}
-          <section className="bg-gray-50 rounded-2xl p-4 sm:p-6 flex flex-col gap-3 border border-blue-100">
+          <section className="bg-gray-50 rounded-2xl p-4 sm:p-6 flex flex-col gap-3 border border-primary/20">
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-5 h-5 text-blue-400" />
-              <span className="font-bold text-blue-800 text-lg">
+              <MapPin className="w-5 h-5 text-primary" />
+              <span className="font-bold text-primary text-lg">
                 Pharmacy Info
               </span>
             </div>
@@ -247,7 +247,7 @@ export default function DealDetails() {
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition-all text-sm"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-primary/80 text-white font-semibold px-5 py-2 rounded-lg shadow transition-all text-sm"
               >
                 <Map className="w-4 h-4" />
                 Get Directions
@@ -260,8 +260,8 @@ export default function DealDetails() {
         <aside className="md:col-span-1 flex flex-col items-center md:items-stretch gap-6 order-2 md:order-2 mt-8 md:mt-0 md:sticky md:top-8">
           <section className="bg-white border rounded-2xl p-6 flex flex-col items-center gap-2">
             <div className="flex items-center gap-2 mb-2">
-              <User2 className="w-5 h-5 text-blue-400" />
-              <span className="font-bold text-blue-800 text-lg">
+              <User2 className="w-5 h-5 text-primary" />
+              <span className="font-bold text-primary text-lg">
                 Doctor Info
               </span>
             </div>
@@ -276,7 +276,7 @@ export default function DealDetails() {
               )}
             </Avatar>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-lg font-bold text-blue-900">
+              <span className="text-lg font-bold text-primary">
                 {deal.postedBy.fullName}
               </span>
               {deal.postedBy.isIdVerified && (
@@ -288,14 +288,14 @@ export default function DealDetails() {
             </div>
             <Button
               onClick={handleChat}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-3 w-full justify-center hidden md:flex"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/80 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all text-base mt-3 w-full justify-center hidden md:flex"
             >
               <MessageCircle className="w-5 h-5" />
               Chat with {deal.postedBy.fullName.split(" ")[0]}
             </Button>
             <Button
               onClick={handleProfile}
-              className="flex items-center gap-2 border border-blue-600 text-blue-700 hover:bg-blue-50 font-semibold px-6 py-3 rounded-xl shadow-sm transition-all text-base mt-2 w-full justify-center"
+              className="flex items-center gap-2 border border-primary text-primary hover:bg-primary/5 font-semibold px-6 py-3 rounded-xl shadow-sm transition-all text-base mt-2 w-full justify-center"
               title="View all deals by this doctor"
               variant="outline"
             >

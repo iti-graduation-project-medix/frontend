@@ -14,8 +14,11 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import useChat from "../../store/useChat";
+import { useOffline } from "../../hooks/useOffline";
 
 export default function Navbar() {
+    const isOffline = useOffline();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout, initializeAuth, token } = useAuth();
@@ -29,7 +32,7 @@ export default function Navbar() {
     isLoading,
     error,
     fetchPharmacistDetails,
-    clearError,
+    clearError
   } = usePharmacist();
 
   // Use real unread messages count from chat store
@@ -126,7 +129,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className=" border-gray-200 dark:bg-gray-900">
+
+    <nav className=" border-gray-200 dark:bg-gray-900" style={{ paddingTop: isOffline ? "2rem" : "0" }}>
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           href="https://flowbite.com/"

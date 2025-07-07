@@ -13,7 +13,7 @@ export default function SharedLayout() {
 
       <Outlet />
       <Toaster />
-      <Footer/>
+      <Footer />
     </>
   );
 }

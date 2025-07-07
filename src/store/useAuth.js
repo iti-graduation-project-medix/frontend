@@ -1,7 +1,11 @@
-import { create } from 'zustand';
-import { signIn } from '../api/auth/SignIn';
-import { resetPassword, confirmOtp, confirmPassword } from '../api/auth/ResetPassword';
-import { changePassword } from '../api/auth/ChangePassword';
+import { create } from "zustand";
+import { signIn } from "../api/auth/SignIn";
+import {
+  resetPassword,
+  confirmOtp,
+  confirmPassword,
+} from "../api/auth/ResetPassword";
+import { changePassword } from "../api/auth/ChangePassword";
 
 export const useAuth = create((set, get) => ({
   user: null,
@@ -13,18 +17,18 @@ export const useAuth = create((set, get) => ({
   // Login action
   login: async (credentials) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const response = await signIn(credentials);
-      
+
       // Store user data and token
       const userData = response.user || response;
       const token = response.token || response.accessToken;
-      
+
       // Save to localStorage
-      localStorage.setItem('user', JSON.stringify(userData.data.id));
-      localStorage.setItem('token', JSON.stringify(userData.data.token));
-      
+      localStorage.setItem("user", JSON.stringify(userData.data.id));
+      localStorage.setItem("token", JSON.stringify(userData.data.token));
+
       set({
         user: userData,
         token: token,
@@ -32,12 +36,12 @@ export const useAuth = create((set, get) => ({
         error: null,
         isAuthenticated: true,
       });
-      
+
       return response;
     } catch (error) {
       set({
         isLoading: false,
-        error: error.message || 'Login failed',
+        error: error.message || "Login failed",
         isAuthenticated: false,
       });
       throw error;
@@ -48,12 +52,15 @@ export const useAuth = create((set, get) => ({
   resetPassword: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      if (data.email) sessionStorage.setItem('resetEmail', data.email);
+      if (data.email) sessionStorage.setItem("resetEmail", data.email);
       const response = await resetPassword(data);
       set({ isLoading: false, error: null });
       return response;
     } catch (error) {
-      set({ isLoading: false, error: error.message || 'Reset password failed' });
+      set({
+        isLoading: false,
+        error: error.message || "Reset password failed",
+      });
       throw error;
     }
   },
@@ -62,12 +69,15 @@ export const useAuth = create((set, get) => ({
   confirmOtp: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      if (data.email) sessionStorage.setItem('resetEmail', data.email);
+      if (data.email) sessionStorage.setItem("resetEmail", data.email);
       const response = await confirmOtp(data);
       set({ isLoading: false, error: null });
       return response;
     } catch (error) {
-      set({ isLoading: false, error: error.message || 'OTP confirmation failed' });
+      set({
+        isLoading: false,
+        error: error.message || "OTP confirmation failed",
+      });
       throw error;
     }
   },
@@ -76,12 +86,15 @@ export const useAuth = create((set, get) => ({
   confirmPassword: async (data) => {
     set({ isLoading: true, error: null });
     try {
-      if (data.email) sessionStorage.setItem('resetEmail', data.email);
+      if (data.email) sessionStorage.setItem("resetEmail", data.email);
       const response = await confirmPassword(data);
       set({ isLoading: false, error: null });
       return response;
     } catch (error) {
-      set({ isLoading: false, error: error.message || 'Password confirmation failed' });
+      set({
+        isLoading: false,
+        error: error.message || "Password confirmation failed",
+      });
       throw error;
     }
   },
@@ -95,16 +108,19 @@ export const useAuth = create((set, get) => ({
       set({ isLoading: false, error: null });
       return response;
     } catch (error) {
-      set({ isLoading: false, error: error.message || 'Change password failed' });
+      set({
+        isLoading: false,
+        error: error.message || "Change password failed",
+      });
       throw error;
     }
   },
 
   // Logout action
   logout: () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
     set({
       user: null,
       token: null,
@@ -116,9 +132,9 @@ export const useAuth = create((set, get) => ({
 
   // Initialize auth state from localStorage
   initializeAuth: () => {
-    const user = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
-    
+    const user = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+
     if (user && token) {
       set({
         user: JSON.parse(user),

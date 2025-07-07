@@ -19,6 +19,7 @@ import PharmaciesForSale from "../pages/PharmaciesForSale/PharmaciesForSale";
 import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
 import SuccessPayment from "../pages/SuccessPayment/SuccessPayment";
 import FailedPayment from "../pages/FailedPayment/FailedPayment";
+import Chat from "../pages/Chat/Chat";
 import Settings from "../pages/Settings/Settings";
 import Profile from "../pages/Profile/Profile";
 import NotFound from "../pages/NotFound/NotFound";
@@ -118,6 +119,14 @@ export default function MainLayout() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/chat"
+              element={
+                <ProtectedRoute>
+                  <Chat />
+                </ProtectedRoute>
+              }
+             />
             <Route
               path="/profile/:id"
               element={

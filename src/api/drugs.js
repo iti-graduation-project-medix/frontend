@@ -11,24 +11,27 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
  */
 export const fetchDrugs = async (token, options = {}) => {
   try {
-    const { search = '', page = 1, size = 10 } = options;
-    
+    const { search = "", page = 1, size = 10 } = options;
+
     const queryParams = new URLSearchParams({
       page: page.toString(),
       size: size.toString(),
     });
 
     if (search.trim()) {
-      queryParams.append('search', search.trim());
+      queryParams.append("search", search.trim());
     }
 
-    const response = await fetch(`${BASE_URL}/api/v1/drug-details?${queryParams}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${BASE_URL}/api/v1/drug-details?${queryParams}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,7 +40,7 @@ export const fetchDrugs = async (token, options = {}) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching drugs:', error);
+    console.error("Error fetching drugs:", error);
     throw error;
   }
 };
@@ -52,7 +55,7 @@ export const fetchAllDrugNames = async (token) => {
     const response = await fetchDrugs(token, { size: 1000 }); // Get a large number to fetch all
     return response.data?.drugs || [];
   } catch (error) {
-    console.error('Error fetching all drug names:', error);
+    console.error("Error fetching all drug names:", error);
     return [];
   }
-}; 
+};

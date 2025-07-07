@@ -16,6 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useDeals } from "@/store/useDeals";
 import { shallow } from "zustand/shallow";
+import useChat from "../../store/useChat";
+import { useAuth } from "../../store/useAuth";
 
 export default function DealDetails() {
   const { dealId } = useParams();
@@ -24,6 +26,15 @@ export default function DealDetails() {
   const isLoading = useDeals((state) => state.isLoading);
   const error = useDeals((state) => state.error);
   const fetchDeal = useDeals((state) => state.fetchDeal);
+  const { user } = useAuth();
+  const currentUserId = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      return null;
+    }
+  })();
+  const { startChat } = useChat();
 
   useEffect(() => {
     if (dealId) {
@@ -62,9 +73,28 @@ export default function DealDetails() {
     );
   }
 
-  const handleChat = () => {
-    navigate(`/chat/${encodeURIComponent(deal.postedBy.fullName)}`);
+  const handleChat = async () => {
+    if (!currentUserId || !deal.postedBy) {
+      alert("Please login to start a chat");
+      return;
+    }
+
+    try {
+      // Start chat with the deal poster
+      await startChat(currentUserId, deal.postedBy.id, deal.id, {
+        fullName: deal.postedBy.fullName,
+        profilePhotoUrl: deal.postedBy.profilePhotoUrl,
+        role: deal.postedBy.role || "User",
+      });
+
+      // Navigate to chat page
+      navigate("/chat");
+    } catch (error) {
+      console.error("Error starting chat:", error);
+      alert("Failed to start chat. Please try again.");
+    }
   };
+
   const handleProfile = () => {
     navigate(
       `/profile/${encodeURIComponent(

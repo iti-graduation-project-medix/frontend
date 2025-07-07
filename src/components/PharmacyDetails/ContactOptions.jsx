@@ -1,12 +1,51 @@
 import React from "react";
 import { MessageCircle } from "lucide-react";
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
+import useChat from "../../store/useChat";
+import { useAuth } from "../../store/useAuth";
 
 export default function ContactOptions({ owner }) {
-  // Placeholder for chat logic
-  const handleChat = () => {
-    alert(`Start chat with ${owner?.fullName || "owner"}`);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const currentUserId = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user"));
+    } catch {
+      return null;
+    }
+  })();
+  const { startChat } = useChat();
+
+  const handleChat = async () => {
+    if (!currentUserId || !owner) {
+      alert("Please login to start a chat");
+      return;
+    }
+
+    try {
+      // Note: Pharmacy chats currently require a dealId
+      // This is a limitation of the current backend structure
+      // For now, we'll show an informative message
+      alert(
+        "Chat feature for pharmacy listings is coming soon! Currently, you can only chat about specific deals."
+      );
+
+      // TODO: Implement pharmacy chat functionality when backend supports it
+      // await startChat(currentUserId, owner.id, null, {
+      //   fullName: owner.fullName,
+      //   profilePhotoUrl: owner.profilePhotoUrl,
+      //   role: owner.role || "User",
+      // });
+
+      // Navigate to chat page
+      // navigate("/chat");
+    } catch (error) {
+      console.error("Error starting chat:", error);
+      alert("Failed to start chat. Please try again.");
+    }
   };
+
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <Button

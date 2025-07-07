@@ -17,6 +17,7 @@ export default function PharmaciesForSale() {
   const [totalPages, setTotalPages] = useState(1);
 
   const token = useAuth((state) => state.token);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   // Active filter chips
@@ -94,6 +95,11 @@ export default function PharmaciesForSale() {
     navigate(`/pharmacies-for-sale/${pharmacy.id}`);
   };
 
+  // Filter out pharmacies owned by the current user
+  const filteredPharmacies = pharmacies.filter(
+    (pharmacy) => !(pharmacy.owner && pharmacy.owner.id === user)
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <section className="py-10 px-4 text-foreground">
@@ -130,17 +136,17 @@ export default function PharmaciesForSale() {
             )}
           </Card>
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          {loading || pharmacies.length > 0 ? (
+          {loading || filteredPharmacies.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 flex-1">
                 <PharmaciesList
-                  pharmacies={pharmacies}
+                  pharmacies={filteredPharmacies}
                   loading={loading}
                   onViewDetails={handleViewDetails}
                 />
               </div>
               {/* Pagination */}
-              {pharmacies.length > 0 && (
+              {filteredPharmacies.length > 0 && (
                 <div className="flex justify-center mt-10">
                   <button
                     className="px-5 py-2 mx-1 rounded-lg bg-primary text-white font-semibold disabled:opacity-50"

@@ -313,27 +313,38 @@ export default function Profile() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={dealsByStatus}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
-                        }
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {dealsByStatus.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {deals.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-64">
+                      {/* Pie Chart SVG for Deals by Status */}
+                      <svg className="w-12 h-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10" strokeWidth="2" stroke="currentColor" fill="none" />
+                        <path d="M12 2a10 10 0 0 1 10 10h-10z" fill="currentColor" />
+                      </svg>
+                      <p className="text-gray-500 text-lg font-medium">No data to display</p>
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={dealsByStatus}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) =>
+                            `${name} ${(percent * 100).toFixed(0)}%`
+                          }
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {dealsByStatus.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
               </Card>
 
@@ -341,34 +352,48 @@ export default function Profile() {
               <Card>
                 <CardHeader className="p-6 pb-4">
                   <CardTitle>Deals by Type</CardTitle>
-                  <CardDescription>Distribution of deal types</CardDescription>
+                  <CardDescription>
+                    Distribution of deal types
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={dealsByTypeData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) =>
-                          `${name} ${(percent * 100).toFixed(0)}%`
-                        }
-                        outerRadius={80}
-                        innerRadius={40}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {dealsByTypeData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={["#4a4957", "#4f46e5", "#ffb500"][index % 3]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {deals.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-64">
+                      {/* Bar Chart SVG for Deals by Type */}
+                      <svg className="w-12 h-12 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <rect x="4" y="10" width="3" height="10" fill="currentColor" />
+                        <rect x="10.5" y="6" width="3" height="14" fill="currentColor" />
+                        <rect x="17" y="2" width="3" height="18" fill="currentColor" />
+                      </svg>
+                      <p className="text-gray-500 text-lg font-medium">No data to display</p>
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={dealsByTypeData}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) =>
+                            `${name} ${(percent * 100).toFixed(0)}%`
+                          }
+                          outerRadius={80}
+                          innerRadius={40}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {dealsByTypeData.map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={["#4a4957", "#4f46e5", "#ffb500"][index % 3]}
+                            />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -382,99 +407,35 @@ export default function Profile() {
               <CardContent className="p-6 pt-0">
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left p-4">Medicine</th>
-                        <th className="text-left p-4">Type</th>
-                        <th className="text-left p-4">Price</th>
-                        <th className="text-left p-4">Status</th>
-                        <th className="text-left p-4">Created</th>
-                        <th className="text-left p-4">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {currentDeals.map((deal) => (
-                        <tr key={deal.id} className="border-b hover:bg-gray-50">
-                          <td className="p-4">
-                            <div>
-                              <p className="font-medium">{deal.medicineName}</p>
-                              <p className="text-sm text-gray-600">
-                                {deal.description}
-                              </p>
-                            </div>
-                          </td>
-                          <td className="p-4">
-                            <Badge
-                              variant="outline"
-                              className={
-                                deal.dealType === "both"
-                                  ? "bg-[#4a4957] text-white border-[#4a4957]"
-                                  : deal.dealType === "sell"
-                                  ? "bg-[#4f46e5] text-white border-[#4f46e5]"
-                                  : deal.dealType === "exchange"
-                                  ? "bg-[#ffb500] text-white border-[#ffb500]"
-                                  : "bg-[#8dd1e1] text-white border-[#8dd1e1]"
-                              }
-                            >
-                              {deal.dealType}
-                            </Badge>
-                          </td>
-                          <td className="p-4 font-medium">
-                            EGP{Number(deal.price).toFixed(2)}
-                          </td>
-                          <td className="p-4">
-                            <Badge
-                              variant={
-                                deal.isClosed ? "destructive" : "success"
-                              }
-                            >
-                              {deal.isClosed ? "Closed" : "Active"}
-                            </Badge>
-                          </td>
-                          <td className="p-4 text-sm text-gray-600">
-                            {new Date(deal.createdAt).toLocaleDateString()}
-                          </td>
-                          <td className="p-4">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleViewDeal(deal.id)}
-                              className="flex items-center space-x-1"
-                            >
-                              <Eye className="w-3 h-3" />
-                              <span>Details</span>
-                            </Button>
-                          </td>
+                  {deals.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <Package className="w-12 h-12 text-gray-300 mb-4" />
+                      <p className="text-gray-500 text-lg font-medium">No deals found</p>
+                    </div>
+                  ) : (
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left p-4">Medicine</th>
+                          <th className="text-left p-4">Type</th>
+                          <th className="text-left p-4">Price</th>
+                          <th className="text-left p-4">Status</th>
+                          <th className="text-left p-4">Created</th>
+                          <th className="text-left p-4">Actions</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Mobile Card View */}
-                <div className="md:hidden space-y-4">
-                  {currentDeals.map((deal) => (
-                    <div
-                      key={deal.id}
-                      className="border rounded-lg p-4 bg-white hover:bg-gray-50"
-                    >
-                      <div className="space-y-3">
-                        {/* Medicine Info */}
-                        <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {deal.medicineName}
-                          </h3>
-                          <p className="text-sm text-gray-600">
-                            {deal.description}
-                          </p>
-                        </div>
-
-                        {/* Deal Details */}
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="text-gray-500 text-xs">Type</span>
-                            <div className="mt-1">
+                      </thead>
+                      <tbody>
+                        {currentDeals.map((deal) => (
+                          <tr key={deal.id} className="border-b hover:bg-gray-50">
+                            <td className="p-4">
+                              <div>
+                                <p className="font-medium">{deal.medicineName}</p>
+                                <p className="text-sm text-gray-600">
+                                  {deal.description}
+                                </p>
+                              </div>
+                            </td>
+                            <td className="p-4">
                               <Badge
                                 variant="outline"
                                 className={
@@ -489,19 +450,11 @@ export default function Profile() {
                               >
                                 {deal.dealType}
                               </Badge>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 text-xs">Price</span>
-                            <p className="font-medium text-gray-900">
+                            </td>
+                            <td className="p-4 font-medium">
                               EGP{Number(deal.price).toFixed(2)}
-                            </p>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 text-xs">
-                              Status
-                            </span>
-                            <div className="mt-1">
+                            </td>
+                            <td className="p-4">
                               <Badge
                                 variant={
                                   deal.isClosed ? "destructive" : "success"
@@ -509,33 +462,119 @@ export default function Profile() {
                               >
                                 {deal.isClosed ? "Closed" : "Active"}
                               </Badge>
-                            </div>
-                          </div>
-                          <div>
-                            <span className="text-gray-500 text-xs">
-                              Created
-                            </span>
-                            <p className="text-gray-900">
+                            </td>
+                            <td className="p-4 text-sm text-gray-600">
                               {new Date(deal.createdAt).toLocaleDateString()}
+                            </td>
+                            <td className="p-4">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleViewDeal(deal.id)}
+                                className="flex items-center space-x-1"
+                              >
+                                <Eye className="w-3 h-3" />
+                                <span>Details</span>
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="md:hidden space-y-4">
+                  {deals.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <Package className="w-12 h-12 text-gray-300 mb-4" />
+                      <p className="text-gray-500 text-lg font-medium">No deals found</p>
+                    </div>
+                  ) : (
+                    currentDeals.map((deal) => (
+                      <div
+                        key={deal.id}
+                        className="border rounded-lg p-4 bg-white hover:bg-gray-50"
+                      >
+                        <div className="space-y-3">
+                          {/* Medicine Info */}
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {deal.medicineName}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {deal.description}
                             </p>
                           </div>
-                        </div>
 
-                        {/* Action Button */}
-                        <div className="mt-4">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleViewDeal(deal.id)}
-                            className="w-full flex items-center justify-center space-x-2"
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span>Show Details</span>
-                          </Button>
+                          {/* Deal Details */}
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-gray-500 text-xs">Type</span>
+                              <div className="mt-1">
+                                <Badge
+                                  variant="outline"
+                                  className={
+                                    deal.dealType === "both"
+                                      ? "bg-[#4a4957] text-white border-[#4a4957]"
+                                      : deal.dealType === "sell"
+                                      ? "bg-[#4f46e5] text-white border-[#4f46e5]"
+                                      : deal.dealType === "exchange"
+                                      ? "bg-[#ffb500] text-white border-[#ffb500]"
+                                      : "bg-[#8dd1e1] text-white border-[#8dd1e1]"
+                                  }
+                                >
+                                  {deal.dealType}
+                                </Badge>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="text-gray-500 text-xs">Price</span>
+                              <p className="font-medium text-gray-900">
+                                EGP{Number(deal.price).toFixed(2)}
+                              </p>
+                            </div>
+                            <div>
+                              <span className="text-gray-500 text-xs">
+                                Status
+                              </span>
+                              <div className="mt-1">
+                                <Badge
+                                  variant={
+                                    deal.isClosed ? "destructive" : "success"
+                                  }
+                                >
+                                  {deal.isClosed ? "Closed" : "Active"}
+                                </Badge>
+                              </div>
+                            </div>
+                            <div>
+                              <span className="text-gray-500 text-xs">
+                                Created
+                              </span>
+                              <p className="text-gray-900">
+                                {new Date(deal.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Action Button */}
+                          <div className="mt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewDeal(deal.id)}
+                              className="w-full flex items-center justify-center space-x-2"
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span>Show Details</span>
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
 
                 {/* Pagination Controls */}
@@ -611,7 +650,7 @@ export default function Profile() {
                           </h3>
                         </div>
                         <Badge
-                          variant={pharmacy.isForSale ? "success" : "outline"}
+                          variant={pharmacy.isForSale ? "success" : "destructive"}
                         >
                           {pharmacy.isForSale ? "For Sale" : "Not for Sale"}
                         </Badge>

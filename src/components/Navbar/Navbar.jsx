@@ -34,17 +34,7 @@ export default function Navbar() {
 
   // Use real unread messages count from chat store
   const unreadCount = useChat((state) => state.totalUnreadCount);
-  const {
-    loadUserChats,
-    initializeSocket,
-    getCurrentUserId,
-    refreshUnreadCount,
-  } = useChat();
-
-  // Debug unread count
-  useEffect(() => {
-    console.log("Navbar unread count:", unreadCount);
-  }, [unreadCount]);
+  const { loadUserChats, initializeSocket, getCurrentUserId } = useChat();
 
   useEffect(() => {
     if (user && token) {
@@ -214,17 +204,6 @@ export default function Navbar() {
                     {unreadCount}
                   </span>
                 )}
-                {/* Temporary test button for debugging */}
-                <button
-                  onClick={() => {
-                    console.log("Manual refresh clicked");
-                    refreshUnreadCount();
-                  }}
-                  className="absolute -bottom-2 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center border border-white shadow"
-                  title="Refresh unread count"
-                >
-                  R
-                </button>
               </motion.button>
               <AnimatePresence>
                 {isUserMenuOpen && (

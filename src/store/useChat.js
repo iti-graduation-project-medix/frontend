@@ -49,7 +49,6 @@ const useChat = create((set, get) => ({
 
     // Listen for new messages
     socket.on("newMessage", (message) => {
-      console.log("Received new message:", message);
       const { activeChat, chats } = get();
 
       // Update messages in active chat
@@ -134,7 +133,6 @@ const useChat = create((set, get) => ({
 
     // Listen for chat room creation/joining
     socket.on("chatRoom", async ({ roomId }) => {
-      console.log("Joined chat room:", roomId);
       const { activeChat } = get();
       if (activeChat) {
         try {
@@ -165,7 +163,6 @@ const useChat = create((set, get) => ({
 
     // Listen for unread count updates
     socket.on("unreadCountUpdated", ({ roomId, unreadCount }) => {
-      console.log("Unread count updated:", roomId, unreadCount);
       set((state) => {
         const updatedChats = state.chats.map((chat) =>
           chat.roomId === roomId ? { ...chat, unreadCount } : chat
@@ -177,8 +174,6 @@ const useChat = create((set, get) => ({
           0
         );
 
-        console.log("Updated total unread count:", newTotalUnread);
-
         return {
           chats: updatedChats,
           totalUnreadCount: newTotalUnread,
@@ -188,7 +183,6 @@ const useChat = create((set, get) => ({
 
     // Listen for message seen status
     socket.on("messageSeen", ({ messageId, seenBy }) => {
-      console.log("Message seen:", messageId, seenBy);
       const { activeChat } = get();
       if (activeChat) {
         set((state) => ({
@@ -205,7 +199,6 @@ const useChat = create((set, get) => ({
 
     // Listen for room marked as seen
     socket.on("roomMarkedAsSeen", ({ roomId, userId }) => {
-      console.log("Room marked as seen:", roomId, userId);
       set((state) => {
         const updatedChats = state.chats.map((chat) =>
           chat.roomId === roomId ? { ...chat, unreadCount: 0 } : chat
@@ -226,7 +219,6 @@ const useChat = create((set, get) => ({
 
     // Listen for last message updates
     socket.on("lastMessageUpdated", ({ roomId, text, sentAt }) => {
-      console.log("Last message updated:", roomId, text);
       set((state) => ({
         chats: state.chats.map((chat) =>
           chat.roomId === roomId
@@ -312,11 +304,6 @@ const useChat = create((set, get) => ({
     }));
 
     // Send via WebSocket
-    console.log("Sending message via WebSocket:", {
-      roomId: activeChat.roomId,
-      senderId: currentUserId,
-      text: text.trim(),
-    });
     sendMessage(activeChat.roomId, currentUserId, text.trim());
   },
 
@@ -331,8 +318,6 @@ const useChat = create((set, get) => ({
       }
 
       const chatRooms = await getUserChats(currentUserId);
-
-      console.log("Raw chat rooms from backend:", chatRooms);
 
       // Transform the chat rooms data for the UI
       const transformedChats = chatRooms.map((room) => {
@@ -363,15 +348,6 @@ const useChat = create((set, get) => ({
         (sum, chat) => sum + (chat.unreadCount || 0),
         0
       );
-
-      console.log(
-        "Loaded chats with unread counts:",
-        transformedChats.map((c) => ({
-          roomId: c.roomId,
-          unreadCount: c.unreadCount,
-        }))
-      );
-      console.log("Total unread count:", totalUnread);
 
       set({
         chats: transformedChats,
@@ -449,17 +425,6 @@ const useChat = create((set, get) => ({
   getTotalUnread: () => {
     const chats = get().chats || [];
     return chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
-  },
-
-  // Manual refresh of unread count for testing
-  refreshUnreadCount: () => {
-    const chats = get().chats || [];
-    const totalUnread = chats.reduce(
-      (sum, chat) => sum + (chat.unreadCount || 0),
-      0
-    );
-    console.log("Manual refresh - Total unread count:", totalUnread);
-    set({ totalUnreadCount: totalUnread });
   },
 }));
 

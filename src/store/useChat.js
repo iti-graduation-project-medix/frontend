@@ -14,8 +14,26 @@ const useChat = create((set, get) => ({
   loading: false,
   error: null,
   socket: null,
+  totalUnreadCount: 0, // Add this for reactive updates
 
-  // Actions
+  // Helper function to get current user ID
+  getCurrentUserId: () => {
+    try {
+      const user = localStorage.getItem("user");
+      // Handle both string and JSON formats
+      if (user) {
+        try {
+          return JSON.parse(user);
+        } catch {
+          return user; // If it's already a string
+        }
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  },
+
   initializeSocket: () => {
     const socket = getSocket();
     set({ socket });
@@ -24,6 +42,10 @@ const useChat = create((set, get) => ({
     socket.off("newMessage");
     socket.off("chatRoom");
     socket.off("error");
+    socket.off("unreadCountUpdated");
+    socket.off("messageSeen");
+    socket.off("roomMarkedAsSeen");
+    socket.off("lastMessageUpdated");
 
     // Listen for new messages
     socket.on("newMessage", (message) => {
@@ -32,13 +54,7 @@ const useChat = create((set, get) => ({
 
       // Update messages in active chat
       if (activeChat) {
-        const currentUserId = (() => {
-          try {
-            return JSON.parse(localStorage.getItem("user"));
-          } catch {
-            return null;
-          }
-        })();
+        const currentUserId = get().getCurrentUserId();
 
         set((state) => {
           const msgs = state.messages[activeChat.roomId] || [];
@@ -66,7 +82,7 @@ const useChat = create((set, get) => ({
                     sender: message.senderName || "Unknown",
                     senderId: message.senderId,
                     isOwn: message.senderId === currentUserId,
-                    status: "received",
+                    status: message.seenByReceiver ? "read" : "sent",
                   },
                 ],
               },
@@ -89,7 +105,7 @@ const useChat = create((set, get) => ({
                   sender: message.senderName || "Unknown",
                   senderId: message.senderId,
                   isOwn: message.senderId === currentUserId,
-                  status: "received",
+                  status: message.seenByReceiver ? "read" : "sent",
                 },
               ],
             },
@@ -123,13 +139,7 @@ const useChat = create((set, get) => ({
       if (activeChat) {
         try {
           const messages = await getChatHistory(roomId);
-          const currentUserId = (() => {
-            try {
-              return JSON.parse(localStorage.getItem("user"));
-            } catch {
-              return null;
-            }
-          })();
+          const currentUserId = get().getCurrentUserId();
 
           // Mark messages as own if sent by current user
           const processedMessages = messages.map((msg) => ({
@@ -153,6 +163,83 @@ const useChat = create((set, get) => ({
       }
     });
 
+    // Listen for unread count updates
+    socket.on("unreadCountUpdated", ({ roomId, unreadCount }) => {
+      console.log("Unread count updated:", roomId, unreadCount);
+      set((state) => {
+        const updatedChats = state.chats.map((chat) =>
+          chat.roomId === roomId ? { ...chat, unreadCount } : chat
+        );
+
+        // Calculate new total unread count
+        const newTotalUnread = updatedChats.reduce(
+          (sum, chat) => sum + (chat.unreadCount || 0),
+          0
+        );
+
+        console.log("Updated total unread count:", newTotalUnread);
+
+        return {
+          chats: updatedChats,
+          totalUnreadCount: newTotalUnread,
+        };
+      });
+    });
+
+    // Listen for message seen status
+    socket.on("messageSeen", ({ messageId, seenBy }) => {
+      console.log("Message seen:", messageId, seenBy);
+      const { activeChat } = get();
+      if (activeChat) {
+        set((state) => ({
+          messages: {
+            ...state.messages,
+            [activeChat.roomId]:
+              state.messages[activeChat.roomId]?.map((msg) =>
+                msg.id === messageId ? { ...msg, status: "read" } : msg
+              ) || [],
+          },
+        }));
+      }
+    });
+
+    // Listen for room marked as seen
+    socket.on("roomMarkedAsSeen", ({ roomId, userId }) => {
+      console.log("Room marked as seen:", roomId, userId);
+      set((state) => {
+        const updatedChats = state.chats.map((chat) =>
+          chat.roomId === roomId ? { ...chat, unreadCount: 0 } : chat
+        );
+
+        // Calculate new total unread count
+        const newTotalUnread = updatedChats.reduce(
+          (sum, chat) => sum + (chat.unreadCount || 0),
+          0
+        );
+
+        return {
+          chats: updatedChats,
+          totalUnreadCount: newTotalUnread,
+        };
+      });
+    });
+
+    // Listen for last message updates
+    socket.on("lastMessageUpdated", ({ roomId, text, sentAt }) => {
+      console.log("Last message updated:", roomId, text);
+      set((state) => ({
+        chats: state.chats.map((chat) =>
+          chat.roomId === roomId
+            ? {
+                ...chat,
+                lastMessage: { text, sentAt },
+                updatedAt: new Date().toISOString(),
+              }
+            : chat
+        ),
+      }));
+    });
+
     // Listen for errors
     socket.on("error", (error) => {
       console.error("Socket error:", error);
@@ -160,12 +247,12 @@ const useChat = create((set, get) => ({
     });
   },
 
-  startChat: async (user1Id, user2Id, otherUserInfo) => {
+  startChat: async (user1Id, user2Id, dealId, otherUserInfo) => {
     set({ loading: true, error: null });
 
     try {
       // Create or get chat room
-      const roomId = await getOrCreateChatRoom(user1Id, user2Id);
+      const roomId = await getOrCreateChatRoom(user1Id, user2Id, dealId);
 
       // Initialize socket if not already done
       if (!get().socket) {
@@ -173,13 +260,14 @@ const useChat = create((set, get) => ({
       }
 
       // Start chat via WebSocket
-      startChat(user1Id, user2Id);
+      startChat(user1Id, user2Id, dealId);
 
       // Set active chat
       const activeChat = {
         roomId,
         user1Id,
         user2Id,
+        dealId,
         otherUser: otherUserInfo,
       };
 
@@ -196,13 +284,7 @@ const useChat = create((set, get) => ({
     const { activeChat, socket } = get();
     if (!activeChat || !text.trim()) return;
 
-    const currentUserId = (() => {
-      try {
-        return JSON.parse(localStorage.getItem("user"));
-      } catch {
-        return null;
-      }
-    })();
+    const currentUserId = get().getCurrentUserId();
     const tempId = Date.now().toString();
     const newMessage = {
       id: tempId,
@@ -242,13 +324,7 @@ const useChat = create((set, get) => ({
     set({ loading: true, error: null });
 
     try {
-      const currentUserId = (() => {
-        try {
-          return JSON.parse(localStorage.getItem("user"));
-        } catch {
-          return null;
-        }
-      })();
+      const currentUserId = get().getCurrentUserId();
 
       if (!currentUserId) {
         throw new Error("User not authenticated");
@@ -268,6 +344,8 @@ const useChat = create((set, get) => ({
           roomId: room.id,
           user1Id: room.sender.id,
           user2Id: room.reciver.id,
+          dealId: room.deal?.id,
+          deal: room.deal,
           otherUser: {
             id: otherUser.id,
             fullName: otherUser.fullName || otherUser.name || "Unknown User",
@@ -280,7 +358,26 @@ const useChat = create((set, get) => ({
         };
       });
 
-      set({ chats: transformedChats, loading: false });
+      // Calculate total unread count
+      const totalUnread = transformedChats.reduce(
+        (sum, chat) => sum + (chat.unreadCount || 0),
+        0
+      );
+
+      console.log(
+        "Loaded chats with unread counts:",
+        transformedChats.map((c) => ({
+          roomId: c.roomId,
+          unreadCount: c.unreadCount,
+        }))
+      );
+      console.log("Total unread count:", totalUnread);
+
+      set({
+        chats: transformedChats,
+        totalUnreadCount: totalUnread,
+        loading: false,
+      });
     } catch (error) {
       set({ error: error.message, loading: false });
       console.error("Error loading user chats:", error);
@@ -298,20 +395,20 @@ const useChat = create((set, get) => ({
 
       // Join the chat room via WebSocket
       const socket = get().socket;
-      socket.emit("startChat", {
-        user1Id: chat.user1Id,
-        user2Id: chat.user2Id,
+      socket.emit("joinRoom", {
+        roomId: chat.roomId,
+        userId: get().getCurrentUserId(),
+      });
+
+      // Mark room as seen when selecting it
+      socket.emit("markRoomAsSeen", {
+        roomId: chat.roomId,
+        userId: get().getCurrentUserId(),
       });
 
       // Load chat history
       const messages = await getChatHistory(chat.roomId);
-      const currentUserId = (() => {
-        try {
-          return JSON.parse(localStorage.getItem("user"));
-        } catch {
-          return null;
-        }
-      })();
+      const currentUserId = get().getCurrentUserId();
 
       // Mark messages as own if sent by current user
       const processedMessages = messages.map((msg) => ({
@@ -352,6 +449,17 @@ const useChat = create((set, get) => ({
   getTotalUnread: () => {
     const chats = get().chats || [];
     return chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
+  },
+
+  // Manual refresh of unread count for testing
+  refreshUnreadCount: () => {
+    const chats = get().chats || [];
+    const totalUnread = chats.reduce(
+      (sum, chat) => sum + (chat.unreadCount || 0),
+      0
+    );
+    console.log("Manual refresh - Total unread count:", totalUnread);
+    set({ totalUnreadCount: totalUnread });
   },
 }));
 

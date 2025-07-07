@@ -81,7 +81,7 @@ export default function DealDetails() {
 
     try {
       // Start chat with the deal poster
-      await startChat(currentUserId, deal.postedBy.id, {
+      await startChat(currentUserId, deal.postedBy.id, deal.id, {
         fullName: deal.postedBy.fullName,
         profilePhotoUrl: deal.postedBy.profilePhotoUrl,
         role: deal.postedBy.role || "User",

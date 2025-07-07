@@ -24,15 +24,22 @@ export default function ContactOptions({ owner }) {
     }
 
     try {
-      // Start chat with the owner
-      await startChat(currentUserId, owner.id, {
-        fullName: owner.fullName,
-        profilePhotoUrl: owner.profilePhotoUrl,
-        role: owner.role || "User",
-      });
+      // Note: Pharmacy chats currently require a dealId
+      // This is a limitation of the current backend structure
+      // For now, we'll show an informative message
+      alert(
+        "Chat feature for pharmacy listings is coming soon! Currently, you can only chat about specific deals."
+      );
+
+      // TODO: Implement pharmacy chat functionality when backend supports it
+      // await startChat(currentUserId, owner.id, null, {
+      //   fullName: owner.fullName,
+      //   profilePhotoUrl: owner.profilePhotoUrl,
+      //   role: owner.role || "User",
+      // });
 
       // Navigate to chat page
-      navigate("/chat");
+      // navigate("/chat");
     } catch (error) {
       console.error("Error starting chat:", error);
       alert("Failed to start chat. Please try again.");

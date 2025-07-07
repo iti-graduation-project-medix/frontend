@@ -12,6 +12,7 @@ import {
   Clock,
   Check,
   CheckCheck,
+  Package,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -51,15 +52,40 @@ export default function Chat() {
     selectChat,
     clearError,
     initializeSocket,
+    getCurrentUserId,
+    socket,
   } = useChat();
+
+  // Emit leaveRoom when activeChat changes or on unmount
+  useEffect(() => {
+    const currentUserId = getCurrentUserId();
+    // Store previous roomId
+    let prevRoomId = null;
+    if (activeChat) prevRoomId = activeChat.roomId;
+
+    return () => {
+      if (prevRoomId && socket && currentUserId) {
+        socket.emit("leaveRoom", { roomId: prevRoomId, userId: currentUserId });
+        console.log(
+          "leaveRoom emitted for room:",
+          prevRoomId,
+          "user:",
+          currentUserId
+        );
+      }
+    };
+  }, [activeChat, socket, getCurrentUserId]);
 
   // Initialize socket and load chats on component mount
   useEffect(() => {
     if (isAuthenticated) {
-      initializeSocket();
-      loadUserChats();
+      const currentUserId = getCurrentUserId();
+      if (currentUserId) {
+        initializeSocket();
+        loadUserChats();
+      }
     }
-  }, [isAuthenticated, initializeSocket, loadUserChats]);
+  }, [isAuthenticated, initializeSocket, loadUserChats, getCurrentUserId]);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -216,11 +242,21 @@ export default function Chat() {
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <p className="text-sm text-gray-600 truncate">
-                            {chat.lastMessage?.text || "No messages yet"}
-                          </p>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-600 truncate">
+                              {chat.lastMessage?.text || "No messages yet"}
+                            </p>
+                            {chat.deal && (
+                              <div className="flex items-center gap-1 mt-1">
+                                <Package className="w-3 h-3 text-gray-400" />
+                                <span className="text-xs text-gray-500 truncate">
+                                  {chat.deal.title || "Deal"}
+                                </span>
+                              </div>
+                            )}
+                          </div>
                           {chat.unreadCount > 0 && (
-                            <Badge className="bg-blue-500 text-white text-xs px-2 py-1">
+                            <Badge className="bg-blue-500 text-white text-xs px-2 py-1 ml-2">
                               {chat.unreadCount}
                             </Badge>
                           )}
@@ -296,6 +332,15 @@ export default function Chat() {
                     >
                       {activeChat.otherUser?.role || "User"}
                     </Badge>
+                    {activeChat.deal && (
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-blue-200 text-blue-700 bg-blue-50"
+                      >
+                        <Package className="w-3 h-3 mr-1" />
+                        {activeChat.deal.title || "Deal"}
+                      </Badge>
+                    )}
                     <span className="text-xs text-green-600 font-medium flex items-center gap-1">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                       Online

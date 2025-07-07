@@ -120,14 +120,6 @@ export default function MainLayout() {
               }
             />
             <Route
-              path="/chat"
-              element={
-                <ProtectedRoute>
-                  <Chat />
-                </ProtectedRoute>
-              }
-             />
-            <Route
               path="/profile/:id"
               element={
                 <ProtectedRoute>
@@ -138,6 +130,8 @@ export default function MainLayout() {
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
+        {/* Render Chat widget globally, outside of <Routes> */}
+        <Chat />
       </div>
     </Router>
   );

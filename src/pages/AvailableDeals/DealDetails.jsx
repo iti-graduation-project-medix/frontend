@@ -34,7 +34,8 @@ export default function DealDetails() {
       return null;
     }
   })();
-  const { startChat } = useChat();
+  const { startChat, setIsWidgetOpen, loadUserChats, selectChat, chats } =
+    useChat();
 
   useEffect(() => {
     if (dealId) {
@@ -87,8 +88,19 @@ export default function DealDetails() {
         role: deal.postedBy.role || "User",
       });
 
-      // Navigate to chat page
-      navigate("/chat");
+      // Refresh chat list
+      await loadUserChats();
+
+      // Find the new chat in the list (by dealId or userId)
+      const chatToSelect = chats.find(
+        (c) => c.deal?.id === deal.id || c.otherUser?.id === deal.postedBy.id
+      );
+      if (chatToSelect) {
+        await selectChat(chatToSelect);
+      }
+
+      // Open the chat widget immediately
+      setIsWidgetOpen(true);
     } catch (error) {
       console.error("Error starting chat:", error);
       alert("Failed to start chat. Please try again.");

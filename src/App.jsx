@@ -17,7 +17,7 @@ export default function App() {
     );
   }
 
-  if (isOffline && currentPath == "/" ) {
+  if (isOffline && currentPath == "/") {
     return (
       <>
         <MainLayout />
@@ -25,13 +25,13 @@ export default function App() {
       </>
     );
   }
-  if (isOffline && currentPath !== "/deals" ) {
+  if (isOffline && currentPath !== "/deals") {
     return <OfflinePage />;
   }
-  if (isOffline && currentPath !== "/deals/:id" ) {
+  if (isOffline && currentPath !== "/deals/:id") {
     return <OfflinePage />;
   }
-   if (isOffline && currentPath !== "/profile" ) {
+  if (isOffline && currentPath !== "/profile") {
     return <OfflinePage />;
   }
 

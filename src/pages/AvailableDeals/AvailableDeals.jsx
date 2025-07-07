@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Calendar, Package, Tag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDeals } from '../../store/useDeals';
+import { useAuth } from '../../store/useAuth';
 import MedicineDealCard from '@/components/MedicineDealCard';
 import MedicineDealCardSkeleton from '@/components/MedicineDealCardSkeleton';
 
@@ -18,6 +19,7 @@ export default function AvailableDeals() {
   const [dealsPerPage] = useState(9); // Show 9 deals per page (3x3 grid)
 
   const { deals, fetchDeals, isLoading, error } = useDeals();
+  const { user } = useAuth();
 
   // Fetch deals when component mounts
   useEffect(() => {
@@ -27,15 +29,19 @@ export default function AvailableDeals() {
   // Debug logging
   useEffect(() => {
     console.log('Deals from store:', deals);
+    console.log('Current user:', user);
     console.log('Is loading:', isLoading);
     console.log('Error:', error);
-  }, [deals, isLoading, error]);
+  }, [deals, user, isLoading, error]);
 
   const filteredDeals = deals.filter(deal => {
     const matchesSearch = deal.medicineName.toLowerCase().includes(search.toLowerCase());
     const matchesType = type && type !== 'all' ? deal.dealType === type : true;
     const matchesLocation = location && location !== 'all' ? deal.pharmacy.governorate.toLowerCase() === location.toLowerCase() : true;
-    return matchesSearch && matchesType && matchesLocation;
+
+    // Hide own deals
+    const isOwnDeal = deal.postedBy && deal.postedBy.id === user;
+    return matchesSearch && matchesType && matchesLocation && !isOwnDeal;
   });
 
   // Pagination logic

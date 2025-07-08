@@ -58,7 +58,7 @@ const ChatBubbleAvatar = ({ src, fallback, className }) => (
 );
 
 // ChatBubbleMessage
-const chatBubbleMessageVariants = cva("p-4", {
+const chatBubbleMessageVariants = cva("px-2 py-1", {
   variants: {
     variant: {
       received:
@@ -76,34 +76,32 @@ const chatBubbleMessageVariants = cva("p-4", {
   },
 });
 
-const ChatBubbleMessage = React.forwardRef(
-  (
-    { className, variant, layout, isLoading = false, children, ...props },
-    ref
-  ) => (
+export function ChatBubbleMessage({
+  variant = "sent",
+  className = "",
+  ...props
+}) {
+  return (
     <div
-      className={cn(
-        chatBubbleMessageVariants({ variant, layout, className }),
-        "break-words max-w-full whitespace-pre-wrap"
-      )}
-      ref={ref}
+      className={
+        `relative px-4 py-3 rounded-2xl shadow-lg ` +
+        (variant === "sent"
+          ? "bg-gradient-to-r from-cyan-500 to-purple-600 text-white ml-auto "
+          : "bg-white/10 backdrop-blur-sm text-white border border-white/20 ") +
+        className
+      }
       {...props}
-    >
-      {isLoading ? (
-        <div className="flex items-center space-x-2">
-          <MessageLoading />
-        </div>
-      ) : (
-        children
-      )}
-    </div>
-  )
-);
+    />
+  );
+}
 ChatBubbleMessage.displayName = "ChatBubbleMessage";
 
 // ChatBubbleTimestamp
 const ChatBubbleTimestamp = ({ timestamp, className, ...props }) => (
-  <div className={cn("text-xs mt-2 text-right", className)} {...props}>
+  <div
+    className={cn("text-xs text-white mt-2 text-right", className)}
+    {...props}
+  >
     {timestamp}
   </div>
 );
@@ -150,7 +148,6 @@ ChatBubbleActionWrapper.displayName = "ChatBubbleActionWrapper";
 export {
   ChatBubble,
   ChatBubbleAvatar,
-  ChatBubbleMessage,
   ChatBubbleTimestamp,
   chatBubbleVariant,
   chatBubbleMessageVariants,

@@ -75,6 +75,13 @@ export default function Chat() {
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const prevUnreadRef = useRef(unreadCount);
 
+  // Always show chat list when widget is opened
+  useEffect(() => {
+    if (isWidgetOpen) {
+      setMode("list");
+    }
+  }, [isWidgetOpen]);
+
   useEffect(() => {
     if (unreadCount > prevUnreadRef.current) {
       const audio = new window.Audio("/new-notification-07-210334.mp3");
@@ -579,7 +586,14 @@ export default function Chat() {
           <span className="font-bold text-lg">Chat</span>
         </div>
         <motion.button
-          onClick={() => setIsWidgetOpen(false)}
+          onClick={() => {
+            // Leave the current room when closing the widget
+            const userId = getCurrentUserId();
+            if (activeChat && activeChat.roomId && userId) {
+              leaveRoom(activeChat.roomId, userId);
+            }
+            setIsWidgetOpen(false);
+          }}
           className="p-2 sm:p-1 rounded hover:bg-blue-700 transition"
           aria-label="Close Chat"
           whileHover={{ scale: 1.1 }}

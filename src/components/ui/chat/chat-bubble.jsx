@@ -58,7 +58,7 @@ const ChatBubbleAvatar = ({ src, fallback, className }) => (
 );
 
 // ChatBubbleMessage
-const chatBubbleMessageVariants = cva("p-4", {
+const chatBubbleMessageVariants = cva("px-2 py-1", {
   variants: {
     variant: {
       received:

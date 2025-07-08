@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Search,
   MoreVertical,
@@ -37,6 +37,8 @@ import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
 import DealInfoBar from "../../components/ui/chat/DealInfoBar";
 import { Link } from "react-router-dom";
+import { leaveRoom } from "../../services/socket";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -70,36 +72,21 @@ export default function Chat() {
     setIsWidgetOpen,
   } = useChat();
 
-  // Emit leaveRoom when activeChat changes or on unmount
-  useEffect(() => {
-    const currentUserId = getCurrentUserId();
-    // Store previous roomId
-    let prevRoomId = null;
-    if (activeChat) prevRoomId = activeChat.roomId;
+  const unreadCount = useChat((state) => state.totalUnreadCount);
+  const prevUnreadRef = useRef(unreadCount);
 
-    return () => {
-      if (prevRoomId && socket && currentUserId) {
-        socket.emit("leaveRoom", { roomId: prevRoomId, userId: currentUserId });
-        console.log(
-          "leaveRoom emitted for room:",
-          prevRoomId,
-          "user:",
-          currentUserId
-        );
-      }
-    };
-  }, [activeChat, socket, getCurrentUserId]);
-
-  // Initialize socket and load chats on component mount
   useEffect(() => {
-    if (isAuthenticated) {
-      const currentUserId = getCurrentUserId();
-      if (currentUserId) {
-        initializeSocket();
-        loadUserChats();
-      }
+    if (unreadCount > prevUnreadRef.current) {
+      const audio = new window.Audio("/new-notification-07-210334.mp3");
+      audio.play();
     }
-  }, [isAuthenticated, initializeSocket, loadUserChats, getCurrentUserId]);
+    prevUnreadRef.current = unreadCount;
+  }, [unreadCount]);
+
+  // Leave all chat rooms when widget closes or on unmount
+  useEffect(() => {
+    // No longer leaving rooms on widget close or unmount
+  }, []);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -127,6 +114,11 @@ export default function Chat() {
 
   // Back button handler
   const handleBackToList = () => {
+    // Leave the current room when going back to the list
+    const userId = getCurrentUserId();
+    if (activeChat && activeChat.roomId && userId) {
+      leaveRoom(activeChat.roomId, userId);
+    }
     setMode("list");
   };
 
@@ -140,15 +132,113 @@ export default function Chat() {
     );
   }
 
-  // Floating button (bottom right)
+  // Animation variants
+  const floatingButtonVariants = {
+    hidden: {
+      scale: 0,
+      opacity: 0,
+      rotate: -180,
+    },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      rotate: 0,
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+        delay: 0.2,
+      },
+    },
+    hover: {
+      scale: 1.1,
+      rotate: 5,
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10,
+      },
+    },
+    tap: {
+      scale: 0.95,
+      rotate: -2,
+    },
+  };
+
+  const widgetVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+      y: 50,
+      x: isMobile ? 0 : -20,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        duration: 0.5,
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      y: 50,
+      x: isMobile ? 0 : -20,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        duration: 0.3,
+      },
+    },
+  };
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.2 },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.2 },
+    },
+  };
+
+  // Floating button with animation
   const FloatingButton = (
-    <button
+    <motion.button
       onClick={() => setIsWidgetOpen(true)}
       className="fixed z-50 bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg p-4 flex items-center justify-center transition-all"
       aria-label="Open Chat"
+      variants={floatingButtonVariants}
+      initial="hidden"
+      animate="visible"
+      whileHover="hover"
+      whileTap="tap"
     >
       <MessageCircle className="w-7 h-7" />
-    </button>
+      {unreadCount > 0 && (
+        <motion.span
+          className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-lg font-semibold"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            type: "spring",
+            stiffness: 500,
+            damping: 30,
+            delay: 0.1,
+          }}
+        >
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </motion.span>
+      )}
+    </motion.button>
   );
 
   // Layout: only one view at a time
@@ -232,14 +322,15 @@ export default function Chat() {
                     }
                   }
                   return (
-                    <div
+                    <motion.div
                       key={chat.roomId}
                       onClick={() => handleChatSelect(chat)}
-                      className={`p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50/80 ${
-                        activeChat?.roomId === chat.roomId
-                          ? "bg-blue-50/80 border border-blue-200"
-                          : ""
-                      }`}
+                      className="p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50/80 bg-white shadow border border-gray-100 mb-2 hover:border-cyan-600"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
                     >
                       <div className="flex items-center gap-3">
                         <Avatar className="h-12 w-12 ring-2 ring-white shadow-sm">
@@ -285,7 +376,7 @@ export default function Chat() {
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </div>
@@ -421,27 +512,27 @@ export default function Chat() {
             </div>
             {/* Input (always visible at bottom) */}
             <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-3 shrink-0">
-              <div className="flex items-end gap-4">
+              <div className="flex items-end gap-3">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:bg-gray-100"
+                  className="hover:bg-gray-100 shrink-0"
                 >
                   <Paperclip className="h-5 w-5" />
                 </Button>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <ChatInput
                     placeholder="Type your message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="min-h-[40px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none"
+                    className="min-h-[40px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none w-full"
                   />
                 </div>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim()}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 shrink-0"
                 >
                   <Send className="h-5 w-5" />
                 </Button>
@@ -465,17 +556,21 @@ export default function Chat() {
       }
     : {};
 
-  // Floating chat widget
+  // Floating chat widget with animations
   const FloatingWidget = (
-    <div
+    <motion.div
       className={
         `fixed z-50 bottom-0 left-0 ` +
         `flex flex-col ` +
         `bg-white ` +
-        `overflow-hidden animate-fade-in-up ` +
+        `overflow-hidden ` +
         `w-screen h-[90vh] rounded-none border-0 shadow-none ` +
         `sm:bottom-6 sm:left-6 sm:w-full sm:max-w-[400px] sm:h-[70vh] sm:max-h-[600px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-blue-100`
       }
+      variants={widgetVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
     >
       {/* Header with close button */}
       <div className="flex items-center justify-between p-4 sm:p-3 bg-blue-600 text-white">
@@ -483,23 +578,43 @@ export default function Chat() {
           <MessageCircle className="w-7 h-7 sm:w-6 sm:h-6" />
           <span className="font-bold text-lg">Chat</span>
         </div>
-        <button
+        <motion.button
           onClick={() => setIsWidgetOpen(false)}
           className="p-2 sm:p-1 rounded hover:bg-blue-700 transition"
           aria-label="Close Chat"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           <X className="w-6 h-6 sm:w-5 sm:h-5" />
-        </button>
+        </motion.button>
       </div>
       {/* Main chat content */}
       <div className="flex flex-col flex-1 min-h-0 w-full">{chatContent}</div>
-    </div>
+    </motion.div>
   );
 
   return (
     <>
-      {!isWidgetOpen && FloatingButton}
-      {isWidgetOpen && <div style={mobileWidgetStyle}>{FloatingWidget}</div>}
+      <AnimatePresence>
+        {!isWidgetOpen && FloatingButton}
+        {isWidgetOpen && (
+          <>
+            {/* Mobile overlay */}
+            {isMobile && (
+              <motion.div
+                className="fixed inset-0 bg-black/20 z-40"
+                variants={overlayVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                onClick={() => setIsWidgetOpen(false)}
+              />
+            )}
+            {/* Widget */}
+            <div style={mobileWidgetStyle}>{FloatingWidget}</div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

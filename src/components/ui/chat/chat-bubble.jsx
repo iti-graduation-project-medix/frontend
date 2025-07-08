@@ -61,9 +61,9 @@ const ChatBubbleAvatar = ({ src, fallback, className }) => (
 const chatBubbleMessageVariants = cva("px-2 py-1", {
   variants: {
     variant: {
+      sent: "bg-gradient-to-r from-primary to-primary-hover text-white rounded-l-lg rounded-tr-lg",
       received:
-        "bg-secondary text-secondary-foreground rounded-r-lg rounded-tl-lg",
-      sent: "bg-primary text-primary-foreground rounded-l-lg rounded-tr-lg",
+        "bg-white border border-border text-foreground rounded-r-lg rounded-tl-lg",
     },
     layout: {
       default: "",
@@ -83,13 +83,11 @@ export function ChatBubbleMessage({
 }) {
   return (
     <div
-      className={
-        `relative px-4 py-3 rounded-2xl shadow-lg ` +
-        (variant === "sent"
-          ? "bg-gradient-to-r from-cyan-500 to-purple-600 text-white ml-auto "
-          : "bg-white/10 backdrop-blur-sm text-white border border-white/20 ") +
+      className={cn(
+        chatBubbleMessageVariants({ variant }),
+        "relative px-4 py-2 rounded-2xl shadow-lg break-words whitespace-pre-line max-w-[75%]",
         className
-      }
+      )}
       {...props}
     />
   );
@@ -98,10 +96,7 @@ ChatBubbleMessage.displayName = "ChatBubbleMessage";
 
 // ChatBubbleTimestamp
 const ChatBubbleTimestamp = ({ timestamp, className, ...props }) => (
-  <div
-    className={cn("text-xs text-white mt-2 text-right", className)}
-    {...props}
-  >
+  <div className={cn("text-xs  mt-2 text-right", className)} {...props}>
     {timestamp}
   </div>
 );

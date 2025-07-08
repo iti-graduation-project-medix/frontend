@@ -56,6 +56,8 @@ export default function Chat() {
 
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const prevUnreadRef = useRef(unreadCount);
+  const messageListRef = useRef();
+  const prevUnreadCountsRef = useRef({});
 
   // Always show chat list when widget is opened
   useEffect(() => {
@@ -65,12 +67,25 @@ export default function Chat() {
   }, [isWidgetOpen]);
 
   useEffect(() => {
-    if (unreadCount > prevUnreadRef.current) {
-      const audio = new window.Audio("/new-notification-07-210334.mp3");
-      audio.play();
+    // Only play sound if a room (not the active one) gets more unread
+    if (chats && chats.length > 0) {
+      for (const chat of chats) {
+        const prev = prevUnreadCountsRef.current[chat.roomId] || 0;
+        if (
+          chat.unreadCount > prev &&
+          (!activeChat || chat.roomId !== activeChat.roomId)
+        ) {
+          const audio = new window.Audio("/new-notification-07-210334.mp3");
+          audio.play();
+          break; // Only play once per update
+        }
+      }
+      // Update ref after check
+      prevUnreadCountsRef.current = Object.fromEntries(
+        chats.map((c) => [c.roomId, c.unreadCount])
+      );
     }
-    prevUnreadRef.current = unreadCount;
-  }, [unreadCount]);
+  }, [chats, activeChat?.roomId]);
 
   // Leave all chat rooms when widget closes or on unmount
   useEffect(() => {
@@ -112,6 +127,14 @@ export default function Chat() {
   };
 
   const currentMessages = activeChat ? messages[activeChat.roomId] || [] : [];
+
+  // Scroll to bottom when chat opens or messages change
+  useEffect(() => {
+    if (mode === "chat" && messageListRef.current) {
+      const el = messageListRef.current;
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }
+  }, [mode, currentMessages.length, activeChat?.roomId]);
 
   if (!isAuthenticated) {
     return (
@@ -258,15 +281,15 @@ export default function Chat() {
                     >
                       <div className="relative">
                         {/* Glow effect */}
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/10 via-secondary/10 to-blue-100/10 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
                         {/* Main chat item */}
-                        <div className="relative bg-gradient-to-br from-purple-800/60 via-cyan-800/40 to-purple-900/60 backdrop-blur-xl rounded-2xl p-4 border border-cyan-400/30 group-hover:border-cyan-400/70 shadow-xl transition-all duration-300">
+                        <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-blue-50 backdrop-blur-xl rounded-2xl p-4 border border-border group-hover:border-primary shadow-xl transition-all duration-300">
                           <div className="flex items-center gap-3">
                             {/* Avatar with status */}
                             <div className="relative">
-                              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 p-0.5 shadow-lg">
-                                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
-                                  <span className="text-white font-bold text-lg">
+                              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 p-0.5 shadow-lg">
+                                <div className="w-full h-full rounded-2xl bg-white flex items-center justify-center">
+                                  <span className="text-primary font-bold text-lg">
                                     {chat.otherUser?.fullName
                                       ?.split(" ")
                                       .map((n) => n[0])
@@ -279,7 +302,7 @@ export default function Chat() {
                                 className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-lg ${
                                   chat.otherUser?.isOnline
                                     ? "bg-green-500"
-                                    : "bg-gray-500"
+                                    : "bg-gray-300"
                                 }`}
                               >
                                 {chat.otherUser?.isOnline && (
@@ -290,20 +313,20 @@ export default function Chat() {
                             {/* Chat info */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-1">
-                                <h3 className="font-semibold text-white truncate group-hover:text-cyan-400 transition-colors duration-300">
+                                <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300">
                                   {chat.otherUser?.fullName || "Unknown User"}
                                 </h3>
-                                <span className="text-xs text-white/70">
+                                <span className="text-xs text-muted-foreground">
                                   {lastMsgTime}
                                 </span>
                               </div>
-                              <p className="text-sm text-white/80 truncate opacity-80">
+                              <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
                               </p>
                               {chat.deal && (
                                 <div className="flex items-center gap-2 mt-2">
-                                  <Package className="w-4 h-4 text-cyan-400" />
-                                  <span className="text-xs text-cyan-400 font-medium">
+                                  <Package className="w-4 h-4 text-primary" />
+                                  <span className="text-xs text-primary font-medium">
                                     {chat.deal.title || "Deal"}
                                   </span>
                                 </div>
@@ -360,12 +383,12 @@ export default function Chat() {
       {mode === "chat" && (
         <div className="flex flex-col h-full w-full">
           {/* Back button and header (compact, all in one row) */}
-          <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-900/60 via-cyan-900/40 to-purple-900/60 backdrop-blur-xl border-b border-white/10 shrink-0">
+          <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50 border-b border-border shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={handleBackToList}
-              className="hover:bg-white/10 text-white"
+              className="hover:bg-blue-50 text-foreground"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -374,7 +397,7 @@ export default function Chat() {
                 src={activeChat.otherUser?.profilePhotoUrl}
                 alt={activeChat.otherUser?.fullName}
               />
-              <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
+              <AvatarFallback className="bg-gradient-to-r from-blue-100 to-indigo-100 text-foreground font-semibold">
                 {activeChat.otherUser?.fullName
                   ?.split(" ")
                   .map((n) => n[0])
@@ -383,10 +406,10 @@ export default function Chat() {
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-white text-base truncate">
+                <span className="font-semibold text-foreground text-base truncate">
                   {activeChat.otherUser?.fullName || "Unknown User"}
                 </span>
-                <span className="text-xs text-green-400 font-medium flex items-center gap-1">
+                <span className="text-xs text-green-600 font-medium flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   Online
                 </span>
@@ -394,7 +417,7 @@ export default function Chat() {
             </div>
             <Link
               to={`/profile/${activeChat.otherUser?.id}`}
-              className="px-2 py-1 rounded bg-cyan-600 text-white text-xs font-semibold flex items-center gap-1 hover:bg-cyan-700 transition"
+              className="px-2 py-1 rounded bg-blue-100 text-foreground text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
             >
               <User2 className="w-4 h-4" />
               Profile
@@ -403,26 +426,26 @@ export default function Chat() {
           {/* Deal Info Banner (modern glassy style) */}
           {activeChat?.deal && (
             <div className="px-4 py-2 shadow-xl">
-              <div className="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl p-3 border border-cyan-400/30">
+              <div className="bg-gradient-to-r from-blue-50/60 to-indigo-100/60 rounded-2xl p-3 border border-blue-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-xl flex items-center justify-center">
-                    <Package className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
+                    <Package className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">
+                    <h4 className="font-semibold text-foreground">
                       {activeChat.deal.medicineName ||
                         activeChat.deal.title ||
                         "Deal"}
                     </h4>
                     {activeChat.deal.price && (
-                      <p className="text-sm text-cyan-400">
+                      <p className="text-sm text-primary">
                         ${activeChat.deal.price}
                       </p>
                     )}
                   </div>
                   <Link
                     to={`/all-deals/${activeChat.deal.id}`}
-                    className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:from-cyan-600 hover:to-purple-700 transition-all duration-300"
+                    className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-xl font-semibold hover:from-primary-hover hover:to-primary transition-all duration-300"
                   >
                     View Deal
                   </Link>
@@ -434,7 +457,7 @@ export default function Chat() {
           <div className="flex-1 min-h-0 flex flex-col">
             {/* Messages (scrollable) */}
             <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1">
-              <ChatMessageList className="h-full">
+              <ChatMessageList className="h-full" ref={messageListRef}>
                 {currentMessages.map((msg) => (
                   <ChatBubble
                     key={msg.id}
@@ -453,8 +476,8 @@ export default function Chat() {
                       variant={msg.isOwn ? "sent" : "received"}
                       className={
                         (msg.isOwn
-                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg"
-                          : "bg-white shadow-md border border-gray-100") +
+                          ? "bg-gradient-to-r from-primary to-primary-hover text-white shadow-lg"
+                          : "bg-white shadow-md border border-gray-100 text-foreground") +
                         " break-words whitespace-pre-line max-w-[75%]"
                       }
                     >
@@ -468,7 +491,7 @@ export default function Chat() {
                             <Check className="w-3 h-3 text-gray-400" />
                           )}
                           {msg.status === "read" && (
-                            <CheckCheck className="w-3 h-3 text-blue-500" />
+                            <CheckCheck className="w-3 h-3 text-primary" />
                           )}
                         </div>
                       )}
@@ -478,12 +501,12 @@ export default function Chat() {
               </ChatMessageList>
             </div>
             {/* Input (always visible at bottom) */}
-            <div className="bg-gradient-to-br from-purple-900/60 via-cyan-900/40 to-purple-900/60 backdrop-blur-xl border-t border-white/10 p-3 shrink-0">
+            <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-100 border-t border-border p-3 shrink-0">
               <div className="flex items-end gap-3">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:bg-white/10 text-white shrink-0"
+                  className="hover:bg-blue-50 text-foreground shrink-0"
                 >
                   <Paperclip className="h-5 w-5" />
                 </Button>
@@ -493,13 +516,13 @@ export default function Chat() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="min-h-[40px] max-h-32 bg-white/10 border border-white/20 text-white placeholder-white/60 focus:bg-white/20 focus:border-cyan-400 transition-all resize-none w-full backdrop-blur-md rounded-2xl"
+                    className="min-h-[40px] max-h-32 bg-white border border-border text-foreground placeholder-muted-foreground focus:bg-blue-50 focus:border-primary transition-all resize-none w-full backdrop-blur-md rounded-2xl"
                   />
                 </div>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim()}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 shrink-0 rounded-2xl"
+                  className="bg-gradient-to-r from-primary to-primary-hover text-white shadow-lg hover:from-primary-hover hover:to-primary transition-all duration-200 shrink-0 rounded-2xl"
                 >
                   <Send className="h-5 w-5" />
                 </Button>
@@ -529,8 +552,8 @@ export default function Chat() {
     <motion.div
       className={
         isMobile
-          ? "fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-2xl overflow-hidden w-screen h-screen rounded-none border-0 shadow-none"
-          : "fixed z-50 bottom-6 left-6 flex flex-col bg-black/90 backdrop-blur-2xl overflow-hidden w-full max-w-[400px] h-[70vh] max-h-[600px] rounded-3xl shadow-2xl border border-white/20"
+          ? "fixed inset-0 z-50 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-screen h-screen rounded-none border-0 shadow-none"
+          : "fixed z-50 bottom-6 left-6 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-full max-w-[400px] h-[70vh] max-h-[600px] rounded-3xl shadow-2xl border border-border"
       }
       style={mobileWidgetStyle}
       variants={widgetVariants}
@@ -539,13 +562,13 @@ export default function Chat() {
       exit="exit"
     >
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-l from-cyan-500/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-purple-500/10 to-transparent rounded-full blur-2xl animate-pulse delay-1000"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-100">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/30 via-transparent to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-l from-indigo-100/30 to-transparent rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-blue-100/20 to-transparent rounded-full blur-2xl animate-pulse delay-1000"></div>
       </div>
       {/* Header with close button */}
-      <div className="flex items-center justify-between p-4 sm:p-3 bg-gradient-to-r from-purple-900/50 via-cyan-900/50 to-purple-900/50 backdrop-blur-sm border-b border-white/10 text-white relative z-10">
+      <div className="flex items-center justify-between p-4 sm:p-3 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50 border-b border-border text-foreground relative z-10">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-7 h-7 sm:w-6 sm:h-6" />
           <span className="font-bold text-lg">Chat</span>
@@ -559,7 +582,7 @@ export default function Chat() {
             }
             setIsWidgetOpen(false);
           }}
-          className="p-2 sm:p-1 rounded-xl bg-white/10 hover:bg-white/20 transition text-white"
+          className="p-2 sm:p-1 rounded-xl bg-blue-50 hover:bg-blue-100 transition text-foreground"
           aria-label="Close Chat"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}

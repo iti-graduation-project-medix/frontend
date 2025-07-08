@@ -188,11 +188,10 @@ const useChat = create((set, get) => ({
           chat.roomId === roomId ? { ...chat, unreadCount } : chat
         );
 
-        // Calculate new total unread count
-        const newTotalUnread = updatedChats.reduce(
-          (sum, chat) => sum + (chat.unreadCount || 0),
-          0
-        );
+        // Calculate new total unread count (number of rooms with unread messages)
+        const newTotalUnread = updatedChats.filter(
+          (chat) => (chat.unreadCount || 0) > 0
+        ).length;
 
         return {
           chats: updatedChats,
@@ -224,11 +223,10 @@ const useChat = create((set, get) => ({
           chat.roomId === roomId ? { ...chat, unreadCount: 0 } : chat
         );
 
-        // Calculate new total unread count
-        const newTotalUnread = updatedChats.reduce(
-          (sum, chat) => sum + (chat.unreadCount || 0),
-          0
-        );
+        // Calculate new total unread count (number of rooms with unread messages)
+        const newTotalUnread = updatedChats.filter(
+          (chat) => (chat.unreadCount || 0) > 0
+        ).length;
 
         return {
           chats: updatedChats,
@@ -363,11 +361,10 @@ const useChat = create((set, get) => ({
         };
       });
 
-      // Calculate total unread count
-      const totalUnread = transformedChats.reduce(
-        (sum, chat) => sum + (chat.unreadCount || 0),
-        0
-      );
+      // Calculate total unread count (number of rooms with unread messages)
+      const totalUnread = transformedChats.filter(
+        (chat) => (chat.unreadCount || 0) > 0
+      ).length;
 
       set({
         chats: transformedChats,
@@ -437,8 +434,8 @@ const useChat = create((set, get) => ({
   },
 
   getTotalUnread: () => {
-    const chats = get().chats || [];
-    return chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
+    const { chats } = get();
+    return chats.filter((chat) => (chat.unreadCount || 0) > 0).length;
   },
 }));
 

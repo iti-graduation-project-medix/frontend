@@ -33,11 +33,11 @@ export default function DealInfoBar({ deal }) {
   const status = getStatus();
 
   return (
-    <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl border border-cyan-400/30 backdrop-blur-sm text-sm shrink-0">
-      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-        <Package className="w-6 h-6 text-white" />
+    <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-50/60 to-indigo-100/60 rounded-2xl border border-blue-100 backdrop-blur-sm text-sm shrink-0">
+      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+        <Package className="w-6 h-6 text-primary" />
       </div>
-      <span className="font-bold text-blue-900 text-base sm:text-lg truncate flex-1">
+      <span className="font-bold text-primary text-base sm:text-lg truncate flex-1">
         {deal.medicineName || deal.title || "Deal"}
       </span>
       <Badge className="bg-blue-100 text-blue-700 border border-blue-200 text-xs">

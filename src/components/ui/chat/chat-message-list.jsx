@@ -48,7 +48,7 @@ export const ChatMessageList = React.forwardRef(function ChatMessageList(
       {showScrollBtn && (
         <button
           onClick={scrollToBottom}
-          className="absolute left-1/2 -translate-x-1/2 bottom-4 z-20 p-2 rounded-full bg-gradient-to-br from-cyan-500/80 to-purple-600/80 text-white shadow-xl hover:scale-110 transition-all border-2 border-white/30 backdrop-blur-lg pointer-events-auto"
+          className="absolute left-1/2 -translate-x-1/2 bottom-4 z-20 p-2 rounded-full bg-gradient-to-br from-primary to-primary-hover text-white shadow-xl hover:scale-110 transition-all border-2 border-border backdrop-blur-lg pointer-events-auto"
           aria-label="Scroll to bottom"
         >
           <ArrowDown className="w-5 h-5" />

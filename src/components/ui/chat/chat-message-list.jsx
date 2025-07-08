@@ -1,51 +1,61 @@
 import * as React from "react";
 import { ArrowDown } from "lucide-react";
 import { Button } from "../button";
-import { useAutoScroll } from "./hooks/useAutoScroll";
 
-const ChatMessageList = React.forwardRef(
-  ({ className, children, smooth = false, ...props }, _ref) => {
-    const {
-      scrollRef,
-      isAtBottom,
-      autoScrollEnabled,
-      scrollToBottom,
-      disableAutoScroll,
-    } = useAutoScroll({
-      smooth,
-      content: children,
-    });
+export const ChatMessageList = React.forwardRef(function ChatMessageList(
+  { className = "", children, ...props },
+  ref
+) {
+  const innerRef = React.useRef();
+  const scrollRef = ref || innerRef;
+  const [showScrollBtn, setShowScrollBtn] = React.useState(false);
 
-    return (
-      <div className="relative w-full h-full">
-        <div
-          className={`flex flex-col w-full h-full p-4 overflow-y-auto ${className}`}
-          ref={scrollRef}
-          onWheel={disableAutoScroll}
-          onTouchMove={disableAutoScroll}
-          {...props}
-        >
-          <div className="flex flex-col gap-6">{children}</div>
-        </div>
+  // Show button if not at bottom
+  const handleScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowScrollBtn(el.scrollHeight - el.scrollTop - el.clientHeight > 60);
+  };
 
-        {!isAtBottom && (
-          <Button
-            onClick={() => {
-              scrollToBottom();
-            }}
-            size="icon"
-            variant="outline"
-            className="absolute bottom-2 left-1/2 transform -translate-x-1/2 inline-flex rounded-full shadow-md"
-            aria-label="Scroll to bottom"
-          >
-            <ArrowDown className="h-4 w-4" />
-          </Button>
-        )}
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", handleScroll);
+    // Check on mount
+    handleScroll();
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [scrollRef]);
+
+  // Scroll to bottom
+  const scrollToBottom = () => {
+    const el = scrollRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <div className={"relative h-full w-full " + className}>
+      <div
+        ref={scrollRef}
+        className={
+          "flex flex-col gap-2 px-2 py-1 h-full overflow-y-auto custom-scrollbar w-full "
+        }
+        {...props}
+      >
+        {children}
       </div>
-    );
-  }
-);
+      {showScrollBtn && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute left-1/2 -translate-x-1/2 bottom-4 z-20 p-2 rounded-full bg-gradient-to-br from-cyan-500/80 to-purple-600/80 text-white shadow-xl hover:scale-110 transition-all border-2 border-white/30 backdrop-blur-lg pointer-events-auto"
+          aria-label="Scroll to bottom"
+        >
+          <ArrowDown className="w-5 h-5" />
+        </button>
+      )}
+    </div>
+  );
+});
 
 ChatMessageList.displayName = "ChatMessageList";
-
-export { ChatMessageList };

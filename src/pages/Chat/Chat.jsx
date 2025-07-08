@@ -1,15 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Search,
-  MoreVertical,
-  Phone,
-  Video,
   Send,
   Paperclip,
-  Smile,
   ArrowLeft,
   MessageCircle,
-  Clock,
   Check,
   CheckCheck,
   Package,
@@ -17,14 +11,11 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
 import {
   Avatar,
   AvatarImage,
   AvatarFallback,
 } from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge";
-import { Card, CardContent } from "../../components/ui/card";
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -42,11 +33,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
-  const [showSidebar, setShowSidebar] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [mode, setMode] = useState("list"); // 'list' or 'chat'
 
-  // Responsive: on mobile, widget is full width, bottom 90% height
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   // Responsive widget size
@@ -59,15 +47,9 @@ export default function Chat() {
     chats,
     messages,
     loading,
-    error,
-    startChat,
     sendMessage,
-    loadUserChats,
     selectChat,
-    clearError,
-    initializeSocket,
     getCurrentUserId,
-    socket,
     isWidgetOpen,
     setIsWidgetOpen,
   } = useChat();
@@ -139,39 +121,6 @@ export default function Chat() {
     );
   }
 
-  // Animation variants
-  const floatingButtonVariants = {
-    hidden: {
-      scale: 0,
-      opacity: 0,
-      rotate: -180,
-    },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      rotate: 0,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20,
-        delay: 0.2,
-      },
-    },
-    hover: {
-      scale: 1.1,
-      rotate: 5,
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 10,
-      },
-    },
-    tap: {
-      scale: 0.95,
-      rotate: -2,
-    },
-  };
-
   const widgetVariants = {
     hidden: {
       opacity: 0,
@@ -219,69 +168,37 @@ export default function Chat() {
 
   // Floating button with animation
   const FloatingButton = (
-    <motion.button
-      onClick={() => setIsWidgetOpen(true)}
-      className="fixed z-50 bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg p-4 flex items-center justify-center transition-all"
-      aria-label="Open Chat"
-      variants={floatingButtonVariants}
-      initial="hidden"
-      animate="visible"
-      whileHover="hover"
-      whileTap="tap"
-    >
-      <MessageCircle className="w-7 h-7" />
-      {unreadCount > 0 && (
-        <motion.span
-          className="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-lg font-semibold"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 30,
-            delay: 0.1,
-          }}
-        >
-          {unreadCount > 99 ? "99+" : unreadCount}
-        </motion.span>
-      )}
-    </motion.button>
+    <div className="fixed bottom-6 left-6 z-50 sm:left-6 ">
+      <button
+        onClick={() => setIsWidgetOpen(true)}
+        className="group relative"
+        aria-label="Open Chat"
+      >
+        {/* Outer glow ring */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-75 group-hover:opacity-100 animate-pulse blur-lg transition-all duration-300"></div>
+        {/* Main button */}
+        <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-500 group-hover:scale-110 flex items-center justify-center">
+          {/* Inner sparkle effect */}
+          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/20 to-transparent opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
+          {/* Icon */}
+          <MessageCircle className="w-8 h-8 text-white relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+        </div>
+        {/* Unread badge */}
+        {unreadCount > 0 && (
+          <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-r from-red-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg animate-pulse border-2 border-white">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </div>
+        )}
+      </button>
+    </div>
   );
 
   // Layout: only one view at a time
   const chatContent = (
     <div className="flex flex-col h-full w-full">
       {mode === "list" && (
-        <div className="flex flex-col h-full w-full">
-          {/* Chat List Sidebar (full widget area) */}
-          <div className="p-6 border-b border-gray-200/50 bg-white/90">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">Messages</h1>
-                  <p className="text-sm text-gray-500">
-                    Chat with buyers & sellers
-                  </p>
-                </div>
-              </div>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                <MoreVertical className="h-5 w-5" />
-              </Button>
-            </div>
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search conversations..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all"
-              />
-            </div>
-          </div>
-          <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col h-full w-full relative overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-4 py-4 relative z-10 custom-scrollbar">
             {loading ? (
               <div className="p-6 space-y-4">
                 {[...Array(5)].map((_, i) => (
@@ -308,8 +225,8 @@ export default function Chat() {
               `}</style>
               </div>
             ) : chats.length > 0 ? (
-              <div className="p-2">
-                {chats.map((chat) => {
+              <div className="space-y-3">
+                {chats.map((chat, index) => {
                   // Format last message time
                   let lastMsgTime = "";
                   if (chat.lastMessage?.sentAt) {
@@ -329,61 +246,79 @@ export default function Chat() {
                     }
                   }
                   return (
-                    <motion.div
+                    <div
                       key={chat.roomId}
                       onClick={() => handleChatSelect(chat)}
-                      className="p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50/80 bg-white shadow border border-gray-100 mb-2 hover:border-cyan-600"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
+                      className="group cursor-pointer transform hover:scale-[1.02] transition-all duration-300"
+                      style={{
+                        animation: `slideInUp 0.5s ease-out ${
+                          index * 0.1
+                        }s both`,
+                      }}
                     >
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12 ring-2 ring-white shadow-sm">
-                          <AvatarImage
-                            src={chat.otherUser?.profilePhotoUrl}
-                            alt={chat.otherUser?.fullName}
-                          />
-                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
-                            {chat.otherUser?.fullName
-                              ?.split(" ")
-                              .map((n) => n[0])
-                              .join("") || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold text-gray-900 truncate">
-                              {chat.otherUser?.fullName || "Unknown User"}
-                            </h3>
-                            <span className="text-xs text-gray-500">
-                              {lastMsgTime}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
+                      <div className="relative">
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+                        {/* Main chat item */}
+                        <div className="relative bg-gradient-to-br from-purple-800/60 via-cyan-800/40 to-purple-900/60 backdrop-blur-xl rounded-2xl p-4 border border-cyan-400/30 group-hover:border-cyan-400/70 shadow-xl transition-all duration-300">
+                          <div className="flex items-center gap-3">
+                            {/* Avatar with status */}
+                            <div className="relative">
+                              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-purple-600 p-0.5 shadow-lg">
+                                <div className="w-full h-full rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                                  <span className="text-white font-bold text-lg">
+                                    {chat.otherUser?.fullName
+                                      ?.split(" ")
+                                      .map((n) => n[0])
+                                      .join("") || "U"}
+                                  </span>
+                                </div>
+                              </div>
+                              {/* Online status */}
+                              <div
+                                className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-lg ${
+                                  chat.otherUser?.isOnline
+                                    ? "bg-green-500"
+                                    : "bg-gray-500"
+                                }`}
+                              >
+                                {chat.otherUser?.isOnline && (
+                                  <div className="w-full h-full rounded-full bg-green-400 animate-pulse"></div>
+                                )}
+                              </div>
+                            </div>
+                            {/* Chat info */}
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm text-gray-600 truncate">
+                              <div className="flex items-center justify-between mb-1">
+                                <h3 className="font-semibold text-white truncate group-hover:text-cyan-400 transition-colors duration-300">
+                                  {chat.otherUser?.fullName || "Unknown User"}
+                                </h3>
+                                <span className="text-xs text-white/70">
+                                  {lastMsgTime}
+                                </span>
+                              </div>
+                              <p className="text-sm text-white/80 truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
                               </p>
                               {chat.deal && (
-                                <div className="flex items-center gap-1 mt-1">
-                                  <Package className="w-3 h-3 text-gray-400" />
-                                  <span className="text-xs text-gray-500 truncate">
+                                <div className="flex items-center gap-2 mt-2">
+                                  <Package className="w-4 h-4 text-cyan-400" />
+                                  <span className="text-xs text-cyan-400 font-medium">
                                     {chat.deal.title || "Deal"}
                                   </span>
                                 </div>
                               )}
                             </div>
+                            {/* Unread badge */}
                             {chat.unreadCount > 0 && (
-                              <Badge className="bg-blue-500 text-white text-xs px-2 py-1 ml-2">
+                              <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg animate-pulse">
                                 {chat.unreadCount}
-                              </Badge>
+                              </div>
                             )}
                           </div>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>
@@ -408,17 +343,29 @@ export default function Chat() {
               </div>
             )}
           </div>
+          <style>{`
+            @keyframes slideInUp {
+              from {
+                opacity: 0;
+                transform: translateY(20px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          `}</style>
         </div>
       )}
       {mode === "chat" && (
         <div className="flex flex-col h-full w-full">
           {/* Back button and header (compact, all in one row) */}
-          <div className="flex items-center gap-2 p-3 bg-white border-b border-gray-200/50 shrink-0">
+          <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-900/60 via-cyan-900/40 to-purple-900/60 backdrop-blur-xl border-b border-white/10 shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={handleBackToList}
-              className="hover:bg-gray-100"
+              className="hover:bg-white/10 text-white"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -436,39 +383,51 @@ export default function Chat() {
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-gray-900 text-base truncate">
+                <span className="font-semibold text-white text-base truncate">
                   {activeChat.otherUser?.fullName || "Unknown User"}
                 </span>
-                <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-xs text-green-400 font-medium flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   Online
                 </span>
               </div>
             </div>
             <Link
               to={`/profile/${activeChat.otherUser?.id}`}
-              className="px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
+              className="px-2 py-1 rounded bg-cyan-600 text-white text-xs font-semibold flex items-center gap-1 hover:bg-cyan-700 transition"
             >
               <User2 className="w-4 h-4" />
               Profile
             </Link>
           </div>
-          {/* Deal Info Banner (compact, collapsible) */}
+          {/* Deal Info Banner (modern glassy style) */}
           {activeChat?.deal && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border-b border-blue-100 text-sm shrink-0">
-              <Package className="w-5 h-5 text-blue-500" />
-              <span className="font-semibold text-blue-900 truncate flex-1">
-                {activeChat.deal.medicineName ||
-                  activeChat.deal.title ||
-                  "Deal"}
-              </span>
-              <Link
-                to={`/all-deals/${activeChat.deal.id}`}
-                className="px-3 py-1 rounded bg-blue-500 text-white text-xs font-semibold hover:bg-blue-600 transition"
-              >
-                View
-              </Link>
-              {/* Collapsible toggle (optional, can add details on click) */}
+            <div className="px-4 py-2 shadow-xl">
+              <div className="bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-2xl p-3 border border-cyan-400/30">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-xl flex items-center justify-center">
+                    <Package className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-white">
+                      {activeChat.deal.medicineName ||
+                        activeChat.deal.title ||
+                        "Deal"}
+                    </h4>
+                    {activeChat.deal.price && (
+                      <p className="text-sm text-cyan-400">
+                        ${activeChat.deal.price}
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    to={`/all-deals/${activeChat.deal.id}`}
+                    className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white rounded-xl font-semibold hover:from-cyan-600 hover:to-purple-700 transition-all duration-300"
+                  >
+                    View Deal
+                  </Link>
+                </div>
+              </div>
             </div>
           )}
           {/* Main Chat Area: messages and input */}
@@ -493,9 +452,10 @@ export default function Chat() {
                     <ChatBubbleMessage
                       variant={msg.isOwn ? "sent" : "received"}
                       className={
-                        msg.isOwn
+                        (msg.isOwn
                           ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg"
-                          : "bg-white shadow-md border border-gray-100"
+                          : "bg-white shadow-md border border-gray-100") +
+                        " break-words whitespace-pre-line max-w-[75%]"
                       }
                     >
                       {msg.content}
@@ -518,12 +478,12 @@ export default function Chat() {
               </ChatMessageList>
             </div>
             {/* Input (always visible at bottom) */}
-            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-3 shrink-0">
+            <div className="bg-gradient-to-br from-purple-900/60 via-cyan-900/40 to-purple-900/60 backdrop-blur-xl border-t border-white/10 p-3 shrink-0">
               <div className="flex items-end gap-3">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:bg-gray-100 shrink-0"
+                  className="hover:bg-white/10 text-white shrink-0"
                 >
                   <Paperclip className="h-5 w-5" />
                 </Button>
@@ -533,13 +493,13 @@ export default function Chat() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="min-h-[40px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none w-full"
+                    className="min-h-[40px] max-h-32 bg-white/10 border border-white/20 text-white placeholder-white/60 focus:bg-white/20 focus:border-cyan-400 transition-all resize-none w-full backdrop-blur-md rounded-2xl"
                   />
                 </div>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim()}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 shrink-0"
+                  className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 shrink-0 rounded-2xl"
                 >
                   <Send className="h-5 w-5" />
                 </Button>
@@ -551,14 +511,15 @@ export default function Chat() {
     </div>
   );
 
-  // Responsive: on mobile, widget is full width, bottom 90% height
+  // Responsive: on mobile, widget is full screen, on desktop it's floating
   const mobileWidgetStyle = isMobile
     ? {
         width: "100vw",
+        height: "100vh",
         right: 0,
         left: 0,
         bottom: 0,
-        height: "90vh",
+        top: 0,
         borderRadius: 0,
       }
     : {};
@@ -567,20 +528,24 @@ export default function Chat() {
   const FloatingWidget = (
     <motion.div
       className={
-        `fixed z-50 bottom-0 left-0 ` +
-        `flex flex-col ` +
-        `bg-white ` +
-        `overflow-hidden ` +
-        `w-screen h-[90vh] rounded-none border-0 shadow-none ` +
-        `sm:bottom-6 sm:left-6 sm:w-full sm:max-w-[400px] sm:h-[70vh] sm:max-h-[600px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-blue-100`
+        isMobile
+          ? "fixed inset-0 z-50 flex flex-col bg-black/90 backdrop-blur-2xl overflow-hidden w-screen h-screen rounded-none border-0 shadow-none"
+          : "fixed z-50 bottom-6 left-6 flex flex-col bg-black/90 backdrop-blur-2xl overflow-hidden w-full max-w-[400px] h-[70vh] max-h-[600px] rounded-3xl shadow-2xl border border-white/20"
       }
+      style={mobileWidgetStyle}
       variants={widgetVariants}
       initial="hidden"
       animate="visible"
       exit="exit"
     >
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-transparent to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-l from-cyan-500/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-purple-500/10 to-transparent rounded-full blur-2xl animate-pulse delay-1000"></div>
+      </div>
       {/* Header with close button */}
-      <div className="flex items-center justify-between p-4 sm:p-3 bg-blue-600 text-white">
+      <div className="flex items-center justify-between p-4 sm:p-3 bg-gradient-to-r from-purple-900/50 via-cyan-900/50 to-purple-900/50 backdrop-blur-sm border-b border-white/10 text-white relative z-10">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-7 h-7 sm:w-6 sm:h-6" />
           <span className="font-bold text-lg">Chat</span>
@@ -594,7 +559,7 @@ export default function Chat() {
             }
             setIsWidgetOpen(false);
           }}
-          className="p-2 sm:p-1 rounded hover:bg-blue-700 transition"
+          className="p-2 sm:p-1 rounded-xl bg-white/10 hover:bg-white/20 transition text-white"
           aria-label="Close Chat"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -603,7 +568,9 @@ export default function Chat() {
         </motion.button>
       </div>
       {/* Main chat content */}
-      <div className="flex flex-col flex-1 min-h-0 w-full">{chatContent}</div>
+      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">
+        {chatContent}
+      </div>
     </motion.div>
   );
 
@@ -616,7 +583,7 @@ export default function Chat() {
             {/* Mobile overlay */}
             {isMobile && (
               <motion.div
-                className="fixed inset-0 bg-black/20 z-40"
+                className="fixed inset-0 bg-black/50 z-40"
                 variants={overlayVariants}
                 initial="hidden"
                 animate="visible"

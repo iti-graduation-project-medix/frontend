@@ -7,6 +7,7 @@ import { Card } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useDebounce } from "../../hooks/useDebounce";
 
 export default function PharmaciesForSale() {
   const [filters, setFilters] = useState({});
@@ -19,6 +20,37 @@ export default function PharmaciesForSale() {
   const token = useAuth((state) => state.token);
   const navigate = useNavigate();
 
+  // Debounced filters for API calls
+  const [debouncedFilters, setDebouncedFilters] = useState({});
+
+  // Create debounced function for filter updates
+  const debouncedSetFilters = useDebounce((newFilters) => {
+    setDebouncedFilters(newFilters);
+    setPage(1); // Reset to first page when filters change
+  }, 500);
+
+  // Update debounced filters when filters change
+  useEffect(() => {
+    // For search text and price inputs, use debounce
+    if (
+      filters.search !== debouncedFilters.search ||
+      filters.minPrice !== debouncedFilters.minPrice ||
+      filters.maxPrice !== debouncedFilters.maxPrice
+    ) {
+      debouncedSetFilters(filters);
+    } else {
+      // For dropdown filters (governorate, sale type), apply immediately
+      setDebouncedFilters(filters);
+      setPage(1);
+    }
+  }, [
+    filters,
+    debouncedSetFilters,
+    debouncedFilters.search,
+    debouncedFilters.minPrice,
+    debouncedFilters.maxPrice,
+  ]);
+
   // Active filter chips
   const getActiveFilters = () => {
     const chips = [];
@@ -28,11 +60,11 @@ export default function PharmaciesForSale() {
         label: `"${filters.search}"`,
         onRemove: () => setFilters((f) => ({ ...f, search: undefined })),
       });
-    if (filters.city)
+    if (filters.governorate)
       chips.push({
-        key: "city",
-        label: filters.city,
-        onRemove: () => setFilters((f) => ({ ...f, city: undefined })),
+        key: "governorate",
+        label: filters.governorate,
+        onRemove: () => setFilters((f) => ({ ...f, governorate: undefined })),
       });
     if (filters.saleType)
       chips.push({
@@ -64,11 +96,11 @@ export default function PharmaciesForSale() {
     setError("");
     try {
       const params = {
-        ...filters,
+        ...debouncedFilters,
         page,
         size: 9,
-        minPrice: filters.minPrice,
-        maxPrice: filters.maxPrice,
+        minPrice: debouncedFilters.minPrice,
+        maxPrice: debouncedFilters.maxPrice,
       };
       const res = await getPharmaciesForSale(params, token);
       setPharmacies(res.data.pharmacies || []);
@@ -83,7 +115,7 @@ export default function PharmaciesForSale() {
   useEffect(() => {
     fetchPharmacies();
     // eslint-disable-next-line
-  }, [filters, page, token]);
+  }, [debouncedFilters, page, token]);
 
   const handleClearFilters = () => {
     setFilters({});
@@ -111,6 +143,15 @@ export default function PharmaciesForSale() {
               filters={filters}
               setFilters={setFilters}
               onClear={handleClearFilters}
+              isSearching={
+                filters.search && filters.search !== debouncedFilters.search
+              }
+              isPriceFiltering={
+                (filters.minPrice &&
+                  filters.minPrice !== debouncedFilters.minPrice) ||
+                (filters.maxPrice &&
+                  filters.maxPrice !== debouncedFilters.maxPrice)
+              }
             />
             {/* Active Filter Chips */}
             {activeFilters.length > 0 && (

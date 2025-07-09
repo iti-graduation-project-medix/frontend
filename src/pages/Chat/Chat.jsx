@@ -194,17 +194,15 @@ export default function Chat() {
     <div className="fixed bottom-6 left-6 z-50 sm:left-6 ">
       <button
         onClick={() => setIsWidgetOpen(true)}
-        className="group relative"
+        className="group relative cursor-pointer"
         aria-label="Open Chat"
       >
         {/* Outer glow ring */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 opacity-75 group-hover:opacity-100 animate-pulse blur-lg transition-all duration-300"></div>
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-primary-hover opacity-80 group-hover:opacity-100 animate-pulse blur-lg transition-all duration-300"></div>
         {/* Main button */}
-        <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-violet-600 via-purple-600 to-fuchsia-600 shadow-2xl group-hover:shadow-purple-500/50 transition-all duration-500 group-hover:scale-110 flex items-center justify-center">
-          {/* Inner sparkle effect */}
-          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white/20 to-transparent opacity-50 group-hover:opacity-70 transition-opacity duration-300"></div>
-          {/* Icon */}
-          <MessageCircle className="w-8 h-8 text-white relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+        <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-hover shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 flex items-center justify-center">
+          {/* Lucide MessageCircle icon, styled */}
+          <MessageCircle className="w-10 h-10 text-white font-bold drop-shadow-lg" />
         </div>
         {/* Unread badge */}
         {unreadCount > 0 && (
@@ -223,19 +221,47 @@ export default function Chat() {
         <div className="flex flex-col h-full w-full relative overflow-hidden">
           <div className="flex-1 overflow-y-auto px-4 py-4 relative z-10 custom-scrollbar">
             {loading ? (
-              <div className="p-6 space-y-4">
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 shadow animate-pulse"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 w-2/3 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                      <div className="h-3 w-1/2 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
+              <div className="flex flex-col gap-2 px-2 pt-2 pb-1">
+                {[...Array(9)].map((_, i) => {
+                  // Vary width and height for realism
+                  const bubbleWidth = Math.floor(Math.random() * 80) + 100; // 100-180px
+                  const bubbleHeight = Math.random() > 0.7 ? 18 : 12; // Some taller
+                  const isSent = i % 2 === 0;
+                  return (
+                    <div
+                      key={i}
+                      className={`flex ${
+                        isSent ? "justify-end" : "justify-start"
+                      } w-full relative`}
+                      style={{ top: i * 2 }}
+                    >
+                      <div
+                        className={`flex items-end gap-2 max-w-[70%] ${
+                          isSent ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        {/* Avatar for received */}
+                        {!isSent && (
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 shimmer shadow" />
+                        )}
+                        {/* Message bubble skeleton */}
+                        <div
+                          className={`rounded-2xl shadow ${
+                            isSent
+                              ? "bg-gradient-to-r from-primary/20 to-primary/10"
+                              : "bg-white/80 border border-gray-200"
+                          } shimmer`}
+                          style={{
+                            width: bubbleWidth,
+                            height: bubbleHeight + 16,
+                          }}
+                        ></div>
+                      </div>
+                      {/* Timestamp skeleton */}
+                      <div className="w-8 h-3 rounded bg-gray-100 ml-2 shimmer" />
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <style>{`
                 .shimmer {
                   background-size: 200% 100%;
@@ -404,17 +430,7 @@ export default function Chat() {
                   .join("") || "U"}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground text-base truncate">
-                  {activeChat.otherUser?.fullName || "Unknown User"}
-                </span>
-                <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  Online
-                </span>
-              </div>
-            </div>
+            <div className="flex-1 min-w-0"></div>
             <Link
               to={`/profile/${activeChat.otherUser?.id}`}
               className="px-2 py-1 rounded bg-blue-100 text-foreground text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
@@ -582,7 +598,7 @@ export default function Chat() {
             }
             setIsWidgetOpen(false);
           }}
-          className="p-2 sm:p-1 rounded-xl bg-blue-50 hover:bg-blue-100 transition text-foreground"
+          className="p-2 sm:p-1 rounded-xl bg-blue-50 hover:bg-blue-100 transition text-foreground cursor-pointer"
           aria-label="Close Chat"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}

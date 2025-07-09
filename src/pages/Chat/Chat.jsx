@@ -1,15 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Search,
-  MoreVertical,
-  Phone,
-  Video,
   Send,
   Paperclip,
-  Smile,
   ArrowLeft,
   MessageCircle,
-  Clock,
   Check,
   CheckCheck,
   Package,
@@ -17,14 +11,11 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
 import {
   Avatar,
   AvatarImage,
   AvatarFallback,
 } from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge";
-import { Card, CardContent } from "../../components/ui/card";
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -37,14 +28,13 @@ import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
 import DealInfoBar from "../../components/ui/chat/DealInfoBar";
 import { Link } from "react-router-dom";
+import { leaveRoom } from "../../services/socket";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
-  const [showSidebar, setShowSidebar] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [mode, setMode] = useState("list"); // 'list' or 'chat'
 
-  // Responsive: on mobile, widget is full width, bottom 90% height
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   // Responsive widget size
@@ -57,49 +47,50 @@ export default function Chat() {
     chats,
     messages,
     loading,
-    error,
-    startChat,
     sendMessage,
-    loadUserChats,
     selectChat,
-    clearError,
-    initializeSocket,
     getCurrentUserId,
-    socket,
     isWidgetOpen,
     setIsWidgetOpen,
   } = useChat();
 
-  // Emit leaveRoom when activeChat changes or on unmount
-  useEffect(() => {
-    const currentUserId = getCurrentUserId();
-    // Store previous roomId
-    let prevRoomId = null;
-    if (activeChat) prevRoomId = activeChat.roomId;
+  const unreadCount = useChat((state) => state.totalUnreadCount);
+  const prevUnreadRef = useRef(unreadCount);
+  const messageListRef = useRef();
+  const prevUnreadCountsRef = useRef({});
 
-    return () => {
-      if (prevRoomId && socket && currentUserId) {
-        socket.emit("leaveRoom", { roomId: prevRoomId, userId: currentUserId });
-        console.log(
-          "leaveRoom emitted for room:",
-          prevRoomId,
-          "user:",
-          currentUserId
-        );
-      }
-    };
-  }, [activeChat, socket, getCurrentUserId]);
-
-  // Initialize socket and load chats on component mount
+  // Always show chat list when widget is opened
   useEffect(() => {
-    if (isAuthenticated) {
-      const currentUserId = getCurrentUserId();
-      if (currentUserId) {
-        initializeSocket();
-        loadUserChats();
-      }
+    if (isWidgetOpen) {
+      setMode("list");
     }
-  }, [isAuthenticated, initializeSocket, loadUserChats, getCurrentUserId]);
+  }, [isWidgetOpen]);
+
+  useEffect(() => {
+    // Only play sound if a room (not the active one) gets more unread
+    if (chats && chats.length > 0) {
+      for (const chat of chats) {
+        const prev = prevUnreadCountsRef.current[chat.roomId] || 0;
+        if (
+          chat.unreadCount > prev &&
+          (!activeChat || chat.roomId !== activeChat.roomId)
+        ) {
+          const audio = new window.Audio("/new-notification-07-210334.mp3");
+          audio.play();
+          break; // Only play once per update
+        }
+      }
+      // Update ref after check
+      prevUnreadCountsRef.current = Object.fromEntries(
+        chats.map((c) => [c.roomId, c.unreadCount])
+      );
+    }
+  }, [chats, activeChat?.roomId]);
+
+  // Leave all chat rooms when widget closes or on unmount
+  useEffect(() => {
+    // No longer leaving rooms on widget close or unmount
+  }, []);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -127,10 +118,23 @@ export default function Chat() {
 
   // Back button handler
   const handleBackToList = () => {
+    // Leave the current room when going back to the list
+    const userId = getCurrentUserId();
+    if (activeChat && activeChat.roomId && userId) {
+      leaveRoom(activeChat.roomId, userId);
+    }
     setMode("list");
   };
 
   const currentMessages = activeChat ? messages[activeChat.roomId] || [] : [];
+
+  // Scroll to bottom when chat opens or messages change
+  useEffect(() => {
+    if (mode === "chat" && messageListRef.current) {
+      const el = messageListRef.current;
+      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }
+  }, [mode, currentMessages.length, activeChat?.roomId]);
 
   if (!isAuthenticated) {
     return (
@@ -140,65 +144,124 @@ export default function Chat() {
     );
   }
 
-  // Floating button (bottom right)
+  const widgetVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+      y: 50,
+      x: isMobile ? 0 : -20,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        duration: 0.5,
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      y: 50,
+      x: isMobile ? 0 : -20,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        duration: 0.3,
+      },
+    },
+  };
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.2 },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.2 },
+    },
+  };
+
+  // Floating button with animation
   const FloatingButton = (
-    <button
-      onClick={() => setIsWidgetOpen(true)}
-      className="fixed z-50 bottom-6 left-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg p-4 flex items-center justify-center transition-all"
-      aria-label="Open Chat"
-    >
-      <MessageCircle className="w-7 h-7" />
-    </button>
+    <div className="fixed bottom-6 left-6 z-50 sm:left-6 ">
+      <button
+        onClick={() => setIsWidgetOpen(true)}
+        className="group relative cursor-pointer"
+        aria-label="Open Chat"
+      >
+        {/* Outer glow ring */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-primary-hover opacity-80 group-hover:opacity-100 animate-pulse blur-lg transition-all duration-300"></div>
+        {/* Main button */}
+        <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-hover shadow-2xl group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 flex items-center justify-center">
+          {/* Lucide MessageCircle icon, styled */}
+          <MessageCircle className="w-10 h-10 text-white font-bold drop-shadow-lg" />
+        </div>
+        {/* Unread badge */}
+        {unreadCount > 0 && (
+          <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-r from-red-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-lg animate-pulse border-2 border-white">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </div>
+        )}
+      </button>
+    </div>
   );
 
   // Layout: only one view at a time
   const chatContent = (
     <div className="flex flex-col h-full w-full">
       {mode === "list" && (
-        <div className="flex flex-col h-full w-full">
-          {/* Chat List Sidebar (full widget area) */}
-          <div className="p-6 border-b border-gray-200/50 bg-white/90">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-900">Messages</h1>
-                  <p className="text-sm text-gray-500">
-                    Chat with buyers & sellers
-                  </p>
-                </div>
-              </div>
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                <MoreVertical className="h-5 w-5" />
-              </Button>
-            </div>
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search conversations..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all"
-              />
-            </div>
-          </div>
-          <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col h-full w-full relative overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-4 py-4 relative z-10 custom-scrollbar">
             {loading ? (
-              <div className="p-6 space-y-4">
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-white/80 shadow animate-pulse"
-                  >
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                    <div className="flex-1 space-y-2">
-                      <div className="h-4 w-2/3 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
-                      <div className="h-3 w-1/2 rounded bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 shimmer" />
+              <div className="flex flex-col gap-2 px-2 pt-2 pb-1">
+                {[...Array(9)].map((_, i) => {
+                  // Vary width and height for realism
+                  const bubbleWidth = Math.floor(Math.random() * 80) + 100; // 100-180px
+                  const bubbleHeight = Math.random() > 0.7 ? 18 : 12; // Some taller
+                  const isSent = i % 2 === 0;
+                  return (
+                    <div
+                      key={i}
+                      className={`flex ${
+                        isSent ? "justify-end" : "justify-start"
+                      } w-full relative`}
+                      style={{ top: i * 2 }}
+                    >
+                      <div
+                        className={`flex items-end gap-2 max-w-[70%] ${
+                          isSent ? "flex-row-reverse" : ""
+                        }`}
+                      >
+                        {/* Avatar for received */}
+                        {!isSent && (
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 shimmer shadow" />
+                        )}
+                        {/* Message bubble skeleton */}
+                        <div
+                          className={`rounded-2xl shadow ${
+                            isSent
+                              ? "bg-gradient-to-r from-primary/20 to-primary/10"
+                              : "bg-white/80 border border-gray-200"
+                          } shimmer`}
+                          style={{
+                            width: bubbleWidth,
+                            height: bubbleHeight + 16,
+                          }}
+                        ></div>
+                      </div>
+                      {/* Timestamp skeleton */}
+                      <div className="w-8 h-3 rounded bg-gray-100 ml-2 shimmer" />
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <style>{`
                 .shimmer {
                   background-size: 200% 100%;
@@ -211,8 +274,8 @@ export default function Chat() {
               `}</style>
               </div>
             ) : chats.length > 0 ? (
-              <div className="p-2">
-                {chats.map((chat) => {
+              <div className="space-y-3">
+                {chats.map((chat, index) => {
                   // Format last message time
                   let lastMsgTime = "";
                   if (chat.lastMessage?.sentAt) {
@@ -235,52 +298,71 @@ export default function Chat() {
                     <div
                       key={chat.roomId}
                       onClick={() => handleChatSelect(chat)}
-                      className={`p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50/80 ${
-                        activeChat?.roomId === chat.roomId
-                          ? "bg-blue-50/80 border border-blue-200"
-                          : ""
-                      }`}
+                      className="group cursor-pointer transform hover:scale-[1.02] transition-all duration-300"
+                      style={{
+                        animation: `slideInUp 0.5s ease-out ${
+                          index * 0.1
+                        }s both`,
+                      }}
                     >
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-12 w-12 ring-2 ring-white shadow-sm">
-                          <AvatarImage
-                            src={chat.otherUser?.profilePhotoUrl}
-                            alt={chat.otherUser?.fullName}
-                          />
-                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
-                            {chat.otherUser?.fullName
-                              ?.split(" ")
-                              .map((n) => n[0])
-                              .join("") || "U"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold text-gray-900 truncate">
-                              {chat.otherUser?.fullName || "Unknown User"}
-                            </h3>
-                            <span className="text-xs text-gray-500">
-                              {lastMsgTime}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
+                      <div className="relative">
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/10 via-secondary/10 to-blue-100/10 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+                        {/* Main chat item */}
+                        <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-blue-50 backdrop-blur-xl rounded-2xl p-4 border border-border group-hover:border-primary shadow-xl transition-all duration-300">
+                          <div className="flex items-center gap-3">
+                            {/* Avatar with status */}
+                            <div className="relative">
+                              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 p-0.5 shadow-lg">
+                                <div className="w-full h-full rounded-2xl bg-white flex items-center justify-center">
+                                  <span className="text-primary font-bold text-lg">
+                                    {chat.otherUser?.fullName
+                                      ?.split(" ")
+                                      .map((n) => n[0])
+                                      .join("") || "U"}
+                                  </span>
+                                </div>
+                              </div>
+                              {/* Online status */}
+                              <div
+                                className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-lg ${
+                                  chat.otherUser?.isOnline
+                                    ? "bg-green-500"
+                                    : "bg-gray-300"
+                                }`}
+                              >
+                                {chat.otherUser?.isOnline && (
+                                  <div className="w-full h-full rounded-full bg-green-400 animate-pulse"></div>
+                                )}
+                              </div>
+                            </div>
+                            {/* Chat info */}
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm text-gray-600 truncate">
+                              <div className="flex items-center justify-between mb-1">
+                                <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300">
+                                  {chat.otherUser?.fullName || "Unknown User"}
+                                </h3>
+                                <span className="text-xs text-muted-foreground">
+                                  {lastMsgTime}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
                               </p>
                               {chat.deal && (
-                                <div className="flex items-center gap-1 mt-1">
-                                  <Package className="w-3 h-3 text-gray-400" />
-                                  <span className="text-xs text-gray-500 truncate">
+                                <div className="flex items-center gap-2 mt-2">
+                                  <Package className="w-4 h-4 text-primary" />
+                                  <span className="text-xs text-primary font-medium">
                                     {chat.deal.title || "Deal"}
                                   </span>
                                 </div>
                               )}
                             </div>
+                            {/* Unread badge */}
                             {chat.unreadCount > 0 && (
-                              <Badge className="bg-blue-500 text-white text-xs px-2 py-1 ml-2">
+                              <div className="w-6 h-6 bg-gradient-to-r from-red-500 to-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg animate-pulse">
                                 {chat.unreadCount}
-                              </Badge>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -310,17 +392,29 @@ export default function Chat() {
               </div>
             )}
           </div>
+          <style>{`
+            @keyframes slideInUp {
+              from {
+                opacity: 0;
+                transform: translateY(20px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+          `}</style>
         </div>
       )}
       {mode === "chat" && (
         <div className="flex flex-col h-full w-full">
           {/* Back button and header (compact, all in one row) */}
-          <div className="flex items-center gap-2 p-3 bg-white border-b border-gray-200/50 shrink-0">
+          <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50 border-b border-border shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={handleBackToList}
-              className="hover:bg-gray-100"
+              className="hover:bg-blue-50 text-foreground"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -329,55 +423,57 @@ export default function Chat() {
                 src={activeChat.otherUser?.profilePhotoUrl}
                 alt={activeChat.otherUser?.fullName}
               />
-              <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold">
+              <AvatarFallback className="bg-gradient-to-r from-blue-100 to-indigo-100 text-foreground font-semibold">
                 {activeChat.otherUser?.fullName
                   ?.split(" ")
                   .map((n) => n[0])
                   .join("") || "U"}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-gray-900 text-base truncate">
-                  {activeChat.otherUser?.fullName || "Unknown User"}
-                </span>
-                <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  Online
-                </span>
-              </div>
-            </div>
+            <div className="flex-1 min-w-0"></div>
             <Link
               to={`/profile/${activeChat.otherUser?.id}`}
-              className="px-2 py-1 rounded bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
+              className="px-2 py-1 rounded bg-blue-100 text-foreground text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
             >
               <User2 className="w-4 h-4" />
               Profile
             </Link>
           </div>
-          {/* Deal Info Banner (compact, collapsible) */}
+          {/* Deal Info Banner (modern glassy style) */}
           {activeChat?.deal && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border-b border-blue-100 text-sm shrink-0">
-              <Package className="w-5 h-5 text-blue-500" />
-              <span className="font-semibold text-blue-900 truncate flex-1">
-                {activeChat.deal.medicineName ||
-                  activeChat.deal.title ||
-                  "Deal"}
-              </span>
-              <Link
-                to={`/all-deals/${activeChat.deal.id}`}
-                className="px-3 py-1 rounded bg-blue-500 text-white text-xs font-semibold hover:bg-blue-600 transition"
-              >
-                View
-              </Link>
-              {/* Collapsible toggle (optional, can add details on click) */}
+            <div className="px-4 py-2 shadow-xl">
+              <div className="bg-gradient-to-r from-blue-50/60 to-indigo-100/60 rounded-2xl p-3 border border-blue-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
+                    <Package className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-foreground">
+                      {activeChat.deal.medicineName ||
+                        activeChat.deal.title ||
+                        "Deal"}
+                    </h4>
+                    {activeChat.deal.price && (
+                      <p className="text-sm text-primary">
+                        ${activeChat.deal.price}
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    to={`/all-deals/${activeChat.deal.id}`}
+                    className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-xl font-semibold hover:from-primary-hover hover:to-primary transition-all duration-300"
+                  >
+                    View Deal
+                  </Link>
+                </div>
+              </div>
             </div>
           )}
           {/* Main Chat Area: messages and input */}
           <div className="flex-1 min-h-0 flex flex-col">
             {/* Messages (scrollable) */}
             <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1">
-              <ChatMessageList className="h-full">
+              <ChatMessageList className="h-full" ref={messageListRef}>
                 {currentMessages.map((msg) => (
                   <ChatBubble
                     key={msg.id}
@@ -395,9 +491,10 @@ export default function Chat() {
                     <ChatBubbleMessage
                       variant={msg.isOwn ? "sent" : "received"}
                       className={
-                        msg.isOwn
-                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg"
-                          : "bg-white shadow-md border border-gray-100"
+                        (msg.isOwn
+                          ? "bg-gradient-to-r from-primary to-primary-hover text-white shadow-lg"
+                          : "bg-white shadow-md border border-gray-100 text-foreground") +
+                        " break-words whitespace-pre-line max-w-[75%]"
                       }
                     >
                       {msg.content}
@@ -410,7 +507,7 @@ export default function Chat() {
                             <Check className="w-3 h-3 text-gray-400" />
                           )}
                           {msg.status === "read" && (
-                            <CheckCheck className="w-3 h-3 text-blue-500" />
+                            <CheckCheck className="w-3 h-3 text-primary" />
                           )}
                         </div>
                       )}
@@ -420,28 +517,28 @@ export default function Chat() {
               </ChatMessageList>
             </div>
             {/* Input (always visible at bottom) */}
-            <div className="bg-white/90 backdrop-blur-sm border-t border-gray-200/50 p-3 shrink-0">
-              <div className="flex items-end gap-4">
+            <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-100 border-t border-border p-3 shrink-0">
+              <div className="flex items-end gap-3">
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:bg-gray-100"
+                  className="hover:bg-blue-50 text-foreground shrink-0"
                 >
                   <Paperclip className="h-5 w-5" />
                 </Button>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <ChatInput
                     placeholder="Type your message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="min-h-[40px] max-h-32 bg-gray-50/80 border-gray-200/50 focus:bg-white focus:border-blue-300 transition-all resize-none"
+                    className="min-h-[40px] max-h-32 bg-white border border-border text-foreground placeholder-muted-foreground focus:bg-blue-50 focus:border-primary transition-all resize-none w-full backdrop-blur-md rounded-2xl"
                   />
                 </div>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!message.trim()}
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
+                  className="bg-gradient-to-r from-primary to-primary-hover text-white shadow-lg hover:from-primary-hover hover:to-primary transition-all duration-200 shrink-0 rounded-2xl"
                 >
                   <Send className="h-5 w-5" />
                 </Button>
@@ -453,53 +550,91 @@ export default function Chat() {
     </div>
   );
 
-  // Responsive: on mobile, widget is full width, bottom 90% height
+  // Responsive: on mobile, widget is full screen, on desktop it's floating
   const mobileWidgetStyle = isMobile
     ? {
         width: "100vw",
+        height: "100vh",
         right: 0,
         left: 0,
         bottom: 0,
-        height: "90vh",
+        top: 0,
         borderRadius: 0,
       }
     : {};
 
-  // Floating chat widget
+  // Floating chat widget with animations
   const FloatingWidget = (
-    <div
+    <motion.div
       className={
-        `fixed z-50 bottom-0 left-0 ` +
-        `flex flex-col ` +
-        `bg-white ` +
-        `overflow-hidden animate-fade-in-up ` +
-        `w-screen h-[90vh] rounded-none border-0 shadow-none ` +
-        `sm:bottom-6 sm:left-6 sm:w-full sm:max-w-[400px] sm:h-[70vh] sm:max-h-[600px] sm:rounded-2xl sm:shadow-2xl sm:border sm:border-blue-100`
+        isMobile
+          ? "fixed inset-0 z-50 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-screen h-screen rounded-none border-0 shadow-none"
+          : "fixed z-50 bottom-6 left-6 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-full max-w-[400px] h-[70vh] max-h-[600px] rounded-3xl shadow-2xl border border-border"
       }
+      style={mobileWidgetStyle}
+      variants={widgetVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
     >
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-100">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-100/30 via-transparent to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-l from-indigo-100/30 to-transparent rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-blue-100/20 to-transparent rounded-full blur-2xl animate-pulse delay-1000"></div>
+      </div>
       {/* Header with close button */}
-      <div className="flex items-center justify-between p-4 sm:p-3 bg-blue-600 text-white">
+      <div className="flex items-center justify-between p-4 sm:p-3 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-50 border-b border-border text-foreground relative z-10">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-7 h-7 sm:w-6 sm:h-6" />
           <span className="font-bold text-lg">Chat</span>
         </div>
-        <button
-          onClick={() => setIsWidgetOpen(false)}
-          className="p-2 sm:p-1 rounded hover:bg-blue-700 transition"
+        <motion.button
+          onClick={() => {
+            // Leave the current room when closing the widget
+            const userId = getCurrentUserId();
+            if (activeChat && activeChat.roomId && userId) {
+              leaveRoom(activeChat.roomId, userId);
+            }
+            setIsWidgetOpen(false);
+          }}
+          className="p-2 sm:p-1 rounded-xl bg-blue-50 hover:bg-blue-100 transition text-foreground cursor-pointer"
           aria-label="Close Chat"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           <X className="w-6 h-6 sm:w-5 sm:h-5" />
-        </button>
+        </motion.button>
       </div>
       {/* Main chat content */}
-      <div className="flex flex-col flex-1 min-h-0 w-full">{chatContent}</div>
-    </div>
+      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">
+        {chatContent}
+      </div>
+    </motion.div>
   );
 
   return (
     <>
-      {!isWidgetOpen && FloatingButton}
-      {isWidgetOpen && <div style={mobileWidgetStyle}>{FloatingWidget}</div>}
+      <AnimatePresence>
+        {!isWidgetOpen && FloatingButton}
+        {isWidgetOpen && (
+          <>
+            {/* Mobile overlay */}
+            {isMobile && (
+              <motion.div
+                className="fixed inset-0 bg-black/50 z-40"
+                variants={overlayVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                onClick={() => setIsWidgetOpen(false)}
+              />
+            )}
+            {/* Widget */}
+            <div style={mobileWidgetStyle}>{FloatingWidget}</div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

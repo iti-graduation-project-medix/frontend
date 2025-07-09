@@ -58,12 +58,12 @@ const ChatBubbleAvatar = ({ src, fallback, className }) => (
 );
 
 // ChatBubbleMessage
-const chatBubbleMessageVariants = cva("p-4", {
+const chatBubbleMessageVariants = cva("px-2 py-1", {
   variants: {
     variant: {
+      sent: "bg-gradient-to-r from-primary to-primary-hover text-white rounded-l-lg rounded-tr-lg",
       received:
-        "bg-secondary text-secondary-foreground rounded-r-lg rounded-tl-lg",
-      sent: "bg-primary text-primary-foreground rounded-l-lg rounded-tr-lg",
+        "bg-white border border-border text-foreground rounded-r-lg rounded-tl-lg",
     },
     layout: {
       default: "",
@@ -76,34 +76,27 @@ const chatBubbleMessageVariants = cva("p-4", {
   },
 });
 
-const ChatBubbleMessage = React.forwardRef(
-  (
-    { className, variant, layout, isLoading = false, children, ...props },
-    ref
-  ) => (
+export function ChatBubbleMessage({
+  variant = "sent",
+  className = "",
+  ...props
+}) {
+  return (
     <div
       className={cn(
-        chatBubbleMessageVariants({ variant, layout, className }),
-        "break-words max-w-full whitespace-pre-wrap"
+        chatBubbleMessageVariants({ variant }),
+        "relative px-4 py-2 rounded-2xl shadow-lg break-words whitespace-pre-line max-w-[75%]",
+        className
       )}
-      ref={ref}
       {...props}
-    >
-      {isLoading ? (
-        <div className="flex items-center space-x-2">
-          <MessageLoading />
-        </div>
-      ) : (
-        children
-      )}
-    </div>
-  )
-);
+    />
+  );
+}
 ChatBubbleMessage.displayName = "ChatBubbleMessage";
 
 // ChatBubbleTimestamp
 const ChatBubbleTimestamp = ({ timestamp, className, ...props }) => (
-  <div className={cn("text-xs mt-2 text-right", className)} {...props}>
+  <div className={cn("text-xs  mt-2 text-right", className)} {...props}>
     {timestamp}
   </div>
 );
@@ -150,7 +143,6 @@ ChatBubbleActionWrapper.displayName = "ChatBubbleActionWrapper";
 export {
   ChatBubble,
   ChatBubbleAvatar,
-  ChatBubbleMessage,
   ChatBubbleTimestamp,
   chatBubbleVariant,
   chatBubbleMessageVariants,

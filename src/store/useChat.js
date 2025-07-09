@@ -1,5 +1,12 @@
 import { create } from "zustand";
-import { getSocket, startChat, sendMessage } from "../services/socket";
+import {
+  getSocket,
+  startChat,
+  sendMessage,
+  joinRoom,
+  leaveRoom,
+  markRoomAsSeen,
+} from "../services/socket";
 import {
   getChatHistory,
   getOrCreateChatRoom,
@@ -25,9 +32,16 @@ const useChat = create((set, get) => ({
       // Handle both string and JSON formats
       if (user) {
         try {
-          return JSON.parse(user);
+          const parsedUser = JSON.parse(user);
+          // If it's an object with an id property, return the id
+          if (typeof parsedUser === "object" && parsedUser.id) {
+            return parsedUser.id;
+          }
+          // If it's just the ID string/number, return it
+          return parsedUser;
         } catch {
-          return user; // If it's already a string
+          // If it's already a string (the ID), return it
+          return user;
         }
       }
       return null;
@@ -37,7 +51,13 @@ const useChat = create((set, get) => ({
   },
 
   initializeSocket: () => {
-    const socket = getSocket();
+    const currentUserId = get().getCurrentUserId();
+    if (!currentUserId) {
+      console.error("Cannot initialize socket: No user ID found");
+      return;
+    }
+
+    const socket = getSocket(currentUserId);
     set({ socket });
 
     // Remove previous listeners to prevent duplicates
@@ -114,23 +134,21 @@ const useChat = create((set, get) => ({
         });
       }
 
-      // Update chat list with new message (if we have an active chat)
-      if (activeChat) {
-        set((state) => ({
-          chats: state.chats.map((chat) =>
-            chat.roomId === activeChat.roomId
-              ? {
-                  ...chat,
-                  lastMessage: {
-                    text: message.text,
-                    sentAt: message.sentAt,
-                  },
-                  updatedAt: new Date().toISOString(),
-                }
-              : chat
-          ),
-        }));
-      }
+      // Always update the chat list with the new message for the correct room
+      set((state) => ({
+        chats: state.chats.map((chat) =>
+          chat.roomId === message.roomId
+            ? {
+                ...chat,
+                lastMessage: {
+                  text: message.text,
+                  sentAt: message.sentAt,
+                },
+                updatedAt: new Date().toISOString(),
+              }
+            : chat
+        ),
+      }));
     });
 
     // Listen for chat room creation/joining
@@ -170,11 +188,10 @@ const useChat = create((set, get) => ({
           chat.roomId === roomId ? { ...chat, unreadCount } : chat
         );
 
-        // Calculate new total unread count
-        const newTotalUnread = updatedChats.reduce(
-          (sum, chat) => sum + (chat.unreadCount || 0),
-          0
-        );
+        // Calculate new total unread count (number of rooms with unread messages)
+        const newTotalUnread = updatedChats.filter(
+          (chat) => (chat.unreadCount || 0) > 0
+        ).length;
 
         return {
           chats: updatedChats,
@@ -206,11 +223,10 @@ const useChat = create((set, get) => ({
           chat.roomId === roomId ? { ...chat, unreadCount: 0 } : chat
         );
 
-        // Calculate new total unread count
-        const newTotalUnread = updatedChats.reduce(
-          (sum, chat) => sum + (chat.unreadCount || 0),
-          0
-        );
+        // Calculate new total unread count (number of rooms with unread messages)
+        const newTotalUnread = updatedChats.filter(
+          (chat) => (chat.unreadCount || 0) > 0
+        ).length;
 
         return {
           chats: updatedChats,
@@ -345,11 +361,10 @@ const useChat = create((set, get) => ({
         };
       });
 
-      // Calculate total unread count
-      const totalUnread = transformedChats.reduce(
-        (sum, chat) => sum + (chat.unreadCount || 0),
-        0
-      );
+      // Calculate total unread count (number of rooms with unread messages)
+      const totalUnread = transformedChats.filter(
+        (chat) => (chat.unreadCount || 0) > 0
+      ).length;
 
       set({
         chats: transformedChats,
@@ -371,22 +386,16 @@ const useChat = create((set, get) => ({
         get().initializeSocket();
       }
 
+      const currentUserId = get().getCurrentUserId();
+
       // Join the chat room via WebSocket
-      const socket = get().socket;
-      socket.emit("joinRoom", {
-        roomId: chat.roomId,
-        userId: get().getCurrentUserId(),
-      });
+      joinRoom(chat.roomId, currentUserId);
 
       // Mark room as seen when selecting it
-      socket.emit("markRoomAsSeen", {
-        roomId: chat.roomId,
-        userId: get().getCurrentUserId(),
-      });
+      markRoomAsSeen(chat.roomId, currentUserId);
 
       // Load chat history
       const messages = await getChatHistory(chat.roomId);
-      const currentUserId = get().getCurrentUserId();
 
       // Mark messages as own if sent by current user
       const processedMessages = messages.map((msg) => ({
@@ -425,8 +434,8 @@ const useChat = create((set, get) => ({
   },
 
   getTotalUnread: () => {
-    const chats = get().chats || [];
-    return chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
+    const { chats } = get();
+    return chats.filter((chat) => (chat.unreadCount || 0) > 0).length;
   },
 }));
 

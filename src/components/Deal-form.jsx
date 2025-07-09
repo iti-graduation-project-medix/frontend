@@ -76,7 +76,8 @@ export function DealForm({ className, ...props }) {
   const [dealData, setDealData] = React.useState(null);
   const { pharmacies, fetchPharmacies } = usePharmacies();
   const { user, token } = useAuth();
-  const { createDeal, updateDeal, fetchDeal, isSubmitting, error, clearError } = useDeals();
+  const { createDeal, updateDeal, fetchDeal, isSubmitting, error, clearError } =
+    useDeals();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -210,7 +211,8 @@ export function DealForm({ className, ...props }) {
         await createDeal(dealData);
 
         toast.success("Deal posted successfully!", {
-          description: "Your medicine deal has been posted and is now visible to other users.",
+          description:
+            "Your medicine deal has been posted and is now visible to other users.",
           duration: 5000,
           position: "top-center",
           style: {
@@ -225,23 +227,26 @@ export function DealForm({ className, ...props }) {
         // Reset form
         formik.resetForm();
       }
-      
     } catch (error) {
       console.error("Error handling deal:", error);
-      
-      toast.error(isEditMode ? "Failed to update deal" : "Failed to post deal", {
-        description: error.message || "Something went wrong. Please try again.",
-        duration: 5000,
-        position: "top-center",
-        style: {
-          background: "#ef4444",
-          color: "white",
-          border: "1px solid #dc2626",
-        },
-        className: "text-white",
-        descriptionClassName: "text-white/90 font-medium",
-      });
-      
+
+      toast.error(
+        isEditMode ? "Failed to update deal" : "Failed to post deal",
+        {
+          description:
+            error.message || "Something went wrong. Please try again.",
+          duration: 5000,
+          position: "top-center",
+          style: {
+            background: "#ef4444",
+            color: "white",
+            border: "1px solid #dc2626",
+          },
+          className: "text-white",
+          descriptionClassName: "text-white/90 font-medium",
+        }
+      );
+
       throw error;
     }
   };
@@ -274,7 +279,7 @@ export function DealForm({ className, ...props }) {
         setIsLoadingDeal(true);
         const response = await fetchDeal(id);
         const loadedDealData = response.data?.deal || response.data || response;
-        
+
         console.log("Loaded deal data:", loadedDealData);
         setDealData(loadedDealData);
       } catch (error) {
@@ -313,10 +318,9 @@ export function DealForm({ className, ...props }) {
               {isEditMode ? "Edit Deal" : "Post Your Deal"}
             </CardTitle>
             <p className="text-muted-foreground text-sm mt-1">
-              {isEditMode 
-                ? "Update your deal details below" 
-                : "Fill out the form below to post your medicine deal"
-              }
+              {isEditMode
+                ? "Update your deal details below"
+                : "Fill out the form below to post your medicine deal"}
             </p>
           </CardHeader>
 
@@ -482,7 +486,11 @@ export function DealForm({ className, ...props }) {
               </Label>
               {isEditMode ? (
                 <Input
-                  value={formik.values.expiryDate ? new Date(formik.values.expiryDate).toLocaleDateString() : ""}
+                  value={
+                    formik.values.expiryDate
+                      ? new Date(formik.values.expiryDate).toLocaleDateString()
+                      : ""
+                  }
                   disabled
                   className="border-gray-300 rounded-lg h-11 bg-gray-100 text-gray-600"
                 />
@@ -490,7 +498,9 @@ export function DealForm({ className, ...props }) {
                 <div className="bg-white/80 rounded-lg border border-gray-300">
                   <Calendar28
                     value={formik.values.expiryDate}
-                    onChange={(date) => formik.setFieldValue("expiryDate", date)}
+                    onChange={(date) =>
+                      formik.setFieldValue("expiryDate", date)
+                    }
                   />
                 </div>
               )}
@@ -582,7 +592,10 @@ export function DealForm({ className, ...props }) {
               </Label>
               {isEditMode ? (
                 <Input
-                  value={pharmacies.find(p => p.id === formik.values.pharmacyId)?.name || ""}
+                  value={
+                    pharmacies.find((p) => p.id === formik.values.pharmacyId)
+                      ?.name || ""
+                  }
                   disabled
                   className="border-gray-300 rounded-lg h-11 bg-gray-100 text-gray-600"
                 />
@@ -694,7 +707,9 @@ export function DealForm({ className, ...props }) {
               <Button
                 type="submit"
                 className={`w-full bg-primary hover:bg-primary-hover cursor-pointer text-white py-5 mb-10 text-base font-medium rounded-lg ${
-                  !formik.isValid || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  !formik.isValid || isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
                 }`}
                 disabled={!formik.isValid || isSubmitting}
               >
@@ -703,8 +718,10 @@ export function DealForm({ className, ...props }) {
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     {isEditMode ? "Updating Deal..." : "Posting Deal..."}
                   </>
+                ) : isEditMode ? (
+                  "Update Deal"
                 ) : (
-                  isEditMode ? "Update Deal" : "Post Deal"
+                  "Post Deal"
                 )}
               </Button>
             </div>

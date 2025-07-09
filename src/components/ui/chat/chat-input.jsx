@@ -2,18 +2,15 @@ import * as React from "react";
 import { Textarea } from "../textarea";
 import { cn } from "../../../lib/utils";
 
-const ChatInput = React.forwardRef(({ className, ...props }, ref) => (
-  <Textarea
-    autoComplete="off"
-    ref={ref}
-    name="message"
-    className={cn(
-      "max-h-12 px-4 py-3 bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 w-full rounded-md flex items-center h-16 resize-none",
-      className
-    )}
-    {...props}
-  />
-));
-ChatInput.displayName = "ChatInput";
-
-export { ChatInput };
+export function ChatInput({ className = "", ...props }) {
+  return (
+    <textarea
+      className={
+        `w-full relative z-10 bg-white border border-border rounded-2xl px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-none min-h-[48px] max-h-32 backdrop-blur-sm ` +
+        className
+      }
+      rows={1}
+      {...props}
+    />
+  );
+}

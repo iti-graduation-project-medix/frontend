@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { FiDownload } from 'react-icons/fi';
 
+// Create motion version of Button
+const MotionButton = motion(Button);
+
 const InstallApp = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
@@ -61,7 +64,7 @@ const InstallApp = () => {
       exit={{ opacity: 0, y: -20 }}
       className="fixed bottom-4 right-4 z-50"
     >
-      <Button
+      <MotionButton
         onClick={handleInstallClick}
         className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
         whileHover={{ scale: 1.05 }}
@@ -69,7 +72,7 @@ const InstallApp = () => {
       >
         <FiDownload className="w-5 h-5" />
         <span className="font-semibold">تثبيت التطبيق</span>
-      </Button>
+      </MotionButton>
     </motion.div>
   );
 };

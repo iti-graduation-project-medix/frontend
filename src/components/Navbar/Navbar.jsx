@@ -135,7 +135,7 @@ export default function Navbar() {
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
-          href="https://flowbite.com/"
+          to="/all-deals"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img
@@ -245,7 +245,7 @@ export default function Navbar() {
                       </li>
                       <li>
                         <Link
-                          href="all-deals"
+                          to="all-deals"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >
@@ -254,7 +254,7 @@ export default function Navbar() {
                       </li>
                       <li>
                         <Link
-                          href="pharmacies-for-sale"
+                          to="pharmacies-for-sale"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                         >

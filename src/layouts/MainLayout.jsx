@@ -20,9 +20,10 @@ import PharmacyDetails from "../pages/PharmaciesForSale/PharmacyDetails";
 import Chat from "../pages/Chat/Chat";
 import Settings from "../pages/Settings/Settings";
 import Profile from "../pages/Profile/Profile";
+import ProfileRedirect from "../components/ProfileRedirect";
 import NotFound from "../pages/NotFound/NotFound";
-import SuccessPayment from './../pages/SuccessPayment/SuccessPayment';
-import FailedPayment from './../pages/FailedPayment/FailedPayment';
+import SuccessPayment from "./../pages/SuccessPayment/SuccessPayment";
+import FailedPayment from "./../pages/FailedPayment/FailedPayment";
 
 export default function MainLayout() {
   return (
@@ -43,8 +44,22 @@ export default function MainLayout() {
               }
             />
             <Route path="/subscription" element={<Subscription />} />
-            <Route path="/subscription/:id/success" element={<ProtectedRoute><SuccessPayment/></ProtectedRoute>} />
-            <Route path="/subscription/:id/failed" element={<ProtectedRoute><FailedPayment/></ProtectedRoute>} />
+            <Route
+              path="/subscription/:id/success"
+              element={
+                <ProtectedRoute>
+                  <SuccessPayment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/subscription/:id/failed"
+              element={
+                <ProtectedRoute>
+                  <FailedPayment />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/otp" element={<Otp message="Reset Password" />} />
             <Route path="/contact-us" element={<ContactUs />} />
             <Route
@@ -118,6 +133,14 @@ export default function MainLayout() {
               element={
                 <ProtectedRoute>
                   <PharmacyDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfileRedirect />
                 </ProtectedRoute>
               }
             />

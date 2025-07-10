@@ -7,6 +7,7 @@ import { useAuth } from "@/store/useAuth";
 import MedicineDealCard from "@/components/MedicineDealCard";
 import PharmacyCard from "@/pages/PharmaciesForSale/PharmacyCard";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Favorites() {
   const [activeTab, setActiveTab] = useState("deals");
@@ -71,84 +72,163 @@ export default function Favorites() {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="deals" className="flex items-center gap-2">
-                <Package className="w-4 h-4" />
-                Deals ({favorites.deals.length})
-              </TabsTrigger>
-              <TabsTrigger
-                value="pharmacies"
-                className="flex items-center gap-2"
-              >
-                <Building2 className="w-4 h-4" />
-                Pharmacies ({favorites.pharmacies.length})
-              </TabsTrigger>
-            </TabsList>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="deals" className="flex items-center gap-2">
+                  <Package className="w-4 h-4" />
+                  Deals ({favorites.deals.length})
+                </TabsTrigger>
+                <TabsTrigger
+                  value="pharmacies"
+                  className="flex items-center gap-2"
+                >
+                  <Building2 className="w-4 h-4" />
+                  Pharmacies ({favorites.pharmacies.length})
+                </TabsTrigger>
+              </TabsList>
+            </motion.div>
 
             <TabsContent value="deals" className="space-y-6">
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="text-gray-500 mt-2">Loading favorites...</p>
-                </div>
-              ) : favorites.deals.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {favorites.deals.map((deal) => (
-                    <MedicineDealCard key={deal.id} deal={deal} />
-                  ))}
-                </div>
-              ) : (
-                <Card className="p-8 text-center">
-                  <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                    No Favorite Deals
-                  </h3>
-                  <p className="text-gray-500 mb-4">
-                    You haven't added any deals to your favorites yet.
-                  </p>
-                  <button
-                    onClick={() => navigate("/all-deals")}
-                    className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div
+                    key="loading"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="text-center py-8"
                   >
-                    Browse Deals
-                  </button>
-                </Card>
-              )}
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-gray-500 mt-2">Loading favorites...</p>
+                  </motion.div>
+                ) : favorites.deals.length > 0 ? (
+                  <motion.div
+                    key="deals-grid"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
+                    {favorites.deals.map((deal, index) => (
+                      <motion.div
+                        key={deal.id}
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: index * 0.1,
+                          ease: "easeOut",
+                        }}
+                      >
+                        <MedicineDealCard deal={deal} />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="empty-deals"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    <Card className="p-8 text-center">
+                      <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                        No Favorite Deals
+                      </h3>
+                      <p className="text-gray-500 mb-4">
+                        You haven't added any deals to your favorites yet.
+                      </p>
+                      <div>
+                        <button
+                          onClick={() => navigate("/all-deals")}
+                          className="bg-primary text-white px-4 py-2  rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          Browse Deals
+                        </button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </TabsContent>
 
             <TabsContent value="pharmacies" className="space-y-6">
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                  <p className="text-gray-500 mt-2">Loading favorites...</p>
-                </div>
-              ) : favorites.pharmacies.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {favorites.pharmacies.map((pharmacy) => (
-                    <PharmacyCard
-                      key={pharmacy.id}
-                      pharmacy={pharmacy}
-                      onViewDetails={handlePharmacyClick}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <Card className="p-8 text-center">
-                  <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                    No Favorite Pharmacies
-                  </h3>
-                  <p className="text-gray-500 mb-4">
-                    You haven't added any pharmacies to your favorites yet.
-                  </p>
-                  <button
-                    onClick={() => navigate("/pharmacies-for-sale")}
-                    className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+              <AnimatePresence mode="wait">
+                {isLoading ? (
+                  <motion.div
+                    key="loading-pharmacies"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="text-center py-8"
                   >
-                    Browse Pharmacies
-                  </button>
-                </Card>
-              )}
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-gray-500 mt-2">Loading favorites...</p>
+                  </motion.div>
+                ) : favorites.pharmacies.length > 0 ? (
+                  <motion.div
+                    key="pharmacies-grid"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                  >
+                    {favorites.pharmacies.map((pharmacy, index) => (
+                      <motion.div
+                        key={pharmacy.id}
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: index * 0.1,
+                          ease: "easeOut",
+                        }}
+                      >
+                        <PharmacyCard
+                          pharmacy={pharmacy}
+                          onViewDetails={handlePharmacyClick}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="empty-pharmacies"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                    <Card className="p-8 text-center">
+                      <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                        No Favorite Pharmacies
+                      </h3>
+                      <p className="text-gray-500 mb-4">
+                        You haven't added any pharmacies to your favorites yet.
+                      </p>
+                      <div>
+                        <button
+                          onClick={() => navigate("/pharmacies-for-sale")}
+                          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                        >
+                          Browse Pharmacies
+                        </button>
+                      </div>
+                    </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </TabsContent>
           </Tabs>
         </div>

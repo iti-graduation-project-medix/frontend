@@ -162,7 +162,7 @@ export default function ContactInfoCard({ pharmacistDetails }) {
   return (
     <Card className="mb-8 shadow-lg rounded-xl border border-gray-200 bg-white px-4 py-8">
       <CardHeader>
-        <CardTitle>ل
+        <CardTitle>
           <div className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
             <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm" style={{ width: 48, height: 48 }}>
               <FaEnvelope size={24} className="text-primary" />

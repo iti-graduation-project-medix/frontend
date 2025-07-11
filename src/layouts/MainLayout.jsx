@@ -28,8 +28,6 @@ const SuccessPayment = React.lazy(() => import("./../pages/SuccessPayment/Succes
 const FailedPayment = React.lazy(() => import("./../pages/FailedPayment/FailedPayment"));
 const DealFormPage = React.lazy(() => import("../pages/DealForm/DealFormPage"));
 
-
-
 export default function MainLayout() {
   return (
     <Router>
@@ -154,6 +152,14 @@ export default function MainLayout() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/favorites"
+              element={
+                <ProtectedRoute>
+                  <Favorites />
                 </ProtectedRoute>
               }
             />

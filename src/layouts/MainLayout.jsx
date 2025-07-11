@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./../pages/Home/Home";
 import Login from "./../pages/Login/Login";
@@ -10,9 +11,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import ProfileRedirect from "../components/ProfileRedirect";
 import NotFound from "../pages/NotFound/NotFound";
 
-
-const Advertise = React.lazy(() => import ("../pages/Advertise/Advertise"));
-const ContactUs = React.lazy(() => import ("../pages/ContactUs/ContactUs"));
+const Advertise = React.lazy(() => import("../pages/Advertise/Advertise"));
+const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
 const Deals = React.lazy(() => import("../pages/MyDeals/Deals"));
 const Subscription = React.lazy(() => import("../pages/Subscription/Subscription"));
 const AddPharmacy = React.lazy(() => import("../pages/AddPharmcy/AddPharmacy"));
@@ -31,7 +31,7 @@ const DealFormPage = React.lazy(() => import("../pages/DealForm/DealFormPage"));
 export default function MainLayout() {
   return (
     <Router>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-white">
         <Routes>
           <Route path="/" element={<SharedLayout />}>
             <Route index element={<Home />} />

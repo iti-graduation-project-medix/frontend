@@ -1,75 +1,48 @@
 import React, { useState, useEffect } from "react";
 import {
   XCircle,
-  RefreshCw,
   ArrowRight,
   AlertTriangle,
   CreditCard,
-  User,
   DollarSign,
   Clock,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CardIcon } from "@/components/ui/card-icons";
 
 export default function FailedPayment() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [paymentData, setPaymentData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Mock failed payment data (replace with actual API call)
-  const mockPaymentData = {
-    id: "316832593",
-    pending: "false",
-    amount_cents: "20000",
-    success: "false",
-    is_auth: "false",
-    is_capture: "false",
-    is_standalone_payment: "true",
-    is_voided: "false",
-    is_refunded: "false",
-    is_3d_secure: "true",
-    integration_id: "5166890",
-    profile_id: "1056026",
-    has_parent_transaction: "false",
-    order: "354457329",
-    created_at: "2025-07-12T03:04:12.244843",
-    currency: "EGP",
-    merchant_commission: "0",
-    discount_details: [],
-    is_void: "false",
-    is_refund: "false",
-    error_occured: "false",
-    refunded_amount_cents: "0",
-    captured_amount: "0",
-    updated_at: "2025-07-12T03:12:31.055939",
-    is_settled: "false",
-    bill_balanced: "false",
-    is_bill: "false",
-    owner: "1991862",
-    merchant_order_id:
-      "sub_6ba93f90-e511-41fe-a7d2-9e9c5faccd2e_regular_monthly_1752278637121",
-    data: {
-      message: "AUTHENTICATION_FAILED",
-    },
-    source_data: {
-      type: "card",
-      pan: "1111",
-      sub_type: "Visa",
-    },
-    acq_response_code: "DO_NOT_PROCEED",
-    hmac: "af052b9f29704ddaa54f9604a5333f01aee903b082bf5b9dc810c8d6b95d10a9b6a832c331e6913975934c9ce574a1ae28511936719b7dc5e50ffa4b0ead94ad",
-  };
+  // Helper: Parse query params into object, including nested fields
+  function parsePaymentParams(search) {
+    const params = new URLSearchParams(search);
+    const obj = {};
+    for (const [key, value] of params.entries()) {
+      // Handle nested fields like data.message and source_data.sub_type
+      if (key.includes(".")) {
+        const [parent, child] = key.split(".");
+        if (!obj[parent]) obj[parent] = {};
+        obj[parent][child] = value;
+      } else {
+        obj[key] = value;
+      }
+    }
+    if (obj.amount_cents) obj.amount_cents = obj.amount_cents;
+    if (obj.success) obj.success = obj.success === "true";
+    return obj;
+  }
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setPaymentData(mockPaymentData);
-      setLoading(false);
-    }, 800);
-  }, []);
+    // Build paymentData from query params
+    const data = parsePaymentParams(location.search);
+    setPaymentData(data);
+    setLoading(false);
+  }, [location.search]);
 
   // Helper functions
   const formatAmount = (amountCents, currency = "EGP") => {
@@ -81,6 +54,7 @@ export default function FailedPayment() {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return "-";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -100,15 +74,11 @@ export default function FailedPayment() {
     return pan?.slice(-4) || "****";
   };
 
-  const handleRetry = () => {
-    navigate("/subscription");
-  };
-
   const handleGoHome = () => {
     navigate("/");
   };
 
-  if (loading) {
+  if (loading || !paymentData) {
     return (
       <div className="min-h-screen from-red-50 to-orange-50 flex items-center justify-center p-4">
         <div className="text-center">

@@ -5,26 +5,65 @@ import {
   User,
   CreditCard,
   ArrowRight,
+  Clock,
+  DollarSign,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { CardIcon } from "@/components/ui/card-icons";
 
 export default function SuccessPayment() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [userData, setUserData] = useState(null);
-  const [subscriptionData, setSubscriptionData] = useState({
-    orderId: "ORD-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-    planName: "Regular", // or Premium
-    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(
-      "en-US",
-      {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }
-    ),
-  });
+  const [paymentData, setPaymentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Mock payment data - replace with actual API call
+  const mockPaymentData = {
+    id: "316830379",
+    pending: "false",
+    amount_cents: "20000",
+    success: "true",
+    is_auth: "false",
+    is_capture: "false",
+    is_standalone_payment: "true",
+    is_voided: "false",
+    is_refunded: "false",
+    is_3d_secure: "true",
+    integration_id: "5166890",
+    profile_id: "1056026",
+    has_parent_transaction: "false",
+    order: "354454841",
+    created_at: "2025-07-12T02:50:32.531164",
+    currency: "EGP",
+    merchant_commission: "0",
+    discount_details: [],
+    is_void: "false",
+    is_refund: "false",
+    error_occured: "false",
+    refunded_amount_cents: "0",
+    captured_amount: "0",
+    updated_at: "2025-07-12T02:50:57.523237",
+    is_settled: "false",
+    bill_balanced: "false",
+    is_bill: "false",
+    owner: "1991862",
+    merchant_order_id:
+      "sub_6ba93f90-e511-41fe-a7d2-9e9c5faccd2e_regular_monthly_1752277817553",
+    data: {
+      message: "Approved",
+    },
+    source_data: {
+      type: "card",
+      pan: "1111",
+      sub_type: "mastercard",
+    },
+    acq_response_code: "00",
+    txn_response_code: "APPROVED",
+    hmac: "7cb6f006e7208d2b4ffac25e0a5d1d8840873a91729a180780994d075437c5a3215083366dee389f66888c3d61c0439b3c768531a35852ae85efa8b93953c299",
+  };
 
   useEffect(() => {
     // Get user data from localStorage
@@ -34,7 +73,43 @@ export default function SuccessPayment() {
     } catch (error) {
       console.error("Error parsing user data:", error);
     }
-  }, []);
+
+    // Simulate API call to get payment data
+    // Replace this with actual API call using the id parameter
+    setTimeout(() => {
+      setPaymentData(mockPaymentData);
+      setLoading(false);
+    }, 1000);
+  }, [id]);
+
+  // Helper functions
+  const formatAmount = (amountCents, currency = "EGP") => {
+    const amount = parseInt(amountCents) / 100;
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+    }).format(amount);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const getPlanName = (merchantOrderId) => {
+    if (merchantOrderId?.includes("premium")) return "Premium";
+    if (merchantOrderId?.includes("regular")) return "Regular";
+    return "Standard";
+  };
+
+  const getLastFourDigits = (pan) => {
+    return pan?.slice(-4) || "****";
+  };
 
   const handleGoHome = () => {
     navigate("/");
@@ -44,9 +119,20 @@ export default function SuccessPayment() {
     navigate("/profile");
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen  flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading payment details...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4  ">
+      <div className="max-w-lg w-full">
         {/* Success Icon */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
@@ -58,11 +144,11 @@ export default function SuccessPayment() {
           <p className="text-gray-600">Thank you for subscribing to Dawaback</p>
         </div>
 
-        {/* Subscription Details Card */}
-        <Card className="mb-6 shadow-lg py-4">
-          <CardHeader className="text-center pb-4">
-            <CardTitle className="text-xl font-semibold text-gray-800">
-              Subscription Details
+        {/* Payment Details Card */}
+        <Card className="mb-6 shadow-lg">
+          <CardHeader className="text-center py-1">
+            <CardTitle className="text-xl font-semibold text-gray-800 pt-3">
+              Payment Details
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -72,18 +158,32 @@ export default function SuccessPayment() {
               <div>
                 <p className="text-sm text-gray-500">User Name</p>
                 <p className="font-medium text-gray-900">
-                  {userData?.name || userData?.username || "Omar Abaza"}
+                  {userData?.name || userData?.username || "User"}
                 </p>
               </div>
             </div>
 
-            {/* Order ID */}
+            {/* Transaction ID */}
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
               <CreditCard className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-500">Order ID</p>
+                <p className="text-sm text-gray-500">Transaction ID</p>
                 <p className="font-medium text-gray-900 font-mono">
-                  {subscriptionData.orderId}
+                  {paymentData?.id}
+                </p>
+              </div>
+            </div>
+
+            {/* Amount */}
+            <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+              <DollarSign className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="text-sm text-gray-500">Amount Paid</p>
+                <p className="font-medium text-green-900 text-lg">
+                  {formatAmount(
+                    paymentData?.amount_cents,
+                    paymentData?.currency
+                  )}
                 </p>
               </div>
             </div>
@@ -92,26 +192,58 @@ export default function SuccessPayment() {
             <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
               <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-xs font-bold">
-                  {subscriptionData.planName === "Premium" ? "P" : "R"}
+                  {getPlanName(paymentData?.merchant_order_id) === "Premium"
+                    ? "P"
+                    : "R"}
                 </span>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Plan Type</p>
                 <p className="font-medium text-blue-900">
-                  {subscriptionData.planName === "Premium"
+                  {getPlanName(paymentData?.merchant_order_id) === "Premium"
                     ? "Premium Plan"
                     : "Regular Plan"}
                 </p>
               </div>
             </div>
 
-            {/* Subscription End Date */}
+            {/* Payment Method */}
+            <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+              <CardIcon
+                type={paymentData?.source_data?.sub_type}
+                className="w-6 h-6"
+              />
+              <div className="flex-1">
+                <p className="text-sm text-gray-500">Payment Method</p>
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium text-purple-900">
+                    {paymentData?.source_data?.sub_type} ••••{" "}
+                    {getLastFourDigits(paymentData?.source_data?.pan)}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Date */}
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <Calendar className="w-5 h-5 text-gray-600" />
+              <Clock className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-500">Subscription End Date</p>
+                <p className="text-sm text-gray-500">Payment Date</p>
                 <p className="font-medium text-gray-900">
-                  {subscriptionData.endDate}
+                  {formatDate(paymentData?.created_at)}
+                </p>
+              </div>
+            </div>
+
+            {/* Status */}
+            <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg mb-3">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <div>
+                <p className="text-sm text-gray-500">Transaction Status</p>
+                <p className="font-medium text-green-900">
+                  {paymentData?.txn_response_code === "APPROVED"
+                    ? "Approved"
+                    : "Pending"}
                 </p>
               </div>
             </div>

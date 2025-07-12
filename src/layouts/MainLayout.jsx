@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./../pages/Home/Home";
 import Login from "./../pages/Login/Login";
@@ -10,22 +11,35 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import ProfileRedirect from "../components/ProfileRedirect";
 import NotFound from "../pages/NotFound/NotFound";
 
-
-const Advertise = React.lazy(() => import ("../pages/Advertise/Advertise"));
-const ContactUs = React.lazy(() => import ("../pages/ContactUs/ContactUs"));
+const Advertise = React.lazy(() => import("../pages/Advertise/Advertise"));
+const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
 const Deals = React.lazy(() => import("../pages/MyDeals/Deals"));
-const Subscription = React.lazy(() => import("../pages/Subscription/Subscription"));
+const Subscription = React.lazy(() =>
+  import("../pages/Subscription/Subscription")
+);
 const AddPharmacy = React.lazy(() => import("../pages/AddPharmcy/AddPharmacy"));
-const AvailableDeals = React.lazy(() => import("../pages/AvailableDeals/AvailableDeals"));
-const DealDetails = React.lazy(() => import("../pages/AvailableDeals/DealDetails"));
-const PharmaciesForSale = React.lazy(() => import("../pages/PharmaciesForSale/PharmaciesForSale"));
-const PharmacyDetails = React.lazy(() => import("../pages/PharmaciesForSale/PharmacyDetails"));
+const AvailableDeals = React.lazy(() =>
+  import("../pages/AvailableDeals/AvailableDeals")
+);
+const DealDetails = React.lazy(() =>
+  import("../pages/AvailableDeals/DealDetails")
+);
+const PharmaciesForSale = React.lazy(() =>
+  import("../pages/PharmaciesForSale/PharmaciesForSale")
+);
+const PharmacyDetails = React.lazy(() =>
+  import("../pages/PharmaciesForSale/PharmacyDetails")
+);
 const Chat = React.lazy(() => import("../pages/Chat/Chat"));
 const Settings = React.lazy(() => import("../pages/Settings/Settings"));
 const Profile = React.lazy(() => import("../pages/Profile/Profile"));
 const Favorites = React.lazy(() => import("../pages/Favorites/Favorites"));
-const SuccessPayment = React.lazy(() => import("./../pages/SuccessPayment/SuccessPayment"));
-const FailedPayment = React.lazy(() => import("./../pages/FailedPayment/FailedPayment"));
+const SuccessPayment = React.lazy(() =>
+  import("./../pages/SuccessPayment/SuccessPayment")
+);
+const FailedPayment = React.lazy(() =>
+  import("./../pages/FailedPayment/FailedPayment")
+);
 const DealFormPage = React.lazy(() => import("../pages/DealForm/DealFormPage"));
 
 export default function MainLayout() {

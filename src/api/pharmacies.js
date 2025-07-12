@@ -34,7 +34,6 @@ export async function getPharmacyById(id) {
   return res.json();
 }
 
-
 export async function listPharmaciesForSale(id, saleData) {
   const url = `${baseURL}/pharmacies/${id}/list-for-sale`;
 

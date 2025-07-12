@@ -18,7 +18,7 @@ export default function RelatedListings({ pharmacy }) {
     name: `Pharmacy ${i} - ${pharmacy.name}`,
     pharmacyPrice: Math.round(
       pharmacy.pharmacyPrice * (0.8 + Math.random() * 0.4)
-    ), // Vary price
+    ),
   }));
 
   const scrollLeft = () => {

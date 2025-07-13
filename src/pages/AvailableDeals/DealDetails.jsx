@@ -35,7 +35,7 @@ import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
 
 export default function DealDetails() {
-  const { dealId } = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
   const deal = useDeals((state) => state.currentDeal);
   const isLoading = useDeals((state) => state.isLoading);
@@ -53,10 +53,10 @@ export default function DealDetails() {
     useChat();
 
   useEffect(() => {
-    if (dealId) {
-      fetchDeal(dealId);
+    if (id) {
+      fetchDeal(id);
     }
-  }, [dealId]);
+  }, [id]);
 
   // Avatar logic (same as ProfileHeader)
   const getInitials = (name) => {
@@ -119,7 +119,7 @@ export default function DealDetails() {
       // Refresh chat list
       await loadUserChats();
 
-      // Find the new chat in the list (by dealId or userId)
+      // Find the new chat in the list (by id or userId)
       const chatToSelect = chats.find(
         (c) => c.deal?.id === deal.id || c.otherUser?.id === deal.postedBy.id
       );

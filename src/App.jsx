@@ -25,15 +25,6 @@ export default function App() {
       </>
     );
   }
-  if (isOffline && currentPath !== "/deals") {
-    return <OfflinePage />;
-  }
-  if (isOffline && currentPath !== "/deals/:id") {
-    return <OfflinePage />;
-  }
-  if (isOffline && currentPath !== "/profile") {
-    return <OfflinePage />;
-  }
 
   return (
     <>

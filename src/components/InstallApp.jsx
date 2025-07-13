@@ -12,18 +12,13 @@ const InstallApp = () => {
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Stash the event so it can be triggered later
       setDeferredPrompt(e);
-      // Show the install button
       setShowInstallButton(true);
-      // Immediately show the install prompt
       e.prompt();
     };
 
     const handleAppInstalled = () => {
-      // Hide the install button when app is installed
       setShowInstallButton(false);
       setDeferredPrompt(null);
     };
@@ -73,7 +68,7 @@ const InstallApp = () => {
         whileTap={{ scale: 0.95 }}
       >
         <FiDownload className="w-5 h-5" />
-        <span className="font-semibold">تثبيت التطبيق</span>
+        <span className="font-semibold">Install App</span>
       </MotionButton>
     </motion.div>
   );

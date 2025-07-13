@@ -33,5 +33,28 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true
-  }
+  },
+  build: {
+    chunkSizeWarningLimit: 3000, // 3MB
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+          if (id.includes('src/pages/')) {
+            return 'pages';
+          }
+        }
+      }
+    }
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/setupTests.js',
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+    },
+  },
 });

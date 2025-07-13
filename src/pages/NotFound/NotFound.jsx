@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -51,11 +50,7 @@ export default function NotFound() {
           <div className="text-center">
             {/* Main Illustration */}
             <motion.div whileHover="hover" className="mb-8 flex justify-center">
-              <motion.div
-                variants={floatingVariants}
-                animate="animate"
-                className="relative"
-              >
+              <motion.div variants={floatingVariants} animate="animate" className="relative">
                 <img
                   src="/404 Error Page not Found with people connecting a plug-cuate.svg"
                   alt="Broken Medical Pill"
@@ -95,10 +90,7 @@ export default function NotFound() {
             </motion.div>
 
             {/* Additional Info */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-12 pt-8 border-t border-gray-200"
-            >
+            <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-gray-200">
               <p className="text-sm text-gray-500 mb-4">
                 Need help finding something? Try these popular pages:
               </p>

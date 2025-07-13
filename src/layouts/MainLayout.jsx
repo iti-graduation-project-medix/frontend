@@ -20,7 +20,6 @@ const AvailableDeals = React.lazy(() => import("../pages/AvailableDeals/Availabl
 const DealDetails = React.lazy(() => import("../pages/AvailableDeals/DealDetails"));
 const PharmaciesForSale = React.lazy(() => import("../pages/PharmaciesForSale/PharmaciesForSale"));
 const PharmacyDetails = React.lazy(() => import("../pages/PharmaciesForSale/PharmacyDetails"));
-const Chat = React.lazy(() => import("../pages/Chat/Chat"));
 const Settings = React.lazy(() => import("../pages/Settings/Settings"));
 const Profile = React.lazy(() => import("../pages/Profile/Profile"));
 const Favorites = React.lazy(() => import("../pages/Favorites/Favorites"));
@@ -166,8 +165,6 @@ export default function MainLayout() {
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
-        {/* Render Chat widget globally, outside of <Routes> */}
-        <Chat />
       </div>
     </Router>
   );

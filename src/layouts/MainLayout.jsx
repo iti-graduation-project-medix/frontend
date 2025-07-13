@@ -104,7 +104,7 @@ export default function MainLayout() {
             </Route>
       
             <Route
-              path="users/:id"
+              path="pharmacists/:id"
               element={
                 <ProtectedRoute>
                   <Profile />

@@ -136,7 +136,7 @@ export default function DealDetails() {
   };
 
   const handleProfile = () => {
-    navigate(`/profile/${deal.postedBy.id}`);
+    navigate(`/pharmacists/${deal.postedBy.id}`);
   };
 
   // Google Maps direction link

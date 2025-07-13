@@ -4,14 +4,14 @@ import { Toaster } from "@/components/ui/sonner";
 import { Footer } from "../components/Footer/Footer";
 import OfflineIndicator from "../components/OfflineIndicator";
 import { Suspense } from "react";
-import { LoadingCard } from "../components/ui/loading";
+import { LoadingPage } from "../components/ui/loading";
 
 export default function SharedLayout() {
   return (
     <>
       <Navbar />
       <OfflineIndicator />
-      <Suspense fallback={<LoadingCard />}>
+      <Suspense fallback={<></>}>
         <Outlet />
       </Suspense>
       <Toaster />

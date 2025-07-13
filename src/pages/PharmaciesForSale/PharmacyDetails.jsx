@@ -220,7 +220,7 @@ export default function PharmacyDetails() {
 
       {/* Floating Contact Button */}
       <SuspenseWrapper>
-        <ContactOptions owner={pharmacy.owner} />
+        <ContactOptions owner={pharmacy.owner} pharmacyId={pharmacy.id} />
       </SuspenseWrapper>
     </div>
   );

@@ -93,3 +93,19 @@ export async function unlistPharmacyFromSaleJson(id) {
   }
   return res.json();
 }
+
+export async function getRelatedPharmacies(id, params = {}) {
+  const url = new URL(`${baseURL}/pharmacies/${id}/related`);
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "")
+      url.searchParams.append(key, value);
+  });
+  const res = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+  });
+  if (!res.ok) throw new Error("Failed to fetch related pharmacies");
+  return res.json();
+}

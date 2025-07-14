@@ -124,7 +124,7 @@ export default function PharmaciesForSale() {
   };
 
   const handleViewDetails = (pharmacy) => {
-    navigate(`/pharmacies-for-sale/${pharmacy.id}`);
+    navigate(`/pharmacies/${pharmacy.id}`);
   };
 
   // Only show pharmacies not owned by the current user

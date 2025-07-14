@@ -9,6 +9,7 @@ import {
   Package,
   User2,
   X,
+  MapPin,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
@@ -26,7 +27,6 @@ import { ChatMessageList } from "../../components/ui/chat/chat-message-list.jsx"
 import { ChatInput } from "../../components/ui/chat/chat-input.jsx";
 import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
-import DealInfoBar from "../../components/ui/chat/DealInfoBar";
 import { Link } from "react-router-dom";
 import { leaveRoom } from "../../services/socket";
 import { motion, AnimatePresence } from "framer-motion";
@@ -345,11 +345,20 @@ export default function Chat() {
                               <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
                               </p>
+                              {/* Deal or Pharmacy label */}
                               {chat.deal && (
                                 <div className="flex items-center gap-2 mt-2">
                                   <Package className="w-4 h-4 text-primary" />
                                   <span className="text-xs text-primary font-medium">
                                     {chat.deal.title || "Deal"}
+                                  </span>
+                                </div>
+                              )}
+                              {chat.pharmacy && (
+                                <div className="flex items-center gap-2 mt-2">
+                                  <MapPin className="w-4 h-4 text-primary" />
+                                  <span className="text-xs text-primary font-medium">
+                                    {chat.pharmacy.name || "Pharmacy"}
                                   </span>
                                 </div>
                               )}
@@ -429,6 +438,34 @@ export default function Chat() {
               Profile
             </Link>
           </div>
+          {/* Pharmacy Info Banner (like DealInfoBar) */}
+          {activeChat?.pharmacy && (
+            <div className="px-4 py-2 shadow-xl">
+              <div className="bg-gradient-to-r from-blue-50/60 to-indigo-100/60 rounded-2xl p-3 border border-blue-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-foreground truncate">
+                      {activeChat.pharmacy.name || "Pharmacy"}
+                    </h4>
+                    {activeChat.pharmacy.city && (
+                      <p className="text-xs text-primary truncate">
+                        {activeChat.pharmacy.city}
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    to={`/pharmacies-for-sale/${activeChat.pharmacy.id}`}
+                    className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-xl font-semibold hover:from-primary-hover hover:to-primary transition-all duration-300"
+                  >
+                    View Pharmacy
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
           {/* Deal Info Banner (modern glassy style) */}
           {activeChat?.deal && (
             <div className="px-4 py-2 shadow-xl">

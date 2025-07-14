@@ -422,7 +422,7 @@ export default function Chat() {
             </Avatar>
             <div className="flex-1 min-w-0"></div>
             <Link
-              to={`/profile/${activeChat.otherUser?.id}`}
+              to={`/pharmacists/${activeChat.otherUser?.id}`}
               className="px-2 py-1 rounded bg-blue-100 text-foreground text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 transition"
             >
               <User2 className="w-4 h-4" />
@@ -450,7 +450,7 @@ export default function Chat() {
                     )}
                   </div>
                   <Link
-                    to={`/all-deals/${activeChat.deal.id}`}
+                    to={`/deals/${activeChat.deal.id}`}
                     className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-xl font-semibold hover:from-primary-hover hover:to-primary transition-all duration-300"
                   >
                     View Deal

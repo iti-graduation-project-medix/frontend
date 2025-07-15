@@ -9,13 +9,15 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useAuth } from "@/store/useAuth";
 import { useNavigate } from "react-router-dom";
+import { ErrorDisplay } from "@/components/ui/error-display";
 
 export default function Otp({ message }) {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const { confirmOtp } = useAuth();
+  const [error, setError] = useState(null);
+  const { confirmOtp, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const handleComplete = (value) => {
@@ -24,11 +26,14 @@ export default function Otp({ message }) {
 
   const handleChange = (value) => {
     setOtp(value);
+    // Clear error when user starts typing
+    if (error) setError(null);
   };
 
   const handleSubmit = async () => {
     if (otp.length !== 6) return;
     setIsLoading(true);
+    setError(null);
     try {
       const email = sessionStorage.getItem("resetEmail");
       if (!email) throw new Error("No email found in session");
@@ -36,6 +41,8 @@ export default function Otp({ message }) {
       navigate("/auth/reset-password/confirm");
     } catch (error) {
       console.error("Error verifying OTP:", error);
+      setError(error.message || "Failed to verify OTP");
+      // Error toast is handled by the store
     } finally {
       setIsLoading(false);
     }
@@ -59,10 +66,16 @@ export default function Otp({ message }) {
   const handleResendOTP = async () => {
     if (resendDisabled) return;
     try {
-      // Add your resend OTP logic here
+      const email = sessionStorage.getItem("resetEmail");
+      if (!email) throw new Error("No email found in session");
+      
+      await resetPassword({ email });
       startResendCountdown();
+      // Success toast is handled by the store
     } catch (error) {
       console.error("Failed to resend OTP:", error);
+      setError(error.message || "Failed to resend OTP");
+      // Error toast is handled by the store
     }
   };
 
@@ -83,6 +96,9 @@ export default function Otp({ message }) {
             below.
           </p>
         </div>
+
+        {/* Error Display */}
+        <ErrorDisplay error={error} />
 
         <div className="space-y-6">
           <div className="flex justify-center">

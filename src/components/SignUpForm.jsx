@@ -15,6 +15,10 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { signUp } from "@/api/auth/SignUp";
+import { ErrorHandler } from "@/utils/errorHandler";
+import { ErrorDisplay, ErrorMessage } from "@/components/ui/error-display";
+import { useNavigate } from "react-router-dom";
 
 let userSchema = Yup.object().shape({
   name: Yup.string()
@@ -82,6 +86,9 @@ let userSchema = Yup.object().shape({
 
 export function SignUpForm({ className, ...props }) {
   const [currentStep, setCurrentStep] = React.useState(1);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const navigate = useNavigate();
 
   // Formik initialization at the top level
   const formik = useFormik({
@@ -99,8 +106,47 @@ export function SignUpForm({ className, ...props }) {
       acceptPolicy: false,
     },
     validationSchema: userSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        // Create FormData for file upload
+        const formData = new FormData();
+        
+        // Add text fields
+        formData.append("fullName", values.name);
+        formData.append("email", values.email);
+        formData.append("phone", values.phone);
+        formData.append("password", values.password);
+        formData.append("dateOfBirth", values.dateOfBirth);
+        formData.append("gender", values.gender);
+        formData.append("idCard", values.nationalId);
+
+        // Add files
+        if (values.uploadNationalId && values.uploadNationalId.length > 0) {
+          formData.append("idFrontCardUrl", values.uploadNationalId[0]);
+          formData.append("idBackCardUrl", values.uploadNationalId[0]); // Using same file for both sides
+        }
+        
+        if (values.uploadWorkId && values.uploadWorkId.length > 0) {
+          formData.append("workIdUrl", values.uploadWorkId[0]);
+        }
+
+        const response = await signUp(formData);
+        
+        // Show success message
+        ErrorHandler.handleSuccess("Account created successfully! Your data will be reviewed. Please check your email for updates.");
+        
+        // Redirect to login
+        navigate("/login");
+      } catch (error) {
+        console.error("Signup error:", error);
+        setError(error.message || "Failed to create account");
+        // Error toast is handled by the API
+      } finally {
+        setIsLoading(false);
+      }
     },
     validateOnMount: true,
   });
@@ -128,6 +174,8 @@ export function SignUpForm({ className, ...props }) {
   const handleFileChange = (e, field) => {
     if (e.target.files && e.target.files[0]) {
       formik.setFieldValue(field, e.target.files);
+      // Clear error when user uploads a file
+      if (error) setError(null);
     }
   };
 
@@ -151,11 +199,15 @@ export function SignUpForm({ className, ...props }) {
     await formik.validateForm();
     if (isStep1Valid()) {
       setCurrentStep(2);
+      // Clear any previous errors when moving to next step
+      setError(null);
     }
   };
 
   const prevStep = () => {
     setCurrentStep(1);
+    // Clear any previous errors when going back
+    setError(null);
   };
 
   return (
@@ -174,6 +226,9 @@ export function SignUpForm({ className, ...props }) {
               Fill out the form below to create your secure account
             </p>
           </CardHeader>
+
+          {/* Error Display */}
+          <ErrorDisplay error={error} />
 
           {/* Step Indicator - Only visible on small screens */}
           <div className="flex items-center justify-center space-x-4 my-6 md:hidden">
@@ -228,16 +283,15 @@ export function SignUpForm({ className, ...props }) {
                   name="name"
                   type="text"
                   placeholder="John Doe"
-                  className="border-gray-300 rounded-lg h-11  focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  className={cn(
+                    "border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                    formik.touched.name && formik.errors.name && "border-red-500"
+                  )}
                   value={formik.values.name}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.name}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.name && formik.errors.name ? formik.errors.name : null} />
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -249,16 +303,15 @@ export function SignUpForm({ className, ...props }) {
                   name="email"
                   type="email"
                   placeholder="john@example.com"
-                  className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  className={cn(
+                    "border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                    formik.touched.email && formik.errors.email && "border-red-500"
+                  )}
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                {formik.touched.email && formik.errors.email && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.email}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.email && formik.errors.email ? formik.errors.email : null} />
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -269,23 +322,22 @@ export function SignUpForm({ className, ...props }) {
                   id="phone"
                   name="phone"
                   placeholder="+201234567890"
-                  className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  className={cn(
+                    "border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                    formik.touched.phone && formik.errors.phone && "border-red-500"
+                  )}
                   value={formik.values.phone}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                {formik.touched.phone && formik.errors.phone && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.phone}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.phone && formik.errors.phone ? formik.errors.phone : null} />
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
                 <Label className="text-gray-700 font-medium">
                   Date of Birth <span className="text-red-500">*</span>
                 </Label>
-                <div className="bg-white/80  rounded-lg border border-gray-300">
+                <div className="bg-white/80 rounded-lg border border-gray-300">
                   <Calendar28
                     value={formik.values.dateOfBirth}
                     onChange={(date) =>
@@ -293,18 +345,14 @@ export function SignUpForm({ className, ...props }) {
                     }
                   />
                 </div>
-                {formik.touched.dateOfBirth && formik.errors.dateOfBirth && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.dateOfBirth}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.dateOfBirth && formik.errors.dateOfBirth ? formik.errors.dateOfBirth : null} />
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
                 <Label htmlFor="gender" className="text-gray-700 font-medium">
                   Gender <span className="text-red-500">*</span>
                 </Label>
-                <div className="  p-3">
+                <div className="p-3">
                   <RadioGroup
                     name="gender"
                     value={formik.values.gender}
@@ -323,11 +371,7 @@ export function SignUpForm({ className, ...props }) {
                     </div>
                   </RadioGroup>
                 </div>
-                {formik.touched.gender && formik.errors.gender && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.gender}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.gender && formik.errors.gender ? formik.errors.gender : null} />
               </div>
 
               {/* Password Section */}
@@ -340,7 +384,10 @@ export function SignUpForm({ className, ...props }) {
                   name="password"
                   type="password"
                   placeholder="Create password"
-                  className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  className={cn(
+                    "border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                    formik.touched.password && formik.errors.password && "border-red-500"
+                  )}
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -348,11 +395,7 @@ export function SignUpForm({ className, ...props }) {
                 <p className="text-xs text-gray-500 flex items-center gap-1">
                   <Info size={12} /> 8+ characters required
                 </p>
-                {formik.touched.password && formik.errors.password && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.password}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.password && formik.errors.password ? formik.errors.password : null} />
               </div>
 
               <div className="space-y-2 col-span-2 md:col-span-1">
@@ -367,17 +410,15 @@ export function SignUpForm({ className, ...props }) {
                   name="confirmPassword"
                   type="password"
                   placeholder="Confirm password"
-                  className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  className={cn(
+                    "border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                    formik.touched.confirmPassword && formik.errors.confirmPassword && "border-red-500"
+                  )}
                   value={formik.values.confirmPassword}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                {formik.touched.confirmPassword &&
-                  formik.errors.confirmPassword && (
-                    <div className="text-red-500 text-xs">
-                      {formik.errors.confirmPassword}
-                    </div>
-                  )}
+                <ErrorMessage error={formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : null} />
               </div>
             </div>
 
@@ -439,12 +480,7 @@ export function SignUpForm({ className, ...props }) {
                     onChange={(e) => handleFileChange(e, "uploadNationalId")}
                   />
                 </label>
-                {formik.touched.uploadNationalId &&
-                  formik.errors.uploadNationalId && (
-                    <div className="text-red-500 text-xs">
-                      {formik.errors.uploadNationalId}
-                    </div>
-                  )}
+                <ErrorMessage error={formik.touched.uploadNationalId && formik.errors.uploadNationalId ? formik.errors.uploadNationalId : null} />
               </div>
 
               <div className="space-y-2">
@@ -497,11 +533,7 @@ export function SignUpForm({ className, ...props }) {
                     onChange={(e) => handleFileChange(e, "uploadWorkId")}
                   />
                 </label>
-                {formik.touched.uploadWorkId && formik.errors.uploadWorkId && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.uploadWorkId}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.uploadWorkId && formik.errors.uploadWorkId ? formik.errors.uploadWorkId : null} />
               </div>
 
               <div className="space-y-2">
@@ -516,16 +548,15 @@ export function SignUpForm({ className, ...props }) {
                   name="nationalId"
                   type="text"
                   placeholder="ID number"
-                  className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                  className={cn(
+                    "border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                    formik.touched.nationalId && formik.errors.nationalId && "border-red-500"
+                  )}
                   value={formik.values.nationalId}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
-                {formik.touched.nationalId && formik.errors.nationalId && (
-                  <div className="text-red-500 text-xs">
-                    {formik.errors.nationalId}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.nationalId && formik.errors.nationalId ? formik.errors.nationalId : null} />
               </div>
             </div>
 
@@ -558,11 +589,7 @@ export function SignUpForm({ className, ...props }) {
                     <span className="text-red-500">*</span>
                   </label>
                 </div>
-                {formik.touched.acceptPolicy && formik.errors.acceptPolicy && (
-                  <div className="text-red-500 text-xs md:col-span-2">
-                    {formik.errors.acceptPolicy}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.acceptPolicy && formik.errors.acceptPolicy ? formik.errors.acceptPolicy : null} className="md:col-span-2" />
               </>
             )}
 
@@ -597,11 +624,11 @@ export function SignUpForm({ className, ...props }) {
                 <Button
                   type="submit"
                   className={`bg-primary hover:bg-primary-hover text-white py-5 text-base font-medium rounded-lg ${
-                    !formik.isValid ? "opacity-50 cursor-not-allowed" : ""
+                    !formik.isValid || isLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
-                  disabled={!formik.isValid}
+                  disabled={!formik.isValid || isLoading}
                 >
-                  Create Account
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               )}
             </div>
@@ -611,11 +638,11 @@ export function SignUpForm({ className, ...props }) {
               <Button
                 type="submit"
                 className={`w-full bg-primary hover:bg-primary-hover text-white py-5 text-base font-medium rounded-lg ${
-                  !formik.isValid ? "opacity-50 cursor-not-allowed" : ""
+                  !formik.isValid || isLoading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-                disabled={!formik.isValid}
+                disabled={!formik.isValid || isLoading}
               >
-                Create Account
+                {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
             </div>
           </form>

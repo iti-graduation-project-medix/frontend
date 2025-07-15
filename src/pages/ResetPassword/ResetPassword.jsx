@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Card} from "@/components/ui/card";
 import { useAuth } from "@/store/useAuth";
+import { ErrorDisplay, ErrorMessage } from "@/components/ui/error-display";
+import { cn } from "@/lib/utils";
 
 const ResetPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -18,14 +19,15 @@ const ResetPasswordSchema = Yup.object().shape({
 
 export default function ResetPassword() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { resetPassword } = useAuth();
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       setIsLoading(true);
+      setError(null);
       await resetPassword({ email: values.email });
-      toast.success("Password reset instructions sent to your email");
       navigate("/auth/reset-password/verify-otp", {
         state: {
           email: values.email,
@@ -33,7 +35,9 @@ export default function ResetPassword() {
         },
       });
     } catch (error) {
-      toast.error("Failed to send reset instructions");
+      console.error("Reset password error:", error);
+      setError(error.message || "Failed to send reset instructions");
+      // Error toast is handled by the store
     } finally {
       setIsLoading(false);
       setSubmitting(false);
@@ -72,6 +76,10 @@ export default function ResetPassword() {
                     </Link>
                   </div>
                 </div>
+
+                {/* Error Display */}
+                <ErrorDisplay error={error} />
+
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-3">
                     <Label htmlFor="email">Email</Label>
@@ -82,10 +90,11 @@ export default function ResetPassword() {
                       type="email"
                       placeholder="m@example.com"
                       disabled={isLoading}
+                      className={cn(
+                        errors.email && touched.email && "border-red-500"
+                      )}
                     />
-                    {errors.email && touched.email && (
-                      <div className="text-sm text-red-500">{errors.email}</div>
-                    )}
+                    <ErrorMessage error={errors.email && touched.email ? errors.email : null} />
                   </div>
                   <Button 
                     type="submit" 

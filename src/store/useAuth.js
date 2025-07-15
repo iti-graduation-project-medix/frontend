@@ -6,6 +6,7 @@ import {
   confirmPassword,
 } from "../api/auth/ResetPassword";
 import { changePassword } from "../api/auth/ChangePassword";
+import { clearAllStores } from "../utils/stateManager";
 
 export const useAuth = create((set, get) => ({
   user: null,
@@ -118,8 +119,12 @@ export const useAuth = create((set, get) => ({
 
   // Logout action
   logout: () => {
+    // Clear auth data
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+
+    // Clear all other store data
+    clearAllStores();
 
     set({
       user: null,

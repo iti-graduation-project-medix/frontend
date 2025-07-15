@@ -689,7 +689,7 @@ export default function AvailableDeals() {
           {/* Deals Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {isLoading
-              ? [...Array(9)].map((_, i) => (
+              ? [...Array(3)].map((_, i) => (
                   <MedicineDealCardSkeleton key={i} />
                 ))
               : filteredDeals.map((deal) => (

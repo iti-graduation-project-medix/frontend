@@ -22,10 +22,10 @@ const Pricing2 = ({
 
   plans = [
     {
-      id: "plus",
-      name: "Plus",
-      description: "For personal use",
-      monthlyPrice: "EGP200",
+      id: "Basic",
+      name: "Basic",
+      description: "Limited features",
+      monthlyPrice: "EGP50",
       yearlyPrice: "EGP400",
       features: [
         { text: "Add 2 Pharmacy" },
@@ -40,9 +40,9 @@ const Pricing2 = ({
     {
       id: "pro",
       name: "Pro",
-      description: "For professionals",
+      description: "Full features",
       monthlyPrice: "EGP400",
-      yearlyPrice: "EGP2000",
+      yearlyPrice: "EGP1500",
       features: [
         { text: "Up to 5 Pharmacies" },
         { text: "List Pharmacy For Sale" },
@@ -63,7 +63,7 @@ const Pricing2 = ({
   const [loadingPlan, setLoadingPlan] = useState(null);
 
   const planIdMap = {
-    plus: "regular",
+    Basic: "regular",
     pro: "premium",
   };
 
@@ -133,7 +133,7 @@ const Pricing2 = ({
                   <Separator className="mb-6" />
                   {plan.id === "pro" && (
                     <p className="mb-3 font-semibold">
-                      Everything in Plus, and:
+                      Everything in Basic, and:
                     </p>
                   )}
                   <ul className="space-y-4">

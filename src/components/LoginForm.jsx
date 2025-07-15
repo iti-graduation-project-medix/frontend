@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/useAuth";
+import { ErrorDisplay, ErrorMessage } from "@/components/ui/error-display";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -34,7 +35,7 @@ export function LoginForm({ className, ...props }) {
         navigate("/");
       } catch (error) {
         console.error("Login error:", error);
-        // Error is handled by the store
+        // Error is handled by the store with toast notifications
       }
     },
   });
@@ -57,11 +58,10 @@ export function LoginForm({ className, ...props }) {
                   Login to your Dawaback account
                 </p>
               </div>
-              {error && (
-                <div className="text-sm text-red-500 bg-red-50 p-3 rounded-md">
-                  Password is incorrect
-                </div>
-              )}
+              
+              {/* Error Display */}
+              <ErrorDisplay error={error} />
+
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -78,11 +78,7 @@ export function LoginForm({ className, ...props }) {
                       "border-red-500"
                   )}
                 />
-                {formik.touched.email && formik.errors.email && (
-                  <div className="text-sm text-red-500">
-                    {formik.errors.email}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.email && formik.errors.email ? formik.errors.email : null} />
               </div>
               <div className="grid gap-3">
                 <div className="flex items-center">
@@ -107,11 +103,7 @@ export function LoginForm({ className, ...props }) {
                       "border-red-500"
                   )}
                 />
-                {formik.touched.password && formik.errors.password && (
-                  <div className="text-sm text-red-500">
-                    {formik.errors.password}
-                  </div>
-                )}
+                <ErrorMessage error={formik.touched.password && formik.errors.password ? formik.errors.password : null} />
               </div>
               <Button
                 type="submit"

@@ -8,6 +8,7 @@ import { Badge } from "../../components/ui/badge";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDebounce } from "../../hooks/useDebounce";
+import { MapPin, MapPinOff } from "lucide-react";
 
 export default function PharmaciesForSale() {
   const [filters, setFilters] = useState({});
@@ -16,6 +17,9 @@ export default function PharmaciesForSale() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [userLocation, setUserLocation] = useState({ lat: null, long: null });
+  const [useLocationSort, setUseLocationSort] = useState(false);
+  const [locationError, setLocationError] = useState("");
 
   const token = useAuth((state) => state.token);
   const { user } = useAuth();
@@ -92,6 +96,35 @@ export default function PharmaciesForSale() {
   };
   const activeFilters = getActiveFilters();
 
+  // Handler for location sort toggle
+  const handleLocationSortToggle = () => {
+    if (!useLocationSort) {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              lat: position.coords.latitude,
+              long: position.coords.longitude,
+            });
+            setUseLocationSort(true);
+            setLocationError("");
+          },
+          (error) => {
+            setLocationError("Location access denied or unavailable.");
+            setUseLocationSort(false);
+          }
+        );
+      } else {
+        setLocationError("Geolocation is not supported by your browser.");
+      }
+    } else {
+      // Disable location sort
+      setUseLocationSort(false);
+      setUserLocation({ lat: null, long: null });
+      setLocationError("");
+    }
+  };
+
   const fetchPharmacies = async () => {
     setLoading(true);
     setError("");
@@ -103,6 +136,14 @@ export default function PharmaciesForSale() {
         minPrice: debouncedFilters.minPrice,
         maxPrice: debouncedFilters.maxPrice,
       };
+      // Add location if location sort is enabled
+      if (useLocationSort && userLocation.lat && userLocation.long) {
+        params.lat = userLocation.lat;
+        params.long = userLocation.long;
+      } else {
+        delete params.lat;
+        delete params.long;
+      }
       const res = await getPharmaciesForSale(params, token);
       setPharmacies(res.data.pharmacies || []);
       setTotalPages(res.data.totalPages || 1);
@@ -116,7 +157,14 @@ export default function PharmaciesForSale() {
   useEffect(() => {
     fetchPharmacies();
     // eslint-disable-next-line
-  }, [debouncedFilters, page, token]);
+  }, [
+    debouncedFilters,
+    page,
+    token,
+    useLocationSort,
+    userLocation.lat,
+    userLocation.long,
+  ]);
 
   const handleClearFilters = () => {
     setFilters({});
@@ -145,20 +193,50 @@ export default function PharmaciesForSale() {
         <div className="max-w-6xl mx-auto flex flex-col flex-1">
           {/* Filters Card */}
           <Card className="p-6 mb-8 rounded-2xl shadow-md border border-primary/20 bg-white">
-            <PharmacyFilters
-              filters={filters}
-              setFilters={setFilters}
-              onClear={handleClearFilters}
-              isSearching={
-                filters.search && filters.search !== debouncedFilters.search
-              }
-              isPriceFiltering={
-                (filters.minPrice &&
-                  filters.minPrice !== debouncedFilters.minPrice) ||
-                (filters.maxPrice &&
-                  filters.maxPrice !== debouncedFilters.maxPrice)
-              }
-            />
+            <div className="flex flex-wrap items-center gap-4 mb-4">
+              <PharmacyFilters
+                filters={filters}
+                setFilters={setFilters}
+                onClear={handleClearFilters}
+                isSearching={
+                  filters.search && filters.search !== debouncedFilters.search
+                }
+                isPriceFiltering={
+                  (filters.minPrice &&
+                    filters.minPrice !== debouncedFilters.minPrice) ||
+                  (filters.maxPrice &&
+                    filters.maxPrice !== debouncedFilters.maxPrice)
+                }
+              />
+              {/* Location Sort Button */}
+              <button
+                type="button"
+                className={`ml-2 flex items-center gap-1 px-3 py-2 rounded-lg border transition-colors font-medium text-sm shadow-sm
+                  ${
+                    useLocationSort
+                      ? "bg-primary text-white border-primary"
+                      : "bg-white text-primary border-primary/30 hover:bg-primary/10"
+                  }
+                `}
+                title={
+                  useLocationSort
+                    ? "Sorted by nearest"
+                    : "Sort by nearest pharmacy"
+                }
+                onClick={handleLocationSortToggle}
+              >
+                {useLocationSort ? (
+                  <MapPin className="w-4 h-4" />
+                ) : (
+                  <MapPinOff className="w-4 h-4" />
+                )}
+                {useLocationSort ? "Nearest" : "Sort by Nearest"}
+              </button>
+            </div>
+            {/* Location error message */}
+            {locationError && (
+              <div className="text-red-500 text-sm mb-2">{locationError}</div>
+            )}
             {/* Active Filter Chips */}
             {activeFilters.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200 mt-2">
@@ -173,6 +251,13 @@ export default function PharmaciesForSale() {
                     <X className="w-3 h-3 ml-1" />
                   </Badge>
                 ))}
+              </div>
+            )}
+            {/* Show info if sorted by nearest */}
+            {useLocationSort && (
+              <div className="text-primary text-xs mt-2 flex items-center gap-1">
+                <MapPin className="w-4 h-4 inline-block" /> Sorted by nearest to
+                your location
               </div>
             )}
           </Card>

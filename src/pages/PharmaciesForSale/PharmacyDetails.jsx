@@ -149,34 +149,27 @@ export default function PharmacyDetails() {
             </SuspenseWrapper>
           </div>
 
-          {/* Advertiser Info - Takes 1/3 of the width */}
-          <div>
+          {/* Advertiser Info - Takes 1/3 of the width, MapSection below it */}
+          <div className="flex flex-col gap-6">
             <SuspenseWrapper>
               <AdvertiserInfo owner={pharmacy.owner} />
+            </SuspenseWrapper>
+            <SuspenseWrapper>
+              <MapSection
+                location={pharmacy.location}
+                address={pharmacy.addressLine1}
+              />
             </SuspenseWrapper>
           </div>
         </div>
 
         {/* Full Width Components Below */}
         <div className="space-y-8">
-          {/* Detailed Information and Map Section - Side by Side */}
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Detailed Information - Takes 2/3 of the width */}
-            <div className="lg:col-span-2">
-              <SuspenseWrapper>
-                <PharmacyDetailsTable pharmacy={pharmacy} />
-              </SuspenseWrapper>
-            </div>
-
-            {/* Map Section - Takes 1/3 of the width */}
-            <div>
-              <SuspenseWrapper>
-                <MapSection
-                  location={pharmacy.location}
-                  address={pharmacy.addressLine1}
-                />
-              </SuspenseWrapper>
-            </div>
+          {/* PharmacyDetailsTable - now full width */}
+          <div>
+            <SuspenseWrapper>
+              <PharmacyDetailsTable pharmacy={pharmacy} />
+            </SuspenseWrapper>
           </div>
 
           {/* Related Listings */}

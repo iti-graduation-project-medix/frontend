@@ -229,7 +229,7 @@ export class ErrorHandler {
 
     static handleAdvertiseSuccess(response, step = "submission") {
         let message = "Advertising request submitted successfully!";
-        
+
         // Handle different success scenarios
         if (response && response.message) {
             message = response.message;
@@ -238,7 +238,7 @@ export class ErrorHandler {
         } else if (step === "submission") {
             message = "Advertising request submitted successfully! We'll get back to you within 24-48 hours.";
         }
-        
+
         this.handleSuccess(message);
         return { message, type: "success", response };
     }

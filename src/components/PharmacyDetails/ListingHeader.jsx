@@ -64,7 +64,7 @@ export default function ListingHeader({ pharmacy }) {
           </Link>
           <ChevronRight className="w-4 h-4" />
           <Link
-            to="/pharmacies-for-sale"
+            to="/pharmacies"
             className="hover:text-blue-600 transition-colors"
           >
             Pharmacies for Sale

@@ -98,7 +98,7 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
-    navigate("/");
+    navigate("/auth/login");
   };
 
   const mobileMenuVariants = {

@@ -2,14 +2,6 @@ import { AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ErrorHandler } from "@/utils/errorHandler";
 
-/**
- * Reusable error display component
- * @param {Object} props - Component props
- * @param {string} props.error - Error message
- * @param {string} props.className - Additional CSS classes
- * @param {boolean} props.showIcon - Whether to show the error icon
- * @param {string} props.customTitle - Custom title for the error
- */
 export function ErrorDisplay({ 
   error, 
   className, 
@@ -32,7 +24,7 @@ export function ErrorDisplay({
         <>
           {formattedError.type === "warning" && <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />}
           {formattedError.type === "info" && <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />}
-          {formattedError.type === "error" && <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />}
+          {formattedError.type === "error" && <AlertCircle className="w-4 h-4 mt-0.5 -me-2 flex-shrink-0" />}
         </>
       )}
       <div className="flex-1">
@@ -45,12 +37,6 @@ export function ErrorDisplay({
   );
 }
 
-/**
- * Simple error message component for inline errors
- * @param {Object} props - Component props
- * @param {string} props.error - Error message
- * @param {string} props.className - Additional CSS classes
- */
 export function ErrorMessage({ error, className }) {
   if (!error) return null;
 
@@ -61,12 +47,6 @@ export function ErrorMessage({ error, className }) {
   );
 }
 
-/**
- * Success message component
- * @param {Object} props - Component props
- * @param {string} props.message - Success message
- * @param {string} props.className - Additional CSS classes
- */
 export function SuccessMessage({ message, className }) {
   if (!message) return null;
 
@@ -83,12 +63,6 @@ export function SuccessMessage({ message, className }) {
   );
 }
 
-/**
- * Warning message component
- * @param {Object} props - Component props
- * @param {string} props.message - Warning message
- * @param {string} props.className - Additional CSS classes
- */
 export function WarningMessage({ message, className }) {
   if (!message) return null;
 
@@ -106,12 +80,7 @@ export function WarningMessage({ message, className }) {
   );
 }
 
-/**
- * Info message component
- * @param {Object} props - Component props
- * @param {string} props.message - Info message
- * @param {string} props.className - Additional CSS classes
- */
+
 export function InfoMessage({ message, className }) {
   if (!message) return null;
 

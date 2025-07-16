@@ -34,7 +34,7 @@ export default function ConfirmPassword() {
       if (!email) throw new Error("No email found in session");
       await confirmPassword({ email, newPassword: values.password });
       resetForm();
-      navigate("/login");
+      navigate("/auth/login");
     } catch (error) {
       console.error("Confirm password error:", error);
       setError(error.message || "Failed to confirm password");
@@ -121,7 +121,7 @@ export default function ConfirmPassword() {
                   </Button>
                   <div className="text-center text-sm">
                     Remember your password?{" "}
-                    <Link to="/login" className="underline underline-offset-4">
+                    <Link to="/auth/login" className="underline underline-offset-4">
                       Back to login
                     </Link>
                   </div>

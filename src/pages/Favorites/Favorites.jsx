@@ -81,7 +81,7 @@ export default function Favorites() {
 
   // Handle pharmacy card click
   const handlePharmacyClick = (pharmacy) => {
-    navigate(`/pharmacies-for-sale/${pharmacy.id}`);
+    navigate(`/pharmacies/${pharmacy.id}`);
   };
 
   // Check if user is authenticated

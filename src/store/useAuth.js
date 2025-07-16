@@ -82,7 +82,7 @@ export const useAuth = create((set, get) => ({
       if (data.email) sessionStorage.setItem("resetEmail", data.email);
       const response = await confirmOtp(data);
       set({ isLoading: false, error: null });
-      ErrorHandler.handleSuccess("OTP verified successfully");
+      ErrorHandler.handleSuccess("OTP has been successfully verified!");
       return response;
     } catch (error) {
       const errorResult = ErrorHandler.handleApiError(error, "confirm-otp");
@@ -101,7 +101,7 @@ export const useAuth = create((set, get) => ({
       if (data.email) sessionStorage.setItem("resetEmail", data.email);
       const response = await confirmPassword(data);
       set({ isLoading: false, error: null });
-      ErrorHandler.handleSuccess("Password changed successfully");
+      ErrorHandler.handleSuccess("Password has been successfully changed!");
       return response;
     } catch (error) {
       const errorResult = ErrorHandler.handleApiError(error, "confirm-password");
@@ -120,7 +120,7 @@ export const useAuth = create((set, get) => ({
       const token = get().token;
       const response = await changePassword(data, token);
       set({ isLoading: false, error: null });
-      ErrorHandler.handleSuccess("Password changed successfully");
+      ErrorHandler.handleSuccess("Password has been successfully changed!");
       return response;
     } catch (error) {
       const errorResult = ErrorHandler.handleApiError(error, "change-password");

@@ -27,6 +27,7 @@ import { useDebounce } from "../../hooks/useDebounce";
 import { Card } from "../../components/ui/card";
 import PharmaciesList from "./PharmaciesList";
 import { useAuth } from "../../store/useAuth";
+import AdsSlider from "../../components/ui/AdsSlider";
 
 export default function PharmaciesForSale() {
   // Filter state (all in one place, like deals)
@@ -247,20 +248,22 @@ export default function PharmaciesForSale() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="py-10 px-4 text-foreground">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <AdsSlider position="allPharmcies" />
+
+      <section className="py-5 px-4 text-foreground">
+        <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">
           <h1 className="text-3xl sm:text-4xl font-bold ">
             Pharmacies for Sale
           </h1>
         </div>
       </section>
-      <section className="py-5 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col flex-1">
+      <section className="px-4">
+        <div className="max-w-7xl mx-auto">
           {/* Filters Card - Unified, like deals */}
-          <Card className="p-6 mb-8 rounded-2xl shadow-md border border-primary/20 bg-white">
+          <Card className="p-6 mb-8">
             <div className="space-y-6">
               {/* Header */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2 w-full sm:w-auto">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
                     Filters
@@ -269,7 +272,7 @@ export default function PharmaciesForSale() {
                     Refine your search results
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start">
                   <Button
                     onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                     variant="outline"
@@ -298,7 +301,6 @@ export default function PharmaciesForSale() {
                     <X className="h-4 w-4" />
                     Clear All
                   </Button>
-                  {/* Location Sort Button */}
                   <Button
                     type="button"
                     variant={useLocationSort ? "default" : "outline"}
@@ -467,7 +469,7 @@ export default function PharmaciesForSale() {
                       {activeFilters.length}
                     </Badge>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-nowrap gap-2 overflow-x-auto max-w-full pb-1">
                     {activeFilters.map((filter) => (
                       <Badge
                         key={filter.key}
@@ -537,7 +539,7 @@ export default function PharmaciesForSale() {
           {error && <div className="text-red-500 mb-4">{error}</div>}
           {loading || filteredPharmacies.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center flex-1 min-w-0">
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center flex-1 min-w-0 mb-8">
                 <PharmaciesList
                   pharmacies={filteredPharmacies}
                   loading={loading}

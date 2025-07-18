@@ -38,6 +38,7 @@ import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Card } from "@/components/ui/card";
+import AdsSlider from "@/components/ui/AdsSlider";
 
 export default function AvailableDeals() {
   // State for all filters
@@ -349,6 +350,8 @@ export default function AvailableDeals() {
 
   return (
     <div className="min-h-screen">
+      <AdsSlider position="allDeals" />
+
       <section className="py-5 px-4 text-foreground">
         <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold">
@@ -369,7 +372,7 @@ export default function AvailableDeals() {
           <Card className="p-6 mb-8">
             <div className="space-y-6">
               {/* Header */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between flex-wrap gap-2 w-full sm:w-auto">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">
                     Filters
@@ -378,7 +381,7 @@ export default function AvailableDeals() {
                     Refine your search results
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2 w-full sm:w-auto justify-start">
                   <Button
                     onClick={handleToggleMyDeals}
                     variant={showMyDeals ? "default" : "outline"}
@@ -544,7 +547,7 @@ export default function AvailableDeals() {
                       {activeFilters.length}
                     </Badge>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 overflow-x-auto max-w-full">
                     {activeFilters.map((filter) => (
                       <Badge
                         key={filter.key}

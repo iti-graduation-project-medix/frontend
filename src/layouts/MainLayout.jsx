@@ -10,6 +10,7 @@ import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
 import ProtectedRoute from "../components/ProtectedRoute";
 import ProfileRedirect from "../components/ProfileRedirect";
 import NotFound from "../pages/NotFound/NotFound";
+import OfflineRouteGuard from "../components/OfflineRouteGuard";
 
 const Advertise = React.lazy(() => import("../pages/Advertise/Advertise"));
 const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
@@ -34,135 +35,228 @@ export default function MainLayout() {
         <Routes>
           <Route path="/" element={<SharedLayout />}>
             <Route index element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/advertise" element={<Advertise />} />
+            <Route
+              path="/login"
+              element={
+                <OfflineRouteGuard>
+                  <Login />
+                </OfflineRouteGuard>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <OfflineRouteGuard>
+                  <SignUp />
+                </OfflineRouteGuard>
+              }
+            />
+            <Route
+              path="/advertise"
+              element={
+                <OfflineRouteGuard>
+                  <Advertise />
+                </OfflineRouteGuard>
+              }
+            />
             <Route
               path="/settings"
               element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
-            <Route path="/subscription" element={<Subscription />} />
+            <Route
+              path="/subscription"
+              element={
+                <OfflineRouteGuard>
+                  <Subscription />
+                </OfflineRouteGuard>
+              }
+            />
             <Route
               path="/subscription/:id/success"
               element={
-                <ProtectedRoute>
-                  <SuccessPayment />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <SuccessPayment />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/subscription/:id/failed"
               element={
-                <ProtectedRoute>
-                  <FailedPayment />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <FailedPayment />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
-            <Route path="/otp" element={<Otp message="Reset Password" />} />
-            <Route path="/contact-us" element={<ContactUs />} />
+            <Route
+              path="/otp"
+              element={
+                <OfflineRouteGuard>
+                  <Otp message="Reset Password" />
+                </OfflineRouteGuard>
+              }
+            />
+            <Route
+              path="/contact-us"
+              element={
+                <OfflineRouteGuard>
+                  <ContactUs />
+                </OfflineRouteGuard>
+              }
+            />
             <Route
               path="/deals"
               element={
-                <ProtectedRoute>
-                  <Deals />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <Deals />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/all-deals/:dealId"
               element={
-                <ProtectedRoute>
-                  <DealDetails />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <DealDetails />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
-            <Route path="/reset" element={<ResetPassword />} />
-            <Route path="/confirm-password" element={<ConfirmPassword />} />
+            <Route
+              path="/reset"
+              element={
+                <OfflineRouteGuard>
+                  <ResetPassword />
+                </OfflineRouteGuard>
+              }
+            />
+            <Route
+              path="/confirm-password"
+              element={
+                <OfflineRouteGuard>
+                  <ConfirmPassword />
+                </OfflineRouteGuard>
+              }
+            />
             <Route
               path="/deals/new"
               element={
-                <ProtectedRoute>
-                  <DealFormPage />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <DealFormPage />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/deals/edit/:id"
               element={
-                <ProtectedRoute>
-                  <DealFormPage />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <DealFormPage />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/add-pharmacy"
               element={
-                <ProtectedRoute>
-                  <AddPharmacy />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <AddPharmacy />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/add-pharmacy/:id"
               element={
-                <ProtectedRoute>
-                  <AddPharmacy />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <AddPharmacy />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/all-deals"
               element={
-                <ProtectedRoute>
-                  <AvailableDeals />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <AvailableDeals />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/pharmacies-for-sale"
               element={
-                <ProtectedRoute>
-                  <PharmaciesForSale />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <PharmaciesForSale />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/pharmacies-for-sale/:id"
               element={
-                <ProtectedRoute>
-                  <PharmacyDetails />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <PharmacyDetails />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/profile"
               element={
-                <ProtectedRoute>
-                  <ProfileRedirect />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <ProfileRedirect />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/profile/:id"
               element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
             <Route
               path="/favorites"
               element={
-                <ProtectedRoute>
-                  <Favorites />
-                </ProtectedRoute>
+                <OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <Favorites />
+                  </ProtectedRoute>
+                </OfflineRouteGuard>
               }
             />
-            <Route path="*" element={<NotFound />} />
+            <Route
+              path="*"
+              element={
+                <OfflineRouteGuard>
+                  <NotFound />
+                </OfflineRouteGuard>
+              }
+            />
           </Route>
         </Routes>
       </div>

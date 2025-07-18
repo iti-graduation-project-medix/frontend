@@ -6,6 +6,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -142,7 +144,8 @@
 /* Custom scrollbar for chat widget */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #7c3aed #18181b; /* thumb color, track color */
+  scrollbar-color: #7c3aed #18181b;
+  /* thumb color, track color */
 }
 
 /* For Chrome, Edge, and Safari */

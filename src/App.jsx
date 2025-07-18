@@ -7,20 +7,19 @@ export default function App() {
   const isOffline = useOffline();
   const currentPath = window.location.pathname;
 
-  // Allow home page to show in offline mode
-  if (isOffline && currentPath !== "/") {
+  if (isOffline && currentPath === "/") {
     return (
       <>
-        <OfflinePage />
+        <MainLayout />
         <InstallApp />
       </>
     );
   }
 
-  if (isOffline && currentPath == "/") {
+  if (isOffline && currentPath !== "/") {
     return (
       <>
-        <MainLayout />
+        <OfflinePage />
         <InstallApp />
       </>
     );

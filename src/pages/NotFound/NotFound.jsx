@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -10,9 +11,9 @@ export default function NotFound() {
       opacity: 1,
       transition: {
         duration: 0.8,
-        staggerChildren: 0.2,
-      },
-    },
+        staggerChildren: 0.2
+      }
+    }
   };
 
   const itemVariants = {
@@ -22,9 +23,9 @@ export default function NotFound() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
-      },
-    },
+        ease: "easeOut"
+      }
+    }
   };
 
   const floatingVariants = {
@@ -33,9 +34,9 @@ export default function NotFound() {
       transition: {
         duration: 3,
         repeat: Infinity,
-        ease: "easeInOut",
-      },
-    },
+        ease: "easeInOut"
+      }
+    }
   };
 
   return (

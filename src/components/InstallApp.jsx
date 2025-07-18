@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { FiDownload } from "react-icons/fi";
 
-// Create motion version of Button
 const MotionButton = motion(Button);
 
 const InstallApp = () => {
@@ -15,7 +14,7 @@ const InstallApp = () => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallButton(true);
-      e.prompt();
+      // Do NOT call e.prompt() here; only call on user gesture
     };
 
     const handleAppInstalled = () => {

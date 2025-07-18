@@ -98,7 +98,7 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
-    navigate("/");
+    navigate("/auth/login");
   };
 
   const mobileMenuVariants = {
@@ -145,7 +145,7 @@ export default function Navbar() {
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
-          to="/all-deals"
+          to="/deals"
           className="flex items-center space-x-3 rtl:space-x-reverse"
         >
           <img
@@ -154,7 +154,7 @@ export default function Navbar() {
             alt="Flowbite Logo"
           />
           <div className="flex flex-col mb-2">
-            <span className="font-bold  text-2xl  whitespace-nowrap text-primary dark:text-white">
+            <span className="font-bold  text-4xl  whitespace-nowrap text-primary dark:text-white">
               Dawaback
             </span>
             <p className="text-sm text-gray-500  leading-0 mt-1 dark:text-gray-400">
@@ -167,8 +167,8 @@ export default function Navbar() {
             <>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon" className="mr-2">
-                    <FiBell className="w-5 h-5" />
+                  <Button variant="ghost" className="mr-2 hidden md:inline-flex" style={{ width: 46, height: 46 }}>
+                    <FiBell className="text-zinc-600" style={{ width: 30, height: 30 }} />
                     <span className="sr-only">Notifications</span>
                   </Button>
                 </PopoverTrigger>
@@ -202,117 +202,106 @@ export default function Navbar() {
               </Popover>
 
               {/* Favorites Icon */}
-              <Link to="/favorites" className="relative mr-2 ">
-                <Button variant="ghost" size="icon">
-                  <Heart className="w-5 h-5 " />
+              <Link to="/favorites" className="relative font-bold mr-4 hidden md:inline-flex">
+                <Button variant="ghost" className="" style={{ width: 46, height: 46 }}>
+                  <Heart className="text-zinc-600" style={{ width: 30, height: 30 }} />
                   <span className="sr-only">Favorites</span>
                 </Button>
                 {favorites.deals.length + favorites.pharmacies.length > 0 && (
-                  <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
+                  <Badge className="absolute bottom-6 left-7 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
                     {favorites.deals.length + favorites.pharmacies.length}
                   </Badge>
                 )}
               </Link>
-              <motion.button
-                ref={userButtonRef}
-                type="button"
-                className="flex text-xl bg-purple-800 rounded-full md:me-0 focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-600 relative"
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                whileTap="tap"
-                whileHover="hover"
-                variants={buttonVariants}
-              >
-                <span className="sr-only">Open user menu</span>
-                <Avatar className="w-10 h-10">
-                  <AvatarFallback>
-                    {getInitials(pharmacistDetails?.fullName || "User")}
-                  </AvatarFallback>
-                </Avatar>
-              </motion.button>
-              <AnimatePresence>
-                {isUserMenuOpen && (
-                  <motion.div
-                    ref={userMenuRef}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                    className="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600 absolute top-12 right-0 md:right-2 lg:right-8 xl:right-2 2xl:right-42"
-                  >
-                    <div className="px-4 py-3">
-                      <span className="block text-sm text-gray-900 dark:text-white">
-                        {pharmacistDetails?.fullName || "User"}
-                      </span>
-                      <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                        {pharmacistDetails?.email || "user@example.com"}
-                      </span>
-                    </div>
-                    <ul className="py-2" aria-labelledby="user-menu-button">
-                      <li>
-                        {/* <Link
-                          to="/chat"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Messages
-                          {unreadCount > 0 && (
-                            <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold">
-                              {unreadCount}
-                            </Badge>
-                          )}
-                        </Link> */}
-                        <Link
-                          to="/profile"
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Profile
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/all-deals"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Deals
-                        </Link>
-                      </li>
-                      <li>
-                        <Link
-                          to="/pharmacies-for-sale"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Pharmacies
-                        </Link>
-                      </li>
+              {/* Avatar and Dropdown */}
+              <div className="relative flex items-center">
+                <motion.button
+                  ref={userButtonRef}
+                  type="button"
+                  className="flex items-center justify-center mr-2 text-xl bg-primary rounded-full md:me-0 focus:ring-4 focus:ring-primary/30 dark:focus:ring-primary/30 relative"
+                  style={{ width: 46, height: 46 }}
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  whileTap="tap"
+                  whileHover="hover"
+                  variants={buttonVariants}
+                >
+                  <span className="sr-only">Open user menu</span>
+                  <Avatar className="w-10 h-10">
+                    <AvatarFallback>
+                      {getInitials(pharmacistDetails?.fullName || "User")}
+                    </AvatarFallback>
+                  </Avatar>
+                </motion.button>
+                <AnimatePresence>
+                  {isUserMenuOpen && (
+                    <motion.div
+                      ref={userMenuRef}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                      className="z-50 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600 absolute right-0 top-full"
+                    >
+                      <div className="px-4 py-3">
+                        <span className="block text-sm text-gray-900 dark:text-white">
+                          {pharmacistDetails?.fullName || "User"}
+                        </span>
+                        <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
+                          {pharmacistDetails?.email || "user@example.com"}
+                        </span>
+                      </div>
+                      <ul className="py-2" aria-labelledby="user-menu-button">
+                        <li>
+                          <Link
+                            to="/me"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                          >
+                            Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/deals"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                          >
+                            Deals
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/pharmacies"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                          >
+                            Pharmacies
+                          </Link>
+                        </li>
 
-                      <li>
-                        <Link
-                          to="/settings"
-                          onClick={() => setIsUserMenuOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Settings
-                        </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                        >
-                          Sign out
-                        </button>
-                      </li>
-                    </ul>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                        <li>
+                          <Link
+                            to="/settings"
+                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                          >
+                            Settings
+                          </Link>
+                        </li>
+                        <li>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                          >
+                            Sign out
+                          </button>
+                        </li>
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </>
           ) : (
             <div className="flex items-center space-x-4 max-md:hidden">
               <MotionLink
-                to="login"
+                to="/auth/login"
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
@@ -321,7 +310,7 @@ export default function Navbar() {
                 Login
               </MotionLink>
               <MotionLink
-                to="SignUp"
+                to="/auth/signup"
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
@@ -393,12 +382,45 @@ export default function Navbar() {
                     Contact
                   </Link>
                 </li>
+                {/* Notifications (mobile menu) */}
+                {isAuthenticated && (
+                  <li>
+                    <Link
+                      to="/notifications"
+                      className="flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    >
+                      <span>Notifications</span>
+                      <FiBell className="text-zinc-600 w-5 h-5 ml-2" />
+                      {/* Add a badge here if you have a notifications count */}
+                      {/* <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">0</Badge> */}
+                    </Link>
+                  </li>
+                )}
+                {/* Favorites (mobile menu) */}
+                {isAuthenticated && (
+                  <li>
+                    <Link
+                      to="/favorites"
+                      className="flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    >
+                      <span>Favorites</span>
+                      <span className="relative">
+                        <Heart className="text-zinc-600 w-5 h-5" />
+                        {(favorites.deals.length + favorites.pharmacies.length > 0) && (
+                          <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
+                            {favorites.deals.length + favorites.pharmacies.length}
+                          </Badge>
+                        )}
+                      </span>
+                    </Link>
+                  </li>
+                )}
 
                 {!isAuthenticated && (
                   <li className={`flex space-x-4 ${styles.centerBtns}`}>
                     <div className={`flex space-x-4 ${styles.centerBtns}`}>
                       <MotionLink
-                        to={"login"}
+                        to={"/auth/login"}
                         whileTap="tap"
                         whileHover="hover"
                         variants={buttonVariants}
@@ -407,7 +429,7 @@ export default function Navbar() {
                         Login
                       </MotionLink>
                       <MotionLink
-                        to={"SignUp"}
+                        to={"/auth/signup"}
                         whileTap="tap"
                         whileHover="hover"
                         variants={buttonVariants}

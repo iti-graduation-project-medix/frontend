@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { FiDownload } from "react-icons/fi";
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { FiDownload } from "react-icons/fi";
 
 const MotionButton = motion(Button);
 
@@ -24,6 +28,8 @@ const InstallApp = () => {
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -42,7 +48,10 @@ const InstallApp = () => {
 
     if (outcome === "accepted") {
       console.log("User accepted the install prompt");
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt");
     } else {
+      console.log("User dismissed the install prompt");
       console.log("User dismissed the install prompt");
     }
 

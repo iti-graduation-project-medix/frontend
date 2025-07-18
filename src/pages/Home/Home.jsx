@@ -14,7 +14,7 @@ export default function Home() {
   const [showInstallBtn, setShowInstallBtn] = useState(false);
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = (e) => {
+    const handleBeforeInstallPrompt = e => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallBtn(true);
@@ -30,7 +30,7 @@ export default function Home() {
   const handleInstallClick = () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
+      deferredPrompt.userChoice.then(choiceResult => {
         if (choiceResult.outcome === "accepted") {
           console.log("User accepted the install prompt");
         } else {
@@ -62,13 +62,13 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % testimonials.length);
+      setCurrent(prev => (prev + 1) % testimonials.length);
     }, 3000);
 
     return () => clearInterval(interval); // تنظيف الانترفال عند إلغاء المكون
   }, []);
 
-  const toggleAccordion = (index) => {
+  const toggleAccordion = index => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
@@ -88,7 +88,7 @@ export default function Home() {
           style={{
             backgroundImage: `url(/imgs/drug-store.webp)`,
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: "center"
           }}
         >
           <div className="absolute inset-0 bg-black opacity-60 z-10" />
@@ -130,7 +130,7 @@ export default function Home() {
               </MotionLink>
 
               {/* install button */}
-              {showInstallBtn && (
+              {showInstallBtn &&
                 <motion.button
                   className="bg-yellow-500 px-6 py-2 rounded-lg text-sm hover:bg-yellow-600 cursor-pointer flex items-center gap-2"
                   onClick={handleInstallClick}
@@ -159,8 +159,7 @@ export default function Home() {
                     />
                   </svg>
                   <span className="text-white font-medium">Install App</span>
-                </motion.button>
-              )}
+                </motion.button>}
               {/* <MotionLink to="/join-company" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-6 py-2 w-auto">
                 Join as Company
               </MotionLink> */}
@@ -283,7 +282,7 @@ export default function Home() {
                 transition={{ duration: 1.5, ease: "easeOut" }}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
-                  {features.map((feature, idx) => (
+                  {features.map((feature, idx) =>
                     <div
                       key={idx}
                       className="group bg-white dark:bg-[color:var(--card)] p-8 rounded-2xl shadow-xl hover:shadow-2xl transition duration-300 border border-gray-200 dark:border-[color:var(--border)] relative overflow-hidden"
@@ -303,7 +302,7 @@ export default function Home() {
                       {/* Bottom gradient hover line */}
                       <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-[3px] bg-[color:var(--primary)] transition-all duration-300 group-hover:w-2/3 rounded-full" />
                     </div>
-                  ))}
+                  )}
                 </div>
               </motion.div>
             </div>
@@ -344,7 +343,7 @@ export default function Home() {
               >
                 {/* Steps Cards */}
                 <div className="flex flex-wrap justify-center gap-10 relative pt-5 z-10">
-                  {howWeWorkSteps.map((step, index) => (
+                  {howWeWorkSteps.map((step, index) =>
                     <div
                       className="w-full sm:w-[calc(50%-20px)] lg:w-[280px] text-center relative mb-10 z-10"
                       key={index}
@@ -377,9 +376,11 @@ export default function Home() {
                         {step.title}
                       </h3>
 
-                      <p className="text-sm text-gray-600 leading-relaxed">{step.description}</p>
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        {step.description}
+                      </p>
                     </div>
-                  ))}
+                  )}
 
                   {/* SVG Curved Dotted Line */}
                   <div className="hidden lg:block absolute top-[100px] left-0 right-0 w-full z-0">
@@ -504,16 +505,18 @@ export default function Home() {
                           onClick={() => toggleAccordion(index)}
                           className="w-full flex justify-between items-center text-left px-5 py-4 bg-white hover:bg-[#eff1fb] transition-colors font-medium text-gray-900"
                         >
-                          <span>{item.question}</span>
+                          <span>
+                            {item.question}
+                          </span>
                           <span className="text-2xl font-bold text-[#2b2b64]">
                             {isOpen ? "−" : "+"}
                           </span>
                         </button>
 
                         <div
-                          className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${
-                            isOpen ? "max-h-40 py-4 opacity-100" : "max-h-0 opacity-0"
-                          } text-sm text-gray-600 bg-white`}
+                          className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${isOpen
+                            ? "max-h-40 py-4 opacity-100"
+                            : "max-h-0 opacity-0"} text-sm text-gray-600 bg-white`}
                         >
                           {item.answer}
                         </div>
@@ -545,13 +548,19 @@ export default function Home() {
                 <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z" />
               </svg>
               <blockquote>
-                <p className="text-2xl italic font-medium text-gray-900 dark:text-white">{text}</p>
+                <p className="text-2xl italic font-medium text-gray-900 dark:text-white">
+                  {text}
+                </p>
               </blockquote>
               <figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
                 <img className="w-10 h-10 rounded-full" src={img} alt={`${name} profile picture`} />
                 <div className="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
-                  <cite className="pe-3 font-medium text-gray-900 dark:text-white">{name}</cite>
-                  <cite className="ps-3 text-sm text-gray-500 dark:text-gray-400">{role}</cite>
+                  <cite className="pe-3 font-medium text-gray-900 dark:text-white">
+                    {name}
+                  </cite>
+                  <cite className="ps-3 text-sm text-gray-500 dark:text-gray-400">
+                    {role}
+                  </cite>
                 </div>
               </figcaption>
             </figure>
@@ -570,7 +579,7 @@ export default function Home() {
             style={{
               backgroundImage: "url('/imgs/newsletter.webp')",
               backgroundColor: "rgba(175, 180, 240, 0.5)",
-              backgroundBlendMode: "multiply",
+              backgroundBlendMode: "multiply"
             }}
           >
             <div className="max-w-xl mx-auto text-center space-y-6 px-4">

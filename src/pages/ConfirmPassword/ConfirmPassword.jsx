@@ -4,15 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/store/useAuth";
+import { ErrorDisplay, ErrorMessage } from "@/components/ui/error-display";
+import { cn } from "@/lib/utils";
 
 const ConfirmPasswordSchema = Yup.object().shape({
   password: Yup.string()
-    .min(6, "Password must be at least 8 characters")
+    .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
@@ -21,20 +22,23 @@ const ConfirmPasswordSchema = Yup.object().shape({
 
 export default function ConfirmPassword() {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { confirmPassword } = useAuth();
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       setIsLoading(true);
+      setError(null);
       const email = sessionStorage.getItem("resetEmail");
       if (!email) throw new Error("No email found in session");
       await confirmPassword({ email, newPassword: values.password });
-      toast.success("Password confirmed successfully!");
       resetForm();
-      navigate("/login");
+      navigate("/auth/login");
     } catch (error) {
-      toast.error(error.message || "Failed to confirm password");
+      console.error("Confirm password error:", error);
+      setError(error.message || "Failed to confirm password");
+      // Error toast is handled by the store
     } finally {
       setIsLoading(false);
       setSubmitting(false);
@@ -61,7 +65,7 @@ export default function ConfirmPassword() {
                     className="flex flex-col items-center gap-2 font-medium"
                   >
                     <div className="flex size-8 items-center justify-center rounded-md">
-                      <img src="DawabackNewLogo.png" className="w-16" />
+                      <img src="/DawabackNewLogo.png" className="w-16" />
                     </div>
                     <span className="sr-only">Acme Inc.</span>
                   </a>
@@ -73,6 +77,10 @@ export default function ConfirmPassword() {
                     </Link>
                   </div>
                 </div>
+
+                {/* Error Display */}
+                <ErrorDisplay error={error} />
+
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-3">
                     <Label htmlFor="password">New Password</Label>
@@ -83,10 +91,11 @@ export default function ConfirmPassword() {
                       type="password"
                       placeholder="Enter new password"
                       disabled={isLoading}
+                      className={cn(
+                        errors.password && touched.password && "border-red-500"
+                      )}
                     />
-                    {errors.password && touched.password && (
-                      <div className="text-sm text-red-500">{errors.password}</div>
-                    )}
+                    <ErrorMessage error={errors.password && touched.password ? errors.password : null} />
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="confirmPassword">Confirm New Password</Label>
@@ -97,10 +106,11 @@ export default function ConfirmPassword() {
                       type="password"
                       placeholder="Re-enter new password"
                       disabled={isLoading}
+                      className={cn(
+                        errors.confirmPassword && touched.confirmPassword && "border-red-500"
+                      )}
                     />
-                    {errors.confirmPassword && touched.confirmPassword && (
-                      <div className="text-sm text-red-500">{errors.confirmPassword}</div>
-                    )}
+                    <ErrorMessage error={errors.confirmPassword && touched.confirmPassword ? errors.confirmPassword : null} />
                   </div>
                   <Button
                     type="submit"
@@ -111,7 +121,7 @@ export default function ConfirmPassword() {
                   </Button>
                   <div className="text-center text-sm">
                     Remember your password?{" "}
-                    <Link to="/login" className="underline underline-offset-4">
+                    <Link to="/auth/login" className="underline underline-offset-4">
                       Back to login
                     </Link>
                   </div>

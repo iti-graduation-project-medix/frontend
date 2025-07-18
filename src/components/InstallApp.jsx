@@ -2,10 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { FiDownload } from "react-icons/fi";
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { FiDownload } from "react-icons/fi";
 
 const MotionButton = motion(Button);
 
@@ -14,7 +10,7 @@ const InstallApp = () => {
   const [showInstallButton, setShowInstallButton] = useState(false);
 
   useEffect(() => {
-    const handleBeforeInstallPrompt = e => {
+    const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallButton(true);

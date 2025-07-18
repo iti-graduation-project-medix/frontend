@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-// Removed useNavigate import
+import React, { useEffect, useState } from "react";
 
 const features = [
   "Access the home page",
@@ -9,14 +8,20 @@ const features = [
 ];
 
 const OfflinePage = () => {
-  const [statusMsg, setStatusMsg] = useState("Offline");
   const [loading, setLoading] = useState(false);
   // Removed navigate
+
+  useEffect(() => {
+    const handleOnline = () => {
+      window.location.reload();
+    };
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+  }, []);
 
   const handleRetry = () => {
     setLoading(true);
     setTimeout(() => {
-      setStatusMsg("Still offline. Please check your connection.");
       setLoading(false);
     }, 2000);
   };
@@ -39,7 +44,7 @@ const OfflinePage = () => {
               Offline
             </div>
             <div className="w-full">
-              <h3 className="text-indigo-700 font-bold text-lg mb-4 text-center md:text-left">
+              <h3 className="text-indigo-700 font-bold text-2xl mb-6 text-center md:text-left">
                 What you can do offline:
               </h3>
               <ul className="space-y-3">
@@ -65,37 +70,39 @@ const OfflinePage = () => {
           </div>
         </div>
         {/* Divider for md+ */}
-        <div className="hidden md:block w-px bg-gradient-to-b from-indigo-200 to-purple-200 my-8"></div>
+        <div className="hidden md:block w-px bg-gradient-to-b from-indigo-200 to-purple-200 my-8" />
         {/* Right: Title, desc, buttons */}
         <div className="flex-1 flex flex-col justify-center items-center md:items-start p-6 md:p-8">
-          <h1 className="text-3xl font-extrabold text-gray-800 mb-4 text-center md:text-left drop-shadow">
+          <h1 className="text-5xl font-extrabold text-gray-800 mb-8 text-center md:text-left drop-shadow">
             You're Offline
           </h1>
-          <p className="text-gray-600 mb-8 leading-relaxed text-center md:text-left text-lg">
+          <p className="text-gray-600 mb-8 mt-2 leading-relaxed text-center md:text-left text-lg">
             It looks like you've lost your internet connection. Don't worry, you can still access
             the home page and some basic features.
           </p>
           <button
             onClick={handleRetry}
-            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8 py-3 rounded-full font-bold mb-4 w-full md:w-auto flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-70"
+            className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8 py-3 mt-8 rounded-full font-bold mb-4 w-full md:w-auto flex items-center justify-center gap-2 shadow-lg hover:scale-105 transition-all duration-300 disabled:opacity-70"
             disabled={loading}
             style={{ background: "linear-gradient(135deg, #636ae8 0%, #764ba2 100%)" }}
           >
             Retry Connection
             {loading && (
-              <span className="ml-2 inline-block animate-spin border-2 border-t-indigo-500 border-indigo-200 rounded-full w-5 h-5"></span>
+              <span className="ml-2 inline-block animate-spin border-2 border-t-indigo-500 border-indigo-200 rounded-full w-5 h-5" />
             )}
           </button>
           {/* Go to Home Page button as anchor */}
-          <button
+          {/*<button
             onClick={() => {
               window.location.href = "/";
             }}
             className="border-2 border-indigo-500 text-indigo-500 px-8 py-3 rounded-full font-bold w-full md:w-auto hover:bg-indigo-500 hover:text-white transition-all duration-300 flex items-center justify-center gap-2 shadow"
           >
             Go to Home Page
-          </button>
-          <div className="mt-6 text-red-600 font-semibold text-center w-full">{statusMsg}</div>
+          </button>*/}
+          <div className="mt-6 mb-6 px-5 py-2 rounded-full text-base font-semibold shadow bg-red-100 text-red-600 w-full md:w-auto flex items-center justify-center">
+            🚫 Page Unavailable
+          </div>
         </div>
       </div>
     </div>

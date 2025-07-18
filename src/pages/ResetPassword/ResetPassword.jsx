@@ -51,7 +51,7 @@ export default function ResetPassword() {
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10" style={{ background: 'var(--primary)' }}></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10" style={{ background: 'var(--primary)' }}></div>
         <div className="absolute left-1/2 -translate-x-1/2 -top-16 flex justify-center">
-          <GalleryVerticalEnd className="w-20 h-20 text-primary/70"/>
+          <GalleryVerticalEnd className="w-20 h-20 text-primary/95"/>
         </div>
         <div className="relative p-10 pt-20 flex flex-col gap-4">
           <Formik
@@ -62,7 +62,8 @@ export default function ResetPassword() {
             {({ errors, touched, isSubmitting, handleBlur, handleChange, values }) => (
               <Form className="flex flex-col gap-7">
                 <div className="flex flex-col items-center gap-2 -mt-10">
-                  <h1 className="text-2xl font-bold tracking-tight text-primary/70" >Reset Password</h1>
+                  <img src="/logo.svg" alt="Dawaback Logo" className="h-18 w-18 mx-auto" />
+                  <h1 className="text-2xl font-bold tracking-tight text-primary/95" >Reset Password</h1>
                   <p className="text-sm -mt-2" style={{ color: 'var(--muted-foreground)' }}>Enter your email to receive password reset instructions.</p>
                 </div>
 

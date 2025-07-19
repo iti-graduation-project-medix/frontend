@@ -5,13 +5,12 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#636ae8",
+  "theme_color": "#494848",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
   "categories": ["medical", "business", "lifestyle"],
-  "icons": [
-    {
+  "icons": [{
       "src": "/icon512_rounded.png",
       "sizes": "512x512",
       "type": "image/png",
@@ -94,12 +93,10 @@
       "type": "image/png"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/DawabackNewLogo.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ]
+  "screenshots": [{
+    "src": "/DawabackNewLogo.png",
+    "sizes": "1280x720",
+    "type": "image/png",
+    "form_factor": "wide"
+  }]
 }

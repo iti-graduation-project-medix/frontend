@@ -109,31 +109,39 @@ export default function MainLayout() {
             {/* Public Service Routes */}
             <Route path="/advertise" element={<Advertise />} />
             <Route path="contact" element={<ContactUs />} />
+            <Route path="terms" element={<TermsOfService />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
 
             {/* Subscription Routes */}
             <Route path="subscription">
               <Route
                 index
                 element={
-                  <OfflineRouteGuard>
-                    <Subscription />
-                  </OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <OfflineRouteGuard>
+                      <Subscription />
+                    </OfflineRouteGuard>
+                  </ProtectedRoute>
                 }
               />
               <Route
-                path=":id/success"
+                path="success"
                 element={
-                  <OfflineRouteGuard>
-                    <SuccessPayment />
-                  </OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <OfflineRouteGuard>
+                      <SuccessPayment />
+                    </OfflineRouteGuard>
+                  </ProtectedRoute>
                 }
               />
               <Route
-                path=":id/failed"
+                path="failed"
                 element={
-                  <OfflineRouteGuard>
-                    <FailedPayment />
-                  </OfflineRouteGuard>
+                  <ProtectedRoute>
+                    <OfflineRouteGuard>
+                      <FailedPayment />
+                    </OfflineRouteGuard>
+                  </ProtectedRoute>
                 }
               />
             </Route>

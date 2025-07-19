@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function AdvertiserInfo({ owner, pharmacyId }) {
   // Get initials for fallback
@@ -20,9 +21,13 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
   const { startChat, setIsWidgetOpen, loadUserChats, selectChat, chats } =
     useChat();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const currentUserId = (() => {
     try {
-      return JSON.parse(localStorage.getItem("user"));
+      const user = localStorage.getItem("user");
+      if (!user) return null;
+      const parsedUser = JSON.parse(user);
+      return typeof parsedUser === "object" ? parsedUser.id : parsedUser;
     } catch {
       return null;
     }
@@ -56,8 +61,11 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
   };
 
   const handleProfile = () => {
-    // Implement profile navigation
-    alert("Profile feature coming soon!");
+    if (owner?.id) {
+      navigate(`/pharmacists/${owner.id}`);
+    } else {
+      alert("Pharmacist profile not available");
+    }
   };
 
   return (

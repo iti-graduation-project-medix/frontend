@@ -80,7 +80,7 @@ export default function Home() {
         ref={headerRef}
         initial={{ opacity: 0, y: 30 }}
         animate={headerInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 1.5, ease: "easeOut" }}
+        transition={{ duration: 1, ease: "easeOut" }}
       >
         {/* Hero Section */}
         <header
@@ -138,7 +138,7 @@ export default function Home() {
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
+                  transition={{ duration: 0.15 }}
                 >
                   <svg
                     className="w-5 h-5 text-white"
@@ -173,7 +173,7 @@ export default function Home() {
           ref={previewRef}
           initial={{ opacity: 0, y: 80 }}
           animate={previewInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* Preview Section */}
           <section className="pt-16 md:pt-16 px-14 text-center text-[color:var(--card-foreground)] transition-colors duration-300">
@@ -195,7 +195,7 @@ export default function Home() {
           ref={whoWeAreRef}
           initial={{ opacity: 0, y: 80 }}
           animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* Who We Are */}
           <section className="py-12 px-6 sm:px-10 md:px-14 text-[color:var(--card-foreground)] transition-colors duration-300">
@@ -255,7 +255,7 @@ export default function Home() {
           ref={featuresRef}
           initial={{ opacity: 0, y: 80 }}
           animate={featuresInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* Services / Features */}
 
@@ -279,7 +279,7 @@ export default function Home() {
                 ref={featuresCardsRef}
                 initial={{ opacity: 0, y: 80 }}
                 animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1.5, ease: "easeOut" }}
+                transition={{ duration: 1, ease: "easeOut" }}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
                   {features.map((feature, idx) =>
@@ -313,7 +313,7 @@ export default function Home() {
           ref={stepsRef}
           initial={{ opacity: 0, y: 80 }}
           animate={stepsInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* steps */}
           <div className="min-h-screen bg-gray-50">
@@ -339,7 +339,7 @@ export default function Home() {
                 ref={stepsCardsRef}
                 initial={{ opacity: 0, y: 80 }}
                 animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1.5, ease: "easeOut" }}
+                transition={{ duration: 1, ease: "easeOut" }}
               >
                 {/* Steps Cards */}
                 <div className="flex flex-wrap justify-center gap-10 relative pt-5 z-10">
@@ -408,7 +408,7 @@ export default function Home() {
           ref={missionRef}
           initial={{ opacity: 0, y: 80 }}
           animate={missionInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* mission & vision */}
           <section className="bg-white py-20 px-6 font-sans">
@@ -460,13 +460,13 @@ export default function Home() {
           ref={faqRef}
           initial={{ opacity: 0, y: 80 }}
           animate={faqInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* frequently questions */}
           <section className="relative font-sans  py-24 px-6 md:px-14 overflow-hidden">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               {/* Left Image */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl w-full md:w-auto">
                 <img
                   src="/imgs/faqs.webp"
                   alt="Opening and Visiting Hours"
@@ -476,7 +476,7 @@ export default function Home() {
               </div>
 
               {/* Right Content */}
-              <div className="relative bg-[#f4f6ff] backdrop-blur-lg border border-[#dadcf8] shadow-xl rounded-3xl p-8 md:p-12 z-10">
+              <div className="relative bg-[#f4f6ff] backdrop-blur-lg border border-[#dadcf8] shadow-xl rounded-3xl p-8 md:p-12 z-10 w-full md:w-auto">
                 <div className="flex justify-start mb-4">
                   <span className="bg-[#dadcf8] text-[#2b2b64] px-4 py-1 text-sm font-semibold rounded-full uppercase tracking-wide shadow-sm">
                     Faqs
@@ -533,7 +533,7 @@ export default function Home() {
           ref={testimonialRef}
           initial={{ opacity: 0, y: 80 }}
           animate={testimonialInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* testimonials */}
           <section className="max-w-screen-md mb-14  mx-auto text-center relative overflow-hidden p-6">
@@ -571,7 +571,7 @@ export default function Home() {
           ref={newsletterRef}
           initial={{ opacity: 0, y: 80 }}
           animate={newsletterInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.5, ease: "easeOut" }}
+          transition={{ duration: 1, ease: "easeOut" }}
         >
           {/* newaletter */}
           <section
@@ -595,7 +595,7 @@ export default function Home() {
                 variants={buttonVariants}
                 className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
               >
-                Subscribe Now{" "}
+                Subscribe Now
               </MotionLink>
             </div>
           </section>

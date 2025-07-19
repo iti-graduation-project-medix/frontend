@@ -18,6 +18,7 @@ import ResetPassword from "./../pages/ResetPassword/ResetPassword";
 import ConfirmPassword from "../pages/ConfirmPassword/ConfirmPassword";
 
 import OfflineRouteGuard from "../components/OfflineRouteGuard";
+import InstallApp from "@/components/InstallApp";
 
 import Otp from "./../pages/OTP/Otp";
 
@@ -313,6 +314,7 @@ export default function MainLayout() {
         <OfflineRouteGuard>
           <Chat />
         </OfflineRouteGuard>
+        <InstallApp />
       </div>
     </Router>
   );

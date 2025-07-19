@@ -270,7 +270,11 @@ const useChat = create(
         });
 
         // Listen for room closed event
-        socket.on("roomClosed", ({ roomId }) => {
+        socket.on("roomClosed", ({ roomId, closedBy }) => {
+          console.log("[SOCKET] roomClosed event received", {
+            roomId,
+            closedBy,
+          });
           const { activeChat } = get();
           if (activeChat && activeChat.roomId === roomId) {
             set({ isRoomClosed: true });

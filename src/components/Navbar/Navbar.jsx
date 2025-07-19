@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import styles from "./navbar.module.css";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { usePharmacist } from "../../store/usePharmacist";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -41,6 +41,8 @@ export default function Navbar() {
   // Use real unread messages count from chat store
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const { loadUserChats, initializeSocket, getCurrentUserId } = useChat();
+
+  const location = useLocation();
 
   useEffect(() => {
     if (user && token) {
@@ -145,20 +147,20 @@ export default function Navbar() {
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
-          to="/deals"
-          className="flex items-center space-x-3 rtl:space-x-reverse"
+          to="/"
+          className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none"
         >
           <img
-            src="/DawabackNewLogo.png"
-            className="h-10"
-            alt="Flowbite Logo"
+            src="/logo.svg"
+            className="h-15"
+            alt="Dawaback Logo"
           />
-          <div className="flex flex-col mb-2">
+          <div className="flex flex-col mb-3">
             <span className="font-bold  text-4xl  whitespace-nowrap text-primary dark:text-white">
               Dawaback
             </span>
-            <p className="text-sm text-gray-500  leading-0 mt-1 dark:text-gray-400">
-              Before it expires, Dawaback it
+            <p className="text-sm text-zinc-700 ms-.5  leading-0 mt-1 dark:text-gray-400">
+              Before it expires, trade it with desire
             </p>
           </div>
         </Link>
@@ -167,8 +169,15 @@ export default function Navbar() {
             <>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="ghost" className="mr-2 hidden md:inline-flex" style={{ width: 46, height: 46 }}>
-                    <FiBell className="text-zinc-600" style={{ width: 30, height: 30 }} />
+                  <Button
+                    variant="ghost"
+                    className="mr-2 hidden md:inline-flex"
+                    style={{ width: 46, height: 46 }}
+                  >
+                    <FiBell
+                      className="text-zinc-600"
+                      style={{ width: 30, height: 30 }}
+                    />
                     <span className="sr-only">Notifications</span>
                   </Button>
                 </PopoverTrigger>
@@ -202,9 +211,19 @@ export default function Navbar() {
               </Popover>
 
               {/* Favorites Icon */}
-              <Link to="/favorites" className="relative font-bold mr-4 hidden md:inline-flex">
-                <Button variant="ghost" className="" style={{ width: 46, height: 46 }}>
-                  <Heart className="text-zinc-600" style={{ width: 30, height: 30 }} />
+              <Link
+                to="/favorites"
+                className="relative font-bold mr-4 hidden md:inline-flex"
+              >
+                <Button
+                  variant="ghost"
+                  className=""
+                  style={{ width: 46, height: 46 }}
+                >
+                  <Heart
+                    className="text-zinc-600"
+                    style={{ width: 30, height: 30 }}
+                  />
                   <span className="sr-only">Favorites</span>
                 </Button>
                 {favorites.deals.length + favorites.pharmacies.length > 0 && (
@@ -360,7 +379,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/"
-                    className="block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                    className={location.pathname === "/" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                     aria-current="page"
                   >
                     Home
@@ -369,7 +388,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/advertise"
-                    className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    className={location.pathname === "/advertise" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                   >
                     Advertise
                   </Link>
@@ -377,7 +396,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/contact"
-                    className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    className={location.pathname === "/contact" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                   >
                     Contact
                   </Link>
@@ -387,10 +406,10 @@ export default function Navbar() {
                   <li>
                     <Link
                       to="/notifications"
-                      className="flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                      className={location.pathname === "/notifications" ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                     >
                       <span>Notifications</span>
-                      <FiBell className="text-zinc-600 w-5 h-5 ml-2" />
+                      <FiBell className={location.pathname === "/notifications" ? "text-white w-5 h-5" : "w-5 h-5 text-zinc-600"} />
                       {/* Add a badge here if you have a notifications count */}
                       {/* <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">0</Badge> */}
                     </Link>
@@ -401,14 +420,15 @@ export default function Navbar() {
                   <li>
                     <Link
                       to="/favorites"
-                      className="flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                      className={location.pathname === "/favorites" ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                     >
                       <span>Favorites</span>
                       <span className="relative">
-                        <Heart className="text-zinc-600 w-5 h-5" />
+                        <Heart className={location.pathname === "/favorites" ? "text-white w-5 h-5" : "w-5 h-5 text-zinc-600"}  />
                         {(favorites.deals.length + favorites.pharmacies.length > 0) && (
                           <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
-                            {favorites.deals.length + favorites.pharmacies.length}
+                            {favorites.deals.length +
+                              favorites.pharmacies.length}
                           </Badge>
                         )}
                       </span>
@@ -451,7 +471,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/"
-                    className="block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                    className={location.pathname === "/" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                     aria-current="page"
                   >
                     Home
@@ -460,7 +480,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/advertise"
-                    className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    className={location.pathname === "/advertise" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                   >
                     Advertise
                   </Link>
@@ -468,7 +488,7 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/contact"
-                    className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    className={location.pathname === "/contact" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
                   >
                     Contact
                   </Link>

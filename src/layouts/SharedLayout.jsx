@@ -22,7 +22,5 @@ export default function SharedLayout() {
 
       {/* <Footer /> */}
     </>
-
-
   );
 }

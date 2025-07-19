@@ -51,7 +51,7 @@ export default function ResetPassword() {
         <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10" style={{ background: 'var(--primary)' }}></div>
         <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10" style={{ background: 'var(--primary)' }}></div>
         <div className="absolute left-1/2 -translate-x-1/2 -top-16 flex justify-center">
-          <GalleryVerticalEnd className="w-20 h-20 text-primary/70"/>
+          <GalleryVerticalEnd className="w-20 h-20 text-primary/95"/>
         </div>
         <div className="relative p-10 pt-20 flex flex-col gap-4">
           <Formik
@@ -62,7 +62,8 @@ export default function ResetPassword() {
             {({ errors, touched, isSubmitting, handleBlur, handleChange, values }) => (
               <Form className="flex flex-col gap-7">
                 <div className="flex flex-col items-center gap-2 -mt-10">
-                  <h1 className="text-2xl font-bold tracking-tight text-primary/70" >Reset Password</h1>
+                  <img src="/logo.svg" alt="Dawaback Logo" className="h-18 w-18 mx-auto" />
+                  <h1 className="text-2xl font-bold tracking-tight text-primary/95" >Reset Password</h1>
                   <p className="text-sm -mt-2" style={{ color: 'var(--muted-foreground)' }}>Enter your email to receive password reset instructions.</p>
                 </div>
 
@@ -72,20 +73,29 @@ export default function ResetPassword() {
                 <div className="flex flex-col gap-6">
                   <div className="grid gap-3">
                     <Label htmlFor="email" className="font-semibold">Email</Label>
-                    <Field
-                      as={Input}
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email address"
-                      disabled={isLoading}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.email}
-                      className={cn(
-                        touched.email && errors.email && "border-red-500"
-                      )}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {/* Envelope icon */}
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </span>
+                      <Field
+                        as={Input}
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter your email address"
+                        disabled={isLoading}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.email}
+                        className={cn(
+                          "pl-10",
+                          touched.email && errors.email && "border-red-500"
+                        )}
+                      />
+                    </div>
                     {touched.email && errors.email ? (
                       <span className="flex items-center gap-1 text-red-500 text-sm mt-1">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">

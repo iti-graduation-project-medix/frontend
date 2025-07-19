@@ -69,6 +69,7 @@ export default function Deals() {
     updateDealStatus,
     totalDeals,
     totalPages,
+    deleteDeal,
   } = useDeals();
 
   // Sorting options
@@ -267,6 +268,15 @@ export default function Deals() {
       toast.success("Deal has been successfully closed!");
     } catch (error) {
       toast.error(error.message || "Failed to close deal");
+    }
+  };
+
+  const handleDeleteDeal = async (dealId) => {
+    try {
+      await deleteDeal(dealId);
+      toast.success("Deal has been successfully deleted!");
+    } catch (error) {
+      toast.error(error.message || "Failed to delete deal");
     }
   };
 
@@ -730,6 +740,7 @@ export default function Deals() {
                   key={deal.id || index}
                   deal={deal}
                   onClose={handleCloseDeal}
+                  onDelete={handleDeleteDeal}
                 />
               ))}
               {filteredDeals.length === 0 && (

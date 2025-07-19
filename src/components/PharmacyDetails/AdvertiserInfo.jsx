@@ -24,7 +24,10 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
   const navigate = useNavigate();
   const currentUserId = (() => {
     try {
-      return JSON.parse(localStorage.getItem("user"));
+      const user = localStorage.getItem("user");
+      if (!user) return null;
+      const parsedUser = JSON.parse(user);
+      return typeof parsedUser === "object" ? parsedUser.id : parsedUser;
     } catch {
       return null;
     }

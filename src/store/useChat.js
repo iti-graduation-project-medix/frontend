@@ -270,7 +270,11 @@ const useChat = create(
         });
 
         // Listen for room closed event
-        socket.on("roomClosed", ({ roomId }) => {
+        socket.on("roomClosed", ({ roomId, closedBy }) => {
+          console.log("[SOCKET] roomClosed event received", {
+            roomId,
+            closedBy,
+          });
           const { activeChat } = get();
           if (activeChat && activeChat.roomId === roomId) {
             set({ isRoomClosed: true });
@@ -459,6 +463,25 @@ const useChat = create(
             isOwn: msg.senderId === currentUserId,
           }));
 
+          // Fetch chat room details to check if closed
+          let isClosed = false;
+          try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(
+              `https://backend.dawaback.com/api/v1/chat/room/${chat.roomId}`,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            const data = await res.json();
+            isClosed = data?.data?.isClosed;
+          } catch (e) {
+            isClosed = false;
+          }
+
           // Optimistically set unreadCount to 0 and update totalUnreadCount
           set((state) => {
             const updatedChats = state.chats.map((c) =>
@@ -476,6 +499,7 @@ const useChat = create(
               chats: updatedChats,
               totalUnreadCount: newTotalUnread,
               loading: false,
+              isRoomClosed: !!isClosed,
             };
           });
         } catch (error) {

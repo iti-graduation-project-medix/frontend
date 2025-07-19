@@ -18,10 +18,11 @@ import {
   MessageSquare,
   Pill,
   Building2,
+  Trash2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const DealCard = ({ deal, onClose }) => {
+const DealCard = ({ deal, onClose, onDelete }) => {
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -143,6 +144,13 @@ const DealCard = ({ deal, onClose }) => {
                 onClick={() => onClose && onClose(deal.id)}
               >
                 <XCircle className="mr-2 h-4 w-4" /> Close
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onDelete && onDelete(deal.id)}
+              >
+                <Trash2 className="mr-2 h-4 w-4" /> Delete
               </Button>
             </div>
           )}

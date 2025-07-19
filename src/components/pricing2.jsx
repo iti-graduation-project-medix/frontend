@@ -23,15 +23,15 @@ const Pricing2 = ({
 
   plans = [
     {
-      id: "Basic",
-      name: "Basic",
+      id: "Regular",
+      name: "Regular",
       description: "Limited features",
       monthlyPrice: "EGP50",
-      yearlyPrice: "EGP400",
+      yearlyPrice: "EGP100",
       features: [
-        { text: "Add up to 2 pharmacies" },
         { text: "Add up to 10 deals" },
-        { text: "Chat with 100 pharmacists" },
+        { text: "Can't list pharmacies for sale" },
+        { text: "Can't subscribe to drug alert" },
       ],
       button: {
         text: "Purchase",
@@ -39,16 +39,15 @@ const Pricing2 = ({
       },
     },
     {
-      id: "pro",
-      name: "Pro",
+      id: "Premium",
+      name: "Premium",
       description: "Full features",
-      monthlyPrice: "EGP400",
-      yearlyPrice: "EGP1500",
+      monthlyPrice: "EGP100",
+      yearlyPrice: "EGP400",
       features: [
-        { text: "Add up to 5 pharmacies" },
         { text: "Add unlimited deals" },
-        { text: "Chat with unlimited pharmacists" },
         { text: "List pharmacies for sale" },
+        { text: "Subscribe to drug alert" },
       ],
       button: {
         text: "Purchase",
@@ -67,8 +66,8 @@ const Pricing2 = ({
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
 
   const planIdMap = {
-    Basic: "regular",
-    pro: "premium",
+    Regular: "regular",
+    Premium: "premium",
   };
 
   // Check if payment window is closed

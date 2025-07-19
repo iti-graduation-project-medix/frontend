@@ -35,6 +35,7 @@ import {
   listPharmaciesForSale,
   unlistPharmacyFromSale,
   unlistPharmacyFromSaleJson,
+  markPharmacyAsSold,
 } from "../../api/pharmacies";
 import { LoadingPage } from "../../components/ui/loading";
 
@@ -57,6 +58,9 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // List for Sale modal state
   const [showListModal, setShowListModal] = useState(false);
   const [pharmacyToList, setPharmacyToList] = useState(null);
+  // Mark as Sold modal state
+  const [showMarkAsSoldModal, setShowMarkAsSoldModal] = useState(false);
+  const [pharmacyToMarkAsSold, setPharmacyToMarkAsSold] = useState(null);
   // Local loading state for actions
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -73,7 +77,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
     if (user && token) {
       // Extract user ID from user object
       const userId = user?.id || user;
-      
+
       if (userId) {
         fetchPharmacies(token, userId);
       }
@@ -174,6 +178,42 @@ export default function PharmaciesCard({ pharmacistDetails }) {
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const handleMarkAsSoldClick = (pharmacyId) => {
+    setPharmacyToMarkAsSold(pharmacyId);
+    setShowMarkAsSoldModal(true);
+  };
+
+  const handleConfirmMarkAsSold = async () => {
+    if (pharmacyToMarkAsSold) {
+      setActionLoading(true);
+      setShowMarkAsSoldModal(false);
+      setPharmacyToMarkAsSold(null);
+
+      try {
+        await markPharmacyAsSold(pharmacyToMarkAsSold);
+        toast.success("Pharmacy marked as sold successfully!");
+
+        // Refresh the pharmacies list to show updated status
+        if (user && token) {
+          const userId = user?.id || user;
+          if (userId) {
+            await fetchPharmacies(token, userId);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to mark pharmacy as sold:", error);
+        toast.error(error.message || "Failed to mark pharmacy as sold");
+      } finally {
+        setActionLoading(false);
+      }
+    }
+  };
+
+  const handleCancelMarkAsSold = () => {
+    setShowMarkAsSoldModal(false);
+    setPharmacyToMarkAsSold(null);
   };
 
   // Validate pharmacy data structure
@@ -497,15 +537,26 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                 </Link>
               </Button>
               {pharmacy.isForSale && !pharmacy.isSold ? (
-                <Button
-                  size="sm"
-                  className="flex items-center gap-2 bg-zinc-700 text-white hover:bg-zinc-600 border-primary"
-                  onClick={() => handleUnlistClick(pharmacy.id)}
-                  disabled={actionLoading}
-                >
-                  <FaTag size={14} />
-                  Unlist Sale
-                </Button>
+                <>
+                  <Button
+                    size="sm"
+                    className="flex items-center gap-2 bg-zinc-700 text-white hover:bg-zinc-600 border-primary"
+                    onClick={() => handleUnlistClick(pharmacy.id)}
+                    disabled={actionLoading}
+                  >
+                    <FaTag size={14} />
+                    Unlist Sale
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white"
+                    onClick={() => handleMarkAsSoldClick(pharmacy.id)}
+                    disabled={actionLoading}
+                  >
+                    <FaCheckCircle size={14} />
+                    Mark as Sold
+                  </Button>
+                </>
               ) : (
                 !pharmacy.isSold && (
                   <Button
@@ -611,6 +662,21 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             ? validatedPharmacies.find((p) => p.id === pharmacyToList)
             : null
         }
+      />
+
+      <ConfirmDialog
+        open={showMarkAsSoldModal}
+        onOpenChange={(open) => {
+          if (!open) {
+            setShowMarkAsSoldModal(false);
+            setPharmacyToMarkAsSold(null);
+          }
+        }}
+        onConfirm={handleConfirmMarkAsSold}
+        title="Mark Pharmacy as Sold"
+        description="Are you sure you want to mark this pharmacy as sold? This action will remove the pharmacy from sale listings and cannot be undone."
+        confirmText="Mark as Sold"
+        cancelText="Cancel"
       />
     </div>
   );

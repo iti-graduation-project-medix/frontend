@@ -109,3 +109,19 @@ export async function getRelatedPharmacies(id, params = {}) {
   if (!res.ok) throw new Error("Failed to fetch related pharmacies");
   return res.json();
 }
+
+export async function markPharmacyAsSold(id) {
+  const url = `${baseURL}/pharmacies/${id}/mark-as-sold`;
+  const res = await fetch(url, {
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    method: "PATCH",
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to mark pharmacy as sold");
+  }
+  return res.json();
+}

@@ -47,6 +47,8 @@ const PharmacyDetails = React.lazy(() => import("../pages/PharmaciesForSale/Phar
 
 // Communication Pages
 const Chat = React.lazy(() => import("../pages/Chat/Chat"));
+const TermsOfService = React.lazy(() => import("../pages/TermsOfService"));
+const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy"));
 
 export default function MainLayout() {
   return (
@@ -105,22 +107,8 @@ export default function MainLayout() {
             </Route>
 
             {/* Public Service Routes */}
-            <Route
-              path="/advertise"
-              element={
-                <OfflineRouteGuard>
-                  <Advertise />
-                </OfflineRouteGuard>
-              }
-            />
-            <Route
-              path="contact"
-              element={
-                <OfflineRouteGuard>
-                  <ContactUs />
-                </OfflineRouteGuard>
-              }
-            />
+            <Route path="/advertise" element={<Advertise />} />
+            <Route path="contact" element={<ContactUs />} />
 
             {/* Subscription Routes */}
             <Route path="subscription">

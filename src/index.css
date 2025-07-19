@@ -172,6 +172,21 @@
   border-radius: 8px;
 }
 
+/* Hide browser default password reveal (eye) icon */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-input-password-reveal-button {
+  display: none;
+}
+
+input[type="password"]::-webkit-input-password-reveal-button {
+  display: none;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

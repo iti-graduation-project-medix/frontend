@@ -115,6 +115,8 @@ export function SignUpForm({ className, ...props }) {
     uploadWorkId: null,
   });
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
 
   // Formik initialization at the top level
   const formik = useFormik({
@@ -399,7 +401,7 @@ export function SignUpForm({ className, ...props }) {
           </div>
 
           {/* Error Display */}
-          <ErrorDisplay error={error} />
+          <ErrorDisplay className="mb-4" error={error} />
 
           <form className="space-y-8" onSubmit={formik.handleSubmit}>
             {/* Step 1: Personal Information */}
@@ -414,31 +416,39 @@ export function SignUpForm({ className, ...props }) {
                     <Label htmlFor="name" className="font-semibold">
                       Full Name <span className="text-red-500">*</span>
                     </Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      placeholder="Enter your full name"
-                      className={cn(
-                        "rounded-lg border-2 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] transition-all h-10",
-                        formik.touched.name &&
-                          formik.errors.name &&
-                          "border-red-500"
-                      )}
-                      value={formik.values.name}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      aria-describedby={
-                        formik.touched.name && formik.errors.name
-                          ? "name-error"
-                          : undefined
-                      }
-                      aria-invalid={
-                        formik.touched.name && formik.errors.name
-                          ? "true"
-                          : "false"
-                      }
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {/* User icon */}
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        </svg>
+                      </span>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        placeholder="Enter your full name"
+                        className={cn(
+                          "pl-10",
+                          formik.touched.name &&
+                            formik.errors.name &&
+                            "border-red-500"
+                        )}
+                        value={formik.values.name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        aria-describedby={
+                          formik.touched.name && formik.errors.name
+                            ? "name-error"
+                            : undefined
+                        }
+                        aria-invalid={
+                          formik.touched.name && formik.errors.name
+                            ? "true"
+                            : "false"
+                        }
+                      />
+                    </div>
                     <ErrorMessage
                       error={
                         formik.touched.name && formik.errors.name ? (
@@ -473,21 +483,39 @@ export function SignUpForm({ className, ...props }) {
                     <Label htmlFor="email" className="font-semibold">
                       Email <span className="text-red-500">*</span>
                     </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="Enter your email address"
-                      className={cn(
-                        "rounded-lg border-2 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] transition-all h-10",
-                        formik.touched.email &&
-                          formik.errors.email &&
-                          "border-red-500"
-                      )}
-                      value={formik.values.email}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {/* Envelope icon */}
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </span>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter your email address"
+                        className={cn(
+                          "pl-10",
+                          formik.touched.email &&
+                            formik.errors.email &&
+                            "border-red-500"
+                        )}
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        aria-describedby={
+                          formik.touched.email && formik.errors.email
+                            ? "email-error"
+                            : undefined
+                        }
+                        aria-invalid={
+                          formik.touched.email && formik.errors.email
+                            ? "true"
+                            : "false"
+                        }
+                      />
+                    </div>
                     <ErrorMessage
                       error={
                         formik.touched.email && formik.errors.email ? (
@@ -526,20 +554,28 @@ export function SignUpForm({ className, ...props }) {
                     <Label htmlFor="phone" className="font-semibold">
                       Phone Number <span className="text-red-500">*</span>
                     </Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      placeholder="Enter your phone number"
-                      className={cn(
-                        "rounded-lg border-2 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] transition-all h-10",
-                        formik.touched.phone &&
-                          formik.errors.phone &&
-                          "border-red-500"
-                      )}
-                      value={formik.values.phone}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {/* Phone icon */}
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                      </span>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        className={cn(
+                          "pl-10",
+                          formik.touched.phone &&
+                            formik.errors.phone &&
+                            "border-red-500"
+                        )}
+                        value={formik.values.phone}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                    </div>
                     <ErrorMessage
                       error={
                         formik.touched.phone && formik.errors.phone ? (
@@ -566,18 +602,12 @@ export function SignUpForm({ className, ...props }) {
                     />
                   </div>
 
+                  {/* Date of Birth (remove icon, keep wrapper and pl-10 for alignment if needed) */}
                   <div className="space-y-2">
                     <Label className="font-semibold">
                       Date of Birth <span className="text-red-500">*</span>
                     </Label>
-                    <div
-                      className={cn(
-                        "rounded-lg border-2 transition-all",
-                        formik.touched.dateOfBirth && formik.errors.dateOfBirth
-                          ? "border-red-500 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-500"
-                          : "border-gray-300 focus-within:border-[var(--primary)] focus-within:ring-2 focus-within:ring-[var(--primary)]"
-                      )}
-                    >
+                    <div>
                       <Calendar28
                         value={formik.values.dateOfBirth}
                         onChange={(date) => {
@@ -586,31 +616,6 @@ export function SignUpForm({ className, ...props }) {
                         }}
                       />
                     </div>
-                    <ErrorMessage
-                      error={
-                        formik.touched.dateOfBirth &&
-                        formik.errors.dateOfBirth ? (
-                          <span className="flex items-center gap-1 text-red-500 text-sm mt-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-4 w-4 flex-shrink-0"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              aria-hidden="true"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 9v2m0 4h.01M21 12A9 9 0 11 3 12a9 9 0 0118 0z"
-                              />
-                            </svg>
-                            {formik.errors.dateOfBirth}
-                          </span>
-                        ) : null
-                      }
-                    />
                   </div>
                 </div>
                 <div className="space-y-2 w-full">
@@ -692,21 +697,56 @@ export function SignUpForm({ className, ...props }) {
                     <Label htmlFor="password" className="font-semibold">
                       Password <span className="text-red-500">*</span>
                     </Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      placeholder="Create a strong password"
-                      className={cn(
-                        "rounded-lg border-2 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] transition-all h-10",
-                        formik.touched.password &&
-                          formik.errors.password &&
-                          "border-red-500"
-                      )}
-                      value={formik.values.password}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
+                    <div className="relative">
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                        {/* Lock icon */}
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <rect width="12" height="8" x="6" y="11" rx="2" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-4-6V9a4 4 0 118 0v2" />
+                        </svg>
+                      </span>
+                      <Input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Create a strong password"
+                        className={cn(
+                          "pl-10",
+                          formik.touched.password &&
+                            formik.errors.password &&
+                            "border-red-500"
+                        )}
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      <button
+                        type="button"
+                        className={cn(
+                          "absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded transition",
+                          showPassword
+                            ? "text-primary"
+                            : "text-gray-500"
+                        )}
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        tabIndex={-1}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? (
+                          // Eye-off (crossed) icon, outline style (Heroicons)
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-10.5-7.5a10.05 10.05 0 012.563-4.568m2.1-1.933A9.956 9.956 0 0112 5c5 0 9.27 3.11 10.5 7.5a9.956 9.956 0 01-4.198 5.568M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
+                          </svg>
+                        ) : (
+                          // Eye icon (outlined)
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                     <ErrorMessage
                       error={
                         formik.touched.password && formik.errors.password ? (
@@ -737,45 +777,80 @@ export function SignUpForm({ className, ...props }) {
                     <Label htmlFor="confirmPassword" className="font-semibold">
                       Confirm Password <span className="text-red-500">*</span>
                     </Label>
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      placeholder="Confirm your password"
-                      className={cn(
-                        "rounded-lg border-2 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] transition-all h-10",
-                        formik.touched.confirmPassword &&
-                          formik.errors.confirmPassword &&
-                          "border-red-500",
-                        formik.values.confirmPassword &&
-                          formik.values.password ===
-                            formik.values.confirmPassword
-                      )}
-                      value={formik.values.confirmPassword}
-                      onChange={(e) => {
-                        formik.handleChange(e);
-                        // Clear password match error when user starts typing
-                        if (
-                          formik.errors.confirmPassword &&
-                          e.target.value === formik.values.password
-                        ) {
-                          formik.setFieldError("confirmPassword", null);
+                    <div className="relative">
+                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                        {/* Lock icon */}
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <rect width="12" height="8" x="6" y="11" rx="2" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-4-6V9a4 4 0 118 0v2" />
+                        </svg>
+                      </span>
+                      <Input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Confirm your password"
+                        className={cn(
+                          "pl-10",
+                          formik.touched.confirmPassword &&
+                            formik.errors.confirmPassword &&
+                            "border-red-500",
+                          formik.values.confirmPassword &&
+                            formik.values.password ===
+                              formik.values.confirmPassword
+                        )}
+                        value={formik.values.confirmPassword}
+                        onChange={(e) => {
+                          formik.handleChange(e);
+                          // Clear password match error when user starts typing
+                          if (
+                            formik.errors.confirmPassword &&
+                            e.target.value === formik.values.password
+                          ) {
+                            formik.setFieldError("confirmPassword", null);
+                          }
+                        }}
+                        onBlur={formik.handleBlur}
+                        aria-describedby={
+                          formik.touched.confirmPassword &&
+                          formik.errors.confirmPassword
+                            ? "confirmPassword-error"
+                            : undefined
                         }
-                      }}
-                      onBlur={formik.handleBlur}
-                      aria-describedby={
-                        formik.touched.confirmPassword &&
-                        formik.errors.confirmPassword
-                          ? "confirmPassword-error"
-                          : undefined
-                      }
-                      aria-invalid={
-                        formik.touched.confirmPassword &&
-                        formik.errors.confirmPassword
-                          ? "true"
-                          : "false"
-                      }
-                    />
+                        aria-invalid={
+                          formik.touched.confirmPassword &&
+                          formik.errors.confirmPassword
+                            ? "true"
+                            : "false"
+                        }
+                      />
+                      <button
+                        type="button"
+                        className={cn(
+                          "absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded transition",
+                          showConfirmPassword
+                            ? "text-primary"
+                            : "text-gray-500"
+                        )}
+                        onClick={() => setShowConfirmPassword((prev) => !prev)}
+                        tabIndex={-1}
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      >
+                        {showConfirmPassword ? (
+                          // Eye-off (crossed) icon, outline style (Heroicons)
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-10.5-7.5a10.05 10.05 0 012.563-4.568m2.1-1.933A9.956 9.956 0 0112 5c5 0 9.27 3.11 10.5 7.5a9.956 9.956 0 01-4.198 5.568M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
+                          </svg>
+                        ) : (
+                          // Eye icon (outlined)
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                     {/* Password match indicator */}
 
                     <ErrorMessage
@@ -1160,21 +1235,30 @@ export function SignUpForm({ className, ...props }) {
                 <Label htmlFor="nationalId" className="font-semibold">
                   National ID Number <span className="text-red-500">*</span>
                 </Label>
-                <Input
-                  id="nationalId"
-                  name="nationalId"
-                  type="text"
-                  placeholder="Enter your 14-digit national ID"
-                  className={cn(
-                    "rounded-lg border-2 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] transition-all",
-                    formik.touched.nationalId &&
-                      formik.errors.nationalId &&
-                      "border-red-500"
-                  )}
-                  value={formik.values.nationalId}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                />
+                <div className="relative">
+                  <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
+                    {/* ID card icon */}
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <rect width="18" height="12" x="3" y="6" rx="2" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 10h.01M7 14h.01M11 10h6M11 14h6" />
+                    </svg>
+                  </span>
+                  <Input
+                    id="nationalId"
+                    name="nationalId"
+                    type="text"
+                    placeholder="Enter your 14-digit national ID"
+                    className={cn(
+                      "pl-10",
+                      formik.touched.nationalId &&
+                        formik.errors.nationalId &&
+                        "border-red-500"
+                    )}
+                    value={formik.values.nationalId}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                </div>
                 <ErrorMessage
                   error={
                     formik.touched.nationalId && formik.errors.nationalId ? (

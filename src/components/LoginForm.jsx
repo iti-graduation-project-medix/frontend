@@ -8,6 +8,7 @@ import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../store/useAuth";
 import { ErrorDisplay, ErrorMessage } from "@/components/ui/error-display";
+import { useState } from "react";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -21,6 +22,7 @@ const loginSchema = Yup.object().shape({
 export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();
   const { login, isLoading, error, clearError } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -49,75 +51,121 @@ export function LoginForm({ className, ...props }) {
             className="p-6 md:p-8 bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden"
           >
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-10" style={{ background: 'var(--primary)' }}></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-10" style={{ background: 'var(--primary)' }}></div>
+            <div
+              className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-10"
+              style={{ background: "var(--primary)" }}
+            ></div>
+            <div
+              className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-10"
+              style={{ background: "var(--primary)" }}
+            ></div>
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
+              <div className="flex flex-row items-center justify-center text-center gap-4 mb-2">
                 <img
-                  src="/logo.png"
+                  src="/logo.svg"
                   alt="Dawaback Logo"
-                  className="h-14 w-14 mb-1 mx-auto"
+                  className="h-14 w-14"
                 />
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-muted-foreground text-balance">
-                  Login to your Dawaback account
-                </p>
+                <div className="flex flex-col items-start">
+                  <h1 className="text-2xl font-bold">Welcome back</h1>
+                  <p className="text-muted-foreground text-balance -mt-1">
+                    Login to your Dawaback account
+                  </p>
+                </div>
               </div>
-              
+
               {/* Error Display */}
               <ErrorDisplay error={error} />
 
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.email}
-                  className={cn(
-                    formik.touched.email &&
-                      formik.errors.email &&
-                      "border-red-500"
-                  )}
-                />
-                <ErrorMessage error={formik.touched.email && formik.errors.email ? (
-                  <span className="flex items-center gap-1 text-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 11 3 12a9 9 0 0118 0z" />
+
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    {/* Envelope icon */}
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
-                    {formik.errors.email}
                   </span>
-                ) : null} />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Enter your email address"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.email}
+                    className={cn(
+                      "pl-10",
+                      formik.touched.email &&
+                        formik.errors.email &&
+                        "border-red-500"
+                    )}
+                  />
+                </div>
+                <ErrorMessage
+                  error={
+                    formik.touched.email && formik.errors.email ? (
+                      <span className="flex items-center gap-1 text-red-500">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 flex-shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 9v2m0 4h.01M21 12A9 9 0 11 3 12a9 9 0 0118 0z"
+                          />
+                        </svg>
+                        {formik.errors.email}
+                      </span>
+                    ) : null
+                  }
+                />
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Enter your password"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                  className={cn(
-                    formik.touched.password &&
-                      formik.errors.password &&
-                      "border-red-500"
-                  )}
+                <ErrorMessage
+                  error={
+                    formik.touched.password && formik.errors.password ? (
+                      <span className="flex items-center gap-1 text-red-500">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 flex-shrink-0"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          aria-hidden="true"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 9v2m0 4h.01M21 12A9 9 0 11 3 12a9 9 0 0118 0z"
+                          />
+                        </svg>
+                        {formik.errors.password}
+                      </span>
+                    ) : null
+                  }
                 />
-                <ErrorMessage error={formik.touched.password && formik.errors.password ? (
-                  <span className="flex items-center gap-1 text-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 11 3 12a9 9 0 0118 0z" />
-                    </svg>
-                    {formik.errors.password}
-                  </span>
-                ) : null} />
                 <div className="text-right text-sm">
-                  Forgot your password?{' '}
+                  Forgot your password?{" "}
                   <Link
                     to="/auth/reset-password"
                     className="font-semibold text-primary hover:text-primary-hover transition-colors duration-150 focus:outline-none  rounded underline-offset-2 hover:underline"
@@ -155,20 +203,25 @@ export function LoginForm({ className, ...props }) {
         </CardContent>
       </Card>
       <div className="text-muted-foreground text-center -mt-3 text-xs text-balance">
-        By clicking continue, you agree to our 
-        <a 
-          href="#" 
+        By clicking continue, you agree to our
+        <Link
+          to="/terms"
           className="font-bold text-primary hover:text-primary-hover underline-offset-2 hover:underline transition-colors duration-150"
         >
-           {" "}Terms of Service
-        </a>{" "}
-        and 
-        <a 
-          href="#" 
+          {" "}
+          Terms of Service
+
+        </Link>{" "}
+        and
+        <Link
+          to="/privacy"
           className="font-bold text-primary hover:text-primary-hover underline-offset-2 hover:underline transition-colors duration-150"
         >
-           {" "}Privacy Policy
-        </a>.
+          {" "}
+          Privacy Policy
+
+        </Link>
+        .
       </div>
     </div>
   );

@@ -168,7 +168,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
@@ -714,19 +714,102 @@ export default function Profile() {
                 {pharmacies.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     {/* SVG illustration for empty pharmacies */}
-                    <svg className="w-14 h-14 text-primary mb-2" fill="none" viewBox="0 0 48 48" stroke="currentColor">
-                      <rect x="8" y="20" width="32" height="20" rx="3" fill="currentColor" opacity="0.12"/>
-                      <rect x="8" y="20" width="32" height="20" rx="3" stroke="currentColor" strokeWidth="2"/>
-                      <rect x="18" y="30" width="12" height="10" rx="1" fill="currentColor" opacity="0.18"/>
-                      <rect x="18" y="30" width="12" height="10" rx="1" stroke="currentColor" strokeWidth="2"/>
-                      <rect x="22" y="34" width="4" height="2" rx="1" fill="white"/>
-                      <rect x="23" y="33" width="2" height="4" rx="1" fill="white"/>
-                      <rect x="20" y="10" width="8" height="8" rx="2" fill="currentColor" opacity="0.18"/>
-                      <rect x="20" y="10" width="8" height="8" rx="2" stroke="currentColor" strokeWidth="2"/>
-                      <rect x="23" y="13" width="2" height="4" rx="1" fill="white"/>
-                      <rect x="22" y="14" width="4" height="2" rx="1" fill="white"/>
+                    <svg
+                      className="w-14 h-14 text-primary mb-2"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      stroke="currentColor"
+                    >
+                      <rect
+                        x="8"
+                        y="20"
+                        width="32"
+                        height="20"
+                        rx="3"
+                        fill="currentColor"
+                        opacity="0.12"
+                      />
+                      <rect
+                        x="8"
+                        y="20"
+                        width="32"
+                        height="20"
+                        rx="3"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <rect
+                        x="18"
+                        y="30"
+                        width="12"
+                        height="10"
+                        rx="1"
+                        fill="currentColor"
+                        opacity="0.18"
+                      />
+                      <rect
+                        x="18"
+                        y="30"
+                        width="12"
+                        height="10"
+                        rx="1"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <rect
+                        x="22"
+                        y="34"
+                        width="4"
+                        height="2"
+                        rx="1"
+                        fill="white"
+                      />
+                      <rect
+                        x="23"
+                        y="33"
+                        width="2"
+                        height="4"
+                        rx="1"
+                        fill="white"
+                      />
+                      <rect
+                        x="20"
+                        y="10"
+                        width="8"
+                        height="8"
+                        rx="2"
+                        fill="currentColor"
+                        opacity="0.18"
+                      />
+                      <rect
+                        x="20"
+                        y="10"
+                        width="8"
+                        height="8"
+                        rx="2"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      />
+                      <rect
+                        x="23"
+                        y="13"
+                        width="2"
+                        height="4"
+                        rx="1"
+                        fill="white"
+                      />
+                      <rect
+                        x="22"
+                        y="14"
+                        width="4"
+                        height="2"
+                        rx="1"
+                        fill="white"
+                      />
                     </svg>
-                    <p className="text-gray-500 text-lg font-medium">No pharmacies found</p>
+                    <p className="text-gray-500 text-lg font-medium">
+                      No pharmacies found
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

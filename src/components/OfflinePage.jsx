@@ -26,10 +26,7 @@ const OfflinePage = () => {
     .animate-float {
       animation: float 6s ease-in-out infinite;
     }
-    @keyframes glow {
-      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
-      50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.6); }
-    }
+
     .animate-glow {
       animation: glow 3s ease-in-out infinite;
     }
@@ -60,19 +57,19 @@ const OfflinePage = () => {
   return (
     <>
       <style>{customStyles}</style>
-      <div className="min-h-screen flex items-center justify-center p-12  bg-transparent relative">
+      <div className="min-h-screen flex items-center justify-center p-12   relative">
         {/* Enhanced Background Layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 opacity-40"></div>
-        <div className="absolute inset-0 bg-gradient-to-tr from-cyan-50 via-blue-50 to-indigo-50 opacity-30 animate-pulse"></div>
+        <div className="absolute inset-0  "></div>
+        <div className="absolute inset-0 "></div>
 
         {/* Floating Background Elements */}
         <div className="absolute top-20 left-20 w-32 h-32 bg-gradient-to-r from-indigo-200/20 to-purple-200/20 rounded-full blur-2xl animate-float"></div>
         <div className="absolute bottom-20 right-20 w-40 h-40 bg-gradient-to-r from-pink-200/20 to-cyan-200/20 rounded-full blur-2xl animate-float delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-gradient-to-r from-blue-200/10 to-indigo-200/10 rounded-full blur-3xl animate-pulse"></div>
 
-        <div className="backdrop-blur-2xl bg-white/80 border border-indigo-100/60 rounded-3xl shadow-2xl max-w-5xl w-full flex flex-col md:flex-row overflow-hidden relative animate-glow">
+        <div className="backdrop-blur-2xl bg-white/80 border border-indigo-100/60 rounded-3xl  max-w-5xl w-full flex flex-col md:flex-row overflow-hidden relative animate-glow">
           {/* Shimmer Effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer pointer-events-none"></div>
+          <div className="absolute inset-0  pointer-events-none"></div>
           {/* Left: Icon, status, features */}
           <div className="flex flex-col items-center justify-center md:items-start md:justify-between md:w-1/2 bg-gradient-to-br from-gray-800/90 via-indigo-900/80 to-purple-900/90 relative text-center md:text-left overflow-hidden">
             {/* Additional Floating Elements for Left Section */}
@@ -93,7 +90,7 @@ const OfflinePage = () => {
                   🚫
                 </span>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">Offline Status</h3>
+              <h3 className="text-2xl font-bold text-white mb-4 ">Offline Status</h3>
               <ul className="space-y-3">
                 {features.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-3 text-white/90">
@@ -147,7 +144,7 @@ const OfflinePage = () => {
 
             {/* Content with enhanced styling */}
             <div className="relative z-10 p-12">
-              <h1 className="text-5xl font-extrabold text-gray-800 mb-8 text-center md:text-left drop-shadow">
+              <h1 className="text-5xl font-extrabold text-gray-800 mb-8 text-center md:text-left">
                 You're Offline
               </h1>
               <p className="text-gray-600 mb-8 leading-relaxed text-lg font-medium">
@@ -160,7 +157,7 @@ const OfflinePage = () => {
               <div className="flex flex-col gap-4 w-full md:w-auto items-center md:items-start">
                 <button
                   onClick={handleRetry}
-                  className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer relative overflow-hidden group animate-glow"
+                  className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-8 py-3 rounded-full font-bold  hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 cursor-pointer relative overflow-hidden group animate-glow"
                   disabled={loading}
                   style={{ background: "linear-gradient(135deg, #636ae8 0%, #764ba2 100%)" }}
                 >
@@ -188,7 +185,7 @@ const OfflinePage = () => {
                   {loading ? "Checking..." : "Retry Connection"}
                 </button>
 
-                <div className="mt-4 px-10 py-2 rounded-full text-base font-semibold shadow-lg bg-gradient-to-r from-red-100 via-pink-100 to-red-100 text-red-600 w-auto flex items-center justify-center border border-red-200/50 backdrop-blur-sm relative overflow-hidden group">
+                <div className="mt-4 px-10 py-2 rounded-full text-base font-semibold  bg-gradient-to-r from-red-100 via-pink-100 to-red-100 text-red-600 w-auto flex items-center justify-center border border-red-200/50 backdrop-blur-sm relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                   🚫 Page Unavailable
                 </div>

@@ -1,25 +1,19 @@
-// API utility to fetch all ads
-import axios from "axios";
+import api from "./axios.js";
 
+// API utility to fetch all ads
 export async function getAllAds() {
-  const token = localStorage.getItem("token");
-  const headers = {};
-  if (token) {
-    headers["Authorization"] = `Bearer ${JSON.parse(token)}`;
-  }
-  const res = await axios.get(
-    "https://backend.dawaback.com/api/v1/advertisement",
-    {
-      headers,
+  try {
+    const response = await api.get("/advertisement");
+    if (
+      response.data &&
+      response.data.success &&
+      response.data.data &&
+      Array.isArray(response.data.data.ads)
+    ) {
+      return response.data.data.ads;
     }
-  );
-  if (
-    res.data &&
-    res.data.success &&
-    res.data.data &&
-    Array.isArray(res.data.data.ads)
-  ) {
-    return res.data.data.ads;
+    throw new Error(response.data?.message || "Failed to fetch ads");
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch ads");
   }
-  throw new Error(res.data?.message || "Failed to fetch ads");
 }

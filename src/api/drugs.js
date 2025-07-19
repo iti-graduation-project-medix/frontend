@@ -1,6 +1,4 @@
-import axios from "axios";
-
-const BASE_URL = "https://backend.dawaback.com";
+import api from "./axios.js";
 
 /**
  * Fetch drug names from the backend with search functionality
@@ -24,7 +22,7 @@ export const fetchDrugs = async (token, options = {}) => {
       params.search = search.trim();
     }
 
-    const response = await axios.get(`${BASE_URL}/api/v1/drug-details`, {
+    const response = await api.get("/drug-details", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -47,16 +45,11 @@ export const fetchDrugs = async (token, options = {}) => {
  */
 export const createDrugAlert = async (token, alertData) => {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/api/v1/drug-alert`,
-      alertData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await api.post("/drug-alert", alertData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return response.data;
   } catch (error) {

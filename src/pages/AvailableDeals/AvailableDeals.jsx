@@ -38,6 +38,7 @@ import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Card } from "@/components/ui/card";
+import { DrugAlert } from "@/components/DrugAlert";
 
 export default function AvailableDeals() {
   // State for all filters
@@ -828,6 +829,7 @@ export default function AvailableDeals() {
           location
         </div>
       )}
+      <DrugAlert />
     </div>
   );
 }

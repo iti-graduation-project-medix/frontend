@@ -44,8 +44,6 @@ export default function Navbar() {
 
   const location = useLocation();
 
-  const location = useLocation();
-
   useEffect(() => {
     if (user && token) {
       // Ensure we always pass the user id, not the whole object

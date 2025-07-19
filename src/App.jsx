@@ -14,17 +14,8 @@ export default function App() {
     initializeStores();
   }, []);
 
-  // Allow home page to show in offline mode
-  if (isOffline && currentPath !== "/") {
-    return (
-      <>
-        <OfflinePage />
-        <InstallApp />
-      </>
-    );
-  }
 
-  if (isOffline && currentPath == "/") {
+  if (isOffline && currentPath === "/") {
     return (
       <>
         <MainLayout />
@@ -32,14 +23,14 @@ export default function App() {
       </>
     );
   }
-  if (isOffline && currentPath !== "/deals") {
-    return <OfflinePage />;
-  }
-  if (isOffline && currentPath !== "/deals/:id") {
-    return <OfflinePage />;
-  }
-  if (isOffline && currentPath !== "/profile") {
-    return <OfflinePage />;
+
+  if (isOffline && currentPath !== "/") {
+    return (
+      <>
+        <OfflinePage />
+        <InstallApp />
+      </>
+    );
   }
 
   return (

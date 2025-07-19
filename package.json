@@ -1,14 +1,27 @@
 {
-  "name": "medix",
+  "name": "dawaback-pwa",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Trusted platform for buying and selling pharmacies and medicines with PWA and cache support",
+  "keywords": [
+    "pwa",
+    "react",
+    "pharmacy",
+    "medicine",
+    "arabic",
+    "offline"
+  ],
+  "author": "dawaback",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "npm run dev"
+    "start": "npm run dev",
+    "analyze": "vite build --mode analyze",
+    "test": "vitest"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -68,6 +81,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^24.0.3",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
@@ -76,8 +91,29 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "jsdom": "^26.1.0",
     "tw-animate-css": "^1.3.4",
     "vite": "^6.3.5",
-    "vite-plugin-pwa": "^1.0.1"
-  }
+    "vite-plugin-pwa": "^1.0.1",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintIgnore": [
+    "dev-dist/"
+  ]
 }

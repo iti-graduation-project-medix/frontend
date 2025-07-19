@@ -14,11 +14,7 @@ import {
   Lock,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "../../components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "../../components/ui/avatar";
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -76,19 +72,14 @@ export default function Chat() {
     if (chats && chats.length > 0) {
       for (const chat of chats) {
         const prev = prevUnreadCountsRef.current[chat.roomId] || 0;
-        if (
-          chat.unreadCount > prev &&
-          (!activeChat || chat.roomId !== activeChat.roomId)
-        ) {
+        if (chat.unreadCount > prev && (!activeChat || chat.roomId !== activeChat.roomId)) {
           const audio = new window.Audio("/new-notification-07-210334.mp3");
           audio.play();
           break; // Only play once per update
         }
       }
       // Update ref after check
-      prevUnreadCountsRef.current = Object.fromEntries(
-        chats.map((c) => [c.roomId, c.unreadCount])
-      );
+      prevUnreadCountsRef.current = Object.fromEntries(chats.map((c) => [c.roomId, c.unreadCount]));
     }
   }, [chats, activeChat?.roomId]);
 
@@ -240,9 +231,7 @@ export default function Chat() {
                   return (
                     <div
                       key={i}
-                      className={`flex ${
-                        isSent ? "justify-end" : "justify-start"
-                      } w-full relative`}
+                      className={`flex ${isSent ? "justify-end" : "justify-start"} w-full relative`}
                       style={{ top: i * 2 }}
                     >
                       <div
@@ -310,9 +299,7 @@ export default function Chat() {
                       onClick={() => handleChatSelect(chat)}
                       className="group cursor-pointer transform hover:scale-[1.02] transition-all duration-300"
                       style={{
-                        animation: `slideInUp 0.5s ease-out ${
-                          index * 0.1
-                        }s both`,
+                        animation: `slideInUp 0.5s ease-out ${index * 0.1}s both`,
                       }}
                     >
                       <div className="relative">
@@ -336,9 +323,7 @@ export default function Chat() {
                               {/* Online status */}
                               <div
                                 className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-lg ${
-                                  chat.otherUser?.isOnline
-                                    ? "bg-green-500"
-                                    : "bg-gray-300"
+                                  chat.otherUser?.isOnline ? "bg-green-500" : "bg-gray-300"
                                 }`}
                               >
                                 {chat.otherUser?.isOnline && (
@@ -352,9 +337,7 @@ export default function Chat() {
                                 <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300">
                                   {chat.otherUser?.fullName || "Unknown User"}
                                 </h3>
-                                <span className="text-xs text-muted-foreground">
-                                  {lastMsgTime}
-                                </span>
+                                <span className="text-xs text-muted-foreground">{lastMsgTime}</span>
                               </div>
                               <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
@@ -395,12 +378,9 @@ export default function Chat() {
                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <MessagesSquare className="h-9 w-9 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No conversations yet
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No conversations yet</h3>
                 <p className="text-gray-500 mb-4">
-                  Start a chat by clicking "Chat with me" on any deal or
-                  pharmacy listing
+                  Start a chat by clicking "Chat with me" on any deal or pharmacy listing
                 </p>
               </div>
             )}
@@ -490,14 +470,10 @@ export default function Chat() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-foreground">
-                      {activeChat.deal.medicineName ||
-                        activeChat.deal.title ||
-                        "Deal"}
+                      {activeChat.deal.medicineName || activeChat.deal.title || "Deal"}
                     </h4>
                     {activeChat.deal.price && (
-                      <p className="text-sm text-primary">
-                        ${activeChat.deal.price}
-                      </p>
+                      <p className="text-sm text-primary">${activeChat.deal.price}</p>
                     )}
                   </div>
                   <Link
@@ -516,10 +492,7 @@ export default function Chat() {
             <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1">
               <ChatMessageList className="h-full" ref={messageListRef}>
                 {currentMessages.map((msg) => (
-                  <ChatBubble
-                    key={msg.id}
-                    variant={msg.isOwn ? "sent" : "received"}
-                  >
+                  <ChatBubble key={msg.id} variant={msg.isOwn ? "sent" : "received"}>
                     {!msg.isOwn && (
                       <ChatBubbleAvatar
                         src={msg.avatar}
@@ -544,12 +517,8 @@ export default function Chat() {
                       <ChatBubbleTimestamp timestamp={msg.timestamp} />
                       {msg.isOwn && (
                         <div className="flex items-center">
-                          {msg.status === "sent" && (
-                            <Check className="w-3 h-3 text-gray-400" />
-                          )}
-                          {msg.status === "read" && (
-                            <CheckCheck className="w-3 h-3 text-primary" />
-                          )}
+                          {msg.status === "sent" && <Check className="w-3 h-3 text-gray-400" />}
+                          {msg.status === "read" && <CheckCheck className="w-3 h-3 text-primary" />}
                         </div>
                       )}
                     </div>
@@ -673,9 +642,7 @@ export default function Chat() {
         </motion.button>
       </div>
       {/* Main chat content */}
-      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">
-        {chatContent}
-      </div>
+      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">{chatContent}</div>
     </motion.div>
   );
 

@@ -72,7 +72,7 @@ const Pricing2 = ({
   // Function to handle payment completion redirect
   const handlePaymentRedirect = (isSuccess, queryParams = '') => {
     setPaymentStatus(null);
-    
+
     // Redirect to appropriate page
     const baseUrl = window.location.origin;
     if (isSuccess) {
@@ -114,11 +114,11 @@ const Pricing2 = ({
     const failed = urlParams.get('failed');
     const status = urlParams.get('status');
     const result = urlParams.get('result');
-    
+
     // Check various possible success/failure indicators
     const isSuccess = success === 'true' || status === 'success' || result === 'success';
     const isFailed = failed === 'true' || status === 'failed' || result === 'failed' || status === 'error';
-    
+
     if (isSuccess || isFailed) {
       // Use the redirect function to handle the completion
       handlePaymentRedirect(isSuccess, window.location.search);

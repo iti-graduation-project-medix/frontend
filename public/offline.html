@@ -190,12 +190,12 @@
         <p>It looks like you've lost your internet connection. Don't worry, you can still access the home page and some
             basic features.</p>
 
-        <button class="retry-btn" onclick="checkConnection()">
+        <button class="retry-btn" onclick="checkConnection()" type="button">
             <span>Retry Connection</span>
-            <div class="loading spinner"></div>
         </button>
+        <div class="loading spinner"></div>
 
-        <button class="home-btn" onclick="goHome()">
+        <button class="home-btn" onclick="goHome()" type="button">
             <span>Go to Home Page</span>
         </button>
 
@@ -214,62 +214,89 @@
 
     <script>
         function checkConnection() {
-            const btn = document.querySelector('.retry-btn');
-            const loading = document.querySelector('.loading');
-            const status = document.getElementById('status');
+            const btn=document.querySelector('.retry-btn');
+            const loading=document.querySelector('.loading');
+            const status=document.getElementById('status');
 
             // Show loading state
-            loading.style.display = 'block';
-            btn.disabled = true;
+            loading.style.display='block';
+            btn.disabled=true;
 
             // Check if we're back online
-            if (navigator.onLine) {
-                status.textContent = 'Online! Redirecting...';
-                status.className = 'status online';
+            if(navigator.onLine) {
+                status.textContent='Online! Redirecting...';
+                status.className='status online';
 
                 // Redirect to home page after a short delay
                 setTimeout(() => {
-                    window.location.href = '/';
-                }, 1500);
+                    window.location.href='/';
+                },1500);
             } else {
                 // Still offline
                 setTimeout(() => {
-                    loading.style.display = 'none';
-                    btn.disabled = false;
-                    status.textContent = 'Still offline. Please check your connection.';
-                    status.className = 'status offline';
-                }, 2000);
+                    loading.style.display='none';
+                    btn.disabled=false;
+                    status.textContent='Still offline. Please check your connection.';
+                    status.className='status offline';
+                },2000);
             }
         }
 
         function goHome() {
-            window.location.href = '/';
+            window.location.href='/';
         }
 
         // Listen for online/offline events
-        window.addEventListener('online', () => {
-            const status = document.getElementById('status');
-            status.textContent = 'Back online!';
-            status.className = 'status online';
+        window.addEventListener('online',() => {
+            const status=document.getElementById('status');
+            status.textContent='Back online!';
+            status.className='status online';
 
             setTimeout(() => {
-                window.location.href = '/';
-            }, 1000);
+                window.location.href='/';
+            },1000);
         });
 
-        window.addEventListener('offline', () => {
-            const status = document.getElementById('status');
-            status.textContent = 'Offline';
-            status.className = 'status offline';
+        window.addEventListener('offline',() => {
+            const status=document.getElementById('status');
+            status.textContent='Offline';
+            status.className='status offline';
         });
 
         // Check initial connection status
-        if (navigator.onLine) {
-            document.getElementById('status').textContent = 'Online';
-            document.getElementById('status').className = 'status online';
+        if(navigator.onLine) {
+            document.getElementById('status').textContent='Online';
+            document.getElementById('status').className='status online';
         } else {
-            document.getElementById('status').className = 'status offline';
+            document.getElementById('status').className='status offline';
         }
+
+        // Try to redirect to / if the app shell is available in the cache
+        if('serviceWorker' in navigator&&window.caches) {
+            window.addEventListener('load',async () => {
+                try {
+                    const cacheNames=await caches.keys();
+                    let found=false;
+                    for(const name of cacheNames) {
+                        const cache=await caches.open(name);
+                        const match=await cache.match('/');
+                        if(match) {
+                            found=true;
+                            break;
+                        }
+                    }
+                    if(found) {
+                        window.location.href='/';
+                    }
+                } catch(e) {
+                    // Ignore errors, show offline page
+                }
+            });
+        }
+
+        window.addEventListener('online',function() {
+            window.location.reload();
+        });
     </script>
 </body>
 

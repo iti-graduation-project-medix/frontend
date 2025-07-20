@@ -17,12 +17,22 @@ import { Badge } from "@/components/ui/badge";
 import useChat from "../../store/useChat";
 import { useOffline } from "../../hooks/useOffline";
 import { useFav } from "../../store/useFav";
+import {
+  listenToDrugAlerts,
+  removeDrugAlertListener,
+  getSocket,
+} from "../../services/socket";
+import drugAlertService from "../../services/drugAlert";
 
 export default function Navbar() {
   const isOffline = useOffline();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isNotificationPopoverOpen, setIsNotificationPopoverOpen] =
+    useState(false);
+  const [drugAlertNotifications, setDrugAlertNotifications] = useState([]);
+  const [unreadDrugAlerts, setUnreadDrugAlerts] = useState(0);
   const { user, isAuthenticated, logout, initializeAuth, token } = useAuth();
   const userMenuRef = useRef(null);
   const userButtonRef = useRef(null);
@@ -77,6 +87,119 @@ export default function Navbar() {
     }
   }, [isAuthenticated, fetchFavorites]);
 
+  // Handle drug alert notifications
+  useEffect(() => {
+    if (isAuthenticated && token && user?.id) {
+      // Load existing notifications
+      const loadDrugAlertNotifications = async () => {
+        try {
+          const notifications =
+            await drugAlertService.getDrugAlertNotifications();
+          setDrugAlertNotifications(notifications);
+
+          // Calculate unread count from loaded notifications
+          const unreadCount = notifications.filter((n) => !n.isRead).length;
+          setUnreadDrugAlerts(unreadCount);
+        } catch (error) {
+          console.error("Error loading drug alert notifications:", error);
+          // Don't clear notifications on auth error, just log it
+          if (!error.message.includes("Authentication required")) {
+            setDrugAlertNotifications([]);
+            setUnreadDrugAlerts(0);
+          }
+        }
+      };
+
+      loadDrugAlertNotifications();
+
+      // Setup WebSocket listener for real-time updates
+      const setupDrugAlertListener = () => {
+        const socket = getSocket();
+
+        if (socket?.connected) {
+          // Make sure user is in their personal room
+          if (user?.id) {
+            socket.emit("joinRoom", { roomId: user.id, userId: user.id });
+          }
+
+          listenToDrugAlerts(async (data) => {
+            // Check if this alert is for the current user
+            if (data.user?.id !== user?.id) {
+              return;
+            }
+
+            // Refresh notifications from API to get the complete data
+            try {
+              const notifications =
+                await drugAlertService.getDrugAlertNotifications();
+              setDrugAlertNotifications(notifications);
+
+              // Calculate unread count from fresh data
+              const unreadCount = notifications.filter((n) => !n.isRead).length;
+              setUnreadDrugAlerts(unreadCount);
+            } catch (error) {
+              console.error("Error refreshing notifications:", error);
+
+              // Fallback: create temporary notification
+              const newNotification = {
+                id: data.dealId || `temp-${Date.now()}`,
+                title: data.title,
+                message: data.message,
+                dealId: data.dealId,
+                isRead: false,
+                createdAt: new Date().toISOString(),
+                user: data.user,
+              };
+              setDrugAlertNotifications((prev) => {
+                const updatedNotifications = [newNotification, ...prev];
+                const newUnreadCount = updatedNotifications.filter(
+                  (n) => !n.isRead
+                ).length;
+                setUnreadDrugAlerts(newUnreadCount);
+                return updatedNotifications;
+              });
+            }
+          }, user?.id);
+        }
+      };
+
+      // Try to setup listener immediately
+      setupDrugAlertListener();
+
+      // Also setup listener when socket connects
+      const socket = getSocket();
+      if (socket) {
+        socket.on("connect", () => {
+          setupDrugAlertListener();
+        });
+      }
+
+      // Setup polling as fallback (every 30 seconds)
+      const pollingInterval = setInterval(async () => {
+        try {
+          const notifications =
+            await drugAlertService.getDrugAlertNotifications();
+          const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+          setDrugAlertNotifications(notifications);
+          setUnreadDrugAlerts(unreadCount);
+        } catch (error) {
+          console.error("Error polling notifications:", error);
+          // Don't clear notifications on auth error
+          if (error.message.includes("Authentication required")) {
+            // Stop polling if user is not authenticated
+            clearInterval(pollingInterval);
+          }
+        }
+      }, 30000); // 30 seconds
+
+      return () => {
+        removeDrugAlertListener();
+        clearInterval(pollingInterval);
+      };
+    }
+  }, [isAuthenticated, token, user?.id]);
+
   // Handle clicking outside dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -105,6 +228,62 @@ export default function Navbar() {
 
   const handleMenuClick = () => {
     setIsUserMenuOpen(false);
+  };
+
+  const handleMarkNotificationAsRead = async (notificationId) => {
+    try {
+      // Only call API if it's a real notification (not temp ID)
+      if (!notificationId.startsWith("temp-")) {
+        await drugAlertService.markAsRead(notificationId);
+      }
+
+      // Update local state immediately for better UX
+      setDrugAlertNotifications((prev) => {
+        const updatedNotifications = prev.map((notification) =>
+          notification.id === notificationId
+            ? { ...notification, isRead: true }
+            : notification
+        );
+        // Update unread count based on all notifications
+        const newUnreadCount = updatedNotifications.filter(
+          (n) => !n.isRead
+        ).length;
+        setUnreadDrugAlerts(newUnreadCount);
+        return updatedNotifications;
+      });
+
+      // Refresh from API to ensure consistency
+      setTimeout(async () => {
+        try {
+          const notifications =
+            await drugAlertService.getDrugAlertNotifications();
+          setDrugAlertNotifications(notifications);
+          const unreadCount = notifications.filter((n) => !n.isRead).length;
+          setUnreadDrugAlerts(unreadCount);
+        } catch (error) {
+          console.error(
+            "Error refreshing notifications after mark as read:",
+            error
+          );
+        }
+      }, 500);
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  const handleNotificationClick = (notification) => {
+    handleMarkNotificationAsRead(notification.id);
+
+    // Close the popover
+    setIsNotificationPopoverOpen(false);
+
+    // Navigate to deal details if available
+    if (notification.dealId) {
+      setTimeout(() => {
+        navigate(`/deals/${notification.dealId}`);
+      }, 100);
+    }
   };
 
   const mobileMenuVariants = {
@@ -154,11 +333,7 @@ export default function Navbar() {
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none"
         >
-          <img
-            src="/logo.svg"
-            className="h-15"
-            alt="Dawaback Logo"
-          />
+          <img src="/logo.svg" className="h-15" alt="Dawaback Logo" />
           <div className="flex flex-col mb-3">
             <span className="font-bold  text-4xl  whitespace-nowrap text-primary dark:text-white">
               Dawaback
@@ -171,46 +346,68 @@ export default function Navbar() {
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {isAuthenticated ? (
             <>
-              <Popover>
+              <Popover
+                open={isNotificationPopoverOpen}
+                onOpenChange={setIsNotificationPopoverOpen}
+              >
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="mr-2 hidden md:inline-flex"
+                    className="mr-2 hidden md:inline-flex relative"
                     style={{ width: 46, height: 46 }}
                   >
                     <FiBell
                       className="text-zinc-600"
                       style={{ width: 30, height: 30 }}
                     />
+                    {unreadDrugAlerts > 0 && (
+                      <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[20px] h-[20px] flex items-center justify-center">
+                        {unreadDrugAlerts}
+                      </Badge>
+                    )}
                     <span className="sr-only">Notifications</span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="end" className="w-80 p-0">
                   <div className="p-4 border-b font-semibold text-base">
-                    Notifications
+                    Drug Alert Notifications
                   </div>
-                  <ul className="divide-y">
-                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
-                      <span className="font-medium">Welcome!</span> This is a
-                      demo notification.
-                    </li>
-                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
-                      <span className="font-medium">System:</span> Your profile
-                      was updated successfully.
-                    </li>
-                    <li className="p-4 hover:bg-muted cursor-pointer text-sm">
-                      <span className="font-medium">Reminder:</span> Check your
-                      messages for new offers.
-                    </li>
-                  </ul>
-                  <div className="p-2 text-center border-t">
-                    <Link
-                      to="/notifications"
-                      className="text-primary text-sm hover:underline"
-                    >
-                      View all notifications
-                    </Link>
-                  </div>
+                  {drugAlertNotifications.length > 0 ? (
+                    <ul className="divide-y max-h-96 overflow-y-auto">
+                      {drugAlertNotifications.map((notification) => (
+                        <li
+                          key={notification.id}
+                          className={`p-4 hover:bg-muted cursor-pointer text-sm ${
+                            !notification.isRead ? "bg-blue-50" : ""
+                          }`}
+                          onClick={() => handleNotificationClick(notification)}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <span className="font-medium">
+                                {notification.title}
+                              </span>
+                              <p className="text-gray-600 mt-1">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {new Date(
+                                  notification.createdAt
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                            {!notification.isRead && (
+                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      No drug alert notifications
+                    </div>
+                  )}
                 </PopoverContent>
               </Popover>
 
@@ -279,7 +476,8 @@ export default function Navbar() {
                             to="/me"
                             onClick={handleMenuClick}
                             className={`flex items-center gap-2 px-4 py-2 text-sm ${
-                              location.pathname === "/me" || location.pathname.startsWith("/me/")
+                              location.pathname === "/me" ||
+                              location.pathname.startsWith("/me/")
                                 ? "bg-primary text-white"
                                 : "text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                             }`}
@@ -403,7 +601,11 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/"
-                    className={location.pathname === "/" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                    className={
+                      location.pathname === "/"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }
                     aria-current="page"
                   >
                     Home
@@ -412,7 +614,11 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/advertise"
-                    className={location.pathname === "/advertise" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                    className={
+                      location.pathname === "/advertise"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }
                   >
                     Advertise
                   </Link>
@@ -420,7 +626,11 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/contact"
-                    className={location.pathname === "/contact" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                    className={
+                      location.pathname === "/contact"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }
                   >
                     Contact
                   </Link>
@@ -430,12 +640,27 @@ export default function Navbar() {
                   <li>
                     <Link
                       to="/notifications"
-                      className={location.pathname === "/notifications" ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                      className={
+                        location.pathname === "/notifications"
+                          ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                          : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                      }
                     >
                       <span>Notifications</span>
-                      <FiBell className={location.pathname === "/notifications" ? "text-white w-5 h-5" : "w-5 h-5 text-zinc-600"} />
-                      {/* Add a badge here if you have a notifications count */}
-                      {/* <Badge className="ml-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">0</Badge> */}
+                      <span className="relative">
+                        <FiBell
+                          className={
+                            location.pathname === "/notifications"
+                              ? "text-white w-5 h-5"
+                              : "w-5 h-5 text-zinc-600"
+                          }
+                        />
+                        {unreadDrugAlerts > 0 && (
+                          <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
+                            {unreadDrugAlerts}
+                          </Badge>
+                        )}
+                      </span>
                     </Link>
                   </li>
                 )}
@@ -444,12 +669,23 @@ export default function Navbar() {
                   <li>
                     <Link
                       to="/favorites"
-                      className={location.pathname === "/favorites" ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                      className={
+                        location.pathname === "/favorites"
+                          ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                          : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                      }
                     >
                       <span>Favorites</span>
                       <span className="relative">
-                        <Heart className={location.pathname === "/favorites" ? "text-white w-5 h-5" : "w-5 h-5 text-zinc-600"}  />
-                        {(favorites.deals.length + favorites.pharmacies.length > 0) && (
+                        <Heart
+                          className={
+                            location.pathname === "/favorites"
+                              ? "text-white w-5 h-5"
+                              : "w-5 h-5 text-zinc-600"
+                          }
+                        />
+                        {favorites.deals.length + favorites.pharmacies.length >
+                          0 && (
                           <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
                             {favorites.deals.length +
                               favorites.pharmacies.length}
@@ -495,7 +731,11 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/"
-                    className={location.pathname === "/" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                    className={
+                      location.pathname === "/"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }
                     aria-current="page"
                   >
                     Home
@@ -504,7 +744,11 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/advertise"
-                    className={location.pathname === "/advertise" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                    className={
+                      location.pathname === "/advertise"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }
                   >
                     Advertise
                   </Link>
@@ -512,7 +756,11 @@ export default function Navbar() {
                 <li>
                   <Link
                     to="/contact"
-                    className={location.pathname === "/contact" ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500" : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"}
+                    className={
+                      location.pathname === "/contact"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                    }
                   >
                     Contact
                   </Link>

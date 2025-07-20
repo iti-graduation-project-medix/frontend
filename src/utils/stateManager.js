@@ -8,8 +8,6 @@ export const initializeStores = () => {
     // The stores will automatically rehydrate from localStorage
     // when they are first accessed, thanks to the persist middleware
 
-    console.log('Initializing stores...');
-
     // You can add any additional initialization logic here
     // For example, checking if user is authenticated and loading user-specific data
 
@@ -17,9 +15,9 @@ export const initializeStores = () => {
     const user = localStorage.getItem('user');
 
     if (token && user) {
-        console.log('User is authenticated, stores will rehydrate automatically');
+        // User is authenticated, stores will rehydrate automatically
     } else {
-        console.log('No authentication found, clearing persisted state');
+        // No authentication found, clearing persisted state
         clearAllStores();
     }
 };
@@ -43,7 +41,7 @@ export const clearAllStores = () => {
         localStorage.removeItem(key);
     });
 
-    console.log('All store data cleared');
+    // All store data cleared
 };
 
 /**

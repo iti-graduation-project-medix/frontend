@@ -42,10 +42,11 @@ export default defineConfig({
         enabled: true,
         type: "classic"
       },
-      workbox: {
-        clientsClaim: true,
-        skipWaiting: true,
-        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // Allow up to 6 MB for large font files
+              workbox: {
+          clientsClaim: true,
+          skipWaiting: true,
+          maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // Allow up to 6 MB for large font files
+          disableDevLogs: true, // Disable Workbox console logs
         globPatterns: ["**/*.{js,jsx,css,ico,png,svg,webmanifest,html,webp,ttf}", "manifest.json", "favicon.ico", "index.html", "imgs/*", "avatars/*"],
         additionalManifestEntries: [
           { url: '/', revision: null },
@@ -124,7 +125,6 @@ export default defineConfig({
               }
             }
           },
-
           {
             urlPattern: /\/src\/main\.jsx$/,
             handler: "CacheFirst",
@@ -205,8 +205,7 @@ export default defineConfig({
         ]
       },
       injectRegister: "auto",
-      strategy: "generateSW", // Fixed typo: strategies -> strategy
-      // srcDir and outDir are not valid for VitePWA, removed
+      strategy: "generateSW",
     })
   ],
   resolve: {
@@ -233,12 +232,4 @@ export default defineConfig({
       }
     }
   },
-  //test: {
-  //  environment: 'jsdom',
-  //  globals: true,
-  //  setupFiles: './src/setupTests.js',
-  //  coverage: {
-  //    reporter: ['text', 'json', 'html'],
-  //  },
-  //},
 });

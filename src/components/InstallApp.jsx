@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { FiDownload } from "react-icons/fi";
 
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 const InstallApp = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);

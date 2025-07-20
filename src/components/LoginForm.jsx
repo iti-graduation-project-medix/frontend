@@ -91,6 +91,7 @@ export function LoginForm({ className, ...props }) {
                     </svg>
                   </span>
                   <Input
+                    autoComplete="email"
                     id="email"
                     name="email"
                     type="email"
@@ -137,6 +138,7 @@ export function LoginForm({ className, ...props }) {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.password}
+                    autoComplete="current-password"
                     className={cn(
                       "pl-10",
                       formik.touched.password && formik.errors.password && "border-red-500"

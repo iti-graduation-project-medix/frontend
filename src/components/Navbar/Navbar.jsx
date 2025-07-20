@@ -39,7 +39,7 @@ export default function Navbar() {
   const { favorites, fetchFavorites } = useFav();
 
   const navigate = useNavigate();
-  const MotionLink = motion(Link);
+  const MotionLink = motion.create(Link);
   const {
     pharmacistDetails,
     isLoading,

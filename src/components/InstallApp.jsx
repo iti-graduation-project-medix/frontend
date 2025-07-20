@@ -60,7 +60,7 @@ const InstallApp = () => {
       try {
         await navigator.share({
           title: 'Dawaback App',
-          text: 'Install Dawaback - Trusted Pharmacy Platform',
+          text: 'Install Dawaback - Before it expires, trade it with desire',
           url: window.location.href,
         });
       } catch (error) {

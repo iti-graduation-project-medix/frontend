@@ -333,12 +333,12 @@ export default function Navbar() {
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none"
         >
-          <img src="/logo.svg" className="h-15" alt="Dawaback Logo" />
+          <img src="/logo.svg" className="h-8 sm:h-10 md:h-12 lg:h-15" alt="Dawaback Logo" />
           <div className="flex flex-col mb-3">
-            <span className="font-bold  text-4xl  whitespace-nowrap text-primary dark:text-white">
+            <span className="font-bold text-2xl sm:text-3xl md:text-4xl whitespace-nowrap text-primary dark:text-white">
               Dawaback
             </span>
-            <p className="text-sm text-zinc-700 ms-.5  leading-0 mt-1 dark:text-gray-400">
+            <p className="text-xs sm:text-sm text-zinc-700 ms-.5 leading-0 mt-1 dark:text-gray-400">
               Before it expires, trade it with desire
             </p>
           </div>
@@ -354,11 +354,11 @@ export default function Navbar() {
                   <Button
                     variant="ghost"
                     className="mr-2 hidden md:inline-flex relative"
-                    style={{ width: 46, height: 46 }}
+                    style={{ width: "clamp(36px, 8vw, 46px)", height: "clamp(36px, 8vw, 46px)" }}
                   >
                     <FiBell
                       className="text-zinc-600"
-                      style={{ width: 30, height: 30 }}
+                      style={{ width: "clamp(24px, 6vw, 30px)", height: "clamp(24px, 6vw, 30px)" }}
                     />
                     {unreadDrugAlerts > 0 && (
                       <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[20px] h-[20px] flex items-center justify-center">
@@ -419,11 +419,11 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   className=""
-                  style={{ width: 46, height: 46 }}
+                  style={{ width: "clamp(36px, 8vw, 46px)", height: "clamp(36px, 8vw, 46px)" }}
                 >
                   <Heart
                     className="text-zinc-600"
-                    style={{ width: 30, height: 30 }}
+                    style={{ width: "clamp(24px, 6vw, 30px)", height: "clamp(24px, 6vw, 30px)" }}
                   />
                   <span className="sr-only">Favorites</span>
                 </Button>
@@ -439,14 +439,14 @@ export default function Navbar() {
                   ref={userButtonRef}
                   type="button"
                   className="flex items-center justify-center mr-2 text-xl bg-primary rounded-full md:me-0 focus:ring-4 focus:ring-primary/30 dark:focus:ring-primary/30 relative"
-                  style={{ width: 46, height: 46 }}
+                  style={{ width: "clamp(36px, 8vw, 46px)", height: "clamp(36px, 8vw, 46px)" }}
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   whileTap="tap"
                   whileHover="hover"
                   variants={buttonVariants}
                 >
                   <span className="sr-only">Open user menu</span>
-                  <Avatar className="w-10 h-10">
+                  <Avatar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10">
                     <AvatarFallback>
                       {getInitials(pharmacistDetails?.fullName || "User")}
                     </AvatarFallback>
@@ -563,7 +563,7 @@ export default function Navbar() {
           )}
           <motion.button
             type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 w-8 h-8 sm:w-10 sm:h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             animate={isMenuOpen ? "open" : "closed"}
             whileTap="tap"
@@ -572,7 +572,7 @@ export default function Navbar() {
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4 sm:w-5 sm:h-5"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

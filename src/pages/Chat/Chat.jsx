@@ -32,12 +32,13 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Chat() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState("list"); // 'list' or 'chat'
+  const [activeTab, setActiveTab] = useState("open"); // 'open' or 'closed'
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
   // Responsive widget size
   const widgetWidth = "w-full max-w-[400px]";
-  const widgetHeight = "h-[70vh] max-h-[600px]";
+  const widgetHeight = isMobile ? "h-screen" : "h-[70vh] max-h-[600px]";
 
   const { user, isAuthenticated } = useAuth();
   const {
@@ -55,6 +56,11 @@ export default function Chat() {
     clearError,
   } = useChat();
 
+  // Filter chats based on active tab
+  const openChats = chats.filter((chat) => !chat.isClosed);
+  const closedChats = chats.filter((chat) => chat.isClosed);
+  const currentChats = activeTab === "open" ? openChats : closedChats;
+
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const prevUnreadRef = useRef(unreadCount);
   const messageListRef = useRef();
@@ -66,6 +72,17 @@ export default function Chat() {
       setMode("list");
     }
   }, [isWidgetOpen]);
+
+  // Auto-switch to closed tab when a chat gets closed
+  useEffect(() => {
+    if (isRoomClosed && activeChat) {
+      // Switch to closed tab after a short delay to show the transition
+      const timer = setTimeout(() => {
+        setActiveTab("closed");
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isRoomClosed, activeChat]);
 
   useEffect(() => {
     // Only play sound if a room (not the active one) gets more unread
@@ -96,6 +113,19 @@ export default function Chat() {
       }
     }
   }, [isWidgetOpen, isRoomClosed, clearError]);
+
+  // Handle mobile viewport for chat widget
+  useEffect(() => {
+    if (isMobile && isWidgetOpen) {
+      // Set viewport height for mobile
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+      return () => {
+        document.documentElement.style.removeProperty("--vh");
+      };
+    }
+  }, [isMobile, isWidgetOpen]);
 
   const handleSendMessage = async () => {
     if (message.trim()) {
@@ -220,6 +250,34 @@ export default function Chat() {
     <div className="flex flex-col h-full w-full">
       {mode === "list" && (
         <div className="flex flex-col h-full w-full relative overflow-hidden">
+          {/* Tab Interface */}
+          <div className="flex items-center justify-center p-4 border-b border-border bg-gradient-to-r from-blue-50 to-indigo-50">
+            <div className="flex bg-white rounded-xl p-1 shadow-lg border border-border">
+              <button
+                onClick={() => setActiveTab("open")}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2 ${
+                  activeTab === "open"
+                    ? "bg-gradient-to-r from-primary to-primary-hover text-white shadow-md"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                Open Chats ({openChats.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("closed")}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center gap-2 ${
+                  activeTab === "closed"
+                    ? "bg-gradient-to-r from-primary to-primary-hover text-white shadow-md"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <div className="w-2 h-2 rounded-full bg-gray-400"></div>
+                Closed Chats ({closedChats.length})
+              </button>
+            </div>
+          </div>
+
           <div className="flex-1 overflow-y-auto px-4 py-4 relative z-10 custom-scrollbar">
             {loading ? (
               <div className="flex flex-col gap-2 px-2 pt-2 pb-1">
@@ -272,9 +330,9 @@ export default function Chat() {
                 }
               `}</style>
               </div>
-            ) : chats.length > 0 ? (
+            ) : currentChats.length > 0 ? (
               <div className="space-y-3">
-                {chats.map((chat, index) => {
+                {currentChats.map((chat, index) => {
                   // Format last message time
                   let lastMsgTime = "";
                   if (chat.lastMessage?.sentAt) {
@@ -306,11 +364,32 @@ export default function Chat() {
                         {/* Glow effect */}
                         <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/10 via-secondary/10 to-blue-100/10 opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
                         {/* Main chat item */}
-                        <div className="relative bg-gradient-to-br from-blue-100 via-indigo-100 to-blue-50 backdrop-blur-xl rounded-2xl p-4 border border-border group-hover:border-primary shadow-xl transition-all duration-300">
+                        <div
+                          className={`relative backdrop-blur-xl rounded-2xl p-4 border border-border shadow-xl transition-all duration-300 ${
+                            chat.isClosed
+                              ? "bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100"
+                              : "bg-gradient-to-br from-blue-100 via-indigo-100 to-blue-50 group-hover:border-primary"
+                          }`}
+                        >
+                          {/* Closed indicator */}
+                          {chat.isClosed && (
+                            <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-gray-200 rounded-full">
+                              <Lock className="w-3 h-3 text-gray-500" />
+                              <span className="text-xs text-gray-500 font-medium">
+                                Closed
+                              </span>
+                            </div>
+                          )}
                           <div className="flex items-center gap-3">
                             {/* Avatar with status */}
                             <div className="relative">
-                              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 p-0.5 shadow-lg">
+                              <div
+                                className={`w-12 h-12 rounded-2xl p-0.5 shadow-lg ${
+                                  chat.isClosed
+                                    ? "bg-gradient-to-br from-gray-200 to-gray-300"
+                                    : "bg-gradient-to-br from-blue-100 to-indigo-100"
+                                }`}
+                              >
                                 <div className="w-full h-full rounded-2xl bg-white flex items-center justify-center">
                                   <span className="text-primary font-bold text-lg">
                                     {chat.otherUser?.fullName
@@ -321,15 +400,20 @@ export default function Chat() {
                                 </div>
                               </div>
                               {/* Online status */}
-                              <div
-                                className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-lg ${
-                                  chat.otherUser?.isOnline ? "bg-green-500" : "bg-gray-300"
-                                }`}
-                              >
-                                {chat.otherUser?.isOnline && (
-                                  <div className="w-full h-full rounded-full bg-green-400 animate-pulse"></div>
-                                )}
-                              </div>
+                              {!chat.isClosed && (
+                                <div
+                                  className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white shadow-lg ${
+                                    chat.otherUser?.isOnline
+                                      ? "bg-green-500"
+                                      : "bg-gray-300"
+                                  }`}
+                                >
+                                  {chat.otherUser?.isOnline && (
+                                    <div className="w-full h-full rounded-full bg-green-400 animate-pulse"></div>
+                                  )}
+                                </div>
+                              )}
+
                             </div>
                             {/* Chat info */}
                             <div className="flex-1 min-w-0">
@@ -337,7 +421,12 @@ export default function Chat() {
                                 <h3 className="font-semibold text-foreground truncate group-hover:text-primary transition-colors duration-300">
                                   {chat.otherUser?.fullName || "Unknown User"}
                                 </h3>
-                                <span className="text-xs text-muted-foreground">{lastMsgTime}</span>
+                                {!chat.isClosed && (
+                                  <span className="text-xs text-muted-foreground">
+                                    {lastMsgTime}
+                                  </span>
+                                )}
+
                               </div>
                               <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
@@ -378,9 +467,16 @@ export default function Chat() {
                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <MessagesSquare className="h-9 w-9 text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No conversations yet</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {activeTab === "open"
+                    ? "No open conversations"
+                    : "No closed conversations"}
+                </h3>
                 <p className="text-gray-500 mb-4">
-                  Start a chat by clicking "Chat with me" on any deal or pharmacy listing
+                  {activeTab === "open"
+                    ? 'Start a chat by clicking "Chat with me" on any deal or pharmacy listing'
+                    : "Closed chats will appear here when deals or pharmacies are no longer available"}
+
                 </p>
               </div>
             )}
@@ -450,12 +546,14 @@ export default function Chat() {
                       </p>
                     )}
                   </div>
-                  <Link
-                    to={`/pharmacies/${activeChat.pharmacy.id}`}
-                    className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-xl font-semibold hover:from-primary-hover hover:to-primary transition-all duration-300"
-                  >
-                    View Pharmacy
-                  </Link>
+                  {!isRoomClosed && (
+                    <Link
+                      to={`/pharmacies/${activeChat.pharmacy.id}`}
+                      className="px-4 py-2 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-primary to-primary-hover text-white hover:from-primary-hover hover:to-primary"
+                    >
+                      View Pharmacy
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -476,12 +574,14 @@ export default function Chat() {
                       <p className="text-sm text-primary">${activeChat.deal.price}</p>
                     )}
                   </div>
-                  <Link
-                    to={`/deals/${activeChat.deal.id}`}
-                    className="px-4 py-2 bg-gradient-to-r from-primary to-primary-hover text-white rounded-xl font-semibold hover:from-primary-hover hover:to-primary transition-all duration-300"
-                  >
-                    View Deal
-                  </Link>
+                  {!isRoomClosed && (
+                    <Link
+                      to={`/deals/${activeChat.deal.id}`}
+                      className="px-4 py-2 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-primary to-primary-hover text-white hover:from-primary-hover hover:to-primary"
+                    >
+                      View Deal
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -489,7 +589,7 @@ export default function Chat() {
           {/* Main Chat Area: messages and input */}
           <div className="flex-1 min-h-0 flex flex-col">
             {/* Messages (scrollable) */}
-            <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1">
+            <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1 custom-scrollbar">
               <ChatMessageList className="h-full" ref={messageListRef}>
                 {currentMessages.map((msg) => (
                   <ChatBubble key={msg.id} variant={msg.isOwn ? "sent" : "received"}>
@@ -527,50 +627,64 @@ export default function Chat() {
               </ChatMessageList>
             </div>
             {/* Input (always visible at bottom) */}
-            <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-100 border-t border-border p-3 shrink-0">
-              <div className="flex items-end gap-3">
-                <Button
-                  size="icon"
-                  className="bg-gradient-to-r mb-3 from-primary to-primary-hover text-white shadow-lg hover:from-primary-hover hover:to-primary transition-all duration-200 shrink-0 rounded-2xl"
+            <div
+              className={`bg-gradient-to-br from-blue-50 via-white to-indigo-100 border-t border-border p-3 shrink-0 ${
+                isMobile ? "pb-safe" : ""
+              }`}
+            >
+              {/* In chat mode, disable input and show message if room is closed */}
+              {isRoomClosed ? (
+                <div
+                  className="flex flex-col items-center justify-center py-1  max-w-xs mx-auto"
+                  style={{ minHeight: "unset" }}
                 >
-                  <Paperclip className="h-5 w-5" />
-                </Button>
-                <div className="flex-1 min-w-0">
-                  {/* In chat mode, disable input and show message if room is closed */}
-                  {isRoomClosed ? (
-                    <div
-                      className="flex flex-col items-center justify-center p-3 my-2 rounded-xl bg-blue-50 border border-blue-100 shadow-sm max-w-xs mx-auto"
-                      style={{ minHeight: "unset" }}
-                    >
-                      <Lock className="w-6 h-6 text-primary mb-1" />
-                      <div className="text-base font-semibold text-primary mb-0.5">
-                        Chat Closed
-                      </div>
-                      <div className="text-xs text-gray-600 text-center">
-                        This chat is no longer available.
-                        <br />
-                        You can view previous messages, but cannot send new
-                        ones.
-                      </div>
-                    </div>
-                  ) : (
+                  <Lock className="w-6 h-6 text-primary mb-1" />
+                  <div className="text-base font-semibold text-primary mb-0.5">
+                    Chat Closed
+                  </div>
+                  <div className="text-xs text-gray-600 text-center">
+                    This chat is no longer available.
+                    <br />
+                    You can view previous messages, but cannot send new ones.
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-end gap-3">
+                  <Button
+                    size="icon"
+                    disabled={isRoomClosed}
+                    className={`mb-3 shrink-0 rounded-2xl transition-all duration-200 ${
+                      isRoomClosed
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-primary to-primary-hover text-white shadow-lg hover:from-primary-hover hover:to-primary"
+                    }`}
+                  >
+                    <Paperclip className="h-5 w-5" />
+                  </Button>
+                  <div className="flex-1 min-w-0">
                     <ChatInput
                       placeholder="Type your message..."
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      className="min-h-[40px] max-h-32 bg-white border border-border text-foreground placeholder-muted-foreground focus:bg-blue-50 focus:border-primary transition-all resize-none w-full backdrop-blur-md rounded-2xl"
+                      className={`min-h-[40px] max-h-32 bg-white border border-border text-foreground placeholder-muted-foreground focus:bg-blue-50 focus:border-primary transition-all resize-none w-full backdrop-blur-md rounded-2xl ${
+                        isMobile ? "text-base" : ""
+                      }`}
                     />
-                  )}
+                  </div>
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!message.trim() || loading || isRoomClosed}
+                    className={`mb-3 shrink-0 rounded-2xl transition-all duration-200 ${
+                      isRoomClosed || !message.trim() || loading
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-gradient-to-r from-primary to-primary-hover text-white shadow-lg hover:from-primary-hover hover:to-primary"
+                    }`}
+                  >
+                    <Send className="h-5 w-5" />
+                  </Button>
                 </div>
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!message.trim() || loading}
-                  className="bg-gradient-to-r mb-3 from-primary to-primary-hover text-white shadow-lg hover:from-primary-hover hover:to-primary transition-all duration-200 shrink-0 rounded-2xl"
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
-              </div>
+              )}
             </div>
           </div>
         </div>
@@ -589,7 +703,7 @@ export default function Chat() {
   const mobileWidgetStyle = isMobile
     ? {
         width: "100vw",
-        height: "100vh",
+        height: "calc(var(--vh, 1vh) * 100)", // Use CSS custom property for mobile
         right: 0,
         left: 0,
         bottom: 0,
@@ -603,7 +717,7 @@ export default function Chat() {
     <motion.div
       className={
         isMobile
-          ? "fixed inset-0 z-50 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-screen h-screen rounded-none border-0 shadow-none"
+          ? "fixed inset-0 z-50 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-screen h-dvh rounded-none border-0 shadow-none"
           : "fixed z-50 bottom-6 left-6 flex flex-col bg-white/90 backdrop-blur-2xl overflow-hidden w-full max-w-[400px] h-[70vh] max-h-[600px] rounded-3xl shadow-2xl border border-border"
       }
       style={mobileWidgetStyle}

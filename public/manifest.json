@@ -1,7 +1,7 @@
 {
-  "name": "Dawaback - Trusted Pharmacy Platform",
+  "name": "Dawaback",
   "short_name": "Dawaback",
-  "description": "Trusted platform for buying and selling pharmacies and medicines",
+  "description": "Before it expires, trade it with desire",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -131,14 +131,14 @@ const InstallApp = () => {
             
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <div className="bg-primary rounded-full p-2">
+                <div className="bg-primary rounded-full">
                   <span className="text-white font-bold text-sm">1</span>
                 </div>
                 <p className="text-gray-700">Tap the <strong>Share</strong> button in your browser</p>
               </div>
               
               <div className="flex items-start space-x-3">
-                <div className="bg-primary rounded-full p-2">
+                <div className="bg-primary rounded-full ">
                   <span className="text-white font-bold text-sm">2</span>
                 </div>
                 <p className="text-gray-700">

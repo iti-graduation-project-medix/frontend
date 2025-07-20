@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
+  base: '/',
   plugins: [
     react(),
     tailwindcss(),
@@ -42,11 +43,11 @@ export default defineConfig({
         enabled: true,
         type: "classic"
       },
-              workbox: {
-          clientsClaim: true,
-          skipWaiting: true,
-          maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // Allow up to 6 MB for large font files
-          disableDevLogs: true, // Disable Workbox console logs
+      workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // Allow up to 6 MB for large font files
+        disableDevLogs: true, // Disable Workbox console logs
         globPatterns: ["**/*.{js,jsx,css,ico,png,svg,webmanifest,html,webp,ttf}", "manifest.json", "favicon.ico", "index.html", "imgs/*", "avatars/*"],
         additionalManifestEntries: [
           { url: '/', revision: null },

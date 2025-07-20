@@ -79,7 +79,7 @@ const Footer7 = ({
                   key={idx}
                   href={social.href}
                   aria-label={social.label}
-                  className="text-muted-foreground hover:text-primary transition"
+                  className="text-muted-foreground hover:text-primary"
                 >
                   {social.icon}
                 </a>
@@ -97,7 +97,7 @@ const Footer7 = ({
                     <a
                       key={linkIdx}
                       href={link.href}
-                      className="hover:text-primary transition hover:font-semibold"
+                      className="hover:text-primary hover:font-semibold"
                     >
                       {link.name}
                     </a>
@@ -116,7 +116,7 @@ const Footer7 = ({
               <a
                 key={idx}
                 href={link.href}
-                className="hover:text-primary hover:font-medium transition"
+                className="hover:text-primary hover:font-medium"
               >
                 {link.name}
               </a>

@@ -42,7 +42,7 @@ export default function Home() {
     }
   };
 
-  const MotionLink = motion(Link);
+  const MotionLink = motion.create(Link);
   const buttonVariants = { tap: { scale: 0.95 }, hover: { scale: 1.05 } };
 
   const [openIndex, setOpenIndex] = useState(null);

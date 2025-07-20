@@ -41,6 +41,7 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
+import { LoadingPage } from "../../components/ui/loading";
 
 export default function Deals() {
   const [searchInput, setSearchInput] = useState("");
@@ -63,6 +64,7 @@ export default function Deals() {
   // Use store
   const {
     deals,
+    deletedDeals,
     isLoading,
     error,
     fetchUserDeals,
@@ -166,6 +168,36 @@ export default function Deals() {
     );
   });
 
+  // Handle deleted deals filtering
+  let filteredDeletedDeals = [];
+  if (status.toLowerCase() === "deleted") {
+    filteredDeletedDeals = (deletedDeals || []).filter((deal) => {
+      const matchesSearch = (deal.medicineName?.toLowerCase() || "").includes(
+        searchDeal.toLowerCase()
+      );
+      const matchesDealType = !dealType || deal.dealType === dealType;
+      const matchesDosageForm = !dosageForm || deal.dosageForm === dosageForm;
+
+      const dealPrice = parseFloat(deal.price || 0);
+      const matchesPriceRange =
+        (!priceRange.min || dealPrice >= parseFloat(priceRange.min)) &&
+        (!priceRange.max || dealPrice <= parseFloat(priceRange.max));
+
+      const dealDate = new Date(deal.expiryDate);
+      const matchesDateRange =
+        (!dateRange.from || dealDate >= dateRange.from) &&
+        (!dateRange.to || dealDate <= dateRange.to);
+
+      return (
+        matchesSearch &&
+        matchesDealType &&
+        matchesDosageForm &&
+        matchesPriceRange &&
+        matchesDateRange
+      );
+    });
+  }
+
   // Enhanced sorting
   const sortDeals = (dealsToSort) => {
     return [...dealsToSort].sort((a, b) => {
@@ -206,6 +238,7 @@ export default function Deals() {
   };
 
   filteredDeals = sortDeals(filteredDeals);
+  filteredDeletedDeals = sortDeals(filteredDeletedDeals);
 
   // Debounced search input
   const setSearchCallback = useCallback((value) => {
@@ -295,9 +328,7 @@ export default function Deals() {
     (deal) => !deal.isClosed && new Date(deal.expiryDate) >= new Date()
   ).length;
   const closedDealsCount = (deals || []).filter((deal) => deal.isClosed).length;
-  const expiredDealsCount = (deals || []).filter(
-    (deal) => !deal.isClosed && new Date(deal.expiryDate) < new Date()
-  ).length;
+  const deletedDealsCount = (deletedDeals || []).length;
 
   // Get active filters for chips
   const getActiveFilters = () => {
@@ -401,7 +432,7 @@ export default function Deals() {
           <h1 className="text-3xl sm:text-4xl font-bold">My Deals</h1>
           <Link to={"/deals/new"}>
             <Button className="w-full sm:w-auto">
-              <PlusCircle className="h-4 w-4 mr-2" />
+              <PlusCircle className="h-4 w-4" />
               Create New Deal
             </Button>
           </Link>
@@ -444,14 +475,14 @@ export default function Deals() {
             <Card className="py-4 border-l-8 border-red-500 bg-gradient-to-br from-red-50 to-white shadow-lg">
               <CardHeader className="flex flex-row items-center gap-4">
                 <div className="bg-red-100 p-3 rounded-full">
-                  <Clock className="w-8 h-8 text-red-500" />
+                  <X className="w-8 h-8 text-red-500" />
                 </div>
                 <div>
                   <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Expired Deals
+                    Deleted Deals
                   </CardTitle>
                   <CardDescription className="text-3xl font-bold">
-                    {expiredDealsCount}
+                    {deletedDealsCount}
                   </CardDescription>
                 </div>
               </CardHeader>
@@ -503,9 +534,9 @@ export default function Deals() {
 
               {/* Basic Filters Row - rearranged to match AvailableDeals */}
               <div>
-                <div className="flex flex-col gap-3 md:flex-row md:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
                   {/* Search */}
-                  <div className="flex-1 min-w-[180px]">
+                  <div className="md:col-span-2 lg:col-span-1">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -517,7 +548,7 @@ export default function Deals() {
                     </div>
                   </div>
                   {/* Deal Type Filter */}
-                  <div className="w-full md:w-44">
+                  <div>
                     <Select
                       onValueChange={handleDealType}
                       value={dealType || "all"}
@@ -533,8 +564,26 @@ export default function Deals() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {/* Status Filter */}
+                  <div>
+                    <Select
+                      value={status || "all"}
+                      onValueChange={handleStatuses}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Status</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="closed">Closed</SelectItem>
+                        <SelectItem value="expired">Expired</SelectItem>
+                        <SelectItem value="deleted">Deleted</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   {/* Dosage Form Filter */}
-                  <div className="w-full md:w-44">
+                  <div>
                     <Select
                       value={dosageForm || "all"}
                       onValueChange={(val) =>
@@ -556,7 +605,7 @@ export default function Deals() {
                     </Select>
                   </div>
                   {/* Sort By Filter */}
-                  <div className="w-full md:w-44">
+                  <div>
                     <Select
                       value={sortBy ? `${sortBy}-${sortOrder}` : ""}
                       onValueChange={handleSortSelection}
@@ -714,9 +763,7 @@ export default function Deals() {
 
           {/* Loading and Error States */}
           {isLoading && (
-            <div className="text-center py-8 text-lg text-muted-foreground">
-              Loading deals...
-            </div>
+            <LoadingPage className="text-center py-8 text-lg text-muted-foreground" message="Loading my deals..." />
           )}
           {error && (
             <div className="text-center py-8 text-lg text-red-500">{error}</div>
@@ -726,7 +773,7 @@ export default function Deals() {
           {!isLoading && !error && (
             <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="text-sm text-muted-foreground">
-                Showing {deals?.length || 0} of {totalDeals || 0} deals (Page{" "}
+                Showing {status.toLowerCase() === "deleted" ? filteredDeletedDeals.length : (deals?.length || 0)} of {status.toLowerCase() === "deleted" ? deletedDealsCount : (totalDeals || 0)} {status.toLowerCase() === "deleted" ? "deleted deals" : "deals"} (Page{" "}
                 {currentPage} of {totalPages || 1})
               </div>
             </div>
@@ -735,19 +782,22 @@ export default function Deals() {
           {/* Deals Grid */}
           {!isLoading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {filteredDeals.map((deal, index) => (
+              {(status.toLowerCase() === "deleted" ? filteredDeletedDeals : filteredDeals).map((deal, index) => (
                 <DealCard
                   key={deal.id || index}
                   deal={deal}
-                  onClose={handleCloseDeal}
-                  onDelete={handleDeleteDeal}
+                  onClose={status.toLowerCase() === "deleted" ? null : handleCloseDeal}
+                  onDelete={status.toLowerCase() === "deleted" ? null : handleDeleteDeal}
+                  isDeleted={status.toLowerCase() === "deleted"}
                 />
               ))}
-              {filteredDeals.length === 0 && (
+              {(status.toLowerCase() === "deleted" ? filteredDeletedDeals : filteredDeals).length === 0 && (
                 <div className="col-span-full text-center text-muted-foreground py-8">
                   {activeFilters.length > 0
                     ? "No deals match your filters. Try adjusting your search criteria."
-                    : "No deals found."}
+                    : status.toLowerCase() === "deleted" 
+                      ? "No deleted deals found."
+                      : "No deals found."}
                 </div>
               )}
             </div>

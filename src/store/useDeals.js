@@ -14,6 +14,7 @@ export const useDeals = create(
   persist(
     (set, get) => ({
       deals: [],
+      deletedDeals: [], // Track deleted deals
       currentDeal: null,
       isLoading: false,
       isSubmitting: false,
@@ -156,13 +157,17 @@ export const useDeals = create(
         try {
           await deleteDeal(dealId);
 
-          set(state => ({
-            deals: state.deals.filter(deal => deal.id !== dealId),
-            currentDeal: state.currentDeal?.id === dealId ? null : state.currentDeal,
-            isLoading: false,
-            error: null,
-            totalDeals: state.totalDeals - 1,
-          }));
+          set(state => {
+            const dealToDelete = state.deals.find(deal => deal.id === dealId);
+            return {
+              deals: state.deals.filter(deal => deal.id !== dealId),
+              deletedDeals: dealToDelete ? [...state.deletedDeals, { ...dealToDelete, deletedAt: new Date().toISOString() }] : state.deletedDeals,
+              currentDeal: state.currentDeal?.id === dealId ? null : state.currentDeal,
+              isLoading: false,
+              error: null,
+              totalDeals: state.totalDeals - 1,
+            };
+          });
         } catch (error) {
           set({
             isLoading: false,
@@ -218,6 +223,7 @@ export const useDeals = create(
       resetDeals: () => {
         set({
           deals: [],
+          deletedDeals: [],
           currentDeal: null,
           isLoading: false,
           isSubmitting: false,
@@ -234,6 +240,7 @@ export const useDeals = create(
       partialize: (state) => ({
         // Only persist these fields, exclude loading states and errors
         deals: state.deals,
+        deletedDeals: state.deletedDeals,
         currentDeal: state.currentDeal,
         totalDeals: state.totalDeals,
         currentPage: state.currentPage,

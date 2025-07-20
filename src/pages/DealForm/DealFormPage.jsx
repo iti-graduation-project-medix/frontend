@@ -1,10 +1,46 @@
 import React from "react";
 import { DealForm } from "../../components/Deal-form";
 import { useParams } from "react-router-dom";
+import { LoadingPage } from "../../components/ui/loading";
+import { useDeals } from "../../store/useDeals";
+import { useAuth } from "../../store/useAuth";
 
 export default function DealFormPage() {
   const { id } = useParams();
   const isEditMode = !!id;
+  const { fetchDeal } = useDeals();
+  const { token } = useAuth();
+  const [isLoadingDeal, setIsLoadingDeal] = React.useState(false);
+  const [dealData, setDealData] = React.useState(null);
+
+  // Load deal data for edit mode
+  React.useEffect(() => {
+    const loadDealData = async () => {
+      if (!isEditMode || !id || !token) return;
+
+      try {
+        setIsLoadingDeal(true);
+        const response = await fetchDeal(id);
+        const loadedDealData = response.data?.deal || response.data || response;
+        setDealData(loadedDealData);
+      } catch (error) {
+        console.error("Error loading deal data:", error);
+      } finally {
+        setIsLoadingDeal(false);
+      }
+    };
+
+    loadDealData();
+  }, [id, token, isEditMode, fetchDeal]);
+
+  // Show loading state while fetching deal data
+  if (isEditMode && isLoadingDeal) {
+    return (
+      <div className="my-50 flex items-center justify-center">
+        <LoadingPage message="Loading deal form..." />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-svh">
@@ -26,7 +62,7 @@ export default function DealFormPage() {
         <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
           {/* Right Side - Form Section */}
           <div className="w-full lg:w-7/12">
-            <DealForm />
+            <DealForm dealData={dealData} />
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ export default function SharedLayout() {
       <Navbar />
       <OfflineIndicator />
 
-      <Suspense fallback={<LoadingPage />}>
+      <Suspense>
         <Outlet />
       </Suspense>
 

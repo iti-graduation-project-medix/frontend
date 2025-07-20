@@ -30,13 +30,13 @@ export default defineConfig({
         "ios/64.png",
         "fonts/*.ttf",
         '/imgs/steps.png',
-       '/imgs/faqs.webp',
-       '/imgs/newsletter.webp',
-       '/imgs/whoWeAre.png',
-       '/avatars/client1.webp',
-       '/avatars/client2.webp',
-       '/avatars/client3.webp',
-       '/avatars/client4.webp'
+        '/imgs/faqs.webp',
+        '/imgs/newsletter.webp',
+        '/imgs/whoWeAre.png',
+        '/avatars/client1.webp',
+        '/avatars/client2.webp',
+        '/avatars/client3.webp',
+        '/avatars/client4.webp'
       ],
       devOptions: {
         enabled: true,
@@ -58,17 +58,17 @@ export default defineConfig({
           /^\/api\//,
         ],
         runtimeCaching: [
-         {
-    urlPattern: /\/fonts\/.*\.ttf$/,
-    handler: "CacheFirst",
-    options: {
-      cacheName: "fonts",
-      expiration: {
-        maxEntries: 20,
-        maxAgeSeconds: 365 * 24 * 60 * 60,
-      },
-    },
-  },
+          {
+            urlPattern: /\/fonts\/.*\.ttf$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "fonts",
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 365 * 24 * 60 * 60,
+              },
+            },
+          },
           {
             urlPattern: /^\/$/,
             handler: "CacheFirst",

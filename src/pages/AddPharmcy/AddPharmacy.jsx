@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,13 @@ import {
   XCircle,
   ChevronLeft,
   ChevronRight,
+  Building2,
+  Hash,
+  User,
+  Phone,
+  Clock,
+  FileText,
+  MapPinIcon,
 } from "lucide-react";
 import {
   Select,
@@ -25,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { LoadingPage } from "../../components/ui/loading";
+import { ErrorMessage } from "../../components/ui/error-display";
 
 const containerStyle = {
   width: "100%",
@@ -76,7 +85,7 @@ const PharmacySchema = Yup.object().shape({
     .required("phone number is required  ")
     .matches(
       /^(010|011|012|015)[0-9]{8}$/,
-      "the phone number must be egyptian phone number "
+      "Phone number must be egyptian number"
     ),
   addressLine1: Yup.string().required("Address Line 1 is required"),
   addressLine2: Yup.string(),
@@ -328,7 +337,7 @@ export default function AddPharmacy() {
   if (hasMaxPharmacies && !isSubmitting && !formik.isSubmitting && !isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-lg w-full p-8 text-center shadow-xl">
+        <Card className="w-full p-8 text-center shadow-xl">
           <CardHeader>
             <CardTitle className="text-2xl font-bold text-red-600">
               Limit Reached
@@ -350,7 +359,7 @@ export default function AddPharmacy() {
 
   return (
     <>
-      <div className="w-full py-12 px-4 text-center ">
+      <div className="w-full px-4 text-center ">
         <h1 className="text-5xl font-extrabold mb-4  text-primary">
           {id ? "Edit Pharmacy" : "Add Your Pharmacy"}
         </h1>
@@ -360,11 +369,22 @@ export default function AddPharmacy() {
             : "add your pharmacy to connect with companies, manage your inventory, and access exclusive deals across Egypt."}
         </p>
       </div>
-      <div className="min-h-screen flex items-center justify-center pb-12 px-2">
-        <Card className="w-full max-w-4xl shadow-xl border-0 relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100 rounded-full -mr-16 -mt-16 opacity-50"></div>
-          <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-100 rounded-full -ml-20 -mb-20 opacity-50"></div>
-          <div className="relative p-8">
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
+            <div className="w-full lg:w-7/12">
+              <Card className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative w-full">
+          {/* Decorative Elements */}
+          <div
+            className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10"
+            style={{ background: "var(--primary)" }}
+          ></div>
+          <div
+            className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10"
+            style={{ background: "var(--primary)" }}
+          ></div>
+
+          <div className="relative p-8 md:p-10">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-2xl font-bold text-foreground">
                 {id ? "Edit Pharmacy" : "Add Pharmacy"}
@@ -377,37 +397,50 @@ export default function AddPharmacy() {
 
               {/* Step Indicator */}
               <div className="flex items-center justify-center mt-6 mb-4">
-                <div className="flex items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                      currentStep >= 1
-                        ? "bg-primary text-white"
-                        : "bg-gray-200 text-gray-500"
-                    }`}
-                  >
-                    1
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
+                        currentStep >= 1
+                          ? "bg-primary text-white"
+                          : "bg-gray-200 text-gray-500"
+                      }`}
+                    >
+                      1
+                    </div>
+                    <span
+                      className={`ml-2 text-sm font-medium ${
+                        currentStep >= 1 ? "text-primary" : "text-gray-500"
+                      }`}
+                    >
+                      Basic Information
+                    </span>
                   </div>
                   <div
-                    className={`w-16 h-1 mx-2 ${
+                    className={`w-16 h-0.5 ${
                       currentStep >= 2 ? "bg-primary" : "bg-gray-200"
                     }`}
                   ></div>
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold ${
-                      currentStep >= 2
-                        ? "bg-primary text-white"
-                        : "bg-gray-200 text-gray-500"
-                    }`}
-                  >
-                    2
+                  <div className="flex items-center">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
+                        currentStep >= 2
+                          ? "bg-primary text-white"
+                          : "border-gray-200 border-2 text-gray-500"
+                      }`}
+                    >
+                      2
+                    </div>
+                    <span
+                      className={`ml-2 text-sm font-medium ${
+                        currentStep >= 2 ? "text-primary" : "text-gray-500"
+                      }`}
+                    >
+                      Location & Address
+                    </span>
                   </div>
                 </div>
               </div>
-              <p className="text-center text-sm text-muted-foreground">
-                {currentStep === 1
-                  ? "Basic Information & Hours"
-                  : "Location & Address"}
-              </p>
             </CardHeader>
             <CardContent>
               <form className="space-y-6" onSubmit={formik.handleSubmit}>
@@ -415,120 +448,152 @@ export default function AddPharmacy() {
                   // Step 1: Basic Information & Hours
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <Label className="mb-1 inline-block" htmlFor="name">
-                          Pharmacy Name *
+                      <div className="space-y-2">
+                        <Label className="font-semibold" htmlFor="name">
+                          Pharmacy Name <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="name"
-                          name="name"
-                          placeholder="Pharmacy Name"
-                          value={formik.values.name}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.name && formik.touched.name
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Building2 className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="name"
+                            name="name"
+                            placeholder="Pharmacy Name"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.name && formik.touched.name
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.name && formik.errors.name && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.name && formik.errors.name ? formik.errors.name : null
                           }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.name && formik.errors.name && (
-                          <div className="text-xs text-red-500 mt-1">
-                            {formik.errors.name}
-                          </div>
-                        )}
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="licenseNum"
                         >
-                          License Number *
+                          License Number <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="licenseNum"
-                          name="licenseNum"
-                          placeholder="License Number"
-                          value={formik.values.licenseNum}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.licenseNum &&
-                            formik.touched.licenseNum
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Hash className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="licenseNum"
+                            name="licenseNum"
+                            placeholder="License Number"
+                            value={formik.values.licenseNum}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.licenseNum &&
+                              formik.touched.licenseNum
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.licenseNum && formik.errors.licenseNum && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.licenseNum && formik.errors.licenseNum ? formik.errors.licenseNum : null
                           }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.licenseNum &&
-                          formik.errors.licenseNum && (
-                            <div className="text-xs text-red-500 mt-1">
-                              {formik.errors.licenseNum}
-                            </div>
-                          )}
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="contactPerson"
                         >
-                          Contact Person *
+                          Contact Person <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="contactPerson"
-                          name="contactPerson"
-                          placeholder="Contact Person"
-                          value={formik.values.contactPerson}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.contactPerson &&
-                            formik.touched.contactPerson
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <User className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="contactPerson"
+                            name="contactPerson"
+                            placeholder="Contact Person"
+                            value={formik.values.contactPerson}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.contactPerson &&
+                              formik.touched.contactPerson
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.contactPerson && formik.errors.contactPerson && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.contactPerson && formik.errors.contactPerson ? formik.errors.contactPerson : null
                           }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.contactPerson &&
-                          formik.errors.contactPerson && (
-                            <div className="text-xs text-red-500 mt-1">
-                              {formik.errors.contactPerson}
-                            </div>
-                          )}
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="contactNumber"
                         >
-                          Contact Number *
+                          Contact Number <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="contactNumber"
-                          name="contactNumber"
-                          placeholder="Contact Number"
-                          value={formik.values.contactNumber}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.contactNumber &&
-                            formik.touched.contactNumber
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Phone className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="contactNumber"
+                            name="contactNumber"
+                            placeholder="Contact Number"
+                            value={formik.values.contactNumber}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.contactNumber &&
+                              formik.touched.contactNumber
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.contactNumber && formik.errors.contactNumber && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.contactNumber && formik.errors.contactNumber ? formik.errors.contactNumber : null
                           }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.contactNumber &&
-                          formik.errors.contactNumber && (
-                            <div className="text-xs text-red-500 mt-1">
-                              {formik.errors.contactNumber}
-                            </div>
-                          )}
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="startHour"
                         >
-                          Start Hour *
+                          Start Hour <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Clock className="w-5 h-5" />
+                          </span>
                           <Input
                             id="startHour"
                             name="startHour"
@@ -540,36 +605,39 @@ export default function AddPharmacy() {
                               !!formik.errors.startHour &&
                               formik.touched.startHour
                             }
-                            className="bg-white/80 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-11"
+                            className={cn(
+                              "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm appearance-none",
+                              formik.touched.startHour && formik.errors.startHour && "border-red-500"
+                            )}
+                            style={{
+                              WebkitAppearance: 'none',
+                              MozAppearance: 'none'
+                            }}
                           />
-                          <div className="absolute inset-y-0 end-0 top-0 flex items-center pr-3.5 pointer-events-none">
-                            <svg
-                              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                clipRule="evenodd"
-                              />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors z-10"
+                            onClick={() => document.getElementById('startHour').showPicker()}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
-                          </div>
+                          </button>
                         </div>
-                        {formik.touched.startHour &&
-                          formik.errors.startHour && (
-                            <div className="text-xs text-red-500 mt-1">
-                              {formik.errors.startHour}
-                            </div>
-                          )}
+                        <ErrorMessage
+                          error={
+                            formik.touched.startHour && formik.errors.startHour ? formik.errors.startHour : null
+                          }
+                        />
                       </div>
-                      <div>
-                        <Label className="mb-1 inline-block" htmlFor="endHour">
-                          End Hour *
+                      <div className="space-y-2">
+                        <Label className="font-semibold" htmlFor="endHour">
+                          End Hour <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Clock className="w-5 h-5" />
+                          </span>
                           <Input
                             id="endHour"
                             name="endHour"
@@ -580,34 +648,35 @@ export default function AddPharmacy() {
                             aria-invalid={
                               !!formik.errors.endHour && formik.touched.endHour
                             }
-                            className="bg-white/80 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-11"
+                            className={cn(
+                              "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm appearance-none",
+                              formik.touched.endHour && formik.errors.endHour && "border-red-500"
+                            )}
+                            style={{
+                              WebkitAppearance: 'none',
+                              MozAppearance: 'none'
+                            }}
                           />
-                          <div className="absolute inset-y-0 end-0 top-0 flex items-center pr-3.5 pointer-events-none">
-                            <svg
-                              className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                fillRule="evenodd"
-                                d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                clipRule="evenodd"
-                              />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors z-10"
+                            onClick={() => document.getElementById('endHour').showPicker()}
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
-                          </div>
+                          </button>
                         </div>
-                        {formik.touched.endHour && formik.errors.endHour && (
-                          <div className="text-xs text-red-500 mt-1">
-                            {formik.errors.endHour}
-                          </div>
-                        )}
+                        <ErrorMessage
+                          error={
+                            formik.touched.endHour && formik.errors.endHour ? formik.errors.endHour : null
+                          }
+                        />
                       </div>
                     </div>
 
-                    <div>
-                      <Label className="mb-1 inline-block" htmlFor="images">
+                    <div className="space-y-2">
+                      <Label className="font-semibold" htmlFor="images">
                         Pharmacy Images
                       </Label>
                       <label
@@ -723,137 +792,174 @@ export default function AddPharmacy() {
                   // Step 2: Location & Additional Details
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="addressLine1"
                         >
-                          Address Line 1 *
+                          Address Line 1 <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="addressLine1"
-                          name="addressLine1"
-                          placeholder="Address Line 1"
-                          value={formik.values.addressLine1}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.addressLine1 &&
-                            formik.touched.addressLine1
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <FileText className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="addressLine1"
+                            name="addressLine1"
+                            placeholder="Address Line 1"
+                            value={formik.values.addressLine1}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.addressLine1 &&
+                              formik.touched.addressLine1
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.addressLine1 && formik.errors.addressLine1 && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.addressLine1 && formik.errors.addressLine1 ? formik.errors.addressLine1 : null
                           }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.addressLine1 &&
-                          formik.errors.addressLine1 && (
-                            <div className="text-xs text-red-500 mt-1">
-                              {formik.errors.addressLine1}
-                            </div>
-                          )}
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="addressLine2"
                         >
                           Address Line 2
                         </Label>
-                        <Input
-                          id="addressLine2"
-                          name="addressLine2"
-                          placeholder="Address Line 2 (optional)"
-                          value={formik.values.addressLine2}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
-                        />
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <FileText className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="addressLine2"
+                            name="addressLine2"
+                            placeholder="Address Line 2 (optional)"
+                            value={formik.values.addressLine2}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <Label className="mb-1 inline-block" htmlFor="city">
-                          City *
+                      <div className="space-y-2">
+                        <Label className="font-semibold" htmlFor="city">
+                          City <span className="text-red-500">*</span>
                         </Label>
-                        <Input
-                          id="city"
-                          name="city"
-                          placeholder="City"
-                          value={formik.values.city}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.city && formik.touched.city
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Building2 className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="city"
+                            name="city"
+                            placeholder="City"
+                            value={formik.values.city}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.city && formik.touched.city
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.city && formik.errors.city && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.city && formik.errors.city ? formik.errors.city : null
                           }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.city && formik.errors.city && (
-                          <div className="text-xs text-red-500 mt-1">
-                            {formik.errors.city}
-                          </div>
-                        )}
                       </div>
-                      <div>
+                      <div className="space-y-2">
                         <Label
-                          className="mb-1 inline-block"
+                          className="font-semibold"
                           htmlFor="governorate"
                         >
-                          Governorate *
+                          Governorate <span className="text-red-500">*</span>
                         </Label>
-                        <Select
-                          value={formik.values.governorate}
-                          onValueChange={(value) =>
-                            formik.setFieldValue("governorate", value)
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <MapPinIcon className="w-5 h-5" />
+                          </span>
+                          <Select
+                            value={formik.values.governorate}
+                            onValueChange={(value) =>
+                              formik.setFieldValue("governorate", value)
+                            }
+                            onBlur={() =>
+                              formik.setFieldTouched("governorate", true)
+                            }
+                            name="governorate"
+                          >
+                            <SelectTrigger className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm w-full",
+                              formik.touched.governorate && formik.errors.governorate && "border-red-500"
+                            )}>
+                              <SelectValue placeholder="Select Governorate" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {EGYPT_GOVERNORATES.map((gov) => (
+                                <SelectItem key={gov} value={gov}>
+                                  {gov}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.governorate && formik.errors.governorate ? formik.errors.governorate : null
                           }
-                          onBlur={() =>
-                            formik.setFieldTouched("governorate", true)
-                          }
-                          name="governorate"
-                        >
-                          <SelectTrigger className="bg-white/80 border border-gray-300 rounded-lg h-11 w-full px-3">
-                            <SelectValue placeholder="Select Governorate" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {EGYPT_GOVERNORATES.map((gov) => (
-                              <SelectItem key={gov} value={gov}>
-                                {gov}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        {formik.touched.governorate &&
-                          formik.errors.governorate && (
-                            <div className="text-xs text-red-500 mt-1">
-                              {formik.errors.governorate}
-                            </div>
-                          )}
-                      </div>
-                      <div>
-                        <Label className="mb-1 inline-block" htmlFor="zipCode">
-                          Zip Code *
-                        </Label>
-                        <Input
-                          id="zipCode"
-                          name="zipCode"
-                          placeholder="Zip Code"
-                          value={formik.values.zipCode}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          aria-invalid={
-                            !!formik.errors.zipCode && formik.touched.zipCode
-                          }
-                          className="bg-white/80 border border-gray-300 rounded-lg h-11"
                         />
-                        {formik.touched.zipCode && formik.errors.zipCode && (
-                          <div className="text-xs text-red-500 mt-1">
-                            {formik.errors.zipCode}
-                          </div>
-                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="font-semibold" htmlFor="zipCode">
+                          Zip Code <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <Hash className="w-5 h-5" />
+                          </span>
+                          <Input
+                            id="zipCode"
+                            name="zipCode"
+                            placeholder="Zip Code"
+                            value={formik.values.zipCode}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            aria-invalid={
+                              !!formik.errors.zipCode && formik.touched.zipCode
+                            }
+                            className={cn(
+                              "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm",
+                              formik.touched.zipCode && formik.errors.zipCode && "border-red-500"
+                            )}
+                          />
+                        </div>
+                        <ErrorMessage
+                          error={
+                            formik.touched.zipCode && formik.errors.zipCode ? formik.errors.zipCode : null
+                          }
+                        />
                       </div>
                     </div>
 
-                    <div>
-                      <Label className="mb-1 inline-block">Location *</Label>
-                      <div className="mt-2 space-y-2">
+                    <div className="space-y-2">
+                      <Label className="font-semibold">
+                        Location <span className="text-red-500">*</span>
+                      </Label>
+                      <div className="space-y-2">
                         <Button
                           type="button"
-                          className="mb-2 rounded-full border-2 border-blue-400 bg-blue-50 text-blue-700 hover:bg-blue-100 flex items-center gap-2 shadow-sm"
+                          className="mb-3 rounded-full border-2 border-primary bg-primary/10 text-primary hover:bg-primary/90 hover:text-white flex items-center gap-2 shadow-sm"
                           variant="outline"
                           onClick={() => {
                             if (navigator.geolocation) {
@@ -882,12 +988,17 @@ export default function AddPharmacy() {
                           location
                         </Button>
                         {/* Autocomplete search input */}
-                        <Input
-                          ref={inputRef}
-                          placeholder="Search for your pharmacy location..."
-                          className="mb-2 bg-white/80 border border-gray-300 rounded-lg"
-                          autoComplete="off"
-                        />
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                            <MapPinIcon className="w-5 h-5" />
+                          </span>
+                          <Input
+                            ref={inputRef}
+                            placeholder="Search for your pharmacy location..."
+                            className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm"
+                            autoComplete="off"
+                          />
+                        </div>
                         {isLoaded ? (
                           <GoogleMap
                             mapContainerStyle={containerStyle}
@@ -942,6 +1053,9 @@ export default function AddPharmacy() {
             </CardContent>
           </div>
         </Card>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

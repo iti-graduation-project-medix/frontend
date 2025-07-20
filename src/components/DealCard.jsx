@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const DealCard = ({ deal, onClose, onDelete }) => {
+const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
   // Helper function to format date
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
@@ -42,6 +42,14 @@ const DealCard = ({ deal, onClose, onDelete }) => {
   };
 
   const getStatusPill = (status) => {
+    if (isDeleted) {
+      return (
+        <Badge variant="outline" className="border-red-500 text-red-500 bg-red-50">
+          Deleted
+        </Badge>
+      );
+    }
+    
     switch (status) {
       case "Active":
         return (
@@ -61,12 +69,26 @@ const DealCard = ({ deal, onClose, onDelete }) => {
         );
       case "Closed":
         return (
-          <Badge variant="outline" className="border-gray-500 text-gray-500">
+          <Badge variant="outline" className="border-blue-500 text-blue-500">
             Closed
           </Badge>
         );
       default:
         return null;
+    }
+  };
+
+  // Helper function to get close button color based on status
+  const getCloseButtonColor = (status) => {
+    switch (status) {
+      case "Active":
+        return "bg-blue-500 hover:bg-blue-600 text-white hover:text-white border-blue-500";
+      case "Expired":
+        return "bg-red-500 hover:bg-red-600 text-white hover:text-white border-red-500";
+      case "Closed":
+        return "bg-gray-500 hover:bg-gray-600 text-white hover:text-white border-gray-500";
+      default:
+        return "bg-blue-500 hover:bg-blue-600 text-white hover:text-white border-blue-500";
     }
   };
 
@@ -128,7 +150,7 @@ const DealCard = ({ deal, onClose, onDelete }) => {
         </div>
         <div className="flex justify-between items-center mt-4 pt-4 border-t">
           <div>{getStatusPill(status)}</div>
-          {status === "Active" && (
+          {status === "Active" && !isDeleted && (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
                 <Link
@@ -139,19 +161,25 @@ const DealCard = ({ deal, onClose, onDelete }) => {
                 </Link>
               </Button>
               <Button
-                variant="destructive"
+                variant="outline"
                 size="sm"
+                className={getCloseButtonColor(status)}
                 onClick={() => onClose && onClose(deal.id)}
               >
-                <XCircle className="mr-2 h-4 w-4" /> Close
+                <XCircle className="h-4 w-4" /> Close
               </Button>
               <Button
                 variant="destructive"
                 size="sm"
                 onClick={() => onDelete && onDelete(deal.id)}
               >
-                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                <Trash2 className="h-4 w-4" /> Delete
               </Button>
+            </div>
+          )}
+          {isDeleted && (
+            <div className="text-xs text-muted-foreground">
+              Deleted on: {formatDate(deal.deletedAt)}
             </div>
           )}
         </div>

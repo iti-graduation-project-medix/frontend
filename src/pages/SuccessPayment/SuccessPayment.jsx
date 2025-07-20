@@ -6,9 +6,27 @@ import {
   ArrowRight,
   Clock,
   DollarSign,
+  Shield,
+  Download,
+  Mail,
+  Star,
+  CheckCircle2,
+  Home,
+  FileText,
+  Phone,
+  Calendar,
+  Hash,
+  Building2,
+  PoundSterling,
+  Wallet,
+  Crown,
+  Zap,
+  CalendarDays,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CardIcon } from "@/components/ui/card-icons";
 
@@ -82,171 +100,309 @@ export default function SuccessPayment() {
     return pan?.slice(-4) || "****";
   };
 
+  const getPaymentMethodIcon = (paymentType) => {
+    const type = paymentType?.toLowerCase();
+    
+    if (type === 'wallet') {
+      return <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />;
+    } else if (type === 'visa') {
+      return <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />;
+    } else if (type === 'mastercard') {
+      return <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />;
+    } else {
+      return <CreditCard className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />;
+    }
+  };
+
+  const getPlanTypeIcon = (planName) => {
+    const plan = planName?.toLowerCase();
+    
+    if (plan === 'premium') {
+      return <Crown className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />;
+    } else if (plan === 'regular') {
+      return <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />;
+    } else {
+      return <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />;
+    }
+  };
+
+  const getPlanPeriod = (amount) => {
+    // This is a placeholder logic - you can adjust based on your actual data structure
+    // You might want to pass this as a separate parameter or extract from payment data
+    const numAmount = parseFloat(amount);
+    
+    // Example logic: if amount is higher, likely yearly; if lower, likely monthly
+    // You should replace this with actual logic based on your payment data
+    if (numAmount >= 100) {
+      return 'Yearly';
+    } else {
+      return 'Monthly';
+    }
+  };
+
+  const getInitials = (name) => {
+    if (!name) return "?";
+    const parts = name.split(" ");
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() || "?";
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  };
+
   const handleGoHome = () => {
     navigate("/");
   };
 
   const handleGoToProfile = () => {
-    navigate("/profile");
+    navigate("/me");
+  };
+
+  const handleDownloadReceipt = () => {
+    // Create Excel data
+    const excelData = [
+      ['Payment Receipt - Dawaback'],
+      [''],
+      ['Transaction Details'],
+      ['Transaction ID', paymentData?.id || 'N/A'],
+      ['Amount Paid', formatAmount(paymentData?.amount_cents, paymentData?.currency)],
+      ['Plan Type', `${getPlanName(paymentData?.merchant_order_id)} Plan`],
+      ['Plan Period', getPlanPeriod(paymentData?.amount_cents / 100)],
+      ['Payment Method', `${paymentData?.source_data?.sub_type} •••• ${getLastFourDigits(paymentData?.source_data?.pan)}`],
+      ['Payment Date', formatDate(paymentData?.created_at)],
+      ['Status', paymentData?.txn_response_code === "APPROVED" || "200" ? "Approved" : "Processing"],
+      [''],
+      ['Customer Information'],
+      ['Name', userData?.name || userData?.username || 'User'],
+      ['Email', userData?.email || 'N/A'],
+      [''],
+      ['Additional Information'],
+      ['Email Confirmation', 'Receipt sent to your email'],
+      [''],
+      ['Generated on', new Date().toLocaleString()],
+      ['Thank you for choosing Dawaback!']
+    ];
+
+    // Convert to CSV format
+    const csvContent = excelData.map(row => 
+      row.map(cell => `"${cell}"`).join(',')
+    ).join('\n');
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `payment-receipt-${paymentData?.id || 'transaction'}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (loading || !paymentData) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading payment details...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent mx-auto mb-6"></div>
+          <p className="text-gray-600 text-lg font-medium">Processing your payment...</p>
         </div>
       </div>
     );
   }
 
+  const initials = getInitials(userData?.name || userData?.username);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4  ">
-      <div className="max-w-lg w-full">
-        {/* Success Icon */}
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Success Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
-            <CheckCircle className="w-12 h-12 text-green-600" />
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                <CheckCircle className="w-7 h-7 text-white" />
+              </div>
+              <div className="absolute -inset-1 bg-green-400 rounded-full opacity-20 animate-ping"></div>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
             Payment Successful!
           </h1>
-          <p className="text-gray-600">Thank you for subscribing to Dawaback</p>
+          </div>
         </div>
 
-        {/* Payment Details Card */}
-        <Card className="mb-6 shadow-lg">
-          <CardHeader className="text-center py-1">
-            <CardTitle className="text-xl font-semibold text-gray-800 pt-3">
+        <div className="space-y-4 sm:space-y-6">
+          {/* Payment Details */}
+          <Card className="shadow-sm border border-gray-200">
+            <CardHeader className="bg-gradient-to-r from-green-500 to-emerald-500 p-4 sm:p-6">
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-white/20">
+                    <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-bold text-white">
               Payment Details
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* User Name */}
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <User className="w-5 h-5 text-gray-600" />
-              <div>
-                <p className="text-sm text-gray-500">User Name</p>
-                <p className="font-medium text-gray-900">
-                  {userData?.name || userData?.username || "User"}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-green-100">
+                      Transaction information
                 </p>
               </div>
             </div>
-
-            {/* Transaction ID */}
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <CreditCard className="w-5 h-5 text-gray-600" />
-              <div>
-                <p className="text-sm text-gray-500">Transaction ID</p>
-                <p className="font-medium text-gray-900 font-mono">
+                <div className="inline-flex items-center gap-2 text-white px-3 py-1 border border-white rounded-full">
+                  <CheckCircle2 className="w-3 h-3" />
+                  <span className="font-semibold text-xs">Transaction Approved</span>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4 -mt-5 sm:p-6">
+              <div className="space-y-2 sm:space-y-3">
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Hash className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Transaction ID
+                    </span>
+                  </div>
+                  <span className="font-mono text-gray-900 text-xs sm:text-sm break-all">
                   {paymentData?.id}
-                </p>
-              </div>
-            </div>
-
-            {/* Amount */}
-            <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
-              <DollarSign className="w-5 h-5 text-green-600" />
-              <div>
-                <p className="text-sm text-gray-500">Amount Paid</p>
-                <p className="font-medium text-green-900 text-lg">
-                  {formatAmount(
-                    paymentData?.amount_cents,
-                    paymentData?.currency
-                  )}
-                </p>
-              </div>
-            </div>
-
-            {/* Plan Name */}
-            <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
-              <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs font-bold">
-                  {getPlanName(paymentData?.merchant_order_id) === "Premium"
-                    ? "P"
-                    : "R"}
-                </span>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Plan Type</p>
-                <p className="font-medium text-blue-900">
-                  {getPlanName(paymentData?.merchant_order_id) === "Premium"
-                    ? "Premium Plan"
-                    : "Regular Plan"}
-                </p>
-              </div>
-            </div>
-
-            {/* Payment Method */}
-            <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
-              <CardIcon
-                type={paymentData?.source_data?.sub_type}
-                className="w-6 h-6"
-              />
-              <div className="flex-1">
-                <p className="text-sm text-gray-500">Payment Method</p>
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium text-purple-900">
-                    {paymentData?.source_data?.sub_type} ••••{" "}
-                    {getLastFourDigits(paymentData?.source_data?.pan)}
                   </span>
                 </div>
+
+                                    <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <PoundSterling className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                        <span className="font-medium text-gray-700 text-sm sm:text-base">
+                          Amount Paid
+                        </span>
               </div>
+                      <span className="font-bold text-green-600 text-sm sm:text-base">
+                        {formatAmount(paymentData?.amount_cents, paymentData?.currency)}
+                      </span>
             </div>
 
-            {/* Payment Date */}
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <Clock className="w-5 h-5 text-gray-600" />
-              <div>
-                <p className="text-sm text-gray-500">Payment Date</p>
-                <p className="font-medium text-gray-900">
-                  {formatDate(paymentData?.created_at)}
-                </p>
+                                                    <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    {getPlanTypeIcon(getPlanName(paymentData?.merchant_order_id))}
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Plan Type
+                    </span>
               </div>
+                  <Badge className="bg-purple-100 text-purple-700 border-purple-200 font-medium text-xs">
+                    {getPlanName(paymentData?.merchant_order_id)} Plan
+                  </Badge>
             </div>
 
-            {/* Status */}
-            <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg mb-3">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <div>
-                <p className="text-sm text-gray-500">Transaction Status</p>
-                <p className="font-medium text-green-900">
-                  {paymentData?.txn_response_code === "APPROVED"
-                    ? "Approved"
-                    : "Pending"}
-                </p>
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Plan Period
+                </span>
               </div>
+                  <Badge className="bg-indigo-100 text-indigo-700 border-indigo-200 font-medium text-xs">
+                    {getPlanPeriod(paymentData?.amount_cents / 100)}
+                  </Badge>
+            </div>
+
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    {getPaymentMethodIcon(paymentData?.source_data?.sub_type)}
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Payment Method
+                    </span>
+                  </div>
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">
+                    {paymentData?.source_data?.sub_type.slice(0, 1).toUpperCase()+paymentData?.source_data?.sub_type.slice(1)} / ••••{getLastFourDigits(paymentData?.source_data?.pan)}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Payment Date
+                    </span>
+              </div>
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">
+                    {formatDate(paymentData?.created_at)}
+                  </span>
+            </div>
+
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Email Confirmation
+                    </span>
+              </div>
+                  <span className="font-medium text-gray-900 text-sm sm:text-base">
+                    Receipt sent to your email
+                  </span>
+            </div>
+
+                <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 bg-gray-50">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                      Status
+                    </span>
+                  </div>
+                  <Badge
+                    variant="default"
+                    className="bg-green-100 text-green-700 border-green-200 font-medium text-xs"
+                  >
+                    {paymentData?.txn_response_code === "APPROVED" || "200" ? "Approved" : "Processing"}
+                  </Badge>
+                </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Action Buttons */}
-        <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
           <Button
             onClick={handleGoToProfile}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <User className="w-4 h-4 mr-2" />
-            Go to Profile
+              className="bg-primary hover:bg-primary/80 text-white font-semibold px-6 py-3 rounded-lg shadow-sm transition-all text-sm flex items-center justify-center gap-2"
+            >
+              <User className="w-4 h-4 sm:w-5 sm:h-5" />
+              View Profile
+            </Button>
+
+            <Button
+              onClick={handleDownloadReceipt}
+              variant="outline"
+              className="border border-primary text-primary hover:bg-primary/5 font-semibold px-6 py-3 rounded-lg shadow-sm transition-all text-sm flex items-center justify-center gap-2"
+            >
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              Download Receipt
           </Button>
 
-          <Button onClick={handleGoHome} variant="outline" className="w-full">
-            <ArrowRight className="w-4 h-4 mr-2" />
+            <Button
+              onClick={handleGoHome}
+              variant="outline"
+              className="border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold px-6 py-3 rounded-lg shadow-sm transition-all text-sm flex items-center justify-center gap-2"
+            >
+              <Home className="w-4 h-4 sm:w-5 sm:h-5" />
             Back to Home
           </Button>
+          </div>
         </div>
 
-        {/* Additional Info */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            Subscription details have been sent to your email
+        {/* Footer */}
+        <div className="mt-6 text-center">
+          <p className="text-gray-500 mb-2">
+            Thank you for choosing Dawaback {getPlanName(paymentData?.merchant_order_id)} Plan!
           </p>
-          <p className="text-xs text-gray-400 mt-2">
-            If you have any questions, please don't hesitate to contact us
+          <p className="text-sm text-gray-400">
+            Need help? Contact our support team at{" "}
+            <a href="mailto:support@dawaback.com" className="text-green-600 hover:underline">
+              support@dawaback.com
+            </a>
           </p>
         </div>
       </div>
     </div>
   );
 }
+
+
+
+

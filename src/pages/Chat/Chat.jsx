@@ -14,11 +14,7 @@ import {
   Lock,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "../../components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "../../components/ui/avatar";
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -93,19 +89,14 @@ export default function Chat() {
     if (chats && chats.length > 0) {
       for (const chat of chats) {
         const prev = prevUnreadCountsRef.current[chat.roomId] || 0;
-        if (
-          chat.unreadCount > prev &&
-          (!activeChat || chat.roomId !== activeChat.roomId)
-        ) {
+        if (chat.unreadCount > prev && (!activeChat || chat.roomId !== activeChat.roomId)) {
           const audio = new window.Audio("/new-notification-07-210334.mp3");
           audio.play();
           break; // Only play once per update
         }
       }
       // Update ref after check
-      prevUnreadCountsRef.current = Object.fromEntries(
-        chats.map((c) => [c.roomId, c.unreadCount])
-      );
+      prevUnreadCountsRef.current = Object.fromEntries(chats.map((c) => [c.roomId, c.unreadCount]));
     }
   }, [chats, activeChat?.roomId]);
 
@@ -298,9 +289,7 @@ export default function Chat() {
                   return (
                     <div
                       key={i}
-                      className={`flex ${
-                        isSent ? "justify-end" : "justify-start"
-                      } w-full relative`}
+                      className={`flex ${isSent ? "justify-end" : "justify-start"} w-full relative`}
                       style={{ top: i * 2 }}
                     >
                       <div
@@ -368,9 +357,7 @@ export default function Chat() {
                       onClick={() => handleChatSelect(chat)}
                       className="group cursor-pointer transform hover:scale-[1.02] transition-all duration-300"
                       style={{
-                        animation: `slideInUp 0.5s ease-out ${
-                          index * 0.1
-                        }s both`,
+                        animation: `slideInUp 0.5s ease-out ${index * 0.1}s both`,
                       }}
                     >
                       <div className="relative">
@@ -426,6 +413,7 @@ export default function Chat() {
                                   )}
                                 </div>
                               )}
+
                             </div>
                             {/* Chat info */}
                             <div className="flex-1 min-w-0">
@@ -438,6 +426,7 @@ export default function Chat() {
                                     {lastMsgTime}
                                   </span>
                                 )}
+
                               </div>
                               <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
@@ -487,6 +476,7 @@ export default function Chat() {
                   {activeTab === "open"
                     ? 'Start a chat by clicking "Chat with me" on any deal or pharmacy listing'
                     : "Closed chats will appear here when deals or pharmacies are no longer available"}
+
                 </p>
               </div>
             )}
@@ -578,14 +568,10 @@ export default function Chat() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-foreground">
-                      {activeChat.deal.medicineName ||
-                        activeChat.deal.title ||
-                        "Deal"}
+                      {activeChat.deal.medicineName || activeChat.deal.title || "Deal"}
                     </h4>
                     {activeChat.deal.price && (
-                      <p className="text-sm text-primary">
-                        ${activeChat.deal.price}
-                      </p>
+                      <p className="text-sm text-primary">${activeChat.deal.price}</p>
                     )}
                   </div>
                   {!isRoomClosed && (
@@ -606,10 +592,7 @@ export default function Chat() {
             <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1 custom-scrollbar">
               <ChatMessageList className="h-full" ref={messageListRef}>
                 {currentMessages.map((msg) => (
-                  <ChatBubble
-                    key={msg.id}
-                    variant={msg.isOwn ? "sent" : "received"}
-                  >
+                  <ChatBubble key={msg.id} variant={msg.isOwn ? "sent" : "received"}>
                     {!msg.isOwn && (
                       <ChatBubbleAvatar
                         src={msg.avatar}
@@ -634,12 +617,8 @@ export default function Chat() {
                       <ChatBubbleTimestamp timestamp={msg.timestamp} />
                       {msg.isOwn && (
                         <div className="flex items-center">
-                          {msg.status === "sent" && (
-                            <Check className="w-3 h-3 text-gray-400" />
-                          )}
-                          {msg.status === "read" && (
-                            <CheckCheck className="w-3 h-3 text-primary" />
-                          )}
+                          {msg.status === "sent" && <Check className="w-3 h-3 text-gray-400" />}
+                          {msg.status === "read" && <CheckCheck className="w-3 h-3 text-primary" />}
                         </div>
                       )}
                     </div>
@@ -777,9 +756,7 @@ export default function Chat() {
         </motion.button>
       </div>
       {/* Main chat content */}
-      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">
-        {chatContent}
-      </div>
+      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">{chatContent}</div>
     </motion.div>
   );
 

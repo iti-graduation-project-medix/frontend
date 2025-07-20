@@ -1,19 +1,20 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import {
   createDeal,
   getDeals,
   getDeal,
   updateDeal,
   deleteDeal,
-  updateDealStatus
-} from '../api/deals';
-import { getUserDeals } from '../api/profile/UserDeals';
+  updateDealStatus,
+} from "../api/deals";
+import { getUserDeals } from "../api/profile/UserDeals";
 
 export const useDeals = create(
   persist(
     (set, get) => ({
       deals: [],
+      deletedDeals: [], // Track deleted deals
       currentDeal: null,
       isLoading: false,
       isSubmitting: false,
@@ -30,7 +31,7 @@ export const useDeals = create(
           const response = await createDeal(dealData);
           const newDeal = response.data.deal;
 
-          set(state => ({
+          set((state) => ({
             deals: [newDeal, ...state.deals],
             isSubmitting: false,
             error: null,
@@ -41,7 +42,7 @@ export const useDeals = create(
         } catch (error) {
           set({
             isSubmitting: false,
-            error: error.message || 'Failed to create deal',
+            error: error.message || "Failed to create deal",
           });
           throw error;
         }
@@ -68,7 +69,7 @@ export const useDeals = create(
         } catch (error) {
           set({
             isLoading: false,
-            error: error.message || 'Failed to fetch deals',
+            error: error.message || "Failed to fetch deals",
           });
           throw error;
         }
@@ -94,7 +95,7 @@ export const useDeals = create(
         } catch (error) {
           set({
             isLoading: false,
-            error: error.message || 'Failed to fetch user deals',
+            error: error.message || "Failed to fetch user deals",
           });
           throw error;
         }
@@ -105,8 +106,7 @@ export const useDeals = create(
         set({ isLoading: true, error: null });
 
         try {
-          const token = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : undefined;
-          const deal = await getDeal(dealId, token);
+          const deal = await getDeal(dealId);
           set({
             currentDeal: deal,
             isLoading: false,
@@ -116,7 +116,7 @@ export const useDeals = create(
         } catch (error) {
           set({
             isLoading: false,
-            error: error.message || 'Failed to fetch deal',
+            error: error.message || "Failed to fetch deal",
           });
           throw error;
         }
@@ -130,11 +130,14 @@ export const useDeals = create(
           const response = await updateDeal(dealId, dealData);
           const updatedDeal = response.data.deal;
 
-          set(state => ({
-            deals: state.deals.map(deal =>
+          set((state) => ({
+            deals: state.deals.map((deal) =>
               deal.id === dealId ? updatedDeal : deal
             ),
-            currentDeal: state.currentDeal?.id === dealId ? updatedDeal : state.currentDeal,
+            currentDeal:
+              state.currentDeal?.id === dealId
+                ? updatedDeal
+                : state.currentDeal,
             isSubmitting: false,
             error: null,
           }));
@@ -143,7 +146,7 @@ export const useDeals = create(
         } catch (error) {
           set({
             isSubmitting: false,
-            error: error.message || 'Failed to update deal',
+            error: error.message || "Failed to update deal",
           });
           throw error;
         }
@@ -156,17 +159,21 @@ export const useDeals = create(
         try {
           await deleteDeal(dealId);
 
-          set(state => ({
-            deals: state.deals.filter(deal => deal.id !== dealId),
-            currentDeal: state.currentDeal?.id === dealId ? null : state.currentDeal,
-            isLoading: false,
-            error: null,
-            totalDeals: state.totalDeals - 1,
-          }));
+          set(state => {
+            const dealToDelete = state.deals.find(deal => deal.id === dealId);
+            return {
+              deals: state.deals.filter(deal => deal.id !== dealId),
+              deletedDeals: dealToDelete ? [...state.deletedDeals, { ...dealToDelete, deletedAt: new Date().toISOString() }] : state.deletedDeals,
+              currentDeal: state.currentDeal?.id === dealId ? null : state.currentDeal,
+              isLoading: false,
+              error: null,
+              totalDeals: state.totalDeals - 1,
+            };
+          });
         } catch (error) {
           set({
             isLoading: false,
-            error: error.message || 'Failed to delete deal',
+            error: error.message || "Failed to delete deal",
           });
           throw error;
         }
@@ -180,11 +187,14 @@ export const useDeals = create(
           const response = await updateDealStatus(dealId, isClosed);
           const updatedDeal = response.data.deal;
 
-          set(state => ({
-            deals: state.deals.map(deal =>
+          set((state) => ({
+            deals: state.deals.map((deal) =>
               deal.id === dealId ? updatedDeal : deal
             ),
-            currentDeal: state.currentDeal?.id === dealId ? updatedDeal : state.currentDeal,
+            currentDeal:
+              state.currentDeal?.id === dealId
+                ? updatedDeal
+                : state.currentDeal,
             isLoading: false,
             error: null,
           }));
@@ -193,7 +203,7 @@ export const useDeals = create(
         } catch (error) {
           set({
             isLoading: false,
-            error: error.message || 'Failed to update deal status',
+            error: error.message || "Failed to update deal status",
           });
           throw error;
         }
@@ -218,6 +228,7 @@ export const useDeals = create(
       resetDeals: () => {
         set({
           deals: [],
+          deletedDeals: [],
           currentDeal: null,
           isLoading: false,
           isSubmitting: false,
@@ -229,11 +240,12 @@ export const useDeals = create(
       },
     }),
     {
-      name: 'deals-storage', // unique name for localStorage key
+      name: "deals-storage", // unique name for localStorage key
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         // Only persist these fields, exclude loading states and errors
         deals: state.deals,
+        deletedDeals: state.deletedDeals,
         currentDeal: state.currentDeal,
         totalDeals: state.totalDeals,
         currentPage: state.currentPage,
@@ -241,4 +253,4 @@ export const useDeals = create(
       }),
     }
   )
-); 
+);

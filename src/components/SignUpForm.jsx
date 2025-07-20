@@ -472,6 +472,7 @@ export function SignUpForm({ className, ...props }) {
                         name="email"
                         type="email"
                         placeholder="Enter your email address"
+                        autoComplete="email"
                         className={cn(
                           "pl-10",
                           formik.touched.email &&
@@ -630,6 +631,7 @@ export function SignUpForm({ className, ...props }) {
                         name="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Create a strong password"
+                        autoComplete="new-password"
                         className={cn(
                           "pl-10",
                           formik.touched.password &&
@@ -689,6 +691,7 @@ export function SignUpForm({ className, ...props }) {
                       <Input
                         id="confirmPassword"
                         name="confirmPassword"
+                        autoComplete="new-password"
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm your password"
                         className={cn(

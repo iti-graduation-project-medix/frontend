@@ -6,34 +6,34 @@ export const features = [
   {
     icon: Scale,
     title: "Secure Bidding System",
-    description: "A transparent auction system ensures fair market value for your surplus stock."
+    description: "A transparent auction system ensures fair market value for your surplus stock.",
   },
   {
     icon: ArrowLeftRight,
     title: "Medicine Exchange",
-    description: "Easily list medications you have or find those you need for direct exchange."
+    description: "Easily list medications you have or find those you need for direct exchange.",
   },
   {
     icon: CheckCircle,
     title: "Verified Users Only",
-    description: "Strict verification process ensures all participants hold valid licenses."
+    description: "Strict verification process ensures all participants hold valid licenses.",
   },
   {
     icon: DollarSign,
     title: "Ad Space for Companies",
-    description: "Promote your products or services directly to a targeted pharmacy audience."
+    description: "Promote your products or services directly to a targeted pharmacy audience.",
   },
   {
     icon: Bell,
     title: "Real-time Notifications",
-    description: "Stay updated on new listings, bids, and messages instantly."
+    description: "Stay updated on new listings, bids, and messages instantly.",
   },
   {
     icon: BarChart3,
     title: "Detailed Analytics",
     description:
-      "Track your listing performance, bids, and exchange history for informed decisions."
-  }
+      "Track your listing performance, bids, and exchange history for informed decisions.",
+  },
 ];
 
 export const howWeWorkSteps = [
@@ -43,7 +43,7 @@ export const howWeWorkSteps = [
     image: "/imgs/steps.png",
     alt: "Doctor writing on a clipboard",
     title: "Register Account",
-    description: "Sign up as a Pharmacy or a Company to get started."
+    description: "Sign up as a Pharmacy or a Company to get started.",
   },
   {
     number: "02",
@@ -52,7 +52,7 @@ export const howWeWorkSteps = [
     alt: "Two women consulting",
     title: "Post Deals",
     description:
-      "List medications you want to sell/exchange or post specific requests for stock you need."
+      "List medications you want to sell/exchange or post specific requests for stock you need.",
   },
   {
     number: "03",
@@ -60,7 +60,7 @@ export const howWeWorkSteps = [
     image: "/imgs/steps.png",
     alt: "Doctors performing surgery",
     title: "Receive Offers",
-    description: "Engage with interested parties through our secure messaging and bidding system."
+    description: "Engage with interested parties through our secure messaging and bidding system.",
   },
   {
     number: "04",
@@ -68,53 +68,53 @@ export const howWeWorkSteps = [
     image: "/imgs/steps.png",
     alt: "Elderly couple smiling",
     title: "Complete Transaction",
-    description: "Arrange for the compliant transfer and logistics of the medications."
-  }
+    description: "Arrange for the compliant transfer and logistics of the medications.",
+  },
 ];
 
 export const faqs = [
   {
     question: "What is dental care?",
     answer:
-      "Tooth valuable resources, dental care should take us regularly to stay healthy. Oral Health Overview. Good dental or oral care is important to maintaining healthy teeth, gums, and tongue. Oral problems, including bad breath, dry mouth, canker or cold sores, TMD, tooth decay, or thrush are all treatable with proper diagnosis and care."
+      "Tooth valuable resources, dental care should take us regularly to stay healthy. Oral Health Overview. Good dental or oral care is important to maintaining healthy teeth, gums, and tongue. Oral problems, including bad breath, dry mouth, canker or cold sores, TMD, tooth decay, or thrush are all treatable with proper diagnosis and care.",
   },
   {
     question: "Does offer emergency care?",
     answer:
-      "Yes, we offer emergency dental care during our regular business hours. Please call us immediately if you have a dental emergency, and we will do our best to see you as soon as possible."
+      "Yes, we offer emergency dental care during our regular business hours. Please call us immediately if you have a dental emergency, and we will do our best to see you as soon as possible.",
   },
   {
     question: "Online live support",
     answer:
-      "Our online live support is available 24/7 to answer your questions, assist with appointments, and provide information. Look for the chat icon on our website to connect with a representative."
+      "Our online live support is available 24/7 to answer your questions, assist with appointments, and provide information. Look for the chat icon on our website to connect with a representative.",
   },
   {
     question: "What insurance plans do you accept?",
     answer:
-      "We accept most major dental insurance plans. Please contact our office with your insurance details, and our staff will be happy to verify your coverage."
-  }
+      "We accept most major dental insurance plans. Please contact our office with your insurance details, and our staff will be happy to verify your coverage.",
+  },
 ];
 
 export const faqItems = [
   {
     question: "🩺 Expert Doctors in Every Department",
-    answer: "Each department is staffed with specialists to ensure optimal care and expertise."
+    answer: "Each department is staffed with specialists to ensure optimal care and expertise.",
   },
   {
     question: "🚑 24/7 Emergency & Ambulance Services",
-    answer: "Our ambulance fleet is always ready. Trauma care and ICU are available day and night."
+    answer: "Our ambulance fleet is always ready. Trauma care and ICU are available day and night.",
   },
   {
     question: "💊 Affordable Costs & 24/7 Pharmacy",
     answer:
-      "We ensure affordable treatment with full-time pharmacy support and transparent pricing."
-  }
+      "We ensure affordable treatment with full-time pharmacy support and transparent pricing.",
+  },
 ];
 
 export const hoursData = [
   { day: "Monday - Friday", open: "8:00 - 18:00" },
   { day: "Saturday", open: "9:00 - 18:00" },
-  { day: "Sunday", open: "Closed" }
+  { day: "Sunday", open: "Closed" },
 ];
 
 export const whyChooseUsFeatures = [
@@ -137,7 +137,7 @@ export const whyChooseUsFeatures = [
     ),
     title: "Certified Professionals",
     description:
-      "Our team comprises highly qualified and experienced experts dedicated to providing top-notch services."
+      "Our team comprises highly qualified and experienced experts dedicated to providing top-notch services.",
   },
   {
     icon: (
@@ -158,7 +158,7 @@ export const whyChooseUsFeatures = [
     ),
     title: "Customer Satisfaction",
     description:
-      "We prioritize your needs, offering personalized solutions and dedicated support to ensure your complete satisfaction."
+      "We prioritize your needs, offering personalized solutions and dedicated support to ensure your complete satisfaction.",
   },
   {
     icon: (
@@ -184,8 +184,8 @@ export const whyChooseUsFeatures = [
     ),
     title: "Collaborative Approach",
     description:
-      "We work closely with clients, fostering open communication and partnership to achieve shared goals effectively."
-  }
+      "We work closely with clients, fostering open communication and partnership to achieve shared goals effectively.",
+  },
 ];
 
 export const testimonials = [
@@ -194,20 +194,20 @@ export const testimonials = [
     text: `"Flowbite is just awesome. It contains tons of predesigned components and pages starting from login screen to complex dashboard. Perfect choice for your next SaaS application."`,
     name: "Michael Gough",
     role: "CEO at Google",
-    img: "/avatars/client1.webp"
+    img: "/avatars/client1.webp",
   },
   {
     id: 2,
     text: `"Shadecn UI components help me build fast and beautiful interfaces with less effort."`,
     name: "John Doe",
     role: "Designer at ABC",
-    img: "/avatars/client2.webp"
+    img: "/avatars/client2.webp",
   },
   {
     id: 3,
     text: `"I use Flowbite in every project I do. It's beautiful, responsive and user-friendly."`,
     name: "Jane Smith",
     role: "CEO at XYZ",
-    img: "/avatars/client3.webp"
-  }
+    img: "/avatars/client3.webp",
+  },
 ];

@@ -83,3 +83,31 @@ export const markRoomAsSeen = (roomId, userId) => {
   const socket = getSocket();
   socket.emit("markRoomAsSeen", { roomId, userId });
 };
+
+// Drug Alert Functions
+export const listenToDrugAlerts = (callback, userId) => {
+  const socket = getSocket();
+
+  // Remove any existing listeners first
+  socket.off("drug-alert");
+
+  // Add the listener
+  const listener = (data) => {
+    if (callback && typeof callback === "function") {
+      try {
+        callback(data);
+      } catch (error) {
+        console.error("Error in drug alert callback:", error);
+      }
+    }
+  };
+
+  socket.on("drug-alert", listener);
+
+  return listener;
+};
+
+export const removeDrugAlertListener = () => {
+  const socket = getSocket();
+  socket.off("drug-alert");
+};

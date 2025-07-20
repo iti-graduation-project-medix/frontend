@@ -128,36 +128,46 @@ export default function Navbar() {
               return;
             }
 
-            // Refresh notifications from API to get the complete data
-            try {
-              const notifications =
-                await drugAlertService.getDrugAlertNotifications();
-              setDrugAlertNotifications(notifications);
+            // Defer heavy operations to prevent blocking
+            const processDrugAlert = async () => {
+              // Refresh notifications from API to get the complete data
+              try {
+                const notifications =
+                  await drugAlertService.getDrugAlertNotifications();
+                setDrugAlertNotifications(notifications);
 
-              // Calculate unread count from fresh data
-              const unreadCount = notifications.filter((n) => !n.isRead).length;
-              setUnreadDrugAlerts(unreadCount);
-            } catch (error) {
-              console.error("Error refreshing notifications:", error);
+                // Calculate unread count from fresh data
+                const unreadCount = notifications.filter((n) => !n.isRead).length;
+                setUnreadDrugAlerts(unreadCount);
+              } catch (error) {
+                console.error("Error refreshing notifications:", error);
 
-              // Fallback: create temporary notification
-              const newNotification = {
-                id: data.dealId || `temp-${Date.now()}`,
-                title: data.title,
-                message: data.message,
-                dealId: data.dealId,
-                isRead: false,
-                createdAt: new Date().toISOString(),
-                user: data.user,
-              };
-              setDrugAlertNotifications((prev) => {
-                const updatedNotifications = [newNotification, ...prev];
-                const newUnreadCount = updatedNotifications.filter(
-                  (n) => !n.isRead
-                ).length;
-                setUnreadDrugAlerts(newUnreadCount);
-                return updatedNotifications;
-              });
+                // Fallback: create temporary notification
+                const newNotification = {
+                  id: data.dealId || `temp-${Date.now()}`,
+                  title: data.title,
+                  message: data.message,
+                  dealId: data.dealId,
+                  isRead: false,
+                  createdAt: new Date().toISOString(),
+                  user: data.user,
+                };
+                setDrugAlertNotifications((prev) => {
+                  const updatedNotifications = [newNotification, ...prev];
+                  const newUnreadCount = updatedNotifications.filter(
+                    (n) => !n.isRead
+                  ).length;
+                  setUnreadDrugAlerts(newUnreadCount);
+                  return updatedNotifications;
+                });
+              }
+            };
+
+            // Defer processing to prevent blocking
+            if (window.requestIdleCallback) {
+              window.requestIdleCallback(() => processDrugAlert(), { timeout: 100 });
+            } else {
+              setTimeout(() => processDrugAlert(), 0);
             }
           }, user?.id);
         }
@@ -333,7 +343,7 @@ export default function Navbar() {
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none"
         >
-          <img src="/logo.svg" className="h-8 sm:h-10 md:h-12 lg:h-15" alt="Dawaback Logo" />
+          <img src="/logo.svg" className="h-10 sm:h-12 md:h-14 lg:h-16" alt="Dawaback Logo" />
           <div className="flex flex-col mb-3">
             <span className="font-bold text-2xl sm:text-3xl md:text-4xl whitespace-nowrap text-primary dark:text-white">
               Dawaback
@@ -434,7 +444,7 @@ export default function Navbar() {
                 )}
               </Link>
               {/* Avatar and Dropdown */}
-              <div className="relative flex items-center">
+              <div className="relative flex items-center hidden md:flex">
                 <motion.button
                   ref={userButtonRef}
                   type="button"
@@ -448,7 +458,7 @@ export default function Navbar() {
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10">
                     <AvatarFallback>
-                      {getInitials(pharmacistDetails?.fullName || "User")}
+                      {getInitials(user?.fullName || user?.name || pharmacistDetails?.fullName || "User")}
                     </AvatarFallback>
                   </Avatar>
                 </motion.button>
@@ -464,10 +474,10 @@ export default function Navbar() {
                     >
                       <div className="px-4 py-3">
                         <span className="block text-sm text-gray-900 dark:text-white">
-                          {pharmacistDetails?.fullName || "User"}
+                          {user?.fullName || user?.name || pharmacistDetails?.fullName || "User"}
                         </span>
                         <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                          {pharmacistDetails?.email || "user@example.com"}
+                          {user?.email || pharmacistDetails?.email || "user@example.com"}
                         </span>
                       </div>
                       <ul className="py-2" aria-labelledby="user-menu-button">
@@ -597,7 +607,8 @@ export default function Navbar() {
               variants={mobileMenuVariants}
               className="items-center justify-between w-full md:hidden md:w-auto md:order-1"
             >
-              <ul className="flex flex-col  font-medium p-4 md:p-0 mt-4 border rounded-lg  md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+              <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                {/* Main Navigation */}
                 <li>
                   <Link
                     to="/"
@@ -635,70 +646,144 @@ export default function Navbar() {
                     Contact
                   </Link>
                 </li>
-                {/* Notifications (mobile menu) */}
+
+                {/* User Account Section (only for authenticated users) */}
                 {isAuthenticated && (
-                  <li>
-                    <Link
-                      to="/notifications"
-                      className={
-                        location.pathname === "/notifications"
-                          ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                          : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                      }
-                    >
-                      <span>Notifications</span>
-                      <span className="relative">
-                        <FiBell
-                          className={
-                            location.pathname === "/notifications"
-                              ? "text-white w-5 h-5"
-                              : "w-5 h-5 text-zinc-600"
-                          }
-                        />
-                        {unreadDrugAlerts > 0 && (
-                          <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
-                            {unreadDrugAlerts}
-                          </Badge>
-                        )}
-                      </span>
-                    </Link>
-                  </li>
-                )}
-                {/* Favorites (mobile menu) */}
-                {isAuthenticated && (
-                  <li>
-                    <Link
-                      to="/favorites"
-                      className={
-                        location.pathname === "/favorites"
-                          ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                          : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                      }
-                    >
-                      <span>Favorites</span>
-                      <span className="relative">
-                        <Heart
-                          className={
-                            location.pathname === "/favorites"
-                              ? "text-white w-5 h-5"
-                              : "w-5 h-5 text-zinc-600"
-                          }
-                        />
-                        {favorites.deals.length + favorites.pharmacies.length >
-                          0 && (
-                          <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
-                            {favorites.deals.length +
-                              favorites.pharmacies.length}
-                          </Badge>
-                        )}
-                      </span>
-                    </Link>
-                  </li>
+                  <>
+                    {/* Divider */}
+                    <li className="border-t border-gray-200 dark:border-gray-600 my-2 md:hidden"></li>
+                    
+                    {/* User Profile */}
+                    <li>
+                      <Link
+                        to="/me"
+                        onClick={handleMenuClick}
+                        className={`block py-2 px-3 ${
+                          location.pathname === "/me" || location.pathname.startsWith("/me/")
+                            ? "text-white bg-primary rounded-sm"
+                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    
+                    {/* User Content */}
+                    <li>
+                      <Link
+                        to="/deals"
+                        onClick={handleMenuClick}
+                        className={`block py-2 px-3 ${
+                          location.pathname === "/deals"
+                            ? "text-white bg-primary rounded-sm"
+                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        My Deals
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/pharmacies"
+                        onClick={handleMenuClick}
+                        className={`block py-2 px-3 ${
+                          location.pathname === "/pharmacies"
+                            ? "text-white bg-primary rounded-sm"
+                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        My Pharmacies
+                      </Link>
+                    </li>
+                    
+                    {/* User Actions */}
+                    <li>
+                      <Link
+                        to="/favorites"
+                        className={
+                          location.pathname === "/favorites"
+                            ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                            : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        }
+                      >
+                        <span>Favorites</span>
+                        <span className="relative">
+                          <Heart
+                            className={
+                              location.pathname === "/favorites"
+                                ? "text-white w-5 h-5"
+                                : "w-5 h-5 text-zinc-600"
+                            }
+                          />
+                          {favorites.deals.length + favorites.pharmacies.length >
+                            0 && (
+                            <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
+                              {favorites.deals.length +
+                                favorites.pharmacies.length}
+                            </Badge>
+                          )}
+                        </span>
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/notifications"
+                        className={
+                          location.pathname === "/notifications"
+                            ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
+                            : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        }
+                      >
+                        <span>Notifications</span>
+                        <span className="relative">
+                          <FiBell
+                            className={
+                              location.pathname === "/notifications"
+                                ? "text-white w-5 h-5"
+                                : "w-5 h-5 text-zinc-600"
+                            }
+                          />
+                          {unreadDrugAlerts > 0 && (
+                            <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
+                              {unreadDrugAlerts}
+                            </Badge>
+                          )}
+                        </span>
+                      </Link>
+                    </li>
+                    
+                    {/* Settings & Logout */}
+                    <li>
+                      <Link
+                        to="/settings"
+                        onClick={handleMenuClick}
+                        className={`block py-2 px-3 ${
+                          location.pathname === "/settings"
+                            ? "text-white bg-primary rounded-sm"
+                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        Settings
+                      </Link>
+                    </li>
+                    
+                    {/* Divider before logout */}
+                    <li className="border-t border-gray-200 dark:border-gray-600 my-2 md:hidden"></li>
+                    
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                      >
+                        Sign out
+                      </button>
+                    </li>
+                  </>
                 )}
 
                 {!isAuthenticated && (
-                  <li className={`flex space-x-4 ${styles.centerBtns}`}>
-                    <div className={`flex space-x-4 ${styles.centerBtns}`}>
+                  <li className="mt-4">
+                    <div className="flex justify-center items-center mx-auto space-x-4">
                       <MotionLink
                         to={"/auth/login"}
                         whileTap="tap"
@@ -713,7 +798,7 @@ export default function Navbar() {
                         whileTap="tap"
                         whileHover="hover"
                         variants={buttonVariants}
-                        className="text-gray-900 bg-secondary border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                        className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                       >
                         Sign up
                       </MotionLink>

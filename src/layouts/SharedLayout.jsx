@@ -13,7 +13,6 @@ export default function SharedLayout() {
     <>
       <Navbar />
       <OfflineIndicator />
-
       <Suspense>
         <Outlet />
       </Suspense>

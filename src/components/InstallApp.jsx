@@ -19,23 +19,13 @@ const InstallApp = () => {
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     setIsIOS(iOS);
 
-    // Debug logging
-    console.log('PWA Debug:', {
-      isStandalone,
-      isIOS,
-      userAgent: navigator.userAgent,
-      displayMode: window.matchMedia('(display-mode: standalone)').matches
-    });
-
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      console.log('Install prompt received!');
     };
 
     const handleAppInstalled = () => {
       setDeferredPrompt(null);
-      console.log('App installed!');
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
@@ -53,21 +43,16 @@ const InstallApp = () => {
       return;
     }
 
-    if (deferredPrompt) {
-      // Use the native install prompt
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        console.log("User accepted the install prompt");
-      } else {
-        console.log("User dismissed the install prompt");
-      }
-      setDeferredPrompt(null);
+    if (!deferredPrompt) return;
+    
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      console.log("User accepted the install prompt");
     } else {
-      // Fallback for Android when no install prompt is available
-      // Show instructions for manual installation
-      setShowIOSInstructions(true);
+      console.log("User dismissed the install prompt");
     }
+    setDeferredPrompt(null);
   };
 
   const handleShareClick = async () => {
@@ -75,7 +60,7 @@ const InstallApp = () => {
       try {
         await navigator.share({
           title: 'Dawaback App',
-          text: 'Install Dawaback - Before it expires, trade it with desire',
+          text: 'Install Dawaback - Trusted Pharmacy Platform',
           url: window.location.href,
         });
       } catch (error) {
@@ -93,11 +78,9 @@ const InstallApp = () => {
     return null;
   }
 
-  // Show on iOS or if install prompt is available
-  // For Android, we'll show the button even without deferredPrompt to allow manual installation
-  if (!isIOS && !deferredPrompt) {
-    // For Android, we can still show the button and handle manual installation
-    // The button will be disabled but visible
+  // Don't show if no install prompt available and not iOS
+  if (!deferredPrompt && !isIOS) {
+    return null;
   }
 
   return (
@@ -118,9 +101,7 @@ const InstallApp = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Install Dawaback App {isIOS ? '(iOS)' : '(Android)'}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900">Install Dawaback App</h3>
               <button
                 onClick={() => setShowIOSInstructions(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -131,26 +112,24 @@ const InstallApp = () => {
             
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <div className="bg-primary rounded-full">
+                <div className="bg-primary rounded-full p-2">
                   <span className="text-white font-bold text-sm">1</span>
                 </div>
                 <p className="text-gray-700">Tap the <strong>Share</strong> button in your browser</p>
               </div>
               
               <div className="flex items-start space-x-3">
-                <div className="bg-primary rounded-full ">
+                <div className="bg-primaryrounded-full p-2">
                   <span className="text-white font-bold text-sm">2</span>
                 </div>
-                <p className="text-gray-700">
-                  {isIOS ? 'Scroll down and tap <strong>"Add to Home Screen"</strong>' : 'Tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong>'}
-                </p>
+                <p className="text-gray-700">Scroll down and tap <strong>"Add to Home Screen"</strong></p>
               </div>
               
               <div className="flex items-start space-x-3">
-                <div className="bg-primary  rounded-full">
-                  <span className="text-whitefont-bold text-sm">3</span>
+                <div className="bg-primary rounded-full p-2">
+                  <span className="text-white font-bold text-sm">3</span>
                 </div>
-                <p className="text-gray-700">Tap <strong>"Add"</strong> or <strong>"Install"</strong> to install the app</p>
+                <p className="text-gray-700">Tap <strong>"Add"</strong> to install the app</p>
               </div>
             </div>
 

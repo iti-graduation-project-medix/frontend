@@ -49,10 +49,10 @@ export default function DealDetails() {
     try {
       const userData = localStorage.getItem("user");
       if (!userData) return null;
-      
+
       const parsedUser = JSON.parse(userData);
       // Handle both cases: user could be the full object or just the ID
-      return typeof parsedUser === 'object' ? parsedUser.id : parsedUser;
+      return typeof parsedUser === "object" ? parsedUser.id : parsedUser;
     } catch (error) {
       return null;
     }
@@ -76,9 +76,7 @@ export default function DealDetails() {
   const initials = getInitials(deal?.postedBy?.fullName);
 
   if (isLoading) {
-    return (
-      <LoadingPage message="Loading deal details..." />
-    );
+    return <LoadingPage message="Loading deal details..." />;
   }
   if (error) {
     return (

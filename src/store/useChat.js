@@ -276,6 +276,15 @@ const useChat = create(
             closedBy,
           });
           const { activeChat } = get();
+
+          // Update the chat list to mark this room as closed
+          set((state) => ({
+            chats: state.chats.map((chat) =>
+              chat.roomId === roomId ? { ...chat, isClosed: true } : chat
+            ),
+          }));
+
+          // If this is the active chat, mark it as closed
           if (activeChat && activeChat.roomId === roomId) {
             set({ isRoomClosed: true });
           }
@@ -418,6 +427,7 @@ const useChat = create(
               lastMessage: room.lastMessage || null,
               unreadCount: room.unreadCount || 0,
               updatedAt: room.updatedAt || room.createdAt,
+              isClosed: room.isClosed || false, // Include the isClosed field from backend
             };
           });
 
@@ -463,24 +473,8 @@ const useChat = create(
             isOwn: msg.senderId === currentUserId,
           }));
 
-          // Fetch chat room details to check if closed
-          let isClosed = false;
-          try {
-            const token = localStorage.getItem("token");
-            const res = await fetch(
-              `https://backend.dawaback.com/api/v1/chat/room/${chat.roomId}`,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            const data = await res.json();
-            isClosed = data?.data?.isClosed;
-          } catch (e) {
-            isClosed = false;
-          }
+          // Use the isClosed field from the chat object
+          const isClosed = chat.isClosed || false;
 
           // Optimistically set unreadCount to 0 and update totalUnreadCount
           set((state) => {

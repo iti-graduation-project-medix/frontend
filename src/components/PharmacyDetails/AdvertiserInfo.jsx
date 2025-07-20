@@ -38,6 +38,7 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
       alert("Please login to start a chat");
       return;
     }
+    //hh
     try {
       // Start chat with the pharmacy owner
       await startChat(currentUserId, owner.id, pharmacyId, "pharmacy", {

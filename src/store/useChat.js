@@ -77,28 +77,56 @@ const useChat = create(
 
         // Listen for new messages
         socket.on("newMessage", (message) => {
-          const { activeChat, chats } = get();
+          // Use requestIdleCallback to defer heavy operations
+          const processMessage = () => {
+            const { activeChat, chats } = get();
 
-          // Update messages in active chat
-          if (activeChat) {
-            const currentUserId = get().getCurrentUserId();
+            // Update messages in active chat
+            if (activeChat) {
+              const currentUserId = get().getCurrentUserId();
 
-            set((state) => {
-              const msgs = state.messages[activeChat.roomId] || [];
-              // If the last message is optimistic and matches, replace it
-              if (
-                msgs.length &&
-                msgs[msgs.length - 1].temp &&
-                msgs[msgs.length - 1].content === message.text &&
-                msgs[msgs.length - 1].senderId === message.senderId
-              ) {
-                // Replace the optimistic message with the real one
+              set((state) => {
+                const msgs = state.messages[activeChat.roomId] || [];
+                // If the last message is optimistic and matches, replace it
+                if (
+                  msgs.length &&
+                  msgs[msgs.length - 1].temp &&
+                  msgs[msgs.length - 1].content === message.text &&
+                  msgs[msgs.length - 1].senderId === message.senderId
+                ) {
+                  // Replace the optimistic message with the real one
+                  return {
+                    ...state,
+                    messages: {
+                      ...state.messages,
+                      [activeChat.roomId]: [
+                        ...msgs.slice(0, -1),
+                        {
+                          id: Date.now().toString(),
+                          content: message.text,
+                          timestamp: new Date(message.sentAt).toLocaleTimeString(
+                            [],
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
+                          ),
+                          sender: message.senderName || "Unknown",
+                          senderId: message.senderId,
+                          isOwn: message.senderId === currentUserId,
+                          status: message.seenByReceiver ? "read" : "sent",
+                        },
+                      ],
+                    },
+                  };
+                }
+                // Otherwise, just add the message
                 return {
                   ...state,
                   messages: {
                     ...state.messages,
                     [activeChat.roomId]: [
-                      ...msgs.slice(0, -1),
+                      ...msgs,
                       {
                         id: Date.now().toString(),
                         content: message.text,
@@ -117,40 +145,14 @@ const useChat = create(
                     ],
                   },
                 };
-              }
-              // Otherwise, just add the message
-              return {
-                ...state,
-                messages: {
-                  ...state.messages,
-                  [activeChat.roomId]: [
-                    ...msgs,
-                    {
-                      id: Date.now().toString(),
-                      content: message.text,
-                      timestamp: new Date(message.sentAt).toLocaleTimeString(
-                        [],
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
-                      ),
-                      sender: message.senderName || "Unknown",
-                      senderId: message.senderId,
-                      isOwn: message.senderId === currentUserId,
-                      status: message.seenByReceiver ? "read" : "sent",
-                    },
-                  ],
-                },
-              };
-            });
-          }
+              });
+            }
 
-          // Always update the chat list with the new message for the correct room
-          set((state) => ({
-            chats: state.chats.map((chat) =>
-              chat.roomId === message.roomId
-                ? {
+            // Always update the chat list with the new message for the correct room
+            set((state) => ({
+              chats: state.chats.map((chat) =>
+                chat.roomId === message.roomId
+                  ? {
                     ...chat,
                     lastMessage: {
                       text: message.text,
@@ -158,9 +160,18 @@ const useChat = create(
                     },
                     updatedAt: new Date().toISOString(),
                   }
-                : chat
-            ),
-          }));
+                  : chat
+              ),
+            }));
+          };
+
+          // Defer processing if browser supports it
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(processMessage, { timeout: 100 });
+          } else {
+            // Fallback to setTimeout for older browsers
+            setTimeout(processMessage, 0);
+          }
         });
 
         // Listen for chat room creation/joining
@@ -177,16 +188,25 @@ const useChat = create(
                 isOwn: msg.senderId === currentUserId,
               }));
 
-              set((state) => ({
-                messages: {
-                  ...state.messages,
-                  [roomId]: processedMessages,
-                },
-                activeChat: {
-                  ...state.activeChat,
-                  roomId,
-                },
-              }));
+              // Defer state update to prevent blocking
+              const updateState = () => {
+                set((state) => ({
+                  messages: {
+                    ...state.messages,
+                    [roomId]: processedMessages,
+                  },
+                  activeChat: {
+                    ...state.activeChat,
+                    roomId,
+                  },
+                }));
+              };
+
+              if (window.requestIdleCallback) {
+                window.requestIdleCallback(updateState, { timeout: 100 });
+              } else {
+                setTimeout(updateState, 0);
+              }
             } catch (error) {
               console.error("Error loading chat history:", error);
             }
@@ -195,66 +215,99 @@ const useChat = create(
 
         // Listen for unread count updates
         socket.on("unreadCountUpdated", ({ roomId, unreadCount }) => {
-          set((state) => {
-            const updatedChats = state.chats.map((chat) =>
-              chat.roomId === roomId ? { ...chat, unreadCount } : chat
-            );
+          const updateUnreadCount = () => {
+            set((state) => {
+              const updatedChats = state.chats.map((chat) =>
+                chat.roomId === roomId ? { ...chat, unreadCount } : chat
+              );
 
-            // Calculate new total unread count (number of rooms with unread messages)
-            const newTotalUnread = updatedChats.filter(
-              (chat) => (chat.unreadCount || 0) > 0
-            ).length;
+              // Calculate new total unread count (number of rooms with unread messages)
+              const newTotalUnread = updatedChats.filter(
+                (chat) => (chat.unreadCount || 0) > 0
+              ).length;
 
-            return {
-              chats: updatedChats,
-              totalUnreadCount: newTotalUnread,
-            };
-          });
+              return {
+                chats: updatedChats,
+                totalUnreadCount: newTotalUnread,
+              };
+            });
+          };
+
+          // Defer processing to prevent blocking
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(updateUnreadCount, { timeout: 50 });
+          } else {
+            setTimeout(updateUnreadCount, 0);
+          }
         });
 
         // Listen for message seen updates
         socket.on("messageSeen", ({ roomId, messageId }) => {
-          set((state) => ({
-            messages: {
-              ...state.messages,
-              [roomId]:
-                state.messages[roomId]?.map((msg) =>
-                  msg.id === messageId ? { ...msg, status: "read" } : msg
-                ) || [],
-            },
-          }));
+          const updateMessageSeen = () => {
+            set((state) => ({
+              messages: {
+                ...state.messages,
+                [roomId]:
+                  state.messages[roomId]?.map((msg) =>
+                    msg.id === messageId ? { ...msg, status: "read" } : msg
+                  ) || [],
+              },
+            }));
+          };
+
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(updateMessageSeen, { timeout: 50 });
+          } else {
+            setTimeout(updateMessageSeen, 0);
+          }
         });
 
         // Listen for room marked as seen
         socket.on("roomMarkedAsSeen", ({ roomId }) => {
-          set((state) => ({
-            chats: state.chats.map((chat) =>
-              chat.roomId === roomId ? { ...chat, unreadCount: 0 } : chat
-            ),
-            messages: {
-              ...state.messages,
-              [roomId]:
-                state.messages[roomId]?.map((msg) => ({
-                  ...msg,
-                  status: "read",
-                })) || [],
-            },
-          }));
+          const updateRoomSeen = () => {
+            set((state) => ({
+              chats: state.chats.map((chat) =>
+                chat.roomId === roomId ? { ...chat, unreadCount: 0 } : chat
+              ),
+              messages: {
+                ...state.messages,
+                [roomId]:
+                  state.messages[roomId]?.map((msg) => ({
+                    ...msg,
+                    status: "read",
+                  })) || [],
+              },
+            }));
+          };
+
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(updateRoomSeen, { timeout: 50 });
+          } else {
+            setTimeout(updateRoomSeen, 0);
+          }
         });
 
         // Listen for last message updates
         socket.on("lastMessageUpdated", ({ roomId, text, sentAt }) => {
-          set((state) => ({
-            chats: state.chats.map((chat) =>
-              chat.roomId === roomId
-                ? {
+          const updateLastMessage = () => {
+            set((state) => ({
+              chats: state.chats.map((chat) =>
+                chat.roomId === roomId
+                  ? {
                     ...chat,
                     lastMessage: { text, sentAt },
                     updatedAt: new Date().toISOString(),
                   }
-                : chat
-            ),
-          }));
+                  : chat
+              ),
+            }));
+          };
+
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(updateLastMessage, { timeout: 50 });
+          } else {
+            setTimeout(updateLastMessage, 0);
+          }
         });
 
         // Listen for new chat room creation
@@ -263,9 +316,17 @@ const useChat = create(
           if (!newChat || !newChat.id) {
             await get().loadUserChats();
           } else {
-            set((state) => ({
-              chats: [newChat, ...state.chats],
-            }));
+            const updateNewChat = () => {
+              set((state) => ({
+                chats: [newChat, ...state.chats],
+              }));
+            };
+
+            if (window.requestIdleCallback) {
+              window.requestIdleCallback(updateNewChat, { timeout: 50 });
+            } else {
+              setTimeout(updateNewChat, 0);
+            }
           }
         });
 
@@ -275,18 +336,27 @@ const useChat = create(
             roomId,
             closedBy,
           });
-          const { activeChat } = get();
 
-          // Update the chat list to mark this room as closed
-          set((state) => ({
-            chats: state.chats.map((chat) =>
-              chat.roomId === roomId ? { ...chat, isClosed: true } : chat
-            ),
-          }));
+          const updateRoomClosed = () => {
+            const { activeChat } = get();
 
-          // If this is the active chat, mark it as closed
-          if (activeChat && activeChat.roomId === roomId) {
-            set({ isRoomClosed: true });
+            // Update the chat list to mark this room as closed
+            set((state) => ({
+              chats: state.chats.map((chat) =>
+                chat.roomId === roomId ? { ...chat, isClosed: true } : chat
+              ),
+            }));
+
+            // If this is the active chat, mark it as closed
+            if (activeChat && activeChat.roomId === roomId) {
+              set({ isRoomClosed: true });
+            }
+          };
+
+          if (window.requestIdleCallback) {
+            window.requestIdleCallback(updateRoomClosed, { timeout: 50 });
+          } else {
+            setTimeout(updateRoomClosed, 0);
           }
         });
 

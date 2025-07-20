@@ -30,9 +30,10 @@ const Pricing2 = ({
       monthlyPrice: "EGP50",
       yearlyPrice: "EGP100",
       features: [
-        { text: "Add up to 10 deals" },
-        { text: "Can't list pharmacies for sale" },
-        { text: "Can't subscribe to drug alert" },
+        { text: "Add up to 10 deals", available: true },
+        { text: "P2P trading using real-time chat", available: true },
+        { text: "List pharmacies for sale", available: false },
+        { text: "Subscribe to drug alert", available: false },
       ],
       button: {
         text: "Purchase",
@@ -46,9 +47,10 @@ const Pricing2 = ({
       monthlyPrice: "EGP100",
       yearlyPrice: "EGP400",
       features: [
-        { text: "Add unlimited deals" },
-        { text: "List pharmacies for sale" },
-        { text: "Subscribe to drug alert" },
+        { text: "Add unlimited deals", available: true },
+        { text: "P2P trading using real-time chat", available: true },
+        { text: "List pharmacies for sale", available: true },
+        { text: "Subscribe to drug alert", available: true },
       ],
       button: {
         text: "Purchase",
@@ -191,11 +193,20 @@ const Pricing2 = ({
 
 
           <div className="flex flex-col items-stretch gap-6 md:flex-row">
-            {plans.map((plan) => (
+            {plans.map((plan, index) => (
               <Card
                 key={plan.id}
-                className="flex w-80 flex-col justify-between text-left px-4 py-8"
+                className={`flex w-80 flex-col justify-between text-left px-4 py-8 relative overflow-hidden ${
+                  plan.id === "Premium" 
+                    ? "ring-2 ring-blue-600 shadow-xl scale-105" 
+                    : "hover:shadow-lg transition-all duration-300"
+                }`}
               >
+                {plan.id === "Premium" && (
+                  <div className="absolute top-0 right-0 bg-blue-600 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
+                    Most Popular
+                  </div>
+                )}
                 <CardHeader>
                   <CardTitle>
                     <p>{plan.name}</p>
@@ -218,10 +229,18 @@ const Pricing2 = ({
                     {plan.features.map((feature, index) => (
                       <li
                         key={index}
-                        className="flex items-center gap-2 text-sm"
+                        className={`flex items-center gap-2 text-sm ${
+                          feature.available ? 'text-gray-900' : 'text-gray-500'
+                        }`}
                       >
-                        <CircleCheck className="size-4" />
-                        <span>{feature.text}</span>
+                        {feature.available ? (
+                          <CircleCheck className="size-4 text-green-600" />
+                        ) : (
+                          <svg className="size-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        )}
+                        <span className={feature.available ? '' : 'line-through'}>{feature.text}</span>
                       </li>
                     ))}
                   </ul>

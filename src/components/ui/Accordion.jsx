@@ -18,9 +18,16 @@ export default function Accordion({ items }) {
             onClick={() => toggle(idx)}
             aria-expanded={openIndex === idx}
           >
-            <span>{item.title}</span>
+            <div className="flex items-center gap-3">
+              {item.icon && (
+                <div className="flex-shrink-0">
+                  {item.icon}
+                </div>
+              )}
+              <span className="text-left">{item.title}</span>
+            </div>
             <svg
-              className={`w-4 h-4 ml-2 transition-transform ${
+              className={`w-4 h-4 ml-2 transition-transform flex-shrink-0 ${
                 openIndex === idx ? "rotate-180" : "rotate-0"
               }`}
               fill="none"

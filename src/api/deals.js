@@ -1,23 +1,4 @@
-import axios from "axios";
-
-const baseURL = "https://backend.dawaback.com";
-
-// Create axios instance with default config
-const api = axios.create({
-  baseURL: `${baseURL}/api/v1`,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Request interceptor to add auth token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
-  }
-  return config;
-});
+import api from "./axios.js";
 
 // Create a new deal
 export const createDeal = async (dealData) => {
@@ -40,17 +21,10 @@ export const getDeals = async (queryParams = {}) => {
 };
 
 // Get a single deal by ID
-export const getDeal = async (dealId, token) => {
+export const getDeal = async (dealId) => {
   try {
-    if (token) {
-      const response = await api.get(`/deals/${dealId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data.data.deal;
-    } else {
-      const response = await api.get(`/deals/${dealId}`);
-      return response.data.data.deal;
-    }
+    const response = await api.get(`/deals/${dealId}`);
+    return response.data.data.deal;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch deal");
   }
@@ -90,4 +64,4 @@ export const updateDealStatus = async (dealId, isClosed) => {
 
 // Keep the existing function for backward compatibility
 export const requestAdvertise = (data) =>
-  axios.post(`${baseURL}/api/v1/advertisement-request`, data);
+  api.post("/advertisement-request", data);

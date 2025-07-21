@@ -604,7 +604,7 @@ export default function Chat() {
               Profile
             </Link>
           </div>
-          {/* Pharmacy Info Banner (like DealInfoBar) */}
+          {/* Pharmacy Info Banner  */}
           {activeChat?.pharmacy && (
             <div className="px-4 py-2 shadow-xl">
               <div className="bg-gradient-to-r from-blue-50/60 to-indigo-100/60 rounded-2xl p-3 border border-blue-100">

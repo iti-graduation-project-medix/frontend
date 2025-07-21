@@ -1,606 +1,805 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React from "react";
 import { Link } from "react-router-dom";
 
-import { Badge } from "../../components/ui/badge";
-import { features } from "./homeUtilities";
-import { howWeWorkSteps, faqItems, testimonials } from "./homeUtilities";
-import "flowbite";
-import { Input } from "@/components/ui/input";
-import { useInView } from "../../hooks/useInView";
-
 export default function Home() {
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallBtn, setShowInstallBtn] = useState(false);
-
-  useEffect(() => {
-    const handleBeforeInstallPrompt = e => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallBtn(true);
-    };
-
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    };
-  }, []);
-
-  const handleInstallClick = () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(choiceResult => {
-        if (choiceResult.outcome === "accepted") {
-          // User accepted the install prompt
-        } else {
-          // User dismissed the install prompt
-        }
-        setDeferredPrompt(null);
-        setShowInstallBtn(false);
-      });
-    }
-  };
-
-  const MotionLink = motion.create(Link);
-  const buttonVariants = { tap: { scale: 0.95 }, hover: { scale: 1.05 } };
-
-  const [openIndex, setOpenIndex] = useState(null);
-  const [current, setCurrent] = useState(0);
-
-  const [headerRef, headerInView] = useInView();
-  const [previewRef, previewInView] = useInView();
-  const [whoWeAreRef, whoWeAreInView] = useInView();
-  const [featuresRef, featuresInView] = useInView();
-  const [featuresCardsRef, featuresCardsInView] = useInView();
-  const [stepsRef, stepsInView] = useInView();
-  const [stepsCardsRef, stepsCardsInView] = useInView();
-  const [missionRef, missionInView] = useInView();
-  const [faqRef, faqInView] = useInView();
-  const [testimonialRef, testimonialInView] = useInView();
-  const [newsletterRef, newsletterInView] = useInView();
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent(prev => (prev + 1) % testimonials.length);
-    }, 3000);
-
-    return () => clearInterval(interval); // تنظيف الانترفال عند إلغاء المكون
-  }, []);
-
-  const toggleAccordion = index => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  const { text, name, role, img } = testimonials[current];
-
   return (
-    <div className="min-h-screen font-sans">
-      <motion.header
-        ref={headerRef}
-        initial={{ opacity: 0, y: 30 }}
-        animate={headerInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 1, ease: "easeOut" }}
-      >
-        {/* Hero Section */}
-        <header
-          className="relative h-screen min-h-[500px] flex items-center justify-center text-white text-center px-4 overflow-hidden"
-          style={{
-            backgroundImage: `url(/imgs/drug-store.webp)`,
-            backgroundSize: "cover",
-            backgroundPosition: "center"
-          }}
-        >
-          <div className="absolute inset-0 bg-black opacity-60 z-10" />
-          <div className="relative z-20 max-w-5xl mx-auto p-4 md:p-8">
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight drop-shadow-lg">
-              Optimize Your Pharmacy Inventory
-            </h1>
-            <p className="text-lg md:text-xl lg:text-2xl mb-10 max-w-3xl mx-auto opacity-90 font-light drop-shadow-md">
-              Connect with companies to exchange or bid on near-expiry medications efficiently and
-              compliantly.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <MotionLink
-                to="/join-pharmacy"
-                whileTap="tap"
-                whileHover="hover"
-                variants={buttonVariants}
-                className="flex items-center gap-2 text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2 w-auto"
-              >
-                <svg
-                  className="w-5 h-5 text-white"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M11.403 5H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6.403a3.01 3.01 0 0 1-1.743-1.612l-3.025 3.025A3 3 0 1 1 9.99 9.768l3.025-3.025A3.01 3.01 0 0 1 11.403 5Z"
-                    clipRule="evenodd"
-                  />
-                  <path
-                    fillRule="evenodd"
-                    d="M13.232 4a1 1 0 0 1 1-1H20a1 1 0 0 1 1 1v5.768a1 1 0 1 1-2 0V6.414l-6.182 6.182a1 1 0 0 1-1.414-1.414L17.586 5h-3.354a1 1 0 0 1-1-1Z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>Join as Pharmacy</span>
-              </MotionLink>
-
-              {/* install button */}
-              {showInstallBtn &&
-                <motion.button
-                  className="bg-yellow-500 px-6 py-2 rounded-lg text-sm hover:bg-yellow-600 cursor-pointer flex items-center gap-2"
-                  onClick={handleInstallClick}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <svg
-                    className="w-5 h-5 text-white"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z"
-                      clipRule="evenodd"
-                    />
-                    <path
-                      fillRule="evenodd"
-                      d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  <span className="text-white font-medium">Install App</span>
-                </motion.button>}
-              {/* <MotionLink to="/join-company" whileTap="tap" whileHover="hover" variants={buttonVariants} className="text-gray-900 bg-[#d0d2f8] hover:bg-gray-100 hover:text-primary focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-6 py-2 w-auto">
-                Join as Company
-              </MotionLink> */}
-            </div>
-          </div>
-        </header>
-      </motion.header>
-
-      <main>
-        <motion.div
-          ref={previewRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={previewInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* Preview Section */}
-          <section className="pt-16 md:pt-16 px-14 text-center text-[color:var(--card-foreground)] transition-colors duration-300">
-            <div className="container mx-auto max-w-4xl">
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 px-5 leading-tight text-[var(--foreground)]">
-                Bridging the Gap for Pharmaceutical Inventory
-              </h2>
-              <p className="text-lg md:text-xl text-[color:var(--muted-foreground)] max-w-3xl mx-auto leading-relaxed">
-                MediExchange is a secure online platform connecting pharmacies and companies for the
-                ethical and efficient handling of near-expiry and surplus medications through a
-                transparent exchange and bidding system. Reduce waste, recover value, and access
-                needed stock.
-              </p>
-            </div>
-          </section>
-        </motion.div>
-
-        <motion.div
-          ref={whoWeAreRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={whoWeAreInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* Who We Are */}
-          <section className="py-12 px-6 sm:px-10 md:px-14 text-[color:var(--card-foreground)] transition-colors duration-300">
-            <div className="container mx-auto flex flex-col lg:flex-row items-center gap-12">
-              {/* Text Content */}
-              <div className="w-full lg:w-1/2 flex flex-col text-center lg:text-left">
-                <Badge
-                  variant="outline"
-                  className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full mx-auto lg:mx-0"
-                >
-                  Who We Are
-                </Badge>
-
-                <h3 className="text-3xl md:text-4xl font-bold text-[color:var(--primary)] mb-6 leading-tight order-1">
-                  Bridging Sustainability with Pharmacy
-                </h3>
-
-                {/* Image between title and paragraphs in small screens */}
-                <div className="w-full flex justify-center my-6 order-2 lg:hidden shadow-none">
-                  <div className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 shadow-none  overflow-hidden">
-                    <img
-                      src="/imgs/whoWeAre.png"
-                      alt="About MediExchange"
-                      className="object-cover w-full h-full shadow-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Paragraphs */}
-                <p className="text-base md:text-lg leading-relaxed text-[color:var(--muted-foreground)] mb-4 order-3">
-                  Founded on the principles of sustainability and resource optimization within the
-                  pharmaceutical supply chain, MediExchange provides a trusted marketplace designed
-                  to extend the lifecycle of valuable medications and reduce the environmental and
-                  economic burden of disposal.
-                </p>
-                <p className="text-base md:text-lg leading-relaxed text-[color:var(--muted-foreground)] order-4">
-                  Our mission is to create a more resilient and efficient system for all
-                  stakeholders.
-                </p>
-              </div>
-
-              {/* Image on right for large screens */}
-              <div className="w-full lg:w-1/2 hidden lg:flex items-center justify-center">
-                <div className="w-[400px] h-[400px] xl:w-[500px] xl:h-[500px]  overflow-hidden ">
-                  <img
-                    src="/imgs/whoWeAre.png"
-                    alt="About MediExchange"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-        </motion.div>
-
-        <motion.div
-          ref={featuresRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={featuresInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* Services / Features */}
-
-          <section className="py-24 px-4  text-[color:var(--card-foreground)]">
-            <div className="max-w-7xl mx-auto text-center">
-              <Badge
-                variant="outline"
-                className="self-center mb-4 lg:self-start  bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-              >
-                Our Features
-              </Badge>
-              <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
-                Discover Our Platform Features
-              </h2>
-              <p className="text-lg text-[color:var(--muted-foreground)] max-w-2xl mx-auto mb-16">
-                Explore a range of powerful tools designed to simplify, optimize, and scale your
-                pharmaceutical operations.
-              </p>
-
-              <motion.div
-                ref={featuresCardsRef}
-                initial={{ opacity: 0, y: 80 }}
-                animate={featuresCardsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1, ease: "easeOut" }}
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 px-4">
-                  {features.map((feature, idx) =>
-                    <div
-                      key={idx}
-                      className="group bg-white dark:bg-[color:var(--card)] p-8 rounded-2xl shadow-xl hover:shadow-2xl transition duration-300 border border-gray-200 dark:border-[color:var(--border)] relative overflow-hidden"
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-purple-50 flex flex-col items-center justify-start font-sans">
+      {/* Hero Section */}
+      <section className="w-full flex flex-col items-center justify-center pt-24 pb-8 px-4 text-center">
+        <span className="uppercase tracking-widest text-xs font-semibold text-blue-600 mb-2">
+          For Pharmacists Only
+        </span>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <img
+            src="/logo.svg"
+            alt="Dawaback Logo"
+            className="h-14 w-14 drop-shadow-lg"
+          />
+          <span className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-800 tracking-tight">
+            Dawaback
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 max-w-2xl mx-auto">
+          <span className="text-blue-800">#1</span> Platform for Pharmacists to
+          Exchange Medicines & Sell Pharmacies
+        </h1>
+        <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-8 max-w-xl mx-auto font-light">
+          Dawaback connects pharmacists to exchange surplus or near-expiry
+          medicines, chat directly about each deal, and even list pharmacies for
+          sale. Secure, trusted, and built for the pharmacy community.
+        </p>
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full max-w-md mx-auto mb-6">
+          <Link
+            to="/auth/signup"
+            className="inline-flex items-center justify-center bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg px-8 py-3 text-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
+          >
+            <svg
+              className="w-6 h-6 mr-2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M21 7L9 19l-5.5-5.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            Get Started
+          </Link>
+          <Link
+            to="/explore"
+            className="inline-flex items-center justify-center bg-white border border-blue-700 text-blue-700 font-semibold rounded-lg px-8 py-3 text-lg shadow-sm hover:bg-blue-50 transition-all duration-200"
+          >
+            <svg
+              className="w-6 h-6 mr-2"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 8v4l3 3" />
+            </svg>
+            Explore Platform
+          </Link>
+        </div>
+        {/* Features Bar */}
+        <div className="flex flex-wrap justify-center gap-4 mt-4">
+          <span className="flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
+            💬 Chat for Every Deal
+          </span>
+          <span className="flex items-center gap-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium">
+            🔄 Medicine Exchange
+          </span>
+          <span className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
+            🏪 Sell Your Pharmacy
+          </span>
+          <span className="flex items-center gap-2 bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm font-medium">
+            🔒 Verified Pharmacists
+          </span>
+        </div>
+      </section>
+      {/* How It Works Section */}
+      <section className="w-full max-w-6xl mx-auto py-16 px-4 md:px-0">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-900 text-center mb-12">
+          How Dawaback Works
+        </h2>
+        <div className="flex flex-col gap-1 w-full">
+          {/* Row 1: Step 1 + Step 2 */}
+          <div className="flex flex-col md:flex-row md:gap-6 w-full items-center">
+            {/* Step 1 + Brief */}
+            <div className="w-full md:w-1/2">
+              <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-blue-100 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+                {/* Step */}
+                <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
+                  <span className="mb-2">
+                    <svg
+                      className="w-8 h-8 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
                     >
-                      {/* Circle Icon with hover transition */}
-                      <div className="bg-[#dadcf8] text-[color:var(--primary)] w-14 h-14 flex items-center justify-center rounded-full mb-6 mx-auto group-hover:scale-110 transition-transform duration-300">
-                        <feature.icon className="w-6 h-6" />
-                      </div>
-
-                      <h3 className="text-xl font-semibold text-[color:var(--foreground)] mb-3 group-hover:text-[color:var(--primary)] transition-colors">
-                        {feature.title}
-                      </h3>
-                      <p className="text-sm text-[color:var(--muted-foreground)] leading-relaxed">
-                        {feature.description}
-                      </p>
-
-                      {/* Bottom gradient hover line */}
-                      <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-[3px] bg-[color:var(--primary)] transition-all duration-300 group-hover:w-2/3 rounded-full" />
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </div>
-          </section>
-        </motion.div>
-
-        <motion.div
-          ref={stepsRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={stepsInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* steps */}
-          <div className="min-h-screen bg-gray-50">
-            <section className="py-10 px-2 bg-white font-sans text-center relative">
-              <div className="mb-16 text-center">
-                <Badge
-                  variant="outline"
-                  className="mx-auto mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                >
-                  Our Working Process
-                </Badge>
-
-                <h2 className="text-4xl text-[#2b2b64] font-bold mb-4">How We Work</h2>
-
-                <p className="text-base text-gray-600 leading-relaxed max-w-2xl mx-auto">
-                  At MediExchange, our process is built for clarity and collaboration. From
-                  identifying your needs to delivering impactful results, we ensure every step is
-                  efficient, transparent, and aligned with your goals.
-                </p>
-              </div>
-
-              <motion.div
-                ref={stepsCardsRef}
-                initial={{ opacity: 0, y: 80 }}
-                animate={stepsCardsInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 1, ease: "easeOut" }}
-              >
-                {/* Steps Cards */}
-                <div className="flex flex-wrap justify-center gap-10 relative pt-5 z-10">
-                  {howWeWorkSteps.map((step, index) =>
-                    <div
-                      className="w-full sm:w-[calc(50%-20px)] lg:w-[280px] text-center relative mb-10 z-10"
-                      key={index}
-                    >
-                      <div className="w-[150px] h-[150px] rounded-[50%] mx-auto mb-6 relative border-4 border-[#f0f0f0] shadow-lg bg-white z-0">
-                        <img
-                          src={step.image}
-                          alt={step.alt}
-                          className="w-full h-full object-cover rounded-[50%]"
-                        />
-
-                        {/* Step Number Circle at top-left of image */}
-                        <div className="absolute top-2 left-2 w-9 h-9 rounded-full bg-[color:var(--primary)] flex items-center justify-center text-[color:var(--primary-foreground)] shadow-md text-sm font-bold z-20">
-                          {index + 1}
-                        </div>
-                      </div>
-
-                      <h3 className="text-2xl text-[#2b2b64] font-bold mb-2.5 flex items-center justify-center gap-2">
-                        <svg
-                          fill="none"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          className="w-6 h-6 text-[#636ae8]"
-                          viewBox="0 0 24 24"
-                        >
-                          {step.icon}
-                        </svg>
-                        {step.title}
-                      </h3>
-
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {step.description}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* SVG Curved Dotted Line */}
-                  <div className="hidden lg:block absolute top-[100px] left-0 right-0 w-full z-0">
-                    <svg viewBox="0 0 1000 100" preserveAspectRatio="none" className="w-full h-5">
                       <path
-                        d="M 20 50
-               Q 120 0, 250 50
-               T 480 50
-               T 710 50
-               T 940 50"
-                        fill="none"
-                        stroke="#a8a5a5"
-                        strokeWidth="1.2"
-                        strokeDasharray="4,4"
+                        d="M12 4v16m8-8H4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
-                  </div>
-                </div>
-              </motion.div>
-            </section>
-          </div>
-        </motion.div>
-
-        <motion.div
-          ref={missionRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={missionInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* mission & vision */}
-          <section className="bg-white py-20 px-6 font-sans">
-            <div className="max-w-8xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 md:gap-6 gap-0 items-center relative">
-              {/* Left Box - Mission */}
-              <div className="bg-[#eff0fc]/90 md:pr-30 sm:pr-8  text-white p-8 py-16 rounded-lg shadow-lg col-span-12 lg:col-span-7">
-                <div className="flex justify-center md:justify-start">
-                  <Badge
-                    variant="outline"
-                    className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                  >
-                    Our Mission
-                  </Badge>
-                </div>
-
-                <h3 className="text-3xl lg:text-4xl font-bold text-[color:var(--foreground)] mb-6 leading-tight text-center md:text-left">
-                  Advancing Pharmacy Through Circular Innovation
-                </h3>
-
-                <p className="text-base lg:text-lg leading-relaxed text-[color:var(--muted-foreground)] break-words text-center md:text-left">
-                  At MediExchange, we are reimagining the pharmaceutical supply chain...
-                </p>
-              </div>
-
-              {/* Right Box - Vision */}
-              <div className="bg-background text-left p-6 lg:p-8 rounded-md shadow-2xl col-span-12 lg:col-span-5 md:mt-6 mt-6 lg:mt-0 lg:ml-[-100px] z-10">
-                <div className="flex justify-center md:justify-start">
-                  <Badge
-                    variant="outline"
-                    className="mb-4 bg-[#dadcf8] text-[color:var(--secondary-foreground)] px-5 py-2 text-sm font-medium rounded-full"
-                  >
-                    Our Vision
-                  </Badge>
-                </div>
-
-                <h3 className="text-3xl lg:text-4xl font-bold text-[color:var(--primary)] mb-6 leading-tight text-center md:text-left">
-                  Shaping a Sustainable Future for Pharma
-                </h3>
-
-                <p className="text-base lg:text-lg leading-relaxed text-[color:var(--muted-foreground)] break-words text-center md:text-left">
-                  We envision a future where pharmacies collaborate...
-                </p>
-              </div>
-            </div>
-          </section>
-        </motion.div>
-
-        <motion.div
-          ref={faqRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={faqInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* frequently questions */}
-          <section className="relative font-sans  py-24 px-6 md:px-14 overflow-hidden">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              {/* Left Image */}
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl w-full md:w-auto">
-                <img
-                  src="/imgs/faqs.webp"
-                  alt="Opening and Visiting Hours"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/10" />
-              </div>
-
-              {/* Right Content */}
-              <div className="relative bg-[#f4f6ff] backdrop-blur-lg border border-[#dadcf8] shadow-xl rounded-3xl p-8 md:p-12 z-10 w-full md:w-auto">
-                <div className="flex justify-start mb-4">
-                  <span className="bg-[#dadcf8] text-[#2b2b64] px-4 py-1 text-sm font-semibold rounded-full uppercase tracking-wide shadow-sm">
-                    Faqs
                   </span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold text-lg border-2 border-blue-200 shadow mb-2">
+                    1
+                  </span>
+                  <h3 className="font-bold text-lg text-blue-700 mb-1">
+                    Sign Up & Verify
+                  </h3>
+                  <div className="w-8 border-b border-blue-100 mx-auto mb-2"></div>
+                  <p className="text-gray-700 text-sm leading-relaxed text-center">
+                    Create your account and verify your pharmacy license with
+                    your ID and Syndicate Card (front & back).
+                  </p>
                 </div>
-
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[#2b2b64] mb-4">
-                  Frequently Asked Questions
-                </h2>
-
-                <p className="text-gray-700 text-base mb-6 leading-relaxed">
-                  We provide the best service nationwide. Here’s why patients choose our hospital:
-                </p>
-
-                {/* Accordion */}
-                <div className="space-y-4">
-                  {faqItems.map((item, index) => {
-                    const isOpen = openIndex === index;
-                    return (
-                      <div
-                        key={index}
-                        className="border border-gray-300 rounded-xl overflow-hidden transition-all duration-300"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => toggleAccordion(index)}
-                          className="w-full flex justify-between items-center text-left px-5 py-4 bg-white hover:bg-[#eff1fb] transition-colors font-medium text-gray-900"
-                        >
-                          <span>
-                            {item.question}
-                          </span>
-                          <span className="text-2xl font-bold text-[#2b2b64]">
-                            {isOpen ? "−" : "+"}
-                          </span>
-                        </button>
-
-                        <div
-                          className={`px-5 overflow-hidden transition-all duration-500 ease-in-out ${isOpen
-                            ? "max-h-40 py-4 opacity-100"
-                            : "max-h-0 opacity-0"} text-sm text-gray-600 bg-white`}
-                        >
-                          {item.answer}
-                        </div>
-                      </div>
-                    );
-                  })}
+                {/* Divider */}
+                <div className="hidden md:flex flex-col items-center justify-center px-2">
+                  <span className="w-2 h-2 rounded-full bg-blue-400 mb-1"></span>
+                  <div className="w-0.5 h-12 bg-blue-100 rounded-full"></div>
+                </div>
+                {/* Brief */}
+                <div className="flex flex-col justify-center flex-1 px-2 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg
+                      className="w-5 h-5 text-blue-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 8v4l3 3" />
+                    </svg>
+                    <h4 className="text-base font-semibold text-blue-800">
+                      Why Verification?
+                    </h4>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    Ensures only licensed pharmacists join Dawaback, building a
+                    trusted and professional community for safe medicine
+                    exchange.
+                  </p>
                 </div>
               </div>
             </div>
-          </section>
-        </motion.div>
-
-        <motion.div
-          ref={testimonialRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={testimonialInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* testimonials */}
-          <section className="max-w-screen-md mb-14  mx-auto text-center relative overflow-hidden p-6">
-            <figure>
+            {/* Arrow hand-drawn horizontal between step 1 and 2 */}
+            <div className="hidden md:flex items-center justify-center h-full mx-2">
               <svg
-                className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-600"
-                aria-hidden="true"
+                width="80"
+                height="40"
+                viewBox="0 0 80 40"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 18 14"
               >
-                <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z" />
+                <path
+                  d="M10 20 C30 10, 50 30, 70 20"
+                  stroke="#60a5fa"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeDasharray="4 3"
+                  fill="none"
+                />
+                <path
+                  d="M65 15 L70 20 L65 25"
+                  stroke="#60a5fa"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
               </svg>
-              <blockquote>
-                <p className="text-2xl italic font-medium text-gray-900 dark:text-white">
-                  {text}
-                </p>
-              </blockquote>
-              <figcaption className="flex items-center justify-center mt-6 space-x-3 rtl:space-x-reverse">
-                <img className="w-10 h-10 rounded-full" src={img} alt={`${name} profile picture`} />
-                <div className="flex items-center divide-x-2 rtl:divide-x-reverse divide-gray-500 dark:divide-gray-700">
-                  <cite className="pe-3 font-medium text-gray-900 dark:text-white">
-                    {name}
-                  </cite>
-                  <cite className="ps-3 text-sm text-gray-500 dark:text-gray-400">
-                    {role}
-                  </cite>
-                </div>
-              </figcaption>
-            </figure>
-          </section>
-        </motion.div>
-
-        <motion.div
-          ref={newsletterRef}
-          initial={{ opacity: 0, y: 80 }}
-          animate={newsletterInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1, ease: "easeOut" }}
-        >
-          {/* newaletter */}
-          <section
-            className="bg-cover bg-center py-20 text-white"
-            style={{
-              backgroundImage: "url('/imgs/newsletter.webp')",
-              backgroundColor: "rgba(175, 180, 240, 0.5)",
-              backgroundBlendMode: "multiply"
-            }}
-          >
-            <div className="max-w-xl mx-auto text-center space-y-6 px-4">
-              <Input
-                type="email"
-                placeholder="Enter your Email Address"
-                className="bg-transparent border-b border-white rounded-none text-white placeholder-white text-center focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-              <MotionLink
-                to="/join-pharmacy"
-                whileTap="tap"
-                whileHover="hover"
-                variants={buttonVariants}
-                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2"
-              >
-                Subscribe Now
-              </MotionLink>
             </div>
-          </section>
-        </motion.div>
-      </main>
-    </div>
+            {/* Step 2 + Brief */}
+            <div className="w-full md:w-1/2 mt-4 md:mt-0">
+              <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-yellow-100 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+                {/* Step */}
+                <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
+                  <span className="mb-2">
+                    <svg
+                      className="w-8 h-8 text-yellow-600"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 17.75l6.16 3.73-1.64-7.03L21.5 9.24l-7.19-.61L12 2 9.69 8.63 2.5 9.24l5.98 5.21-1.64 7.03L12 17.75z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 font-bold text-lg border-2 border-yellow-200 shadow mb-2">
+                    2
+                  </span>
+                  <h3 className="font-bold text-lg text-yellow-700 mb-1">
+                    Subscription
+                  </h3>
+                  <div className="w-8 border-b border-yellow-100 mx-auto mb-2"></div>
+                  <p className="text-gray-700 text-sm leading-relaxed text-center">
+                    Choose a subscription plan to unlock full access to deals,
+                    chat, and pharmacy listing features.
+                  </p>
+                </div>
+                {/* Divider */}
+                <div className="hidden md:flex flex-col items-center justify-center px-2">
+                  <span className="w-2 h-2 rounded-full bg-yellow-400 mb-1"></span>
+                  <div className="w-0.5 h-12 bg-yellow-100 rounded-full"></div>
+                </div>
+                {/* Brief */}
+                <div className="flex flex-col justify-center flex-1 px-2 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg
+                      className="w-5 h-5 text-yellow-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 17.75l6.16 3.73-1.64-7.03L21.5 9.24l-7.19-.61L12 2 9.69 8.63 2.5 9.24l5.98 5.21-1.64 7.03L12 17.75z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <h4 className="text-base font-semibold text-yellow-700">
+                      Why Subscription?
+                    </h4>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    Subscription unlocks full access to all Dawaback features,
+                    supporting platform quality and continuous improvement for
+                    pharmacists.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Arrow hand-drawn from bottom of Subscription to top of Browse or Post Deals */}
+          <div
+            className="hidden md:flex items-center justify-center my-1"
+            style={{ minHeight: "60px" }}
+          >
+            <svg
+              width="400"
+              height="180"
+              viewBox="0 0 400 180"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 340 0 C 340 80, 60 60, 60 160"
+                stroke="#60a5fa"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="6 5"
+                fill="none"
+              />
+              <path
+                d="M50 150 L60 160 L70 150"
+                stroke="#60a5fa"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
+          {/* Row 2: Step 3 + Step 4 */}
+          <div className="flex flex-col md:flex-row md:gap-6 w-full items-center">
+            {/* Step 3 + Brief */}
+            <div className="w-full md:w-1/2">
+              <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-purple-100 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+                {/* Step */}
+                <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
+                  <span className="mb-2">
+                    <svg
+                      className="w-8 h-8 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M3 12h18M12 3v18"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-700 font-bold text-lg border-2 border-purple-200 shadow mb-2">
+                    3
+                  </span>
+                  <h3 className="font-bold text-lg text-purple-700 mb-1">
+                    Browse or Post Deals
+                  </h3>
+                  <div className="w-8 border-b border-purple-100 mx-auto mb-2"></div>
+                  <p className="text-gray-700 text-sm leading-relaxed text-center">
+                    Find available medicine deals or post your own offers for
+                    other pharmacists to see.
+                  </p>
+                </div>
+                {/* Divider */}
+                <div className="hidden md:flex flex-col items-center justify-center px-2">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 mb-1"></span>
+                  <div className="w-0.5 h-12 bg-purple-100 rounded-full"></div>
+                </div>
+                {/* Brief */}
+                <div className="flex flex-col justify-center flex-1 px-2 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg
+                      className="w-5 h-5 text-purple-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="3" y="3" width="18" height="14" rx="2" />
+                      <path d="M8 17l4 4 4-4m-4-5v9" />
+                    </svg>
+                    <h4 className="text-base font-semibold text-purple-700">
+                      Why Post or Browse Deals?
+                    </h4>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    Easily find or offer medicines, reduce waste, and help
+                    fellow pharmacists get the stock they need, all in one
+                    place.
+                  </p>
+                </div>
+              </div>
+            </div>
+            {/* Arrow hand-drawn horizontal between step 3 and 4 */}
+            <div className="hidden md:flex items-center justify-center h-full mx-2">
+              <svg
+                width="80"
+                height="40"
+                viewBox="0 0 80 40"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10 20 C30 10, 50 30, 70 20"
+                  stroke="#60a5fa"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeDasharray="4 3"
+                  fill="none"
+                />
+                <path
+                  d="M65 15 L70 20 L65 25"
+                  stroke="#60a5fa"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  fill="none"
+                />
+              </svg>
+            </div>
+            {/* Step 4 + Brief */}
+            <div className="w-full md:w-1/2 mt-4 md:mt-0">
+              <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-green-100 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+                {/* Step */}
+                <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
+                  <span className="mb-2">
+                    <svg
+                      className="w-8 h-8 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M8 10h.01M12 14h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8s-9-3.582-9-8a9 9 0 1 1 18 0Z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-700 font-bold text-lg border-2 border-green-200 shadow mb-2">
+                    4
+                  </span>
+                  <h3 className="font-bold text-lg text-green-700 mb-1">
+                    Chat for Every Deal
+                  </h3>
+                  <div className="w-8 border-b border-green-100 mx-auto mb-2"></div>
+                  <p className="text-gray-700 text-sm leading-relaxed text-center">
+                    Discuss details and negotiate directly with other
+                    pharmacists through secure chat for each deal.
+                  </p>
+                </div>
+                {/* Divider */}
+                <div className="hidden md:flex flex-col items-center justify-center px-2">
+                  <span className="w-2 h-2 rounded-full bg-green-400 mb-1"></span>
+                  <div className="w-0.5 h-12 bg-green-100 rounded-full"></div>
+                </div>
+                {/* Brief */}
+                <div className="flex flex-col justify-center flex-1 px-2 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg
+                      className="w-5 h-5 text-green-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M8 10h.01M12 14h.01M16 10h.01" />
+                    </svg>
+                    <h4 className="text-base font-semibold text-green-700">
+                      Why Chat?
+                    </h4>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    Direct chat for every deal makes negotiation easy,
+                    transparent, and secure—no need to share personal contact
+                    info.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Arrow hand-drawn vertical big between row 2 and 3 */}
+          <div className="hidden md:flex items-center justify-center my-1">
+            <svg
+              width="40"
+              height="120"
+              viewBox="0 0 40 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 5 C22 20, 18 40, 20 55"
+                stroke="#60a5fa"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="6 5"
+                fill="none"
+              />
+              <path
+                d="M15 50 L20 55 L25 50"
+                stroke="#60a5fa"
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
+          {/* Row 3: Step 5 only (centered) */}
+          <div className="flex flex-col md:flex-row w-full justify-center">
+            <div className="w-full md:w-1/2 mx-auto">
+              <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-gray-200 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+                {/* Step */}
+                <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
+                  <span className="mb-2">
+                    <svg
+                      className="w-8 h-8 text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 14v7m-7-7a7 7 0 0 1 14 0v7H5v-7Z"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-700 font-bold text-lg border-2 border-gray-200 shadow mb-2">
+                    5
+                  </span>
+                  <h3 className="font-bold text-lg text-gray-700 mb-1">
+                    Sell Your Pharmacy
+                  </h3>
+                  <div className="w-8 border-b border-gray-200 mx-auto mb-2"></div>
+                  <p className="text-gray-700 text-sm leading-relaxed text-center">
+                    List your pharmacy for sale and connect with interested
+                    buyers in the pharmacy community.
+                  </p>
+                </div>
+                {/* Divider */}
+                <div className="hidden md:flex flex-col items-center justify-center px-2">
+                  <span className="w-2 h-2 rounded-full bg-gray-400 mb-1"></span>
+                  <div className="w-0.5 h-12 bg-gray-100 rounded-full"></div>
+                </div>
+                {/* Brief */}
+                <div className="flex flex-col justify-center flex-1 px-2 py-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg
+                      className="w-5 h-5 text-gray-700"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="3" y="3" width="18" height="14" rx="2" />
+                      <path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 14v7m-7-7a7 7 0 0 1 14 0v7H5v-7Z" />
+                    </svg>
+                    <h4 className="text-base font-semibold text-gray-700">
+                      Why Sell Your Pharmacy?
+                    </h4>
+                  </div>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    Reach a network of trusted pharmacists if you ever need to
+                    sell your pharmacy, with privacy and professionalism.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* Why Dawaback Section */}
+      <section className="w-full max-w-6xl mx-auto py-20 px-4 md:px-0">
+        <div className="text-center mb-8">
+          <span className="uppercase text-xs tracking-widest text-blue-500 font-semibold">
+            Our Promise
+          </span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-blue-900 mb-2">
+            Why Pharmacists Trust Dawaback
+          </h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
+            Dawaback is more than a platform—it's a secure, professional
+            community built for pharmacists by pharmacists. Here’s what makes us
+            different:
+          </p>
+          <div className="w-16 h-1 mx-auto bg-blue-200 rounded-full mb-6"></div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          {/* Feature 1 */}
+          <div className="bg-white rounded-2xl shadow border border-blue-100 p-8 flex flex-col items-center text-center hover:border-blue-400 transition">
+            <div className="bg-blue-100 text-blue-700 rounded-full p-5 mb-4 shadow">
+              <svg
+                className="w-10 h-10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 11v2m0 4h.01M21 12c0 4.418-4.03 8-9 8s-9-3.582-9-8a9 9 0 1 1 18 0Z"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 className="font-extrabold text-lg mb-2 text-blue-700">
+              Verified Community
+            </h3>
+            <p className="text-gray-600 text-base font-light mb-2">
+              Only licensed pharmacists. No spam, no random users—just trusted
+              professionals.
+            </p>
+          </div>
+          {/* Feature 2 */}
+          <div className="bg-white rounded-2xl shadow border border-green-100 p-8 flex flex-col items-center text-center hover:border-green-400 transition">
+            <div className="bg-green-100 text-green-700 rounded-full p-5 mb-4 shadow">
+              <svg
+                className="w-10 h-10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M17 20h5v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2h5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </div>
+            <h3 className="font-extrabold text-lg mb-2 text-green-700">
+              Secure Deals
+            </h3>
+            <p className="text-gray-600 text-base font-light mb-2">
+              Your data and deals are protected. Only verified users can access
+              deal details and chat.
+            </p>
+          </div>
+          {/* Feature 3 */}
+          <div className="bg-white rounded-2xl shadow border border-purple-100 p-8 flex flex-col items-center text-center hover:border-purple-400 transition">
+            <div className="bg-purple-100 text-purple-700 rounded-full p-5 mb-4 shadow">
+              <svg
+                className="w-10 h-10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="3" width="18" height="14" rx="2" />
+                <path
+                  d="M8 17l4 4 4-4m-4-5v9"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 className="font-extrabold text-lg mb-2 text-purple-700">
+              Real-Time Chat
+            </h3>
+            <p className="text-gray-600 text-base font-light mb-2">
+              Negotiate and discuss every deal instantly. No need to share your
+              phone number or email.
+            </p>
+          </div>
+          {/* Feature 4 */}
+          <div className="bg-white rounded-2xl shadow border border-yellow-100 p-8 flex flex-col items-center text-center hover:border-yellow-400 transition">
+            <div className="bg-yellow-100 text-yellow-700 rounded-full p-5 mb-4 shadow">
+              <svg
+                className="w-10 h-10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                viewBox="0 0 24 24"
+              >
+                <rect x="3" y="3" width="18" height="14" rx="2" />
+                <path
+                  d="M8 17l4 4 4-4m-4-5v9"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <h3 className="font-extrabold text-lg mb-2 text-yellow-700">
+              Easy Pharmacy Listing
+            </h3>
+            <p className="text-gray-600 text-base font-light mb-2">
+              List your pharmacy for sale in minutes and connect with serious,
+              verified buyers—no hassle, no middlemen.
+            </p>
+          </div>
+        </div>
+        <div className="text-center mt-10">
+          <a
+            href="#how-it-works"
+            className="inline-flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg px-6 py-3 text-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
+          >
+            See How It Works
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M5 12h14M12 5l7 7-7 7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </a>
+        </div>
+      </section>
+      {/* Verification Steps Section */}
+
+      <section className="w-full max-w-4xl mx-auto py-16 px-4 md:px-0">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-blue-900 mb-2">
+            How Verification Works
+          </h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-6">
+            To ensure a trusted community, Dawaback verifies every pharmacist by
+            matching their National ID and Syndicate Card. The process is simple
+            and secure:
+          </p>
+        </div>
+        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center text-center flex-1">
+            <div className="w-32 h-20 min-h-[80px] rounded-lg overflow-hidden mb-3 border-2 border-blue-200 bg-blue-50 flex items-center justify-center">
+              <img
+                src="https://lh6.googleusercontent.com/proxy/AOOaYP1jukyrY_y0cnhYKLMaKWO9R8HIAEyc1BZMVOE_PUjJWhdWyPvBAgGrR2H_UzLkLw2rsO_L_8mq2ofGBfzXhCGk"
+                alt="ID Front"
+                className="w-full h-full object-cover blur-xs"
+              />
+            </div>
+            <div className="min-h-[72px] flex flex-col justify-start">
+              <h3 className="font-bold text-blue-700 mb-1 text-lg">
+                Upload National ID (Front)
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Take a clear photo of the front side of your National ID.
+              </p>
+            </div>
+          </div>
+          {/* Arrow */}
+          <div className="hidden md:flex items-center justify-center">
+            <svg
+              width="60"
+              height="40"
+              viewBox="0 0 60 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 20 C25 10, 35 30, 50 20"
+                stroke="#60a5fa"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="4 3"
+                fill="none"
+              />
+              <path
+                d="M45 15 L50 20 L45 25"
+                stroke="#60a5fa"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
+          {/* Step 2 */}
+          <div className="flex flex-col items-center text-center flex-1">
+            <div className="w-32 h-20 min-h-[80px] rounded-lg overflow-hidden mb-3 border-2 border-blue-200 bg-blue-50 flex items-center justify-center">
+              <img
+                src="https://gate.ahram.org.eg/Media/News/2013/3/13/2013-634988045225330147-533_main.jpg"
+                alt="ID Back"
+                className="w-full h-full object-cover blur-xs"
+              />
+            </div>
+            <div className="min-h-[72px] flex flex-col justify-start">
+              <h3 className="font-bold text-blue-700 mb-1 text-lg">
+                Upload National ID (Back)
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Take a clear photo of the back side of your National ID.
+              </p>
+            </div>
+          </div>
+          {/* Arrow */}
+          <div className="hidden md:flex items-center justify-center">
+            <svg
+              width="60"
+              height="40"
+              viewBox="0 0 60 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10 20 C25 10, 35 30, 50 20"
+                stroke="#60a5fa"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeDasharray="4 3"
+                fill="none"
+              />
+              <path
+                d="M45 15 L50 20 L45 25"
+                stroke="#60a5fa"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
+          {/* Step 3 */}
+          <div className="flex flex-col items-center text-center flex-1">
+            <div className="w-32 h-20 min-h-[80px] rounded-lg overflow-hidden mb-3 border-2 border-blue-200 bg-blue-50 flex items-center justify-center">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNnyy_1HBP_TzMGUr2CNbE5ZrqmdnbmjoACw&s"
+                alt="Syndicate Card"
+                className="w-full h-full object-cover blur-xs"
+              />
+            </div>
+            <div className="min-h-[72px] flex flex-col justify-start">
+              <h3 className="font-bold text-blue-700 mb-1 text-lg">
+                Upload Syndicate Card (Front)
+              </h3>
+              <p className="text-gray-600 text-sm">
+                Take a clear photo of your Pharmacists Syndicate Card (front
+                side).
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="text-center mt-8">
+          <p className="text-blue-800 text-base font-semibold">
+            We automatically match your documents for maximum security and
+            trust.
+          </p>
+        </div>
+      </section>
+    </main>
   );
 }

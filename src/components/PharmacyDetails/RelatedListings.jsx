@@ -43,25 +43,8 @@ export default function RelatedListings({ pharmacy }) {
       });
   }, [pharmacy?.id]);
 
-  // Always define displayRelated before any return
+  // Only use real related pharmacies, no mock data
   let displayRelated = related;
-  if (!loading && !error && related.length === 0) {
-    displayRelated = [
-      {
-        id: "mock3",
-        name: "Test Pharmacy 3",
-        pharmacyPrice: 105000,
-        city: "Cairo",
-        governorate: "Cairo",
-        addressLine1: "789 Sample Rd",
-        imagesUrls: ["https://randomuser.me/api/portraits/men/3.jpg"],
-        owner: { fullName: "Dr. Samir" },
-        saleType: "pharmacy_with_medicines",
-        monthlySales: 9500,
-        isForSale: true,
-      },
-    ];
-  }
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -99,14 +82,16 @@ export default function RelatedListings({ pharmacy }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+    <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-gray-100 dark:border-border p-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-          <Building2 className="w-5 h-5 text-blue-600" />
+        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+          <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-300" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Similar Listings</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            Similar Listings
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             Other pharmacies you might like
           </p>
         </div>
@@ -114,12 +99,12 @@ export default function RelatedListings({ pharmacy }) {
 
       {/* Loading/Error States */}
       {loading && (
-        <div className="py-8 text-center text-blue-500 font-semibold">
+        <div className="py-8 text-center text-blue-500 dark:text-blue-400 font-semibold">
           Loading related pharmacies...
         </div>
       )}
       {error && !loading && (
-        <div className="py-8 text-center text-red-500 font-semibold">
+        <div className="py-8 text-center text-red-500 dark:text-red-400 font-semibold">
           {error}
         </div>
       )}
@@ -208,7 +193,7 @@ export default function RelatedListings({ pharmacy }) {
       )}
       {/* No related pharmacies (should not show with mock data) */}
       {!loading && !error && displayRelated.length === 0 && (
-        <div className="py-8 text-center text-gray-500 font-semibold">
+        <div className="py-8 text-center text-gray-500 dark:text-gray-400 font-semibold">
           No related pharmacies found.
         </div>
       )}
@@ -218,7 +203,7 @@ export default function RelatedListings({ pharmacy }) {
         <div className="text-center mt-6">
           <Link
             to="/pharmacies-for-sale"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-primary dark:hover:bg-primary-hover text-white rounded-lg font-medium transition-colors"
           >
             View All Listings
             <svg

@@ -22,20 +22,20 @@ export default function SettingsHeader({ pharmacistDetails }) {
     str.replace(/\b\w/g, (char) => char.toUpperCase());
 
   return (
-    <div className="bg-white rounded-2xl p-6 mb-8 border border-gray-100 shadow-sm">
+    <div className="bg-white dark:bg-background rounded-2xl p-6 mb-8 border border-gray-100 dark:border-border shadow-sm">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
         {/* Profile Section */}
         <div className="flex items-center gap-6">
           {/* Avatar with Status */}
           <div className="relative">
             <div className="relative">
-              <Avatar className="size-20 shadow-lg border-4 border-white">
+              <Avatar className="size-20 shadow-lg border-4 border-white dark:border-background">
                 <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               {/* Status Indicator */}
-              <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-md border-2 border-white">
+              <div className="absolute -bottom-1 -right-1 bg-white dark:bg-background rounded-full p-1 shadow-md border-2 border-white dark:border-background">
                 <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                   <BsPatchCheckFill size={12} className="text-white" />
                 </div>
@@ -46,21 +46,21 @@ export default function SettingsHeader({ pharmacistDetails }) {
           {/* Profile Info */}
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground tracking-tight">
                 {capitalizeWords(details.fullName)}
               </h1>
               <Badge
                 variant="secondary"
-                className="bg-green-100 text-green-700 border-green-200"
+                className="bg-green-100 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700"
               >
                 <BsPatchCheckFill size={12} className="mr-1" />
                 Verified
               </Badge>
             </div>
-            <p className="text-gray-600 text-base mb-3">
+            <p className="text-gray-600 text-base mb-3 dark:text-gray-400">
               Professional Pharmacist • Account Settings
             </p>
-            <div className="flex items-center gap-4 text-sm text-gray-500">
+            <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
               <span className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 Active Account

@@ -30,7 +30,7 @@ export async function listPharmaciesForSale(id, saleData) {
     formData.append("saleType", saleData.saleType);
 
     if (saleData.medicinesList) {
-      formData.append("medicinesList", saleData.medicinesList);
+      formData.append("file", saleData.medicinesList);
     }
 
     const response = await api.patch(

@@ -160,7 +160,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
     <div className="space-y-8 max-w-6xl mx-auto">
       {/* Current Plan Section */}
       <Card className="py-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -247,7 +246,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
 
       {/* Usage Statistics */}
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -375,7 +373,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
 
       {/* Billing History */}
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">

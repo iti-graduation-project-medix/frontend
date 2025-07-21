@@ -28,9 +28,9 @@ const Pricing2 = ({
       name: "Regular",
       description: "Limited features",
       monthlyPrice: "EGP50",
-      yearlyPrice: "EGP100",
+      yearlyPrice: "EGP200",
       features: [
-        { text: "Add up to 10 deals", available: true },
+        { text: "Add up to 10 deals", available: true, yearlyText: "Add up to 120 deals" },
         { text: "P2P trading using real-time chat", available: true },
         { text: "List pharmacies for sale", available: false },
         { text: "Subscribe to drug alert", available: false },
@@ -240,7 +240,9 @@ const Pricing2 = ({
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                         )}
-                        <span className={feature.available ? '' : 'line-through'}>{feature.text}</span>
+                        <span className={feature.available ? '' : 'line-through'}>
+                          {isYearly && feature.yearlyText ? feature.yearlyText : feature.text}
+                        </span>
                       </li>
                     ))}
                   </ul>

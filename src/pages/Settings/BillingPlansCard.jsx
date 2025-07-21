@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -20,39 +20,48 @@ import {
   MdWarning,
   MdInfo,
   MdDownload,
-  MdTrendingUp
+  MdTrendingUp,
+  MdHomeWork,
+  MdNotificationsActive
 } from "react-icons/md";
 import { FaCrown, FaGem, FaCheck, FaTimes } from "react-icons/fa";
 import { Zap } from "lucide-react";
+import { useSubscribe } from "@/store/useSubscribe";
+import * as XLSX from "xlsx";
+import useChat from '@/store/useChat';
+import { LoadingPage } from '@/components/ui/loading';
 
-const BILLING_HISTORY = [
-  {
-    id: 1,
-    date: "2024-01-15",
-    amount: "EGP100.00",
-    status: "Paid",
-    description: "Premium Plan - Monthly",
-    invoice: "INV-2024-001"
-  },
-  {
-    id: 2,
-    date: "2023-12-15",
-    amount: "EGP100.00",
-    status: "Paid",
-    description: "Premium Plan - Monthly",
-    invoice: "INV-2023-012"
-  },
-  {
-    id: 3,
-    date: "2023-11-15",
-    amount: "EGP50.00",
-    status: "Paid",
-    description: "Regular Plan - Monthly",
-    invoice: "INV-2023-011"
-  }
-];
 
-const PLANS = {
+
+
+
+export default function BillingPlansCard({ pharmacistDetails }) {
+  const navigate = useNavigate();
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  
+  const { 
+    currentSubscription, 
+    subscriptionLoading, 
+    error, 
+    fetchCurrentSubscription,
+    userSubscriptions,
+    subscriptionsLoading,
+    fetchUserSubscriptions
+  } = useSubscribe();
+
+  const { chats } = useChat();
+  const openedChatsCount = chats.filter(chat => !chat.isClosed).length;
+
+  // Fetch current subscription and user subscriptions on component mount
+  useEffect(() => {
+    fetchCurrentSubscription();
+    fetchUserSubscriptions();
+  }, [fetchCurrentSubscription, fetchUserSubscriptions]);
+
+  // Helper function to get plan details
+  const getPlanDetails = (planName) => {
+    const plans = {
   regular: {
     name: "Regular Plan",
     price: "EGP50",
@@ -76,21 +85,44 @@ const PLANS = {
       "Subscribe to drug alert"
     ],
     icon: FaCrown,
-    color: "text-yellow-600",
-    bgColor: "bg-yellow-100"
+    color: "text-amber-400",
+    bgColor: "bg-amber-100"
   }
 };
+    return plans[planName] || plans.regular;
+  };
 
-export default function BillingPlansCard({ pharmacistDetails }) {
-  const navigate = useNavigate();
-  const [selectedPlan, setSelectedPlan] = useState(null);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  // Get current plan details
+  const currentPlan = currentSubscription ? getPlanDetails(currentSubscription.planName) : getPlanDetails('regular');
+
+  // Helper function to format subscription data for billing history
+  const formatSubscriptionForHistory = (subscription) => {
+    const planDetails = getPlanDetails(subscription.planName);
+    const amount = subscription.planName === 'premium' ? 'EGP100.00' : 'EGP50.00';
+    const startDate = new Date(subscription.startDate);
+    const endDate = new Date(subscription.endDate);
+    
+    return {
+      id: subscription.id,
+      date: startDate.toISOString().split('T')[0],
+      amount: amount,
+      status: 'Paid', // Always show Paid
+      description: `${planDetails.name} - ${subscription.plan === 'monthly' ? 'Monthly' : 'Yearly'}`,
+      invoice: `SUB-${subscription.id.slice(-8).toUpperCase()}`,
+      startDate: startDate,
+      endDate: endDate,
+      planName: subscription.planName,
+      subType: subscription.subType,
+      pan: subscription.pan
+    };
+  };
 
   const getStatusBadge = (status) => {
     const variants = {
       paid: "success",
       pending: "warning",
-      failed: "destructive"
+      failed: "destructive",
+      active: "success"
     };
     return <Badge variant={variants[status.toLowerCase()] || "secondary"}>{status}</Badge>;
   };
@@ -102,245 +134,354 @@ export default function BillingPlansCard({ pharmacistDetails }) {
     navigate('/subscription');
   };
 
+  // Excel download handler
+  const handleDownloadBillingHistory = () => {
+    if (!userSubscriptions || userSubscriptions.length === 0) return;
+    const data = userSubscriptions.map((subscription) => {
+      const invoice = formatSubscriptionForHistory(subscription);
+      return {
+        'Plan': invoice.description,
+        'Start Date': invoice.startDate.toLocaleDateString(),
+        'End Date': invoice.endDate.toLocaleDateString(),
+        'Amount': invoice.amount,
+        'Status': invoice.status,
+        'Payment Type': invoice.subType === 'wallet' ? 'Wallet' : 'Card',
+        'Number': invoice.pan ? `****${invoice.pan}` : '',
+        'Invoice': invoice.invoice,
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "BillingHistory");
+    XLSX.writeFile(wb, "BillingHistory.xlsx");
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 max-w-6xl mx-auto">
       {/* Current Plan Section */}
-      <Card className="mb-6 rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow px-5 py-6">
+      <Card className="py-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
         <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
-              <MdCardMembership size={24} className="text-primary" />
+          <CardTitle className="flex items-center gap-4">
+            <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
+              <MdCardMembership size={28} className="text-primary" />
             </span>
-            <span className="font-bold text-xl text-gray-900">
+            <div>
+              <span className="font-bold text-2xl text-gray-900 block">
               Current Plan
             </span>
+              <span className="text-sm text-gray-500 font-medium">
+                Manage your subscription and billing
+              </span>
+            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center gap-4 w-full sm:w-auto">
-              <div className="p-3 bg-blue-100 rounded-full">
-                <Zap size={28} className="text-blue-600" />
-              </div>
-              <div>
-                <h3 className="font-bold text-xl text-gray-900">Regular Plan</h3>
-                <p className="text-gray-600 mb-2">Basic Features</p>
+        <CardContent className="px-8 ">
+          {subscriptionLoading ? (
+            <LoadingPage message="Loading subscription details..." />
+          ) : error ? (
+            <div className="p-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl">
                 <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="text-xs bg-green-50 border-green-200 text-green-700">
-                    Current Plan
-                  </Badge>
-                  <span className="text-xs text-gray-500">Active since Jan 2024</span>
+                <div className="p-2 bg-red-100 rounded-full">
+                  <MdWarning size={20} className="text-red-600" />
                 </div>
+                <p className="text-red-700 font-medium">Error loading subscription: {error}</p>
               </div>
             </div>
-            <Button 
-              onClick={() => handleUpgrade({ name: 'Premium Plan' })}
-              className="bg-primary text-white hover:bg-primary-hover border-primary px-4 py-2 rounded-md shadow-sm w-full sm:w-auto"
-            >
-              <MdUpgrade  />
-              Upgrade to Premium
-            </Button>
+          ) : currentSubscription ? (
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30 border border-gray-100 shadow-lg">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="relative p-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                  <div className="flex items-center gap-6">
+                    <div className={`p-4 -mt-7 ${currentPlan.bgColor} rounded-2xl shadow-lg`}>
+                      <currentPlan.icon size={32} className={currentPlan.color} />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="font-bold text-2xl text-gray-900">{currentPlan.name}</h3>
+                      <p className="text-gray-600 font-medium">
+                        {currentSubscription.plan === 'monthly' ? 'Monthly Plan' : 'Yearly Plan'}
+                      </p>
+                      <div className="flex items-center gap-4">
+                        <Badge 
+                          variant="outline" 
+                          className={`text-sm font-semibold px-3 py-1 rounded-full ${
+                            currentSubscription.status 
+                              ? 'bg-green-50 border-green-300 text-green-700' 
+                              : 'bg-red-50 border-red-300 text-red-700'
+                          }`}
+                        >
+                          {currentSubscription.status ? 'Paid' : 'Unpaid'}
+                        </Badge>
+                        <span className="text-sm text-gray-500 font-medium">
+                          Expires: {new Date(currentSubscription.endDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </span>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Plan Comparison */}
-      <Card className="mb-6 rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow px-5 py-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
-              <MdCardMembership size={24} className="text-primary" />
-            </span>
-            <span className="font-bold text-xl text-gray-900">
-              Plan Comparison
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Regular Plan */}
-            <div className="border border-gray-200 rounded-lg p-6 bg-white">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-blue-100 rounded-full">
-                  <Zap size={24} className="text-blue-600" />
                 </div>
-                <div>
-                  <h3 className="font-bold text-xl text-gray-900">Regular Plan</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-blue-600">{PLANS.regular.price}</span>
-                    <span className="text-gray-500">/{PLANS.regular.period}</span>
                   </div>
+
                 </div>
               </div>
-              <ul className="space-y-3 mb-6">
-                {PLANS.regular.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <FaCheck className="text-green-500 flex-shrink-0" size={14} />
-                    <span className="text-gray-700 text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button 
-                variant="outline" 
-                className="w-full border-blue-200 text-blue-600 hover:bg-blue-50"
-                disabled
-              >
-                Current Plan
-              </Button>
             </div>
-
-            {/* Premium Plan */}
-            <div className="border-2 border-yellow-300 rounded-lg p-6 bg-gradient-to-br from-yellow-50 to-white relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-yellow-500 text-white px-3 py-1 text-xs">
-                  Recommended
-                </Badge>
-              </div>
-              <div className="flex items-center gap-3 mb-4">
+          ) : (
+            <div className="p-8 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl">
+              <div className="flex items-center gap-4">
                 <div className="p-3 bg-yellow-100 rounded-full">
-                  <FaCrown size={24} className="text-yellow-600" />
+                  <MdWarning size={24} className="text-yellow-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl text-gray-900">Premium Plan</h3>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-yellow-600">{PLANS.premium.price}</span>
-                    <span className="text-gray-500">/{PLANS.premium.period}</span>
-                  </div>
+                  <p className="text-yellow-800 font-semibold text-lg">No active subscription found</p>
+                  <p className="text-yellow-700 text-sm mt-1">Please subscribe to a plan to continue using our services</p>
                 </div>
               </div>
-              <ul className="space-y-3 mb-6">
-                {PLANS.premium.features.map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <FaCheck className="text-green-500 flex-shrink-0" size={14} />
-                    <span className="text-gray-700 text-sm">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button 
-                onClick={() => handleUpgrade({ name: 'Premium Plan' })}
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
-              >
-                <MdUpgrade className="mr-2" />
-                Upgrade to Premium
-              </Button>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
+
+
 
       {/* Usage Statistics */}
-      <Card className="mb-6 rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow px-5 py-6">
+      <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
         <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
-              <MdInfo size={24} className="text-primary" />
+          <CardTitle className="flex items-center gap-4">
+            <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
+              <MdInfo size={28} className="text-primary" />
             </span>
-            <span className="font-bold text-xl text-gray-900">
-              Usage Statistics
+            <div>
+              <span className="font-bold text-2xl text-gray-900 block">
+                Usage Features
+              </span>
+              <span className="text-sm text-gray-500 font-medium">
+                Track your plan usage and activity
             </span>
+            </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="p-3 bg-blue-100 rounded-full w-14 h-14 mx-auto mb-3 flex items-center justify-center">
-                <Zap className="text-blue-600" size={22} />
+        <CardContent className="px-8 pb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Available Features */}
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+              <div className="relative p-6 text-center">
+                <div className="p-4 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <FaGem className="text-purple-600" size={28} />
+                </div>
+                <h4 className="font-bold text-lg text-purple-900 mb-2">Deals</h4>
+                <p className="text-3xl font-bold text-purple-600 mb-3">
+                  {currentSubscription 
+                    ? currentSubscription.planName === 'premium' 
+                      ? '∞ / ∞' 
+                      : `${10 - parseInt(currentSubscription.dealsNumber)} / 10`
+                    : '0 / 0'
+                  }
+                </p>
+                <div className="w-full bg-purple-200 rounded-full h-3 mb-3 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out" 
+                    style={{ 
+                      width: currentSubscription && currentSubscription.planName === 'regular' 
+                        ? `${((10 - parseInt(currentSubscription.dealsNumber)) / 10) * 100}%` 
+                        : currentSubscription && currentSubscription.planName === 'premium' 
+                          ? '100%' 
+                          : '0%' 
+                    }}
+                  ></div>
               </div>
-              <h4 className="font-semibold text-blue-900 mb-1">Pharmacies</h4>
-              <p className="text-2xl font-bold text-blue-600 mb-1">0 / 0</p>
-              <div className="w-full bg-blue-200 rounded-full h-2 mb-2">
-                <div className="bg-blue-600 h-2 rounded-full" style={{ width: '0%' }}></div>
+                <p className="text-sm text-purple-700 font-medium">
+                  {currentSubscription 
+                    ? currentSubscription.planName === 'premium' 
+                      ? 'Unlimited deals (Premium Plan)' 
+                      : `${Math.round(((10 - parseInt(currentSubscription.dealsNumber)) / 10) * 100)}% used (Regular Plan: up to 10 deals)`
+                    : 'Loading...'
+                  }
+                </p>
               </div>
-              <p className="text-xs text-blue-700">Not available (Regular Plan)</p>
             </div>
 
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="p-3 bg-green-100 rounded-full w-14 h-14 mx-auto mb-3 flex items-center justify-center">
-                <MdTrendingUp className="text-green-600" size={22} />
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-50 to-green-100/50 border border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+              <div className="relative p-6 text-center">
+                <div className="p-4 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <MdTrendingUp className="text-green-600" size={24} />
               </div>
-              <h4 className="font-semibold text-green-900 mb-1">P2P Chats</h4>
-              <p className="text-2xl font-bold text-green-600 mb-1">60</p>
-              <div className="flex items-center justify-center gap-1 text-green-600 mb-2">
-                <MdTrendingUp size={14} />
-                <span className="text-xs">+12% this month</span>
+                <h4 className="font-bold text-lg text-green-900 mb-2">P2P Chats</h4>
+                <p className="text-3xl font-bold text-green-600 mb-3">{openedChatsCount}</p>
+                <div className="flex items-center justify-center gap-2 text-green-600 mb-3">
+                  <div className="p-1 bg-green-100 rounded-full">
+                    <MdTrendingUp size={16} />
               </div>
-              <p className="text-xs text-green-700">This month</p>
+                  <span className="text-sm font-semibold">+12% this month</span>
+            </div>
+              </div>
+              </div>
             </div>
 
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="p-3 bg-purple-100 rounded-full w-14 h-14 mx-auto mb-3 flex items-center justify-center">
-                <FaGem className="text-purple-600" size={22} />
+          {/* Premium Features Notice - Only show for Regular Plan */}
+          {currentSubscription && currentSubscription.planName === 'regular' && (
+            <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-2xl shadow-lg">
+              <div className="flex items-center gap-4">
+                <div className="p-3 -mt-5 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl shadow-lg">
+                  <FaCrown className="text-primary" size={24} />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg text-gray-900">Unlock Premium Features</h4>
+                  <p className="text-sm text-gray-700 leading-relaxed">
+                    Upgrade to Premium Plan to access: <strong className="text-primary">Unlimited Deals</strong>, <strong className="text-primary">Pharmacy Listings</strong>, and <strong className="text-primary">Drug Alerts</strong>
+                  </p>
               </div>
-              <h4 className="font-semibold text-purple-900 mb-1">Deals</h4>
-              <p className="text-2xl font-bold text-purple-600 mb-1">3 / 10</p>
-              <div className="w-full bg-purple-200 rounded-full h-2 mb-2">
-                <div className="bg-purple-600 h-2 rounded-full" style={{ width: '30%' }}></div>
+                <Button 
+                  onClick={() => handleUpgrade({ name: 'Premium Plan' })}
+                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  Upgrade Now
+                </Button>
               </div>
-              <p className="text-xs text-purple-700">30% used (Regular Plan: up to 10 deals)</p>
             </div>
-
-            <div className="text-center p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="p-3 bg-red-100 rounded-full w-14 h-14 mx-auto mb-3 flex items-center justify-center">
-                <MdWarning className="text-red-600" size={22} />
+          )}
+          {currentSubscription && currentSubscription.planName === 'premium' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+              <div className="relative overflow-hidden rounded-2xl bg-red-50 border border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-full -translate-y-12 translate-x-12"></div>
+                <div className="relative p-6 text-center">
+                  <div className="p-4 bg-red-100 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <MdHomeWork className="text-red-700" size={28} />
+                  </div>
+                  <h4 className="font-bold text-lg text-red-900 mb-2">List pharmacies for sale</h4>
+                  <p className="text-xl font-bold text-red-700 mb-3">Available</p>
+                  <p className="text-sm text-red-700 font-medium">You can list pharmacies for sale with your premium plan.</p>
+                </div>
               </div>
-              <h4 className="font-semibold text-red-900 mb-1">Drug Alerts</h4>
-              <p className="text-2xl font-bold text-red-600 mb-1">0 / 0</p>
-              <div className="w-full bg-red-200 rounded-full h-2 mb-2">
-                <div className="bg-red-600 h-2 rounded-full" style={{ width: '0%' }}></div>
-              </div>
-              <p className="text-xs text-red-700">Not available (Regular Plan)</p>
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100/50 border border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-yellow-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                <div className="relative p-6 text-center">
+                  <div className="p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <MdNotificationsActive className="text-yellow-700" size={28} />
+                  </div>
+                  <h4 className="font-bold text-lg text-yellow-900 mb-2">Subscribe to drug alert</h4>
+                  <p className="text-xl font-bold text-yellow-700 mb-3">Enabled</p>
+                  <p className="text-sm text-yellow-800 font-medium">You are subscribed to drug alerts and get notified when new drugs are available.</p>
             </div>
           </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Billing History */}
-      <Card className="mb-6 rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow px-5 py-6">
+      <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
         <CardHeader>
-          <CardTitle className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
-              <MdReceipt size={24} className="text-primary" />
+          <CardTitle className="flex items-center gap-4">
+            <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
+              <MdReceipt size={28} className="text-primary" />
             </span>
-            <span className="font-bold text-xl text-gray-900">
+            <div>
+              <span className="font-bold text-2xl text-gray-900 block">
               Billing History
             </span>
+              <span className="text-sm text-gray-500 font-medium">
+                View your subscription and payment history
+              </span>
+            </div>
+            <Button
+              onClick={handleDownloadBillingHistory}
+              variant="outline"
+              className="ml-auto bg-gradient-to-r from-primary/10 to-primary/20 text-primary font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+            >
+              <MdDownload className="mr-2" size={18} />
+              Download All
+            </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-8 pb-8">
+          {subscriptionsLoading ? (
+            <LoadingPage message="Loading billing history..." />
+          ) : error ? (
+            <div className="p-6 bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-2xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <MdWarning size={20} className="text-red-600" />
+                </div>
+                <p className="text-red-700 font-medium">Error loading billing history: {error}</p>
+              </div>
+            </div>
+          ) : userSubscriptions && userSubscriptions.length > 0 ? (
           <div className="space-y-4">
-            {BILLING_HISTORY.map((invoice, index) => (
+            {userSubscriptions.map((subscription, index) => {
+              const invoice = formatSubscriptionForHistory(subscription);
+              return (
               <div
                 key={invoice.id}
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 border rounded-lg bg-white hover:shadow-md transition-all duration-200"
-              >
-                <div className="flex items-center gap-4 w-full sm:w-auto">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <MdReceipt size={18} className="text-primary" />
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="p-6">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div className="flex items-center gap-6">
+                        <div className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                          invoice.planName === 'premium' 
+                            ? 'bg-amber-100' 
+                            : 'bg-gradient-to-br from-blue-100 to-indigo-100'
+                        }`}>
+                          {invoice.planName === 'premium' ? (
+                            <FaCrown size={24} className="text-amber-400" />
+                          ) : (
+                            <Zap size={24} className="text-blue-600" />
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <p className="font-bold text-lg text-gray-900">{invoice.description}</p>
+                          <p className="text-sm text-gray-600 font-medium">
+                            {invoice.date} • {invoice.invoice}
+                          </p>
+                          <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-gray-500 font-medium">
+                                {invoice.subType === 'wallet' ? 'Wallet Payment' : 'Card Payment'}
+                              </span>
+                            </div>
+                            {invoice.pan && (
+                              <span className="text-xs text-gray-400 font-medium">
+                                {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
+                              </span>
+                            )}
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{invoice.description}</p>
-                    <p className="text-xs text-gray-500">{invoice.date} • {invoice.invoice}</p>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
-                  <span className="font-bold text-gray-900">{invoice.amount}</span>
-                  <div className="flex flex-row items-center justify-between w-full gap-2">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <div className="text-right">
+                          <span className="font-bold text-2xl text-gray-900">{invoice.amount}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
                     <div className="flex items-center">
                       {getStatusBadge(invoice.status)}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="hover:bg-primary/10 hover:text-primary"
-                    >
-                      <MdDownload className="mr-1" size={14} />
-                      Download
-                    </Button>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
+          ) : (
+            <div className="p-12 text-center">
+              <div className="relative mx-auto w-24 h-24 mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full"></div>
+                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <MdReceipt size={32} className="text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">No billing history found</h3>
+              <p className="text-gray-500 text-sm">Your subscription history will appear here once you have active subscriptions</p>
+          </div>
+          )}
         </CardContent>
       </Card>
     </div>

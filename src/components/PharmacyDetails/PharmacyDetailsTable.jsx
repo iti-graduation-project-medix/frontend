@@ -18,12 +18,6 @@ export default function PharmacyDetailsTable({ pharmacy }) {
 
   const details = [
     {
-      icon: Building2,
-      label: "Status",
-      value: "Semi Finished",
-      color: "text-blue-600",
-    },
-    {
       icon: Ruler,
       label: "Size",
       value: "94 m²",
@@ -62,12 +56,6 @@ export default function PharmacyDetailsTable({ pharmacy }) {
       label: "Location",
       value: pharmacy.addressLine1 || "Not specified",
       color: "text-red-600",
-    },
-    {
-      icon: DollarSign,
-      label: "Price per m²",
-      value: pricePerSqm ? `${pricePerSqm.toLocaleString()} EGP` : "N/A",
-      color: "text-emerald-600",
     },
   ];
 

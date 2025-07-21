@@ -23,6 +23,7 @@ import {
   getSocket,
 } from "../../services/socket";
 import drugAlertService from "../../services/drugAlert";
+import { ModeToggle } from "../mode-toggle";
 
 export default function Navbar() {
   const isOffline = useOffline();
@@ -137,7 +138,9 @@ export default function Navbar() {
                 setDrugAlertNotifications(notifications);
 
                 // Calculate unread count from fresh data
-                const unreadCount = notifications.filter((n) => !n.isRead).length;
+                const unreadCount = notifications.filter(
+                  (n) => !n.isRead
+                ).length;
                 setUnreadDrugAlerts(unreadCount);
               } catch (error) {
                 console.error("Error refreshing notifications:", error);
@@ -165,7 +168,9 @@ export default function Navbar() {
 
             // Defer processing to prevent blocking
             if (window.requestIdleCallback) {
-              window.requestIdleCallback(() => processDrugAlert(), { timeout: 100 });
+              window.requestIdleCallback(() => processDrugAlert(), {
+                timeout: 100,
+              });
             } else {
               setTimeout(() => processDrugAlert(), 0);
             }
@@ -335,7 +340,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className=" border-gray-200 dark:bg-gray-900"
+      className=" border-gray-200 "
       style={{ paddingTop: isOffline ? "2rem" : "0" }}
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -343,7 +348,11 @@ export default function Navbar() {
           to="/"
           className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none"
         >
-          <img src="/logo.svg" className="h-10 sm:h-12 md:h-14 lg:h-16" alt="Dawaback Logo" />
+          <img
+            src="/logo.svg"
+            className="h-10 sm:h-12 md:h-14 lg:h-16"
+            alt="Dawaback Logo"
+          />
           <div className="flex flex-col mb-3">
             <span className="font-bold text-2xl sm:text-3xl md:text-4xl whitespace-nowrap text-primary dark:text-white">
               Dawaback
@@ -354,6 +363,10 @@ export default function Navbar() {
           </div>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+          {/* Theme Mode Toggle */}
+          <div className="mr-2">
+            <ModeToggle />
+          </div>
           {isAuthenticated ? (
             <>
               <Popover
@@ -364,11 +377,17 @@ export default function Navbar() {
                   <Button
                     variant="ghost"
                     className="mr-2 hidden md:inline-flex relative"
-                    style={{ width: "clamp(36px, 8vw, 46px)", height: "clamp(36px, 8vw, 46px)" }}
+                    style={{
+                      width: "clamp(36px, 8vw, 46px)",
+                      height: "clamp(36px, 8vw, 46px)",
+                    }}
                   >
                     <FiBell
                       className="text-zinc-600"
-                      style={{ width: "clamp(24px, 6vw, 30px)", height: "clamp(24px, 6vw, 30px)" }}
+                      style={{
+                        width: "clamp(24px, 6vw, 30px)",
+                        height: "clamp(24px, 6vw, 30px)",
+                      }}
                     />
                     {unreadDrugAlerts > 0 && (
                       <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[20px] h-[20px] flex items-center justify-center">
@@ -429,11 +448,17 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   className=""
-                  style={{ width: "clamp(36px, 8vw, 46px)", height: "clamp(36px, 8vw, 46px)" }}
+                  style={{
+                    width: "clamp(36px, 8vw, 46px)",
+                    height: "clamp(36px, 8vw, 46px)",
+                  }}
                 >
                   <Heart
                     className="text-zinc-600"
-                    style={{ width: "clamp(24px, 6vw, 30px)", height: "clamp(24px, 6vw, 30px)" }}
+                    style={{
+                      width: "clamp(24px, 6vw, 30px)",
+                      height: "clamp(24px, 6vw, 30px)",
+                    }}
                   />
                   <span className="sr-only">Favorites</span>
                 </Button>
@@ -449,7 +474,10 @@ export default function Navbar() {
                   ref={userButtonRef}
                   type="button"
                   className="flex items-center justify-center mr-2 text-xl bg-primary rounded-full md:me-0 focus:ring-4 focus:ring-primary/30 dark:focus:ring-primary/30 relative"
-                  style={{ width: "clamp(36px, 8vw, 46px)", height: "clamp(36px, 8vw, 46px)" }}
+                  style={{
+                    width: "clamp(36px, 8vw, 46px)",
+                    height: "clamp(36px, 8vw, 46px)",
+                  }}
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                   whileTap="tap"
                   whileHover="hover"
@@ -458,7 +486,12 @@ export default function Navbar() {
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10">
                     <AvatarFallback>
-                      {getInitials(user?.fullName || user?.name || pharmacistDetails?.fullName || "User")}
+                      {getInitials(
+                        user?.fullName ||
+                          user?.name ||
+                          pharmacistDetails?.fullName ||
+                          "User"
+                      )}
                     </AvatarFallback>
                   </Avatar>
                 </motion.button>
@@ -474,10 +507,15 @@ export default function Navbar() {
                     >
                       <div className="px-4 py-3">
                         <span className="block text-sm text-gray-900 dark:text-white">
-                          {user?.fullName || user?.name || pharmacistDetails?.fullName || "User"}
+                          {user?.fullName ||
+                            user?.name ||
+                            pharmacistDetails?.fullName ||
+                            "User"}
                         </span>
                         <span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-                          {user?.email || pharmacistDetails?.email || "user@example.com"}
+                          {user?.email ||
+                            pharmacistDetails?.email ||
+                            "user@example.com"}
                         </span>
                       </div>
                       <ul className="py-2" aria-labelledby="user-menu-button">
@@ -556,7 +594,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-blue-800"
+                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
               >
                 Login
               </MotionLink>
@@ -614,8 +652,8 @@ export default function Navbar() {
                     to="/"
                     className={
                       location.pathname === "/"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-primary"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-primary dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                     }
                     aria-current="page"
                   >
@@ -627,8 +665,8 @@ export default function Navbar() {
                     to="/advertise"
                     className={
                       location.pathname === "/advertise"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-primary"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-primary dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                     }
                   >
                     Advertise
@@ -639,8 +677,8 @@ export default function Navbar() {
                     to="/contact"
                     className={
                       location.pathname === "/contact"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-primary"
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-primary dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                     }
                   >
                     Contact
@@ -652,14 +690,15 @@ export default function Navbar() {
                   <>
                     {/* Divider */}
                     <li className="border-t border-gray-200 dark:border-gray-600 my-2 md:hidden"></li>
-                    
+
                     {/* User Profile */}
                     <li>
                       <Link
                         to="/me"
                         onClick={handleMenuClick}
                         className={`block py-2 px-3 ${
-                          location.pathname === "/me" || location.pathname.startsWith("/me/")
+                          location.pathname === "/me" ||
+                          location.pathname.startsWith("/me/")
                             ? "text-white bg-primary rounded-sm"
                             : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         }`}
@@ -667,7 +706,7 @@ export default function Navbar() {
                         Profile
                       </Link>
                     </li>
-                    
+
                     {/* User Content */}
                     <li>
                       <Link
@@ -695,7 +734,7 @@ export default function Navbar() {
                         My Pharmacies
                       </Link>
                     </li>
-                    
+
                     {/* User Actions */}
                     <li>
                       <Link
@@ -715,7 +754,8 @@ export default function Navbar() {
                                 : "w-5 h-5 text-zinc-600"
                             }
                           />
-                          {favorites.deals.length + favorites.pharmacies.length >
+                          {favorites.deals.length +
+                            favorites.pharmacies.length >
                             0 && (
                             <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
                               {favorites.deals.length +
@@ -751,7 +791,7 @@ export default function Navbar() {
                         </span>
                       </Link>
                     </li>
-                    
+
                     {/* Settings & Logout */}
                     <li>
                       <Link
@@ -766,10 +806,10 @@ export default function Navbar() {
                         Settings
                       </Link>
                     </li>
-                    
+
                     {/* Divider before logout */}
                     <li className="border-t border-gray-200 dark:border-gray-600 my-2 md:hidden"></li>
-                    
+
                     <li>
                       <button
                         onClick={handleLogout}
@@ -789,7 +829,7 @@ export default function Navbar() {
                         whileTap="tap"
                         whileHover="hover"
                         variants={buttonVariants}
-                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-primary focus:outline-none dark:focus:ring-blue-800"
+                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
                       >
                         Login
                       </MotionLink>
@@ -810,7 +850,7 @@ export default function Navbar() {
           )}
         </AnimatePresence>
         <div className="hidden md:flex items-center justify-between w-full md:w-auto md:order-1">
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border  rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0  dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border  rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0  ">
             {!isAuthenticated ? (
               <>
                 <li>
@@ -818,8 +858,8 @@ export default function Navbar() {
                     to="/"
                     className={
                       location.pathname === "/"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 "
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-gray-700 dark:hover:text-primary md:dark:hover:bg-transparent dark:border-gray-700"
                     }
                     aria-current="page"
                   >
@@ -831,8 +871,8 @@ export default function Navbar() {
                     to="/advertise"
                     className={
                       location.pathname === "/advertise"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 "
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-gray-700 dark:hover:text-primary md:dark:hover:bg-transparent dark:border-gray-700"
                     }
                   >
                     Advertise
@@ -843,8 +883,8 @@ export default function Navbar() {
                     to="/contact"
                     className={
                       location.pathname === "/contact"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 "
+                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-gray-700 dark:hover:text-primary md:dark:hover:bg-transparent dark:border-gray-700"
                     }
                   >
                     Contact

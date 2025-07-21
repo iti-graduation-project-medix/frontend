@@ -24,6 +24,10 @@ import {
   Building2,
   Globe,
   ChevronRight,
+  Heart,
+  Share2,
+  ExternalLink,
+  Navigation,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,6 +40,9 @@ import useChat from "../../store/useChat";
 import { useAuth } from "../../store/useAuth";
 import CornerAd from "@/components/ui/CornerAd";
 import { LoadingPage } from "@/components/ui/loading";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
+import { useFav } from "../../store/useFav";
 
 export default function DealDetails() {
   const { id } = useParams();
@@ -59,6 +66,22 @@ export default function DealDetails() {
   })();
   const { startChat, setIsWidgetOpen, loadUserChats, selectChat, chats } =
     useChat();
+  const {
+    isDealFavorite,
+    toggleDealFavorite,
+    fetchFavorites,
+    isLoading: favLoading,
+  } = useFav();
+  const [isAnimating, setIsAnimating] = React.useState(false);
+  React.useEffect(() => {
+    fetchFavorites();
+  }, [fetchFavorites]);
+  const isFavorite = isDealFavorite(deal?.id);
+  const isOwner =
+    currentUserId &&
+    deal &&
+    deal.postedBy &&
+    currentUserId === deal.postedBy.id;
 
   useEffect(() => {
     if (id) {
@@ -90,13 +113,8 @@ export default function DealDetails() {
   }
   if (!deal) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="text-center">
-          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500 text-lg font-bold">
-            No Data With This Deal_ID
-          </p>
-        </div>
+      <div className="flex items-center justify-center min-h-[300px] text-gray-500">
+        Loading deal details...
       </div>
     );
   }
@@ -138,11 +156,54 @@ export default function DealDetails() {
     navigate(`/pharmacists/${deal.postedBy.id}`);
   };
 
-  // Google Maps direction link
-  const pharmacyAddress = `${deal.pharmacy.addressLine1} ${deal.pharmacy.addressLine2} ${deal.pharmacy.city} ${deal.pharmacy.governorate}`;
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    pharmacyAddress
-  )}`;
+  const handleFavorite = async (e) => {
+    e.stopPropagation();
+    setIsAnimating(true);
+    try {
+      await toggleDealFavorite(deal.id);
+      if (isFavorite) {
+        toast.success(`${deal.medicineName} removed from favorites`);
+      } else {
+        toast.success(`${deal.medicineName} added to favorites`);
+      }
+    } catch (error) {
+      toast.error("Failed to update favorites. Please try again.");
+    } finally {
+      setTimeout(() => setIsAnimating(false), 300);
+    }
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: deal.medicineName,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard!");
+    }
+  };
+
+  // Google Maps direction link using coordinates if available
+  let mapsUrl = "";
+  let directionsUrl = "";
+  const coords = deal.pharmacy?.location?.coordinates;
+  if (Array.isArray(coords) && coords.length === 2) {
+    // Note: Google Maps expects lat,lng (not lng,lat)
+    const [lng, lat] = coords;
+    mapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  } else {
+    // fallback to address string
+    const pharmacyAddress = `${deal.pharmacy.addressLine1} ${deal.pharmacy.addressLine2} ${deal.pharmacy.city} ${deal.pharmacy.governorate}`;
+    mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      pharmacyAddress
+    )}`;
+    directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+      pharmacyAddress
+    )}`;
+  }
 
   // Calculate time since posting
   const getTimeSincePosted = () => {
@@ -192,6 +253,58 @@ export default function DealDetails() {
                     <p className="text-xs sm:text-sm text-gray-600">
                       Medicine Information
                     </p>
+                  </div>
+                  {/* Favorite and Share icons */}
+                  <div className="flex items-center gap-2 ml-4">
+                    <motion.button
+                      onClick={handleFavorite}
+                      className={`p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors ${
+                        favLoading || isOwner
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      disabled={favLoading || isOwner}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      animate={
+                        isAnimating
+                          ? { scale: [1, 1.3, 1], rotate: [0, 10, -10, 0] }
+                          : {}
+                      }
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      title={
+                        isOwner
+                          ? "You cannot favorite your own deal"
+                          : isFavorite
+                          ? "Remove from favorites"
+                          : "Add to favorites"
+                      }
+                    >
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={isFavorite ? "filled" : "empty"}
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0, rotate: 180 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                        >
+                          <Heart
+                            className={`w-5 h-5 transition-colors duration-200 ${
+                              isFavorite
+                                ? "text-red-500 fill-red-500"
+                                : "text-gray-600 hover:text-red-400"
+                            }`}
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    </motion.button>
+                    <button
+                      onClick={handleShare}
+                      className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                      title="Share this deal"
+                    >
+                      <Share2 className="w-5 h-5 text-gray-600" />
+                    </button>
                   </div>
                 </CardTitle>
               </CardHeader>
@@ -317,7 +430,7 @@ export default function DealDetails() {
             <Card className="shadow-sm border border-gray-200">
               <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <CardTitle className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
+                  <div className="p-2 rounded-lg bg-blue-100">
                     <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                   </div>
                   <div>
@@ -328,17 +441,27 @@ export default function DealDetails() {
                       Location and contact details
                     </p>
                   </div>
+                  <div className="flex items-center gap-2 ml-auto">
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-semibold px-3 py-2 rounded-lg shadow-sm transition-all text-xs border border-gray-200 hover:shadow-md"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                      <span className="hidden sm:inline">View</span>
+                    </a>
+                    <a
+                      href={directionsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold px-3 py-2 rounded-lg shadow-sm transition-all text-xs"
+                    >
+                      <Navigation className="w-3 h-3" />
+                      <span className="hidden sm:inline">Directions</span>
+                    </a>
+                  </div>
                 </CardTitle>
-                <a
-                  href={mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold px-3 sm:px-4 py-2 rounded-lg shadow-sm transition-all text-xs sm:text-sm mt-4 sm:mt-0 ml-auto"
-                >
-                  <Map className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="hidden sm:inline">Get Directions</span>
-                  <span className="sm:hidden">Directions</span>
-                </a>
               </CardHeader>
               <CardContent className="mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -518,7 +641,17 @@ export default function DealDetails() {
                     <div className="w-full space-y-2 sm:space-y-3">
                       <Button
                         onClick={handleChat}
-                        className="w-full bg-primary hover:bg-primary/80 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm transition-all text-xs sm:text-base flex items-center justify-center gap-2"
+                        className={`w-full bg-primary hover:bg-primary/80 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm transition-all text-xs sm:text-base flex items-center justify-center gap-2 ${
+                          isOwner ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
+                        disabled={isOwner}
+                        title={
+                          isOwner
+                            ? "You cannot chat with yourself"
+                            : `Chat with ${
+                                deal.postedBy.fullName.split(" ")[0]
+                              }`
+                        }
                       >
                         <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                         <span className="xl:inline">

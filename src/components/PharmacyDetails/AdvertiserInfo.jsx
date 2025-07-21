@@ -33,6 +33,8 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
     }
   })();
 
+  const isOwner = currentUserId && owner && currentUserId === owner.id;
+
   const handleChat = async () => {
     if (!currentUserId || !owner || !pharmacyId) {
       alert("Please login to start a chat");
@@ -111,7 +113,15 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
         <div className="w-full space-y-2">
           <Button
             onClick={handleChat}
-            className="w-full bg-primary hover:bg-primary/80 text-white font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2"
+            className={`w-full bg-primary hover:bg-primary/80 text-white font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2 ${
+              isOwner ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isOwner}
+            title={
+              isOwner
+                ? "You cannot chat with yourself"
+                : `Chat with ${owner?.fullName?.split(" ")[0] || "Owner"}`
+            }
           >
             <MessageCircle className="w-4 h-4" />
             <span>Chat with {owner?.fullName?.split(" ")[0] || "Owner"}</span>

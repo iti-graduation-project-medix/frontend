@@ -9,12 +9,16 @@ import {
   Package,
   User2,
   X,
-  MapPin,
+  Building2,
   MessagesSquare,
   Lock,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "../../components/ui/avatar";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "../../components/ui/avatar";
 import {
   ChatBubble,
   ChatBubbleAvatar,
@@ -33,6 +37,10 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState("list"); // 'list' or 'chat'
   const [activeTab, setActiveTab] = useState("open"); // 'open' or 'closed'
+
+  // Filter toggles for chat type
+  const [showDeals, setShowDeals] = useState(true);
+  const [showPharmacies, setShowPharmacies] = useState(false);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
 
@@ -56,10 +64,13 @@ export default function Chat() {
     clearError,
   } = useChat();
 
-  // Filter chats based on active tab
+  // Filter chats based on active tab and toggles
   const openChats = chats.filter((chat) => !chat.isClosed);
   const closedChats = chats.filter((chat) => chat.isClosed);
-  const currentChats = activeTab === "open" ? openChats : closedChats;
+  let currentChats = activeTab === "open" ? openChats : closedChats;
+  currentChats = currentChats.filter(
+    (chat) => (showDeals && chat.deal) || (showPharmacies && chat.pharmacy)
+  );
 
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const prevUnreadRef = useRef(unreadCount);
@@ -89,14 +100,19 @@ export default function Chat() {
     if (chats && chats.length > 0) {
       for (const chat of chats) {
         const prev = prevUnreadCountsRef.current[chat.roomId] || 0;
-        if (chat.unreadCount > prev && (!activeChat || chat.roomId !== activeChat.roomId)) {
+        if (
+          chat.unreadCount > prev &&
+          (!activeChat || chat.roomId !== activeChat.roomId)
+        ) {
           const audio = new window.Audio("/new-notification-07-210334.mp3");
           audio.play();
           break; // Only play once per update
         }
       }
       // Update ref after check
-      prevUnreadCountsRef.current = Object.fromEntries(chats.map((c) => [c.roomId, c.unreadCount]));
+      prevUnreadCountsRef.current = Object.fromEntries(
+        chats.map((c) => [c.roomId, c.unreadCount])
+      );
     }
   }, [chats, activeChat?.roomId]);
 
@@ -277,6 +293,37 @@ export default function Chat() {
               </button>
             </div>
           </div>
+          {/* Filter Icons - centered */}
+          <div className="flex justify-center items-center mt-2 gap-2 z-10">
+            <button
+              onClick={() => setShowDeals((v) => !v)}
+              className={`p-1 rounded-full border transition-all duration-200 focus:outline-none ${
+                showDeals
+                  ? "bg-primary/10 border-primary text-primary shadow"
+                  : "bg-white border-gray-200 text-gray-400 opacity-60"
+              }`}
+              title={showDeals ? "Hide Deal Chats" : "Show Deal Chats"}
+              aria-label="Toggle Deal Chats"
+              type="button"
+            >
+              <Package className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setShowPharmacies((v) => !v)}
+              className={`p-1 rounded-full border transition-all duration-200 focus:outline-none ${
+                showPharmacies
+                  ? "bg-primary/10 border-primary text-primary shadow"
+                  : "bg-white border-gray-200 text-gray-400 opacity-60"
+              }`}
+              title={
+                showPharmacies ? "Hide Pharmacy Chats" : "Show Pharmacy Chats"
+              }
+              aria-label="Toggle Pharmacy Chats"
+              type="button"
+            >
+              <Building2 className="w-5 h-5" />
+            </button>
+          </div>
 
           <div className="flex-1 overflow-y-auto px-4 py-4 relative z-10 custom-scrollbar">
             {loading ? (
@@ -289,7 +336,9 @@ export default function Chat() {
                   return (
                     <div
                       key={i}
-                      className={`flex ${isSent ? "justify-end" : "justify-start"} w-full relative`}
+                      className={`flex ${
+                        isSent ? "justify-end" : "justify-start"
+                      } w-full relative`}
                       style={{ top: i * 2 }}
                     >
                       <div
@@ -357,7 +406,9 @@ export default function Chat() {
                       onClick={() => handleChatSelect(chat)}
                       className="group cursor-pointer transform hover:scale-[1.02] transition-all duration-300"
                       style={{
-                        animation: `slideInUp 0.5s ease-out ${index * 0.1}s both`,
+                        animation: `slideInUp 0.5s ease-out ${
+                          index * 0.1
+                        }s both`,
                       }}
                     >
                       <div className="relative">
@@ -413,7 +464,6 @@ export default function Chat() {
                                   )}
                                 </div>
                               )}
-
                             </div>
                             {/* Chat info */}
                             <div className="flex-1 min-w-0">
@@ -426,7 +476,6 @@ export default function Chat() {
                                     {lastMsgTime}
                                   </span>
                                 )}
-
                               </div>
                               <p className="text-sm text-muted-foreground truncate opacity-80">
                                 {chat.lastMessage?.text || "No messages yet"}
@@ -436,13 +485,15 @@ export default function Chat() {
                                 <div className="flex items-center gap-2 mt-2">
                                   <Package className="w-4 h-4 text-primary" />
                                   <span className="text-xs text-primary font-medium">
-                                    {chat.deal.title || "Deal"}
+                                    {chat.deal.medicineName ||
+                                      chat.deal.title ||
+                                      "Deal"}
                                   </span>
                                 </div>
                               )}
                               {chat.pharmacy && (
                                 <div className="flex items-center gap-2 mt-2">
-                                  <MapPin className="w-4 h-4 text-primary" />
+                                  <Building2 className="w-4 h-4 text-primary" />
                                   <span className="text-xs text-primary font-medium">
                                     {chat.pharmacy.name || "Pharmacy"}
                                   </span>
@@ -473,10 +524,35 @@ export default function Chat() {
                     : "No closed conversations"}
                 </h3>
                 <p className="text-gray-500 mb-4">
-                  {activeTab === "open"
-                    ? 'Start a chat by clicking "Chat with me" on any deal or pharmacy listing'
-                    : "Closed chats will appear here when deals or pharmacies are no longer available"}
-
+                  {!showDeals && !showPharmacies
+                    ? "Please select at least one filter (Deals or Pharmacies) to view chats"
+                    : activeTab === "open"
+                    ? `No ${
+                        showDeals && showPharmacies
+                          ? ""
+                          : showDeals
+                          ? "deal "
+                          : "pharmacy "
+                      }conversations found. Start a chat by clicking "Chat with me" on any ${
+                        showDeals && showPharmacies
+                          ? "deal or pharmacy"
+                          : showDeals
+                          ? "deal"
+                          : "pharmacy"
+                      } listing`
+                    : `No ${
+                        showDeals && showPharmacies
+                          ? ""
+                          : showDeals
+                          ? "deal "
+                          : "pharmacy "
+                      }conversations found. Closed chats will appear here when ${
+                        showDeals && showPharmacies
+                          ? "deals or pharmacies"
+                          : showDeals
+                          ? "deals"
+                          : "pharmacies"
+                      } are no longer available`}
                 </p>
               </div>
             )}
@@ -534,7 +610,7 @@ export default function Chat() {
               <div className="bg-gradient-to-r from-blue-50/60 to-indigo-100/60 rounded-2xl p-3 border border-blue-100">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-primary" />
+                    <Building2 className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="font-semibold text-foreground truncate">
@@ -568,10 +644,14 @@ export default function Chat() {
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-foreground">
-                      {activeChat.deal.medicineName || activeChat.deal.title || "Deal"}
+                      {activeChat.deal.medicineName ||
+                        activeChat.deal.title ||
+                        "Deal"}
                     </h4>
                     {activeChat.deal.price && (
-                      <p className="text-sm text-primary">${activeChat.deal.price}</p>
+                      <p className="text-sm text-primary">
+                        EGP{Number(activeChat.deal.price).toFixed(2)}
+                      </p>
                     )}
                   </div>
                   {!isRoomClosed && (
@@ -592,7 +672,10 @@ export default function Chat() {
             <div className="flex-1 min-h-0 overflow-y-auto px-2 pt-2 pb-1 custom-scrollbar">
               <ChatMessageList className="h-full" ref={messageListRef}>
                 {currentMessages.map((msg) => (
-                  <ChatBubble key={msg.id} variant={msg.isOwn ? "sent" : "received"}>
+                  <ChatBubble
+                    key={msg.id}
+                    variant={msg.isOwn ? "sent" : "received"}
+                  >
                     {!msg.isOwn && (
                       <ChatBubbleAvatar
                         src={msg.avatar}
@@ -617,8 +700,12 @@ export default function Chat() {
                       <ChatBubbleTimestamp timestamp={msg.timestamp} />
                       {msg.isOwn && (
                         <div className="flex items-center">
-                          {msg.status === "sent" && <Check className="w-3 h-3 text-gray-400" />}
-                          {msg.status === "read" && <CheckCheck className="w-3 h-3 text-primary" />}
+                          {msg.status === "sent" && (
+                            <Check className="w-3 h-3 text-gray-400" />
+                          )}
+                          {msg.status === "read" && (
+                            <CheckCheck className="w-3 h-3 text-primary" />
+                          )}
                         </div>
                       )}
                     </div>
@@ -756,7 +843,9 @@ export default function Chat() {
         </motion.button>
       </div>
       {/* Main chat content */}
-      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">{chatContent}</div>
+      <div className="flex flex-col flex-1 min-h-0 w-full relative z-10">
+        {chatContent}
+      </div>
     </motion.div>
   );
 

@@ -67,33 +67,35 @@ export default function ListingHeader({ pharmacy }) {
   };
 
   return (
-    <div className=" border-b border-gray-100">
+    <div className="border-b border-gray-100 dark:border-border bg-white dark:bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Breadcrumbs */}
-        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-          <Link to="/" className="hover:text-blue-600 transition-colors">
+        <nav className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <Link
+            to="/"
+            className="hover:text-blue-600 dark:hover:text-primary transition-colors"
+          >
             Home
           </Link>
           <ChevronRight className="w-4 h-4" />
           <Link
             to="/pharmacies"
-            className="hover:text-blue-600 transition-colors"
+            className="hover:text-blue-600 dark:hover:text-primary transition-colors"
           >
             Pharmacies for Sale
           </Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900 font-medium truncate">
+          <span className="text-gray-900 dark:text-foreground font-medium truncate">
             {pharmacy.name}
           </span>
         </nav>
-
         {/* Title and CTA Section */}
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
           <div className="flex-1">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-foreground mb-2">
               {pharmacy.name}
             </h1>
-            <div className="flex items-center gap-4 text-gray-600">
+            <div className="flex items-center gap-4 text-gray-600 dark:text-gray-300">
               <span className="flex items-center gap-1">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                 {pharmacy.saleType === "pharmacy_with_medicines"
@@ -104,12 +106,11 @@ export default function ListingHeader({ pharmacy }) {
               <span>License: {pharmacy.licenseNum || "N/A"}</span>
             </div>
           </div>
-
           {/* CTA Buttons */}
           <div className="flex items-center gap-3">
             <motion.button
               onClick={handleFavorite}
-              className={`p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors ${
+              className={`p-3 rounded-full bg-gray-100 dark:bg-card hover:bg-gray-200 dark:hover:bg-muted/10 transition-colors ${
                 isLoading || isOwner ? "opacity-50 cursor-not-allowed" : ""
               }`}
               disabled={isLoading || isOwner}
@@ -144,7 +145,7 @@ export default function ListingHeader({ pharmacy }) {
                     className={`w-5 h-5 transition-colors duration-200 ${
                       isFavorite
                         ? "text-red-500 fill-red-500"
-                        : "text-gray-600 hover:text-red-400"
+                        : "text-gray-600 dark:text-gray-300 hover:text-red-400 dark:hover:text-red-400"
                     }`}
                   />
                 </motion.div>
@@ -152,9 +153,9 @@ export default function ListingHeader({ pharmacy }) {
             </motion.button>
             <button
               onClick={handleShare}
-              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="p-3 rounded-full bg-gray-100 dark:bg-card hover:bg-gray-200 dark:hover:bg-muted/10 transition-colors"
             >
-              <Share2 className="w-5 h-5 text-gray-600" />
+              <Share2 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             </button>
           </div>
         </div>

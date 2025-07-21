@@ -85,11 +85,11 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
 
   return (
     <div
-      className="bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all duration-200 group cursor-pointer w-full max-w-sm"
+      className="bg-gray-50 dark:bg-card rounded-xl border border-gray-200 dark:border-border hover:border-blue-300 dark:hover:border-primary hover:shadow-md transition-all duration-200 group cursor-pointer w-full max-w-sm"
       onClick={() => onViewDetails && onViewDetails(pharmacy)}
     >
       {/* Image */}
-      <div className="w-full h-48 bg-gray-200 rounded-t-xl overflow-hidden relative">
+      <div className="w-full h-48 bg-gray-200 dark:bg-muted rounded-t-xl overflow-hidden relative">
         <img
           src={imageUrl}
           alt={pharmacy.name}
@@ -98,14 +98,14 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
 
         {/* Verified badge */}
         {isVerified && (
-          <span className="absolute top-2 left-2 bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded shadow">
+          <span className="absolute top-2 left-2 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-xs font-semibold px-2 py-1 rounded shadow">
             Verified
           </span>
         )}
 
         {/* Heart icon with animation */}
         <motion.button
-          className={`absolute top-2 right-2 bg-white/80 rounded-full p-1 shadow transition-all duration-200 hover:bg-white hover:shadow-lg ${
+          className={`absolute top-2 right-2 bg-white/80 dark:bg-background/80 rounded-full p-1 shadow transition-all duration-200 hover:bg-white dark:hover:bg-muted hover:shadow-lg ${
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
           onClick={handleHeartClick}
@@ -140,7 +140,7 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
                 className={`w-5 h-5 transition-colors duration-200 ${
                   isFavorite
                     ? "text-red-500 fill-red-500"
-                    : "text-gray-400 hover:text-red-400"
+                    : "text-gray-400 dark:text-gray-300 hover:text-red-400 dark:hover:text-red-400"
                 }`}
               />
             </motion.div>
@@ -150,11 +150,11 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+        <h3 className="font-bold text-gray-900 dark:text-foreground mb-2 line-clamp-1 group-hover:text-primary transition-colors">
           {pharmacy.name}
         </h3>
 
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
           <div className="flex items-center gap-1">
             <MapPin className="w-4 h-4" />
             <span className="truncate">
@@ -163,7 +163,7 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
           <div className="flex items-center gap-1">
             <Building2 className="w-4 h-4" />
             <span>
@@ -182,7 +182,7 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
 
         {/* Owner name */}
         {pharmacy.owner?.fullName && (
-          <div className="flex items-center gap-1 text-xs text-gray-500 mb-3">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 mb-3">
             <User className="w-4 h-4" />
             <span className="truncate">{pharmacy.owner.fullName}</span>
           </div>
@@ -190,16 +190,16 @@ export default function PharmacyCard({ pharmacy, onViewDetails }) {
 
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-lg font-bold text-gray-900 dark:text-foreground">
               {Number(pharmacy.pharmacyPrice).toLocaleString()} EGP
             </p>
             {monthlySales && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 Monthly Sales: {monthlySales}
               </p>
             )}
           </div>
-          <div className="text-blue-600 group-hover:text-blue-700 transition-colors">
+          <div className="text-blue-600 dark:text-primary group-hover:text-blue-700 dark:group-hover:text-primary-hover transition-colors">
             <svg
               className="w-5 h-5"
               fill="none"

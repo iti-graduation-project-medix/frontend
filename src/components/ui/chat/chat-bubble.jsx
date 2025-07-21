@@ -61,9 +61,9 @@ const ChatBubbleAvatar = ({ src, fallback, className }) => (
 const chatBubbleMessageVariants = cva("px-2 py-1", {
   variants: {
     variant: {
-      sent: "bg-gradient-to-r from-primary to-primary-hover text-white rounded-l-lg rounded-tr-lg",
+      sent: "bg-gradient-to-r from-primary to-primary-hover text-white rounded-l-lg rounded-tr-lg dark:from-primary dark:to-primary-hover dark:text-white",
       received:
-        "bg-white border border-border text-foreground rounded-r-lg rounded-tl-lg",
+        "bg-white border border-border text-foreground rounded-r-lg rounded-tl-lg dark:bg-background dark:border-border dark:text-foreground",
     },
     layout: {
       default: "",

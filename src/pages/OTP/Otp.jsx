@@ -69,7 +69,7 @@ export default function Otp({ message }) {
     try {
       const email = sessionStorage.getItem("resetEmail");
       if (!email) throw new Error("No email found in session");
-      
+
       await resetPassword({ email });
       startResendCountdown();
       // Success toast is handled by the store
@@ -86,20 +86,34 @@ export default function Otp({ message }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50" style={{ backdropFilter: 'blur(8px)' }}
+        className="relative w-full max-w-md overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-background dark:via-card dark:to-background text-card-foreground dark:text-card-foreground"
+        style={{ backdropFilter: "blur(8px)" }}
       >
         {/* Decorative Circles & Illustration */}
-        <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10" style={{ background: 'var(--primary)' }}></div>
-        <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10" style={{ background: 'var(--primary)' }}></div>
+        <div
+          className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10 bg-blue-100 dark:bg-primary"
+          style={{ background: "var(--primary)" }}
+        ></div>
+        <div
+          className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10 bg-indigo-100 dark:bg-primary"
+          style={{ background: "var(--primary)" }}
+        ></div>
         <div className="absolute left-1/2 -translate-x-1/2 -top-16 flex justify-center">
-          <GalleryVerticalEnd className="w-20 h-20 text-primary/95" />
+          <GalleryVerticalEnd className="w-20 h-20 text-primary/95 dark:text-primary" />
         </div>
         <div className="relative p-10 pt-20 flex flex-col gap-4">
           <div className="flex flex-col items-center gap-2 -mt-10">
-            <img src="/logo.svg" alt="Dawaback Logo" className="h-18 w-18 mx-auto" />
-            <h1 className="text-2xl font-bold tracking-tight text-primary/95">Verify OTP</h1>
-            <p className="text-sm -mt-2 text-center" style={{ color: 'var(--muted-foreground)' }}>
-              We've sent a 6-digit code to your email address <br /> Please enter it below
+            <img
+              src="/logo.svg"
+              alt="Dawaback Logo"
+              className="h-18 w-18 mx-auto"
+            />
+            <h1 className="text-2xl font-bold tracking-tight text-primary/95 dark:text-primary">
+              Verify OTP
+            </h1>
+            <p className="text-sm -mt-2 text-center text-muted-foreground dark:text-muted-foreground">
+              We've sent a 6-digit code to your email address <br /> Please
+              enter it below
             </p>
           </div>
           {/* Error Display */}
@@ -129,15 +143,17 @@ export default function Otp({ message }) {
             <Button
               onClick={handleSubmit}
               disabled={otp.length !== 6 || isLoading}
-              className="w-full py-2 rounded-lg font-bold text-white shadow-md transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: otp.length === 6 ? 'var(--primary)' : '#d1d5db', color: 'var(--primary-foreground)' }}
+              className="w-full py-2 rounded-lg font-bold text-white shadow-md transition-all disabled:opacity-60 disabled:cursor-not-allowed bg-primary hover:bg-primary-hover dark:bg-primary dark:hover:bg-primary-hover"
+              style={{ color: "var(--primary-foreground)" }}
             >
               {isLoading ? "Verifying..." : "Verify OTP"}
             </Button>
-            <div className="text-center text-sm -mt-2" style={{ color: 'var(--muted-foreground)' }}>
+            <div className="text-center text-sm -mt-2 text-muted-foreground dark:text-muted-foreground">
               Didn't receive the code?{" "}
               <button
-                className={`font-semibold text-primary hover:text-primary-hover transition-colors duration-150 focus:outline-none rounded underline-offset-2 hover:underline ${resendDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`font-semibold text-primary dark:text-primary hover:text-primary-hover dark:hover:text-primary-hover transition-colors duration-150 focus:outline-none rounded underline-offset-2 hover:underline ${
+                  resendDisabled ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 onClick={handleResendOTP}
                 disabled={resendDisabled}
               >

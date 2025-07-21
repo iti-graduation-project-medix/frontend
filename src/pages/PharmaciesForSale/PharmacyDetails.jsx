@@ -28,40 +28,38 @@ const RelatedListings = lazy(() =>
 
 // Loading Skeleton Component
 const LoadingSkeleton = () => (
-  <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen bg-gray-50 dark:bg-background">
     {/* Header Skeleton */}
-    <div className=" border-b border-gray-100">
+    <div className=" border-b border-gray-100 dark:border-border bg-white dark:bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="h-4 bg-gray-200 rounded w-1/3 mb-4 animate-pulse"></div>
-        <div className="h-8 bg-gray-200 rounded w-2/3 mb-4 animate-pulse"></div>
-        <div className="h-6 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+        <div className="h-4 bg-gray-200 dark:bg-card rounded w-1/3 mb-4 animate-pulse"></div>
+        <div className="h-8 bg-gray-200 dark:bg-card rounded w-2/3 mb-4 animate-pulse"></div>
+        <div className="h-6 bg-gray-200 dark:bg-card rounded w-1/2 animate-pulse"></div>
       </div>
     </div>
-
     {/* Main Content Skeleton */}
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Top Row - Image Gallery and Advertiser Info */}
       <div className="grid lg:grid-cols-3 gap-8 mb-8">
         <div className="lg:col-span-2">
-          <div className="h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
+          <div className="h-96 bg-gray-200 dark:bg-card rounded-2xl animate-pulse"></div>
         </div>
         <div>
-          <div className="h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
+          <div className="h-96 bg-gray-200 dark:bg-card rounded-2xl animate-pulse"></div>
         </div>
       </div>
-
       {/* Full Width Components */}
       <div className="space-y-8">
         {/* Detailed Information and Map Section - Side by Side */}
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="h-64 bg-gray-200 rounded-2xl animate-pulse"></div>
+            <div className="h-64 bg-gray-200 dark:bg-card rounded-2xl animate-pulse"></div>
           </div>
           <div>
-            <div className="h-64 bg-gray-200 rounded-2xl animate-pulse"></div>
+            <div className="h-64 bg-gray-200 dark:bg-card rounded-2xl animate-pulse"></div>
           </div>
         </div>
-        <div className="h-64 bg-gray-200 rounded-2xl animate-pulse"></div>
+        <div className="h-64 bg-gray-200 dark:bg-card rounded-2xl animate-pulse"></div>
       </div>
     </div>
   </div>
@@ -102,7 +100,7 @@ export default function PharmacyDetails() {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] text-gray-600 text-lg font-medium">
+      <div className="flex justify-center items-center min-h-[60vh] text-gray-600 dark:text-gray-300 text-lg font-medium bg-gray-50 dark:bg-background">
         Checking authentication...
       </div>
     );
@@ -114,7 +112,7 @@ export default function PharmacyDetails() {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] text-red-600 text-lg font-medium">
+      <div className="flex justify-center items-center min-h-[60vh] text-red-600 dark:text-red-400 text-lg font-medium bg-gray-50 dark:bg-background">
         {error}
       </div>
     );
@@ -122,14 +120,14 @@ export default function PharmacyDetails() {
 
   if (!pharmacy) {
     return (
-      <div className="flex justify-center items-center min-h-[60vh] text-gray-500 text-lg font-medium">
+      <div className="flex justify-center items-center min-h-[60vh] text-gray-500 dark:text-gray-400 text-lg font-medium bg-gray-50 dark:bg-background">
         No pharmacy found with this ID.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <CornerAd position="pharmacyDetails" />
       {/* Header */}
       <SuspenseWrapper>
@@ -145,7 +143,6 @@ export default function PharmacyDetails() {
               <ImageGallery images={pharmacy.imagesUrls} />
             </SuspenseWrapper>
           </div>
-
           {/* Advertiser Info - Takes 1/3 of the width, MapSection below it */}
           <div className="flex flex-col gap-6">
             <SuspenseWrapper>
@@ -159,7 +156,6 @@ export default function PharmacyDetails() {
             </SuspenseWrapper>
           </div>
         </div>
-
         {/* Full Width Components Below */}
         <div className="space-y-8">
           {/* PharmacyDetailsTable - now full width */}
@@ -168,24 +164,22 @@ export default function PharmacyDetails() {
               <PharmacyDetailsTable pharmacy={pharmacy} />
             </SuspenseWrapper>
           </div>
-
           {/* Related Listings */}
           <SuspenseWrapper>
             <RelatedListings pharmacy={pharmacy} />
           </SuspenseWrapper>
-
           {/* Download Button - if needed */}
           {pharmacy.saleFileUrl && (
             <SuspenseWrapper>
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">
+              <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-gray-100 dark:border-border p-6">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-foreground mb-4">
                   Documents
                 </h3>
                 <a
                   href={pharmacy.saleFileUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-primary dark:hover:bg-primary-hover text-white rounded-lg font-medium transition-colors"
                 >
                   <svg
                     className="w-4 h-4"

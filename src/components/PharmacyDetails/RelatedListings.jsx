@@ -81,8 +81,10 @@ export default function RelatedListings({ pharmacy }) {
     return (
       <div className="py-8">
         <div className="mb-5">
-          <h2 className="text-xl font-bold text-gray-900">Similar Listings</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            Similar Listings
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-300">
             Other pharmacies you might like
           </p>
         </div>

@@ -383,7 +383,7 @@ export default function Navbar() {
                     }}
                   >
                     <FiBell
-                      className="text-zinc-600"
+                      className="text-zinc-600 dark:text-white"
                       style={{
                         width: "clamp(24px, 6vw, 30px)",
                         height: "clamp(24px, 6vw, 30px)",
@@ -454,7 +454,7 @@ export default function Navbar() {
                   }}
                 >
                   <Heart
-                    className="text-zinc-600"
+                    className="text-zinc-600 dark:text-white"
                     style={{
                       width: "clamp(24px, 6vw, 30px)",
                       height: "clamp(24px, 6vw, 30px)",
@@ -751,7 +751,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/favorites"
                                 ? "text-white w-5 h-5"
-                                : "w-5 h-5 text-zinc-600"
+                                : "w-5 h-5 text-zinc-600 dark:text-white"
                             }
                           />
                           {favorites.deals.length +
@@ -780,7 +780,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/notifications"
                                 ? "text-white w-5 h-5"
-                                : "w-5 h-5 text-zinc-600"
+                                : "w-5 h-5 text-zinc-600 dark:text-white"
                             }
                           />
                           {unreadDrugAlerts > 0 && (

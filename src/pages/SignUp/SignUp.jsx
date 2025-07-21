@@ -1,4 +1,4 @@
-import { SignUpForm } from './../../components/SignUpForm';
+import { SignUpForm } from "./../../components/SignUpForm";
 
 export default function SignUp() {
   return (
@@ -18,7 +18,6 @@ export default function SignUp() {
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
           {/* Left Side - Welcome Section */}
-        
 
           {/* Right Side - Form Section */}
           <div className="w-full lg:w-7/12">

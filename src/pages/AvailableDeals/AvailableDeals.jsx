@@ -71,10 +71,10 @@ export default function AvailableDeals() {
     try {
       const userData = localStorage.getItem("user");
       if (!userData) return null;
-      
+
       const parsedUser = JSON.parse(userData);
       // Handle both cases: user could be the full object or just the ID
-      return typeof parsedUser === 'object' ? parsedUser.id : parsedUser;
+      return typeof parsedUser === "object" ? parsedUser.id : parsedUser;
     } catch {
       return null;
     }
@@ -832,13 +832,7 @@ export default function AvailableDeals() {
           )}
         </div>
       </section>
-      {/* Show info if sorted by nearest */}
-      {useLocationSort && (
-        <div className="text-primary text-xs mt-2 flex items-center gap-1">
-          <MapPin className="w-4 h-4 inline-block" /> Sorted by nearest to your
-          location
-        </div>
-      )}
+
       <DrugAlert />
     </div>
   );

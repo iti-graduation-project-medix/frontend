@@ -118,9 +118,13 @@ export default function Profile() {
     );
   }
 
-  const { user, deals: dealsRaw, pharmacies: pharmaciesRaw = [] } = userData;
-  const deals = Array.isArray(dealsRaw) ? dealsRaw : [];
+  const { user, pharmacies: pharmaciesRaw = [] } = userData;
   const pharmacies = Array.isArray(pharmaciesRaw) ? pharmaciesRaw : [];
+
+  // Aggregate all deals from all user pharmacies
+  const deals = pharmacies.flatMap((pharmacy) =>
+    Array.isArray(pharmacy.deals) ? pharmacy.deals : []
+  );
 
   // Pagination logic
   const indexOfLastDeal = currentPage * dealsPerPage;
@@ -128,8 +132,17 @@ export default function Profile() {
   const currentDeals = deals.slice(indexOfFirstDeal, indexOfLastDeal);
   const totalPages = Math.ceil(deals.length / dealsPerPage);
 
-  // Get user details from the first deal's postedBy or use basic user data
-  const userDetails = deals.length > 0 ? deals[0].postedBy : user;
+  // Always use user object for profile info
+  const userDetails = user || {
+    fullName: "Unknown User",
+    email: "",
+    phone: "",
+    createdAt: "",
+    isIdVerified: false,
+    isWorkIdVerified: "",
+    subscriptionStatus: "",
+    profilePhotoUrl: "",
+  };
 
   // Chart data preparation
   const dealsByStatus = [
@@ -168,7 +181,6 @@ export default function Profile() {
   };
 
   return (
-
     <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}

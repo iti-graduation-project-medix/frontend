@@ -26,6 +26,18 @@ export default function ListingHeader({ pharmacy }) {
 
   const isFavorite = isPharmacyFavorite(pharmacy.id);
 
+  // Determine if current user is the owner
+  let currentUserId = null;
+  try {
+    const user = localStorage.getItem("user");
+    if (user) {
+      const parsed = JSON.parse(user);
+      currentUserId = typeof parsed === "object" ? parsed.id : parsed;
+    }
+  } catch {}
+  const isOwner =
+    currentUserId && pharmacy.owner && currentUserId === pharmacy.owner.id;
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -98,9 +110,9 @@ export default function ListingHeader({ pharmacy }) {
             <motion.button
               onClick={handleFavorite}
               className={`p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
+                isLoading || isOwner ? "opacity-50 cursor-not-allowed" : ""
               }`}
-              disabled={isLoading}
+              disabled={isLoading || isOwner}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               animate={
@@ -112,6 +124,13 @@ export default function ListingHeader({ pharmacy }) {
                   : {}
               }
               transition={{ duration: 0.3, ease: "easeInOut" }}
+              title={
+                isOwner
+                  ? "You cannot favorite your own pharmacy"
+                  : isFavorite
+                  ? "Remove from favorites"
+                  : "Add to favorites"
+              }
             >
               <AnimatePresence mode="wait">
                 <motion.div

@@ -25,8 +25,6 @@ export default function App() {
   //   return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
   // }
 
-  
-
   if (isOffline && currentPath === "/") {
     return (
       <>

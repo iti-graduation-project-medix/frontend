@@ -136,10 +136,17 @@ export default function Chat() {
       // Set viewport height for mobile
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
+      // Prevent background scroll when chat is open
+      document.body.style.overflow = "hidden";
 
       return () => {
         document.documentElement.style.removeProperty("--vh");
+        document.body.style.overflow = "";
       };
+    }
+    // Also restore scroll if chat closes (desktop or mobile)
+    if (!isWidgetOpen) {
+      document.body.style.overflow = "";
     }
   }, [isMobile, isWidgetOpen]);
 
@@ -598,6 +605,9 @@ export default function Chat() {
             <div className="flex-1 min-w-0"></div>
             <Link
               to={`/pharmacists/${activeChat.otherUser?.id}`}
+              onClick={() => {
+                if (isMobile) setIsWidgetOpen(false);
+              }}
               className="px-2 py-1 rounded bg-blue-100 dark:bg-primary/20 text-foreground dark:text-foreground text-xs font-semibold flex items-center gap-1 hover:bg-blue-200 dark:hover:bg-primary/30 transition"
             >
               <User2 className="w-4 h-4" />
@@ -625,6 +635,9 @@ export default function Chat() {
                   {!isRoomClosed && (
                     <Link
                       to={`/pharmacies/${activeChat.pharmacy.id}`}
+                      onClick={() => {
+                        if (isMobile) setIsWidgetOpen(false);
+                      }}
                       className="px-4 py-2 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-primary to-primary-hover dark:from-primary dark:to-primary-hover text-white hover:from-primary-hover hover:to-primary dark:hover:from-primary-hover dark:hover:to-primary"
                     >
                       View Pharmacy
@@ -657,6 +670,9 @@ export default function Chat() {
                   {!isRoomClosed && (
                     <Link
                       to={`/deals/${activeChat.deal.id}`}
+                      onClick={() => {
+                        if (isMobile) setIsWidgetOpen(false);
+                      }}
                       className="px-4 py-2 rounded-xl font-semibold transition-all duration-300 bg-gradient-to-r from-primary to-primary-hover dark:from-primary dark:to-primary-hover text-white hover:from-primary-hover hover:to-primary dark:hover:from-primary-hover dark:hover:to-primary"
                     >
                       View Deal
@@ -804,7 +820,7 @@ export default function Chat() {
     <motion.div
       className={
         isMobile
-          ? "fixed inset-0 z-50 flex flex-col bg-white/90 dark:bg-background/95 backdrop-blur-2xl overflow-hidden w-screen h-dvh rounded-none border-0 shadow-none"
+          ? "fixed inset-0 z-[9999] flex flex-col bg-white/90 dark:bg-background/95 backdrop-blur-2xl overflow-hidden w-screen h-dvh rounded-none border-0 shadow-none"
           : "fixed z-50 bottom-6 left-6 flex flex-col bg-white/90 dark:bg-background/95 backdrop-blur-2xl overflow-hidden w-full max-w-[400px] h-[70vh] max-h-[600px] rounded-3xl shadow-2xl border border-border dark:border-border"
       }
       style={mobileWidgetStyle}
@@ -858,7 +874,7 @@ export default function Chat() {
             {/* Mobile overlay */}
             {isMobile && (
               <motion.div
-                className="fixed inset-0 bg-black/50 z-40"
+                className="fixed inset-0 bg-black/50 z-[9999]"
                 variants={overlayVariants}
                 initial="hidden"
                 animate="visible"

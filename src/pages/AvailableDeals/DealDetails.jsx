@@ -29,7 +29,7 @@ import {
   ExternalLink,
   Navigation,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -225,19 +225,19 @@ export default function DealDetails() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumbs */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="hover:text-blue-600 dark:hover:text-primary transition-colors"
           >
             Home
-          </a>
+          </Link>
           <ChevronRight className="w-4 h-4" />
-          <a
-            href="/deals"
+          <Link
+            to="/deals"
             className="hover:text-blue-600 dark:hover:text-primary transition-colors"
           >
-            Deals
-          </a>
+            Deals{" "}
+          </Link>
           <ChevronRight className="w-4 h-4" />
           <span className="text-gray-900 dark:text-foreground font-medium truncate">
             {deal.medicineName}

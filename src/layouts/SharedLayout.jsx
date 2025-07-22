@@ -19,7 +19,7 @@ export default function SharedLayout() {
         </Suspense>
       </div>
       <Toaster />
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }

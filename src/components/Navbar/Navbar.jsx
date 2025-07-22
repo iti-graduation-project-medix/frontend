@@ -369,27 +369,35 @@ export default function Navbar() {
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <Link
           to="/"
-          className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none"
+          className="flex items-center space-x-3 rtl:space-x-reverse focus:outline-none min-w-0"
         >
+          <style>{`
+            @media (max-width: 405px) {
+              .navbar-logo-compact { height: 28px !important; min-width: 20px !important; max-width: 28px !important; }
+              .navbar-title-compact { font-size: 1rem !important; max-width: 70px !important; }
+              .navbar-slogan-compact { display: none !important; }
+            }
+          `}</style>
           <img
             src="/logo.svg"
-            className="h-10 sm:h-10 lg:h-14 xl:h-16 transition-all duration-200"
+            className="h-10 sm:h-10 lg:h-14 xl:h-16 transition-all duration-200 min-w-0 max-w-[40px] sm:max-w-[48px] lg:max-w-[56px] xl:max-w-[64px] navbar-logo-compact"
             alt="Dawaback Logo"
+            style={{ minWidth: 24 }}
           />
-          <div className="flex flex-col mb-2 md:mb-3">
-            <span className="font-bold text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl whitespace-nowrap text-primary dark:text-white transition-all duration-200">
+          <div className="flex flex-col mb-2 md:mb-3 min-w-0">
+            <span className="font-bold text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl whitespace-nowrap text-primary dark:text-white transition-all duration-200 navbar-title-compact">
               Dawaback
             </span>
-            <p className="text-[10px] sm:text-xs md:text-xs lg:text-sm text-zinc-700 ms-.5 leading-0 mt-1 dark:text-gray-400 transition-all duration-200">
+            <p className="text-[10px] sm:text-xs md:text-xs lg:text-sm text-zinc-700 ms-.5 leading-0 mt-1 dark:text-gray-400 transition-all duration-200 navbar-slogan-compact">
               Before it expires, trade it with desire
             </p>
           </div>
         </Link>
-        <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
+        <div className="flex items-center md:order-2 space-x-2 xs:space-x-3 md:space-x-0 rtl:space-x-reverse min-w-0">
           {/* Theme Mode Toggle and Notification Bell */}
           <div
-            className={`flex items-center gap-2 ${
-              !isAuthenticated ? "mr-4" : "mr-1 md:mr-2"
+            className={`flex items-center gap-1 xs:gap-2 ${
+              !isAuthenticated ? "mr-2 xs:mr-4" : "mr-1 md:mr-2"
             }`}
           >
             <ModeToggle />
@@ -399,10 +407,14 @@ export default function Navbar() {
                 onOpenChange={setIsNotificationPopoverOpen}
               >
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="icon" className="relative">
-                    <FiBell className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="relative p-1 xs:p-2 h-8 w-8 xs:h-9 xs:w-9"
+                  >
+                    <FiBell className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
-                      <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center z-50">
+                      <Badge className="absolute bottom-5 left-3 bg-red-500 text-white rounded-full px-1 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center z-50">
                         {unreadDrugAlerts}
                       </Badge>
                     )}

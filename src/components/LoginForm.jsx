@@ -61,12 +61,7 @@ export function LoginForm({ className, ...props }) {
             />
             <div className="flex flex-col gap-6">
               <div className="flex flex-row items-center justify-center text-center gap-4 mb-2">
-                <img
-                  src="/logo.svg"
-                  alt="Dawaback Logo"
-                  className="h-14 w-14 "
-                />
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col">
                   <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground">
                     Welcome back
                   </h1>

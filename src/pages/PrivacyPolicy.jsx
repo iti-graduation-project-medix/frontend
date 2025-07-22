@@ -145,7 +145,7 @@ const privacySections = [
 export default function PrivacyPolicy() {
   return (
     <motion.div
-      className="relative min-h-screen flex flex-col items-center py-10 px-2 bg-white dark:bg-background text-foreground dark:text-foreground"
+      className="relative min-h-screen flex flex-col items-center py-10 px-2 dark:bg-background text-foreground dark:text-foreground"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}

@@ -491,7 +491,7 @@ export default function AddPharmacy() {
                                       formik.touched.name
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.name &&
                                         formik.errors.name &&
@@ -531,7 +531,7 @@ export default function AddPharmacy() {
                                       formik.touched.licenseNum
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.licenseNum &&
                                         formik.errors.licenseNum &&
@@ -572,7 +572,7 @@ export default function AddPharmacy() {
                                       formik.touched.contactPerson
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.contactPerson &&
                                         formik.errors.contactPerson &&
@@ -613,7 +613,7 @@ export default function AddPharmacy() {
                                       formik.touched.contactNumber
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.contactNumber &&
                                         formik.errors.contactNumber &&
@@ -657,7 +657,7 @@ export default function AddPharmacy() {
                                       formik.touched.startHour
                                     }
                                     className={cn(
-                                      "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none",
+                                      "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white appearance-none",
 
                                       formik.touched.startHour &&
                                         formik.errors.startHour &&
@@ -725,7 +725,7 @@ export default function AddPharmacy() {
                                       formik.touched.endHour
                                     }
                                     className={cn(
-                                      "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none",
+                                      "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white appearance-none",
 
                                       formik.touched.endHour &&
                                         formik.errors.endHour &&
@@ -777,7 +777,7 @@ export default function AddPharmacy() {
                               </Label>
                               <label
                                 htmlFor="images"
-                                className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-colors mb-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-colors mb-2 dark:bg-gray-900 dark:border-gray-700 dark:text-white"
                               >
                                 <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
                                 <span className="mb-1 text-sm text-gray-700 font-semibold">
@@ -928,7 +928,7 @@ export default function AddPharmacy() {
                                       formik.touched.addressLine1
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.addressLine1 &&
                                         formik.errors.addressLine1 &&
@@ -963,7 +963,7 @@ export default function AddPharmacy() {
                                     value={formik.values.addressLine2}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                    className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white"
                                   />
                                 </div>
                               </div>
@@ -987,7 +987,7 @@ export default function AddPharmacy() {
                                       formik.touched.city
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.city &&
                                         formik.errors.city &&
@@ -1030,7 +1030,7 @@ export default function AddPharmacy() {
                                   >
                                     <SelectTrigger
                                       className={cn(
-                                        "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white w-full",
+                                        "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white w-full",
 
                                         formik.touched.governorate &&
                                           formik.errors.governorate &&
@@ -1081,7 +1081,7 @@ export default function AddPharmacy() {
                                       formik.touched.zipCode
                                     }
                                     className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
 
                                       formik.touched.zipCode &&
                                         formik.errors.zipCode &&
@@ -1145,7 +1145,7 @@ export default function AddPharmacy() {
                                   <Input
                                     ref={inputRef}
                                     placeholder="Search for your pharmacy location..."
-                                    className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                                    className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white"
                                     autoComplete="off"
                                   />
                                 </div>

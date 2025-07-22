@@ -24,7 +24,7 @@ const termsSections = [
           </li>
           <li>
             <strong>Limited Plan (Yearly):</strong> You can add up to{" "}
-            <b>120 deals per year</b>.
+            <b>150 deals per year</b>.
           </li>
           <li>
             <strong>Unlimited Plan:</strong> You can add <b>unlimited deals</b>{" "}
@@ -59,7 +59,7 @@ const termsSections = [
               </tr>
               <tr>
                 <td className="py-2 px-3">Limited (Yearly)</td>
-                <td className="py-2 px-3">120 deals/year</td>
+                <td className="py-2 px-3">150 deals/year</td>
                 <td className="py-2 px-3">Lost at year’s end</td>
               </tr>
               <tr>
@@ -222,7 +222,7 @@ const termsSections = [
 export default function TermsOfService() {
   return (
     <motion.div
-      className="relative min-h-screen flex flex-col items-center py-10 px-2 bg-white dark:bg-background text-foreground dark:text-foreground"
+      className="relative min-h-screen flex flex-col items-center py-10 px-2 dark:bg-background text-foreground dark:text-foreground"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}

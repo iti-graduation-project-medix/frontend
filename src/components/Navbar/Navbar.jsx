@@ -350,7 +350,7 @@ export default function Navbar() {
         >
           <img
             src="/logo.svg"
-            className="h-8 sm:h-10  lg:h-14 xl:h-16 transition-all duration-200"
+            className="h-10 sm:h-10 lg:h-14 xl:h-16 transition-all duration-200"
             alt="Dawaback Logo"
           />
           <div className="flex flex-col mb-2 md:mb-3">
@@ -363,13 +363,10 @@ export default function Navbar() {
           </div>
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          {/* Theme Mode Toggle */}
-          <div className="mr-2">
+          {/* Theme Mode Toggle and Notification Bell */}
+          <div className="flex items-center mr-1 md:mr-2 gap-2">
             <ModeToggle />
-          </div>
-          {isAuthenticated ? (
-            <>
-              <div></div>
+            {isAuthenticated && (
               <Popover
                 open={isNotificationPopoverOpen}
                 onOpenChange={setIsNotificationPopoverOpen}
@@ -378,11 +375,11 @@ export default function Navbar() {
                   <Button
                     variant="outline"
                     size="icon"
-                    className="mr-2 hidden md:inline-flex relative"
+                    className="relative"
                   >
                     <FiBell className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
-                      <Badge className="absolute bottom-6 left-7 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center z-50">
+                      <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center z-50">
                         {unreadDrugAlerts}
                       </Badge>
                     )}
@@ -436,18 +433,22 @@ export default function Navbar() {
                   )}
                 </PopoverContent>
               </Popover>
-
+            )}
+          </div>
+          {isAuthenticated ? (
+            <>
+              <div></div>
               {/* Favorites Icon */}
               <Link
                 to="/favorites"
-                className="relative font-bold mr-4 hidden md:inline-flex"
+                className="relative font-bold mr-3 hidden md:inline-flex"
               >
                 <Button variant="outline" size="icon" className="relative">
                   <Heart className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
                   <span className="sr-only">Favorites</span>
                 </Button>
                 {favorites.deals.length + favorites.pharmacies.length > 0 && (
-                  <Badge className="absolute bottom-6 left-7 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
+                  <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
                     {favorites.deals.length + favorites.pharmacies.length}
                   </Badge>
                 )}
@@ -595,7 +596,7 @@ export default function Navbar() {
           )}
           <motion.button
             type="button"
-            className="inline-flex items-center p-2 w-8 h-8 sm:w-10 sm:h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="relative inline-flex items-center justify-center md:hidden border border-gray-200 dark:border-border bg-white dark:bg-card rounded-md w-9 h-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600 -ms-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             animate={isMenuOpen ? "open" : "closed"}
             whileTap="tap"
@@ -604,7 +605,7 @@ export default function Navbar() {
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5"
+              className="w-[1.2rem] h-[1.2rem] text-zinc-600 dark:text-white"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -744,32 +745,6 @@ export default function Navbar() {
                             <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
                               {favorites.deals.length +
                                 favorites.pharmacies.length}
-                            </Badge>
-                          )}
-                        </span>
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/notifications"
-                        className={
-                          location.pathname === "/notifications"
-                            ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                            : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                        }
-                      >
-                        <span>Notifications</span>
-                        <span className="relative">
-                          <FiBell
-                            className={
-                              location.pathname === "/notifications"
-                                ? "text-white w-5 h-5"
-                                : "w-5 h-5 text-zinc-600 dark:text-white"
-                            }
-                          />
-                          {unreadDrugAlerts > 0 && (
-                            <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
-                              {unreadDrugAlerts}
                             </Badge>
                           )}
                         </span>

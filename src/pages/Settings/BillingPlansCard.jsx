@@ -49,6 +49,32 @@ export default function BillingPlansCard({ pharmacistDetails }) {
   const { chats } = useChat();
   const openedChatsCount = chats.filter((chat) => !chat.isClosed).length;
 
+  // Calculate chat growth percentage (this month vs last month)
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+  const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+
+  const chatsThisMonth = chats.filter(chat => {
+    const date = new Date(chat.createdAt || chat.updatedAt);
+    return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+  });
+  const chatsLastMonth = chats.filter(chat => {
+    const date = new Date(chat.createdAt || chat.updatedAt);
+    return date.getMonth() === lastMonth && date.getFullYear() === lastMonthYear;
+  });
+  const countThisMonth = chatsThisMonth.length;
+  const countLastMonth = chatsLastMonth.length;
+  let chatGrowth = 0;
+  if (countLastMonth === 0 && countThisMonth > 0) {
+    chatGrowth = 100;
+  } else if (countLastMonth === 0 && countThisMonth === 0) {
+    chatGrowth = 0;
+  } else {
+    chatGrowth = Math.round(((countThisMonth - countLastMonth) / countLastMonth) * 100);
+  }
+
   // Fetch current subscription and user subscriptions on component mount
   useEffect(() => {
     fetchCurrentSubscription();
@@ -56,51 +82,47 @@ export default function BillingPlansCard({ pharmacistDetails }) {
   }, [fetchCurrentSubscription, fetchUserSubscriptions]);
 
   // Helper function to get plan details
-  const getPlanDetails = (planName) => {
+  const getPlanDetails = (planName, period = 'monthly') => {
     const plans = {
       regular: {
         name: "Regular Plan",
-        price: "EGP50",
-        period: "month",
+        price: period === 'yearly' ? 200 : 50,
+        period: period === 'yearly' ? 'year' : 'month',
         features: [
           "Add up to 10 deals",
           "Can't list pharmacies for sale",
-          "Can't subscribe to drug alert",
+          "Can't subscribe to drug alert"
         ],
         icon: Zap,
         color: "text-blue-600",
-        bgColor: "bg-blue-100",
+        bgColor: "bg-blue-100"
       },
       premium: {
         name: "Premium Plan",
-        price: "EGP100",
-        period: "month",
+        price: period === 'yearly' ? 400 : 100,
+        period: period === 'yearly' ? 'year' : 'month',
         features: [
           "Add unlimited deals",
           "List pharmacies for sale",
-          "Subscribe to drug alert",
+          "Subscribe to drug alert"
         ],
         icon: FaCrown,
         color: "text-amber-400",
-        bgColor: "bg-amber-100",
-      },
+        bgColor: "bg-amber-100"
+      }
     };
     return plans[planName] || plans.regular;
   };
 
   // Get current plan details
-  const currentPlan = currentSubscription
-    ? getPlanDetails(currentSubscription.planName)
-    : getPlanDetails("regular");
+  const currentPlan = currentSubscription ? getPlanDetails(currentSubscription.planName, currentSubscription.plan) : getPlanDetails('regular');
 
   // Helper function to format subscription data for billing history
   const formatSubscriptionForHistory = (subscription) => {
-    const planDetails = getPlanDetails(subscription.planName);
-    const amount =
-      subscription.planName === "premium" ? "EGP100.00" : "EGP50.00";
+    const planDetails = getPlanDetails(subscription.planName, subscription.plan);
+    const amount = `EGP${planDetails.price}.00`;
     const startDate = new Date(subscription.startDate);
     const endDate = new Date(subscription.endDate);
-
     return {
       id: subscription.id,
       date: startDate.toISOString().split("T")[0],
@@ -267,6 +289,14 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                     Please subscribe to a plan to continue using our services
                   </p>
                 </div>
+                <p className="text-primary font-semibold text-lg sm:text-xl">No active subscription found</p>
+                <p className="text-primary/80 text-sm sm:text-base">Please subscribe to a plan to continue using our services</p>
+                <Button
+                  className="bg-primary text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:bg-primary/90 transition-all duration-300 w-full sm:w-auto"
+                  onClick={() => navigate('/subscription')}
+                >
+                  Subscribe Now
+                </Button>
               </div>
             </div>
           )}
@@ -274,7 +304,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
       </Card>
 
       {/* Usage Statistics */}
-
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
 
@@ -294,6 +323,53 @@ export default function BillingPlansCard({ pharmacistDetails }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-8 pb-8">
+          {(!currentSubscription) ? (
+            <div className="flex flex-col items-center justify-center py-10 sm:py-16 max-w-xs sm:max-w-md mx-auto text-center">
+              <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-4 sm:mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full"></div>
+                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <MdInfo size={28} className="sm:size-32 text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-1 sm:mb-2">No usage features available</h3>
+              <p className="text-gray-500 text-xs sm:text-sm">Usage features will appear here once you have an active subscription</p>
+            </div>
+          ) : (
+            <>
+            {/* Premium Plan Extra Features */}
+            {currentSubscription.planName === 'premium' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                {/* Pharmacy Listings Card */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                  <div className="relative p-6 text-center">
+                    <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <MdHomeWork className="text-blue-600" size={28} />
+                    </div>
+                    <h4 className="font-bold text-lg text-blue-900 mb-2">Pharmacy Listings</h4>
+                    <p className="text-blue-700 font-medium mb-2">List your pharmacy for sale and reach more buyers.</p>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs">
+                      <MdCheckCircle className="text-blue-500" /> Active
+                    </span>
+                  </div>
+                </div>
+                {/* Drug Alerts Card */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100/50 border border-zinc-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-zinc-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                  <div className="relative p-6 text-center">
+                    <div className="p-4 bg-gradient-to-br from-zinc-100 to-zinc-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <MdNotificationsActive className="text-zinc-600" size={28} />
+                    </div>
+                    <h4 className="font-bold text-lg text-zinc-900 mb-2">Drug Alerts</h4>
+                    <p className="text-zinc-700 font-medium mb-2">Subscribe to drug alerts and stay updated on new medicines.</p>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-200 text-zinc-700 font-semibold text-xs">
+                      <MdCheckCircle className="text-zinc-500" /> Active
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Available Features */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Available Features */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/20 dark:to-purple-900/10 border border-purple-200 dark:border-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 group">
@@ -305,46 +381,42 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                     size={28}
                   />
                 </div>
-                <h4 className="font-bold text-lg text-purple-900 dark:text-purple-200 mb-2">
-                  Deals
-                </h4>
-                <p className="text-3xl font-bold text-purple-600 dark:text-purple-300 mb-3">
-                  {currentSubscription
-                    ? currentSubscription.planName === "premium"
-                      ? "∞ / ∞"
-                      : `${10 - parseInt(currentSubscription.dealsNumber)} / 10`
-                    : "0 / 0"}
+                <h4 className="font-bold text-lg text-purple-900 mb-2">Deals</h4>
+                <p className="text-3xl font-bold text-purple-600 mb-3">
+                  {(() => {
+                    if (!currentSubscription) return '0 / 0';
+                    if (currentSubscription.planName === 'premium') return '∞ / ∞';
+                    // Regular plan
+                    const isYearly = currentSubscription.plan === 'yearly';
+                    const maxDeals = isYearly ? 150 : 10;
+                    const usedDeals = maxDeals - parseInt(currentSubscription.dealsNumber);
+                    return `${usedDeals} / ${maxDeals}`;
+                  })()}
                 </p>
-                <div className="w-full bg-purple-200 dark:bg-purple-900/40 rounded-full h-3 mb-3 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-700 dark:to-purple-500 h-3 rounded-full transition-all duration-1000 ease-out"
-                    style={{
-                      width:
-                        currentSubscription &&
-                        currentSubscription.planName === "regular"
-                          ? `${
-                              ((10 -
-                                parseInt(currentSubscription.dealsNumber)) /
-                                10) *
-                              100
-                            }%`
-                          : currentSubscription &&
-                            currentSubscription.planName === "premium"
-                          ? "100%"
-                          : "0%",
+                <div className="w-full bg-purple-200 rounded-full h-3 mb-3 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out" 
+                    style={{ 
+                      width: (() => {
+                        if (!currentSubscription) return '0%';
+                        if (currentSubscription.planName === 'premium') return '100%';
+                        const isYearly = currentSubscription.plan === 'yearly';
+                        const maxDeals = isYearly ? 150 : 10;
+                        const usedDeals = maxDeals - parseInt(currentSubscription.dealsNumber);
+                        return `${(usedDeals / maxDeals) * 100}%`;
+                      })()
                     }}
                   ></div>
                 </div>
-                <p className="text-sm text-purple-700 font-medium dark:text-purple-300">
-                  {currentSubscription
-                    ? currentSubscription.planName === "premium"
-                      ? "Unlimited deals (Premium Plan)"
-                      : `${Math.round(
-                          ((10 - parseInt(currentSubscription.dealsNumber)) /
-                            10) *
-                            100
-                        )}% used (Regular Plan: up to 10 deals)`
-                    : "Loading..."}
+                <p className="text-sm text-purple-700 font-medium">
+                  {(() => {
+                    if (!currentSubscription) return 'Loading...';
+                    if (currentSubscription.planName === 'premium') return 'Unlimited deals (Premium Plan)';
+                    const isYearly = currentSubscription.plan === 'yearly';
+                    const maxDeals = isYearly ? 150 : 10;
+                    const usedDeals = maxDeals - parseInt(currentSubscription.dealsNumber);
+                    return `${Math.round((usedDeals / maxDeals) * 100)}% used (Regular Plan: up to ${maxDeals} deals${isYearly ? ' per year' : ' per month'})`;
+                  })()}
                 </p>
               </div>
             </div>
@@ -368,12 +440,13 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                   <div className="p-1 bg-green-100 dark:bg-green-900/40 rounded-full">
                     <MdTrendingUp size={16} />
                   </div>
-                  <span className="text-sm font-semibold">+12% this month</span>
+                  <span className="text-sm font-semibold">
+                    {chatGrowth >= 0 ? '+' : ''}{chatGrowth}% this month
+                  </span>
                 </div>
               </div>
+              </div>
             </div>
-          </div>
-
           {/* Premium Features Notice - Only show for Regular Plan */}
           {currentSubscription &&
             currentSubscription.planName === "regular" && (
@@ -407,53 +480,17 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                   </Button>
                 </div>
               </div>
-            )}
-          {currentSubscription &&
-            currentSubscription.planName === "premium" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-                <div className="relative overflow-hidden rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-full -translate-y-12 translate-x-12"></div>
-                  <div className="relative p-6 text-center">
-                    <div className="p-4 bg-red-100 dark:bg-red-900/40 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <MdHomeWork
-                        className="text-red-700 dark:text-red-300"
-                        size={28}
-                      />
-                    </div>
-                    <h4 className="font-bold text-lg text-red-900 dark:text-red-200 mb-2">
-                      List pharmacies for sale
-                    </h4>
-                    <p className="text-xl font-bold text-red-700 dark:text-red-300 mb-3">
-                      Available
-                    </p>
-                    <p className="text-sm text-red-700 font-medium dark:text-red-300">
-                      You can list pharmacies for sale with your premium plan.
-                    </p>
-                  </div>
-                </div>
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/20 dark:to-yellow-900/10 border border-yellow-200 dark:border-yellow-700 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-yellow-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
-                  <div className="relative p-6 text-center">
-                    <div className="p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/40 dark:to-yellow-900/20 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <MdNotificationsActive
-                        className="text-yellow-700 dark:text-yellow-300"
-                        size={28}
-                      />
-                    </div>
-                    <h4 className="font-bold text-lg text-yellow-900 dark:text-yellow-200 mb-2">
-                      Subscribe to drug alert
-                    </h4>
-                    <p className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-3">
-                      Enabled
-                    </p>
-                    <p className="text-sm text-yellow-800 font-medium dark:text-yellow-300">
-                      You are subscribed to drug alerts and get notified when
-                      new drugs are available.
-                    </p>
-                  </div>
-                </div>
+                <Button 
+                  onClick={() => handleUpgrade({ name: 'Premium Plan' })}
+                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  Upgrade Now
+                </Button>
               </div>
-            )}
+            </div>
+          )}
+            </>
+          )}
         </CardContent>
       </Card>
 
@@ -461,7 +498,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
 
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
-
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -475,6 +511,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 View your subscription and payment history
               </span>
             </div>
+            {currentSubscription && (
             <Button
               onClick={handleDownloadBillingHistory}
               variant="outline"
@@ -483,6 +520,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               <MdDownload className="mr-2" size={18} />
               Download All
             </Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-8 pb-8">
@@ -503,29 +541,43 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </div>
             </div>
           ) : userSubscriptions && userSubscriptions.length > 0 ? (
-            <div className="space-y-4">
-              {userSubscriptions.map((subscription, index) => {
-                const invoice = formatSubscriptionForHistory(subscription);
-                return (
-                  <div
-                    key={invoice.id}
-                    className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30 dark:from-background dark:to-background border border-gray-100 dark:border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                  >
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="p-6">
-                      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                        <div className="flex items-center gap-6">
-                          <div
-                            className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                              invoice.planName === "premium"
-                                ? "bg-amber-100"
-                                : "bg-gradient-to-br from-blue-100 to-indigo-100"
-                            }`}
-                          >
-                            {invoice.planName === "premium" ? (
-                              <FaCrown size={24} className="text-amber-400" />
-                            ) : (
-                              <Zap size={24} className="text-blue-600" />
+          <div className="space-y-4">
+            {userSubscriptions.map((subscription, index) => {
+              const invoice = formatSubscriptionForHistory(subscription);
+              return (
+              <div
+                key={invoice.id}
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  <div className="p-6">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                      <div className="flex items-center gap-6">
+                        <div className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                          invoice.planName === 'premium' 
+                            ? 'bg-amber-100' 
+                            : 'bg-gradient-to-br from-blue-100 to-indigo-100'
+                        }`}>
+                          {invoice.planName === 'premium' ? (
+                            <FaCrown size={24} className="text-amber-400" />
+                          ) : (
+                            <Zap size={24} className="text-blue-600" />
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <p className="font-bold text-lg text-gray-900">{invoice.description}</p>
+                          <p className="text-sm text-gray-600 font-medium">
+                            {invoice.date} • {invoice.invoice}
+                          </p>
+                          <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-gray-500 font-medium">
+                                {invoice.subType === 'wallet' ? 'Wallet Payment' : 'Card Payment'}
+                              </span>
+                            </div>
+                            {invoice.pan && (
+                              <span className="text-xs text-gray-400 font-medium">
+                                {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
+                              </span>
                             )}
                           </div>
                           <div className="space-y-2">

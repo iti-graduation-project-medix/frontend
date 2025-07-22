@@ -9,6 +9,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function formatDate(date) {
   if (!date) {
@@ -26,6 +34,49 @@ function isValidDate(date) {
     return false;
   }
   return !isNaN(date.getTime());
+}
+
+// Custom Dropdown for react-day-picker using shadcn Select
+function CustomDropdown({ options, value, onChange }) {
+  const handleValueChange = (newValue) => {
+    if (onChange) {
+      const syntheticEvent = {
+        target: {
+          value: newValue,
+        },
+      };
+      onChange(syntheticEvent);
+    }
+  };
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        zIndex: 10,
+      }}
+    >
+      <Select value={value?.toString()} onValueChange={handleValueChange}>
+        <SelectTrigger className="w-full h-full min-w-[80px]">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {options?.map((option) => (
+              <SelectItem
+                key={option.value}
+                value={option.value.toString()}
+                disabled={option.disabled}
+              >
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  );
 }
 
 export function Calendar28({ value, onChange }) {
@@ -82,7 +133,10 @@ export function Calendar28({ value, onChange }) {
               selected={value}
               captionLayout="dropdown"
               month={month}
+              fromYear={1950}
+              toYear={2030}
               onMonthChange={setMonth}
+              components={{ Dropdown: CustomDropdown }}
               onSelect={(selectedDate) => {
                 onChange(selectedDate);
                 setOpen(false);

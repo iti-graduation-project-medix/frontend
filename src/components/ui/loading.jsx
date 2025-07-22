@@ -88,7 +88,6 @@ export const LoadingPage = ({
             animation: "spin 1.2s linear infinite",
             transformOrigin: "50% 50%",
             filter: "var(--tw-drop-shadow)",
-            background: "var(--background)",
             borderRadius: "9999px",
           }}
         />

@@ -195,8 +195,8 @@ export default function FailedPayment() {
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-card">
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <Hash className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <Hash className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-300" />
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Transaction ID
                     </span>
                   </div>
@@ -208,7 +208,7 @@ export default function FailedPayment() {
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-card">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <PoundSterling className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Amount
                     </span>
                   </div>
@@ -225,7 +225,7 @@ export default function FailedPayment() {
                     {getPlanTypeIcon(
                       getPlanName(paymentData?.merchant_order_id)
                     )}
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Plan Type
                     </span>
                   </div>
@@ -237,7 +237,7 @@ export default function FailedPayment() {
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-card">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Plan Period
                     </span>
                   </div>
@@ -249,7 +249,7 @@ export default function FailedPayment() {
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-card">
                   <div className="flex items-center gap-2 sm:gap-3">
                     {getPaymentMethodIcon(paymentData?.source_data?.sub_type)}
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Payment Method
                     </span>
                   </div>
@@ -265,7 +265,7 @@ export default function FailedPayment() {
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-card">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Payment Date
                     </span>
                   </div>
@@ -277,7 +277,7 @@ export default function FailedPayment() {
                 <div className="flex items-center justify-between p-2 sm:p-3 rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-card">
                   <div className="flex items-center gap-2 sm:gap-3">
                     <CircleX className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
-                    <span className="font-medium text-gray-700 text-sm sm:text-base">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                       Status
                     </span>
                   </div>

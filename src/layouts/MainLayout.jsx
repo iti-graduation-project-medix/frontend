@@ -22,6 +22,7 @@ import OfflineRouteGuard from "../components/OfflineRouteGuard";
 import InstallApp from "@/components/InstallApp";
 
 import Otp from "./../pages/OTP/Otp";
+import ScrollToTop from "@/components/ScrollToTop";
 
 // Lazy Loaded Components
 const Advertise = React.lazy(() => import("../pages/Advertise/Advertise"));
@@ -68,6 +69,7 @@ const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy"));
 export default function MainLayout() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen">
         <Routes>
           <Route path="/" element={<SharedLayout />}>
@@ -239,9 +241,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <AvailableDeals />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <AvailableDeals />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -251,9 +253,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <DealFormPage />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <DealFormPage />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -263,9 +265,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <DealDetails />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <DealDetails />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -275,9 +277,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <DealFormPage />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <DealFormPage />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -291,9 +293,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <PharmaciesForSale />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <PharmaciesForSale />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -303,9 +305,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <AddPharmacy />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <AddPharmacy />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -315,9 +317,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <PharmacyDetails />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <PharmacyDetails />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }
@@ -327,9 +329,9 @@ export default function MainLayout() {
                 element={
                   <ProtectedRoute>
                     <SubscriptionRoute>
-                    <OfflineRouteGuard>
-                      <AddPharmacy />
-                    </OfflineRouteGuard>
+                      <OfflineRouteGuard>
+                        <AddPharmacy />
+                      </OfflineRouteGuard>
                     </SubscriptionRoute>
                   </ProtectedRoute>
                 }

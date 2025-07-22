@@ -10,10 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  MdPayment,
-  MdCardMembership,
-  MdCreditCard,
+import { 
+  MdPayment, 
+  MdCardMembership, 
+  MdCreditCard, 
   MdReceipt,
   MdUpgrade,
   MdCheckCircle,
@@ -35,11 +35,11 @@ export default function BillingPlansCard({ pharmacistDetails }) {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-
-  const {
-    currentSubscription,
-    subscriptionLoading,
-    error,
+  
+  const { 
+    currentSubscription, 
+    subscriptionLoading, 
+    error, 
     fetchCurrentSubscription,
     userSubscriptions,
     subscriptionsLoading,
@@ -188,7 +188,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
       {/* Current Plan Section */}
 
       <Card className="py-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+        {/* Removed the colored border above the navbar */}
 
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
@@ -197,8 +197,8 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             </span>
             <div>
               <span className="font-bold text-2xl text-gray-900 dark:text-foreground block">
-                Current Plan
-              </span>
+              Current Plan
+            </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
                 Manage your subscription and billing
               </span>
@@ -210,7 +210,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             <LoadingPage message="Loading subscription details..." />
           ) : error ? (
             <div className="p-6 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-900/10 border border-red-200 dark:border-red-700 rounded-2xl">
-              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3">
                 <div className="p-2 bg-red-100 dark:bg-red-900/40 rounded-full">
                   <MdWarning
                     size={20}
@@ -246,10 +246,10 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                           : "Yearly Plan"}
                       </p>
                       <div className="flex items-center gap-4">
-                        <Badge
-                          variant="outline"
+                        <Badge 
+                          variant="outline" 
                           className={`text-sm font-semibold px-3 py-1 rounded-full ${
-                            currentSubscription.status
+                            currentSubscription.status 
                               ? "bg-green-50 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300"
                               : "bg-red-50 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300"
                           }`}
@@ -266,8 +266,8 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                             day: "numeric",
                           })}
                         </span>
-                      </div>
-                    </div>
+          </div>
+                </div>
                   </div>
                 </div>
               </div>
@@ -305,7 +305,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
 
       {/* Usage Statistics */}
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
+        {/* Removed the colored border above the navbar */}
 
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
@@ -318,7 +318,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
                 Track your plan usage and activity
-              </span>
+            </span>
             </div>
           </CardTitle>
         </CardHeader>
@@ -429,7 +429,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                     className="text-green-600 dark:text-green-300"
                     size={24}
                   />
-                </div>
+              </div>
                 <h4 className="font-bold text-lg text-green-900 dark:text-green-200 mb-2">
                   P2P Chats
                 </h4>
@@ -439,50 +439,35 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 <div className="flex items-center justify-center gap-2 text-green-600 dark:text-green-300 mb-3">
                   <div className="p-1 bg-green-100 dark:bg-green-900/40 rounded-full">
                     <MdTrendingUp size={16} />
-                  </div>
+              </div>
                   <span className="text-sm font-semibold">
                     {chatGrowth >= 0 ? '+' : ''}{chatGrowth}% this month
                   </span>
-                </div>
+            </div>
               </div>
               </div>
             </div>
           {/* Premium Features Notice - Only show for Regular Plan */}
-          {currentSubscription &&
-            currentSubscription.planName === "regular" && (
-              <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 border border-primary/20 dark:border-primary/40 rounded-2xl shadow-lg">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 -mt-5 bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/10 rounded-2xl shadow-lg">
-                    <FaCrown
-                      className="text-primary dark:text-amber-400"
-                      size={24}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-bold text-lg text-gray-900 dark:text-foreground">
-                      Unlock Premium Features
-                    </h4>
-                    <p className="text-sm text-gray-700 dark:text-gray-400 leading-relaxed">
-                      Upgrade to Premium Plan to access:{" "}
-                      <strong className="text-primary">Unlimited Deals</strong>,{" "}
-                      <strong className="text-primary">
-                        Pharmacy Listings
-                      </strong>
-                      , and{" "}
-                      <strong className="text-primary">Drug Alerts</strong>
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => handleUpgrade({ name: "Premium Plan" })}
-                    className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    Upgrade Now
-                  </Button>
+          {currentSubscription && currentSubscription.planName === "regular" && (
+            <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 border border-primary/20 dark:border-primary/40 rounded-2xl shadow-lg">
+              <div className="flex items-center gap-4">
+                <div className="p-3 -mt-5 bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/10 rounded-2xl shadow-lg">
+                  <FaCrown
+                    className="text-primary dark:text-amber-400"
+                    size={24}
+                  />
                 </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-lg text-gray-900 dark:text-foreground">
+                    Unlock Premium Features
+                  </h4>
+                  <p className="text-sm text-gray-700 dark:text-gray-400 leading-relaxed">
+                    Upgrade to Premium Plan to access: <strong className="text-primary">Unlimited Deals</strong>, <strong className="text-primary">Pharmacy Listings</strong>, and <strong className="text-primary">Drug Alerts</strong>
+                  </p>
               </div>
                 <Button 
-                  onClick={() => handleUpgrade({ name: 'Premium Plan' })}
-                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={() => handleUpgrade({ name: "Premium Plan" })}
+                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Upgrade Now
                 </Button>
@@ -495,9 +480,8 @@ export default function BillingPlansCard({ pharmacistDetails }) {
       </Card>
 
       {/* Billing History */}
-
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
+        {/* Removed the colored border above the navbar */}
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -505,8 +489,8 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             </span>
             <div>
               <span className="font-bold text-2xl text-gray-900 dark:text-foreground block">
-                Billing History
-              </span>
+              Billing History
+            </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
                 View your subscription and payment history
               </span>
@@ -515,7 +499,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             <Button
               onClick={handleDownloadBillingHistory}
               variant="outline"
-              className="ml-auto bg-gradient-to-r from-primary/10 to-primary/20 dark:from-primary/20 dark:to-primary/30 text-primary dark:text-primary font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                className="ml-auto bg-gradient-to-r from-primary/10 to-primary/20 dark:from-primary/20 dark:to-primary/30 text-primary dark:text-primary font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
             >
               <MdDownload className="mr-2" size={18} />
               Download All
@@ -579,51 +563,27 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                                 {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
                               </span>
                             )}
-                          </div>
-                          <div className="space-y-2">
-                            <p className="font-bold text-lg text-gray-900 dark:text-foreground">
-                              {invoice.description}
-                            </p>
-                            <p className="text-sm text-gray-600 font-medium dark:text-gray-400">
-                              {invoice.date} • {invoice.invoice}
-                            </p>
-                            <div className="flex items-center gap-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
-                                  {invoice.subType === "wallet"
-                                    ? "Wallet Payment"
-                                    : "Card Payment"}
-                                </span>
-                              </div>
-                              {invoice.pan && (
-                                <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
-                                  {invoice.subType === "wallet"
-                                    ? "Number"
-                                    : "Card"}
-                                  : ****{invoice.pan}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                          <div className="text-right">
+                  </div>
+                  </div>
+                </div>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <div className="text-right">
                             <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
                               {invoice.amount}
                             </span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center">
-                              {getStatusBadge(invoice.status)}
-                            </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                    <div className="flex items-center">
+                      {getStatusBadge(invoice.status)}
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
           ) : (
             <div className="p-12 text-center">
               <div className="relative mx-auto w-24 h-24 mb-6">
@@ -642,10 +602,10 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 Your subscription history will appear here once you have active
                 subscriptions
               </p>
-            </div>
+          </div>
           )}
         </CardContent>
       </Card>
     </div>
   );
-}
+} 

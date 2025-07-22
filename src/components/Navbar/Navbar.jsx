@@ -24,6 +24,7 @@ import {
 } from "../../services/socket";
 import drugAlertService from "../../services/drugAlert";
 import { ModeToggle } from "../mode-toggle";
+import { X } from "lucide-react";
 
 export default function Navbar() {
   const isOffline = useOffline();
@@ -38,6 +39,14 @@ export default function Navbar() {
   const userMenuRef = useRef(null);
   const userButtonRef = useRef(null);
   const { favorites, fetchFavorites } = useFav();
+  const [toastNotification, setToastNotification] = useState(null);
+  const toastTimeoutRef = useRef(null);
+  const lastToastIdRef = useRef(null);
+  const location = useLocation();
+
+  // Toast Notification position: below bell icon
+  const bellRef = useRef(null);
+  const [toastPosition, setToastPosition] = useState({ top: 0, left: 0 });
 
   const navigate = useNavigate();
   const MotionLink = motion.create(Link);
@@ -52,8 +61,6 @@ export default function Navbar() {
   // Use real unread messages count from chat store
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const { loadUserChats, initializeSocket, getCurrentUserId } = useChat();
-
-  const location = useLocation();
 
   useEffect(() => {
     if (user && token) {
@@ -214,6 +221,54 @@ export default function Navbar() {
       };
     }
   }, [isAuthenticated, token, user?.id]);
+
+  // Show toast when a new notification arrives
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    if (!drugAlertNotifications.length) return;
+    // Find the latest unread notification
+    const latest = drugAlertNotifications.find((n) => !n.isRead);
+    if (
+      latest &&
+      latest.id !== lastToastIdRef.current &&
+      (!toastNotification || toastNotification.id !== latest.id)
+    ) {
+      setToastNotification(latest);
+      lastToastIdRef.current = latest.id;
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+      toastTimeoutRef.current = setTimeout(() => {
+        setToastNotification(null);
+      }, 4000);
+    }
+    // Cleanup on unmount
+    return () => {
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
+    // eslint-disable-next-line
+  }, [drugAlertNotifications, isAuthenticated]);
+
+  // Reset toast on manual close
+  useEffect(() => {
+    if (!toastNotification) return;
+    return () => {
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
+  }, [toastNotification]);
+
+  // Do NOT show toast again on route change
+  useEffect(() => {
+    setToastNotification(null);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (toastNotification && bellRef.current) {
+      const rect = bellRef.current.getBoundingClientRect();
+      setToastPosition({
+        top: rect.bottom + 8 + window.scrollY,
+        left: rect.left + rect.width / 2 + window.scrollX,
+      });
+    }
+  }, [toastNotification]);
 
   // Handle clicking outside dropdown to close it
   useEffect(() => {
@@ -408,6 +463,7 @@ export default function Navbar() {
               >
                 <PopoverTrigger asChild>
                   <Button
+                    ref={bellRef}
                     variant="outline"
                     size="icon"
                     className="relative p-1 xs:p-2 h-8 w-8 xs:h-9 xs:w-9"
@@ -467,6 +523,47 @@ export default function Navbar() {
                     </div>
                   )}
                 </PopoverContent>
+                {/* Toast Notification */}
+                {toastNotification && (
+                  <>
+                    <style>{`
+                      @keyframes toast-pop {
+                        0% { opacity: 0; transform: translateY(24px) scale(0.85); }
+                        60% { opacity: 1; transform: translateY(-4px) scale(1.04); }
+                        100% { opacity: 1; transform: translateY(0) scale(1); }
+                      }
+                      .animate-toast-pop {
+                        animation: toast-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+                      }
+                    `}</style>
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: 32,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        zIndex: 9999,
+                      }}
+                      className="w-[90vw] max-w-xs md:max-w-sm bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg rounded-lg px-4 py-3 flex flex-col gap-1 animate-toast-pop"
+                    >
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <div className="font-medium text-gray-900 dark:text-foreground truncate">
+                          {toastNotification.title}
+                        </div>
+                        <button
+                          onClick={() => setToastNotification(null)}
+                          className="ml-2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                          aria-label="Dismiss notification"
+                        >
+                          <X className="w-4 h-4 text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white" />
+                        </button>
+                      </div>
+                      <div className="text-sm text-gray-700 dark:text-gray-300 truncate">
+                        {toastNotification.message}
+                      </div>
+                    </div>
+                  </>
+                )}
               </Popover>
             )}
           </div>

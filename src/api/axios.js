@@ -11,7 +11,7 @@ const api = axios.create({
   timeout: 10000, // 10 seconds timeout
 });
 
-// Request interceptor to add auth token
+// Request interceptor to add auth token and set Content-Type smartly
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -23,6 +23,16 @@ api.interceptors.request.use(
         console.error("Error parsing token:", error);
         localStorage.removeItem("token");
       }
+    }
+    // Smart Content-Type handling
+    if (
+      config.data &&
+      typeof config.data === "object" &&
+      !(config.data instanceof FormData)
+    ) {
+      config.headers["Content-Type"] = "application/json";
+    } else {
+      delete config.headers["Content-Type"];
     }
     return config;
   },

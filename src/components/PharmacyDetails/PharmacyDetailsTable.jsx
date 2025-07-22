@@ -18,12 +18,6 @@ export default function PharmacyDetailsTable({ pharmacy }) {
 
   const details = [
     {
-      icon: Building2,
-      label: "Status",
-      value: "Semi Finished",
-      color: "text-blue-600",
-    },
-    {
       icon: Ruler,
       label: "Size",
       value: "94 m²",
@@ -63,61 +57,55 @@ export default function PharmacyDetailsTable({ pharmacy }) {
       value: pharmacy.addressLine1 || "Not specified",
       color: "text-red-600",
     },
-    {
-      icon: DollarSign,
-      label: "Price per m²",
-      value: pricePerSqm ? `${pricePerSqm.toLocaleString()} EGP` : "N/A",
-      color: "text-emerald-600",
-    },
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+    <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-gray-100 dark:border-border p-8">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-          <Building2 className="w-5 h-5 text-gray-600" />
+        <div className="w-10 h-10 bg-gray-100 dark:bg-card rounded-lg flex items-center justify-center">
+          <Building2 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Pharmacy Details</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-foreground">
+            Pharmacy Details
+          </h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Complete information about this pharmacy
           </p>
         </div>
       </div>
-
       {/* Price Section */}
-      <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
+      <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-background dark:to-card rounded-xl border border-blue-100 dark:border-border">
         <div className="flex items-baseline gap-3 mb-2">
-          <span className="text-4xl font-bold text-gray-900">
+          <span className="text-4xl font-bold text-gray-900 dark:text-foreground">
             {Number(pharmacy.pharmacyPrice).toLocaleString()}
           </span>
-          <span className="text-xl text-gray-600">EGP</span>
+          <span className="text-xl text-gray-600 dark:text-gray-400">EGP</span>
         </div>
         {pricePerSqm && (
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400">
             {pricePerSqm.toLocaleString()} EGP per m²
           </p>
         )}
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {details.map((detail, index) => {
           const IconComponent = detail.icon;
           return (
             <div
               key={index}
-              className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 border border-gray-100 hover:bg-gray-100 transition-colors"
+              className="flex items-start gap-4 p-4 rounded-xl bg-gray-50 dark:bg-background border border-gray-100 dark:border-border hover:bg-gray-100 dark:hover:bg-muted/10 transition-colors"
             >
               <div
-                className={`w-8 h-8 rounded-lg bg-white flex items-center justify-center border border-gray-200`}
+                className={`w-8 h-8 rounded-lg bg-white dark:bg-card flex items-center justify-center border border-gray-200 dark:border-border`}
               >
                 <IconComponent className={`w-4 h-4 ${detail.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                   {detail.label}
                 </p>
-                <p className="text-base font-semibold text-gray-900 truncate">
+                <p className="text-base font-semibold text-gray-900 dark:text-foreground truncate">
                   {detail.value}
                 </p>
               </div>

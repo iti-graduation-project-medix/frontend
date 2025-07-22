@@ -33,6 +33,8 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
     }
   })();
 
+  const isOwner = currentUserId && owner && currentUserId === owner.id;
+
   const handleChat = async () => {
     if (!currentUserId || !owner || !pharmacyId) {
       alert("Please login to start a chat");
@@ -70,15 +72,15 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-gray-100 dark:border-border p-6">
       <div className="flex flex-col items-center text-center space-y-4">
         {/* Avatar with Status */}
         <div className="relative">
-          <Avatar className="size-20 shadow-md border-2 border-white">
+          <Avatar className="size-20 shadow-md border-2 border-white dark:border-background">
             {owner?.profilePhotoUrl ? (
               <AvatarImage src={owner.profilePhotoUrl} alt={owner.fullName} />
             ) : (
-              <AvatarFallback className="bg-gradient-to-br from-primary to-primary-hover text-white text-lg font-bold">
+              <AvatarFallback className="bg-gradient-to-br from-primary to-primary-hover dark:from-primary dark:to-primary-hover text-white text-lg font-bold">
                 {initials}
               </AvatarFallback>
             )}
@@ -91,27 +93,35 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
             </div>
           )}
         </div>
-
         {/* Name and Verification */}
         <div className="space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-foreground">
               {owner?.fullName || "Pharmacy Owner"}
             </h3>
             {owner?.isIdVerified && (
-              <Badge className="bg-green-100 text-green-700 border-green-200 text-xs">
+              <Badge className="bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-900 text-xs">
                 <CheckCircle2 className="w-3 h-3 mr-1" /> Verified
               </Badge>
             )}
           </div>
-          <p className="text-xs text-gray-600">Professional Pharmacist</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            Professional Pharmacist
+          </p>
         </div>
-
         {/* Action Buttons */}
         <div className="w-full space-y-2">
           <Button
             onClick={handleChat}
-            className="w-full bg-primary hover:bg-primary/80 text-white font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2"
+            className={`w-full bg-primary hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary-hover text-white font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2 ${
+              isOwner ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={isOwner}
+            title={
+              isOwner
+                ? "You cannot chat with yourself"
+                : `Chat with ${owner?.fullName?.split(" ")[0] || "Owner"}`
+            }
           >
             <MessageCircle className="w-4 h-4" />
             <span>Chat with {owner?.fullName?.split(" ")[0] || "Owner"}</span>
@@ -119,7 +129,7 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
           <Button
             onClick={handleProfile}
             variant="outline"
-            className="w-full border border-primary text-primary hover:bg-primary/5 font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2"
+            className="w-full border border-primary text-primary dark:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2"
             title="View all listings by this owner"
           >
             <User2 className="w-4 h-4" />

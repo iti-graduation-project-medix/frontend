@@ -191,7 +191,9 @@ export function SignUpForm({ className, ...props }) {
         // Use the centralized error handler for better error management
         const errorResult = ErrorHandler.handleSignupError(error, "submission");
         setError(errorResult.message);
-        toast.error(errorResult.message || "Signup failed. Please try again.");
+        toast.error(
+          errorResult.message || "Somthing went wrong. Please try again later."
+        );
 
         // Don't show toast here as it's handled by ErrorHandler
         // Just set the local error state for form display
@@ -341,24 +343,24 @@ export function SignUpForm({ className, ...props }) {
 
   return (
     <div className={cn("w-full", className)} {...props}>
-      <Card className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative">
+      <Card className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-background dark:via-card dark:to-background text-card-foreground dark:text-card-foreground relative">
         {/* Decorative Elements */}
         <div
-          className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10"
+          className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10 bg-blue-100 dark:bg-primary"
           style={{ background: "var(--primary)" }}
         ></div>
         <div
-          className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10"
+          className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10 bg-indigo-100 dark:bg-primary"
           style={{ background: "var(--primary)" }}
         ></div>
 
         <div className="relative p-8 md:p-10">
           {/* Header Section */}
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold tracking-tight text-primary/70 mb-2">
+            <h1 className="text-2xl font-bold tracking-tight text-primary/70 dark:text-primary mb-2">
               Create Your Account
             </h1>
-            <p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground">
               Fill out the form below to create your secure account
             </p>
           </div>
@@ -367,31 +369,35 @@ export function SignUpForm({ className, ...props }) {
           <div className="flex items-center justify-center space-x-6 mb-8">
             <div
               className={`flex items-center ${
-                currentStep === 1 ? "text-primary" : "text-gray-400"
+                currentStep === 1
+                  ? "text-primary dark:text-primary"
+                  : "text-gray-400 dark:text-gray-500"
               }`}
             >
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 font-semibold ${
                   currentStep === 1
                     ? "border-primary bg-primary text-white"
-                    : "border-gray-300"
+                    : "border-gray-300 dark:border-border"
                 }`}
               >
                 1
               </div>
               <span className="ml-3 text-sm font-medium">Personal Info</span>
             </div>
-            <div className="w-16 h-0.5 bg-gray-300"></div>
+            <div className="w-16 h-0.5 bg-gray-300 dark:bg-border"></div>
             <div
               className={`flex items-center ${
-                currentStep === 2 ? "text-primary" : "text-gray-400"
+                currentStep === 2
+                  ? "text-primary dark:text-primary"
+                  : "text-gray-400 dark:text-gray-500"
               }`}
             >
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 font-semibold ${
                   currentStep === 2
                     ? "border-primary bg-primary text-white"
-                    : "border-gray-300"
+                    : "border-gray-300 dark:border-border"
                 }`}
               >
                 2
@@ -408,7 +414,7 @@ export function SignUpForm({ className, ...props }) {
             <div className={currentStep === 2 ? "hidden" : "space-y-6"}>
               {/* Basic Information Section */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground border-b border-border dark:border-border pb-2">
                   Basic Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -419,8 +425,18 @@ export function SignUpForm({ className, ...props }) {
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                         {/* User icon */}
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                          />
                         </svg>
                       </span>
                       <Input
@@ -429,7 +445,7 @@ export function SignUpForm({ className, ...props }) {
                         type="text"
                         placeholder="Enter your full name"
                         className={cn(
-                          "pl-10",
+                          "pl-10 bg-white dark:bg-input text-gray-900 dark:text-foreground border-gray-300 dark:border-border",
                           formik.touched.name &&
                             formik.errors.name &&
                             "border-red-500"
@@ -451,8 +467,11 @@ export function SignUpForm({ className, ...props }) {
                     </div>
                     <ErrorMessage
                       error={
-                        formik.touched.name && formik.errors.name ? formik.errors.name : null
+                        formik.touched.name && formik.errors.name
+                          ? formik.errors.name
+                          : null
                       }
+                      className="text-red-500 dark:text-red-400"
                     />
                   </div>
 
@@ -463,8 +482,18 @@ export function SignUpForm({ className, ...props }) {
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                         {/* Envelope icon */}
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
                         </svg>
                       </span>
                       <Input
@@ -474,7 +503,7 @@ export function SignUpForm({ className, ...props }) {
                         placeholder="Enter your email address"
                         autoComplete="email"
                         className={cn(
-                          "pl-10",
+                          "pl-10 bg-white dark:bg-input text-gray-900 dark:text-foreground border-gray-300 dark:border-border",
                           formik.touched.email &&
                             formik.errors.email &&
                             "border-red-500"
@@ -496,8 +525,11 @@ export function SignUpForm({ className, ...props }) {
                     </div>
                     <ErrorMessage
                       error={
-                        formik.touched.email && formik.errors.email ? formik.errors.email : null
+                        formik.touched.email && formik.errors.email
+                          ? formik.errors.email
+                          : null
                       }
+                      className="text-red-500 dark:text-red-400"
                     />
                   </div>
                 </div>
@@ -505,7 +537,7 @@ export function SignUpForm({ className, ...props }) {
 
               {/* Contact & Personal Details Section */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground border-b border-border dark:border-border pb-2">
                   Contact & Personal Details
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -516,8 +548,18 @@ export function SignUpForm({ className, ...props }) {
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                         {/* Phone icon */}
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
                         </svg>
                       </span>
                       <Input
@@ -525,7 +567,7 @@ export function SignUpForm({ className, ...props }) {
                         name="phone"
                         placeholder="Enter your phone number"
                         className={cn(
-                          "pl-10",
+                          "pl-10 bg-white dark:bg-input text-gray-900 dark:text-foreground border-gray-300 dark:border-border",
                           formik.touched.phone &&
                             formik.errors.phone &&
                             "border-red-500"
@@ -537,8 +579,11 @@ export function SignUpForm({ className, ...props }) {
                     </div>
                     <ErrorMessage
                       error={
-                        formik.touched.phone && formik.errors.phone ? formik.errors.phone : null
+                        formik.touched.phone && formik.errors.phone
+                          ? formik.errors.phone
+                          : null
                       }
+                      className="text-red-500 dark:text-red-400"
                     />
                   </div>
 
@@ -563,7 +608,7 @@ export function SignUpForm({ className, ...props }) {
                     Gender <span className="text-red-500">*</span>
                   </Label>
                   <div className="space-y-2 flex flex-row gap-4 w-full">
-                    <div className="flex items-center flex-row space-x-3 h-10 px-3 rounded-lg border-2 border-gray-300 transition-all w-full">
+                    <div className="flex items-center flex-row space-x-3 h-10 px-3 rounded-lg border-2 border-gray-300 dark:border-border bg-white dark:bg-input transition-all w-full">
                       <input
                         id="gender-male"
                         name="gender"
@@ -576,12 +621,12 @@ export function SignUpForm({ className, ...props }) {
                       />
                       <Label
                         htmlFor="gender-male"
-                        className="text-sm font-medium text-gray-700 cursor-pointer"
+                        className="text-sm font-medium  cursor-pointer"
                       >
                         Male
                       </Label>
                     </div>
-                    <div className="flex items-center flex-row space-x-3 h-10 px-3 rounded-lg border-2 border-gray-300 transition-all w-full">
+                    <div className="flex items-center flex-row space-x-3 h-10 px-3 rounded-lg border-2 border-gray-300 dark:border-border bg-white dark:bg-input transition-all w-full">
                       <input
                         id="gender-female"
                         name="gender"
@@ -594,7 +639,7 @@ export function SignUpForm({ className, ...props }) {
                       />
                       <Label
                         htmlFor="gender-female"
-                        className="text-sm font-medium text-gray-700 cursor-pointer"
+                        className="text-sm font-medium  cursor-pointer"
                       >
                         Female
                       </Label>
@@ -602,15 +647,18 @@ export function SignUpForm({ className, ...props }) {
                   </div>
                   <ErrorMessage
                     error={
-                      formik.touched.gender && formik.errors.gender ? formik.errors.gender : null
+                      formik.touched.gender && formik.errors.gender
+                        ? formik.errors.gender
+                        : null
                     }
+                    className="text-red-500 dark:text-red-400"
                   />
                 </div>
               </div>
 
               {/* Security Section */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground border-b border-border dark:border-border pb-2">
                   Security
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -621,9 +669,19 @@ export function SignUpForm({ className, ...props }) {
                     <div className="relative">
                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
                         {/* Lock icon */}
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
                           <rect width="12" height="8" x="6" y="11" rx="2" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-4-6V9a4 4 0 118 0v2" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 15v2m-4-6V9a4 4 0 118 0v2"
+                          />
                         </svg>
                       </span>
                       <Input
@@ -633,7 +691,7 @@ export function SignUpForm({ className, ...props }) {
                         placeholder="Create a strong password"
                         autoComplete="new-password"
                         className={cn(
-                          "pl-10",
+                          "pl-10 bg-white dark:bg-input text-gray-900 dark:text-foreground border-gray-300 dark:border-border",
                           formik.touched.password &&
                             formik.errors.password &&
                             "border-red-500"
@@ -646,33 +704,66 @@ export function SignUpForm({ className, ...props }) {
                         type="button"
                         className={cn(
                           "absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded transition",
-                          showPassword
-                            ? "text-primary"
-                            : "text-gray-500"
+                          showPassword ? "text-primary" : "text-gray-500"
                         )}
                         onClick={() => setShowPassword((prev) => !prev)}
                         tabIndex={-1}
-                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
                       >
                         {showPassword ? (
                           // Eye-off (crossed) icon, outline style (Heroicons)
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-10.5-7.5a10.05 10.05 0 012.563-4.568m2.1-1.933A9.956 9.956 0 0112 5c5 0 9.27 3.11 10.5 7.5a9.956 9.956 0 01-4.198 5.568M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-10.5-7.5a10.05 10.05 0 012.563-4.568m2.1-1.933A9.956 9.956 0 0112 5c5 0 9.27 3.11 10.5 7.5a9.956 9.956 0 01-4.198 5.568M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 3l18 18"
+                            />
                           </svg>
                         ) : (
                           // Eye icon (outlined)
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
                           </svg>
                         )}
                       </button>
                     </div>
                     <ErrorMessage
                       error={
-                        formik.touched.password && formik.errors.password ? formik.errors.password : null
+                        formik.touched.password && formik.errors.password
+                          ? formik.errors.password
+                          : null
                       }
+                      className="text-red-500 dark:text-red-400"
                     />
                   </div>
 
@@ -683,9 +774,19 @@ export function SignUpForm({ className, ...props }) {
                     <div className="relative">
                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
                         {/* Lock icon */}
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
                           <rect width="12" height="8" x="6" y="11" rx="2" />
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-4-6V9a4 4 0 118 0v2" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 15v2m-4-6V9a4 4 0 118 0v2"
+                          />
                         </svg>
                       </span>
                       <Input
@@ -695,7 +796,7 @@ export function SignUpForm({ className, ...props }) {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm your password"
                         className={cn(
-                          "pl-10",
+                          "pl-10 bg-white dark:bg-input text-gray-900 dark:text-foreground border-gray-300 dark:border-border",
                           formik.touched.confirmPassword &&
                             formik.errors.confirmPassword &&
                             "border-red-500",
@@ -732,25 +833,57 @@ export function SignUpForm({ className, ...props }) {
                         type="button"
                         className={cn(
                           "absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded transition",
-                          showConfirmPassword
-                            ? "text-primary"
-                            : "text-gray-500"
+                          showConfirmPassword ? "text-primary" : "text-gray-500"
                         )}
                         onClick={() => setShowConfirmPassword((prev) => !prev)}
                         tabIndex={-1}
-                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        aria-label={
+                          showConfirmPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
                       >
                         {showConfirmPassword ? (
                           // Eye-off (crossed) icon, outline style (Heroicons)
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-10.5-7.5a10.05 10.05 0 012.563-4.568m2.1-1.933A9.956 9.956 0 0112 5c5 0 9.27 3.11 10.5 7.5a9.956 9.956 0 01-4.198 5.568M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9.27-3.11-10.5-7.5a10.05 10.05 0 012.563-4.568m2.1-1.933A9.956 9.956 0 0112 5c5 0 9.27 3.11 10.5 7.5a9.956 9.956 0 01-4.198 5.568M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M3 3l18 18"
+                            />
                           </svg>
                         ) : (
                           // Eye icon (outlined)
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
                           </svg>
                         )}
                       </button>
@@ -760,8 +893,11 @@ export function SignUpForm({ className, ...props }) {
                     <ErrorMessage
                       error={
                         formik.touched.confirmPassword &&
-                        formik.errors.confirmPassword ? formik.errors.confirmPassword : null
+                        formik.errors.confirmPassword
+                          ? formik.errors.confirmPassword
+                          : null
                       }
+                      className="text-red-500 dark:text-red-400"
                     />
                   </div>
                 </div>
@@ -770,7 +906,7 @@ export function SignUpForm({ className, ...props }) {
 
             {/* Step 2: Document Upload */}
             <div className={currentStep === 1 ? "hidden" : "space-y-6"}>
-              <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+              <h3 className="text-lg font-semibold text-foreground dark:text-foreground border-b border-border dark:border-border pb-2">
                 Document Verification
               </h3>
 
@@ -781,7 +917,7 @@ export function SignUpForm({ className, ...props }) {
                   </Label>
                   <label
                     htmlFor="frontIdFile"
-                    className="relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all hover:border-[var(--primary)] overflow-hidden group"
+                    className="relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 dark:border-border rounded-lg cursor-pointer bg-white/80 dark:bg-input backdrop-blur-sm hover:bg-white/90 dark:hover:bg-input transition-all hover:border-[var(--primary)] overflow-hidden group"
                   >
                     {formik.values.uploadFrontId &&
                     formik.values.uploadFrontId.length > 0 &&
@@ -863,8 +999,11 @@ export function SignUpForm({ className, ...props }) {
                   <ErrorMessage
                     error={
                       formik.touched.uploadFrontId &&
-                      formik.errors.uploadFrontId ? formik.errors.uploadFrontId : null
+                      formik.errors.uploadFrontId
+                        ? formik.errors.uploadFrontId
+                        : null
                     }
+                    className="text-red-500 dark:text-red-400"
                   />
                 </div>
 
@@ -874,7 +1013,7 @@ export function SignUpForm({ className, ...props }) {
                   </Label>
                   <label
                     htmlFor="backIdFile"
-                    className="relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all hover:border-[var(--primary)] overflow-hidden group"
+                    className="relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 dark:border-border rounded-lg cursor-pointer bg-white/80 dark:bg-input backdrop-blur-sm hover:bg-white/90 dark:hover:bg-input transition-all hover:border-[var(--primary)] overflow-hidden group"
                   >
                     {formik.values.uploadBackId &&
                     formik.values.uploadBackId.length > 0 &&
@@ -955,9 +1094,11 @@ export function SignUpForm({ className, ...props }) {
                   </label>
                   <ErrorMessage
                     error={
-                      formik.touched.uploadBackId &&
-                      formik.errors.uploadBackId ? formik.errors.uploadBackId : null
+                      formik.touched.uploadBackId && formik.errors.uploadBackId
+                        ? formik.errors.uploadBackId
+                        : null
                     }
+                    className="text-red-500 dark:text-red-400"
                   />
                 </div>
 
@@ -967,7 +1108,7 @@ export function SignUpForm({ className, ...props }) {
                   </Label>
                   <label
                     htmlFor="workIdFile"
-                    className="relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all hover:border-[var(--primary)] overflow-hidden group"
+                    className="relative flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-gray-300 dark:border-border rounded-lg cursor-pointer bg-white/80 dark:bg-input backdrop-blur-sm hover:bg-white/90 dark:hover:bg-input transition-all hover:border-[var(--primary)] overflow-hidden group"
                   >
                     {formik.values.uploadWorkId &&
                     formik.values.uploadWorkId.length > 0 &&
@@ -1048,9 +1189,11 @@ export function SignUpForm({ className, ...props }) {
                   </label>
                   <ErrorMessage
                     error={
-                      formik.touched.uploadWorkId &&
-                      formik.errors.uploadWorkId ? formik.errors.uploadWorkId : null
+                      formik.touched.uploadWorkId && formik.errors.uploadWorkId
+                        ? formik.errors.uploadWorkId
+                        : null
                     }
+                    className="text-red-500 dark:text-red-400"
                   />
                 </div>
               </div>
@@ -1062,9 +1205,19 @@ export function SignUpForm({ className, ...props }) {
                 <div className="relative">
                   <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400">
                     {/* ID card icon */}
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
                       <rect width="18" height="12" x="3" y="6" rx="2" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 10h.01M7 14h.01M11 10h6M11 14h6" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M7 10h.01M7 14h.01M11 10h6M11 14h6"
+                      />
                     </svg>
                   </span>
                   <Input
@@ -1073,7 +1226,7 @@ export function SignUpForm({ className, ...props }) {
                     type="text"
                     placeholder="Enter your 14-digit national ID"
                     className={cn(
-                      "pl-10",
+                      "pl-10 bg-white dark:bg-input text-gray-900 dark:text-foreground border-gray-300 dark:border-border",
                       formik.touched.nationalId &&
                         formik.errors.nationalId &&
                         "border-red-500"
@@ -1085,17 +1238,20 @@ export function SignUpForm({ className, ...props }) {
                 </div>
                 <ErrorMessage
                   error={
-                    formik.touched.nationalId && formik.errors.nationalId ? formik.errors.nationalId : null
+                    formik.touched.nationalId && formik.errors.nationalId
+                      ? formik.errors.nationalId
+                      : null
                   }
+                  className="text-red-500 dark:text-red-400"
                 />
               </div>
 
               {/* Privacy Policy Checkbox */}
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">
+                <h3 className="text-lg font-semibold text-foreground dark:text-foreground border-b border-border dark:border-border pb-2">
                   Terms & Conditions
                 </h3>
-                <div className="flex items-start space-x-4 p-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50 rounded-lg border border-primary/80">
+                <div className="flex items-start space-x-4 p-4 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-background dark:via-card dark:to-background rounded-lg border border-primary/80 dark:border-primary/60">
                   <div className="flex items-center justify-center w-5 h-5 mt-0.5">
                     <input
                       id="acceptPolicy"
@@ -1110,12 +1266,12 @@ export function SignUpForm({ className, ...props }) {
                   <div className="flex-1">
                     <label
                       htmlFor="acceptPolicy"
-                      className="-ms-2 text-sm text-gray-700 leading-relaxed"
+                      className="-ms-2 text-sm text-gray-700 dark:text-gray-300 leading-relaxed"
                     >
                       I have read and agree to the{" "}
                       <a
                         href="/privacy"
-                        className="text-primary font-semibold hover:text-primary-hover  hover:underline underline-offset-2 transition-colors duration-150"
+                        className="text-primary dark:text-primary hover:text-primary-hover dark:hover:text-primary-hover font-semibold underline-offset-2 hover:underline transition-colors duration-150"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -1124,7 +1280,7 @@ export function SignUpForm({ className, ...props }) {
                       and{" "}
                       <a
                         href="/terms"
-                        className="text-primary font-semibold hover:text-primary-hover hover:underline underline-offset-2 transition-colors duration-150"
+                        className="text-primary dark:text-primary hover:text-primary-hover dark:hover:text-primary-hover font-semibold underline-offset-2 hover:underline transition-colors duration-150"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -1132,7 +1288,7 @@ export function SignUpForm({ className, ...props }) {
                       </a>
                       <span className="text-red-500 font-bold ml-1">*</span>
                     </label>
-                    <p className="text-xs -ms-2 text-gray-500 mt-1">
+                    <p className="text-xs -ms-2 text-gray-500 dark:text-gray-300 mt-1">
                       By checking this box, you confirm that you understand and
                       accept our terms and conditions.
                     </p>
@@ -1140,9 +1296,11 @@ export function SignUpForm({ className, ...props }) {
                 </div>
                 <ErrorMessage
                   error={
-                    formik.touched.acceptPolicy &&
-                    formik.errors.acceptPolicy ? formik.errors.acceptPolicy : null
+                    formik.touched.acceptPolicy && formik.errors.acceptPolicy
+                      ? formik.errors.acceptPolicy
+                      : null
                   }
+                  className="text-red-500 dark:text-red-400"
                 />
               </div>
             </div>
@@ -1168,7 +1326,7 @@ export function SignUpForm({ className, ...props }) {
                 <Button
                   type="button"
                   onClick={nextStep}
-                  className={`flex items-center gap-2 bg-primary hover:bg-primary-hover text-white hover:text-white ${
+                  className={`flex items-center gap-2 bg-primary hover:bg-primary-hover cursor-pointer text-white hover:text-white ${
                     !isStep1Valid() ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   disabled={!isStep1Valid() || isLoading}

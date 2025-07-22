@@ -44,12 +44,15 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
   const getStatusPill = (status) => {
     if (isDeleted) {
       return (
-        <Badge variant="outline" className="border-red-500 text-red-500 bg-red-50">
+        <Badge
+          variant="outline"
+          className="border-red-500 text-red-500 bg-red-50 dark:border-red-600 dark:text-red-600 dark:bg-red-900"
+        >
           Deleted
         </Badge>
       );
     }
-    
+
     switch (status) {
       case "Active":
         return (
@@ -58,18 +61,26 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
             </span>
-            <span className="text-sm font-medium text-green-600">Active</span>
+            <span className="text-sm font-medium text-green-600 dark:text-green-400">
+              Active
+            </span>
           </div>
         );
       case "Expired":
         return (
-          <Badge variant="outline" className="border-red-500 text-red-500">
+          <Badge
+            variant="outline"
+            className="border-red-500 text-red-500 dark:border-red-600 dark:text-red-600"
+          >
             Expired
           </Badge>
         );
       case "Closed":
         return (
-          <Badge variant="outline" className="border-blue-500 text-blue-500">
+          <Badge
+            variant="outline"
+            className="border-blue-500 text-blue-500 dark:border-blue-600 dark:text-blue-600"
+          >
             Closed
           </Badge>
         );
@@ -82,28 +93,28 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
   const getCloseButtonColor = (status) => {
     switch (status) {
       case "Active":
-        return "bg-blue-500 hover:bg-blue-600 text-white hover:text-white border-blue-500";
+        return "bg-blue-500 hover:bg-blue-600 text-white hover:text-white border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:border-blue-700";
       case "Expired":
-        return "bg-red-500 hover:bg-red-600 text-white hover:text-white border-red-500";
+        return "bg-red-500 hover:bg-red-600 text-white hover:text-white border-red-500 dark:bg-red-600 dark:hover:bg-red-700 dark:border-red-700";
       case "Closed":
-        return "bg-gray-500 hover:bg-gray-600 text-white hover:text-white border-gray-500";
+        return "bg-gray-500 hover:bg-gray-600 text-white hover:text-white border-gray-500 dark:bg-gray-600 dark:hover:bg-gray-700 dark:border-gray-700";
       default:
-        return "bg-blue-500 hover:bg-blue-600 text-white hover:text-white border-blue-500";
+        return "bg-blue-500 hover:bg-blue-600 text-white hover:text-white border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:border-blue-700";
     }
   };
 
   const status = getDealStatus(deal);
 
   return (
-    <Card className="flex flex-col justify-between py-4">
+    <Card className="flex flex-col justify-between py-4 bg-white dark:bg-card border border-gray-200 dark:border-border">
       <CardHeader>
         <div className="flex justify-between items-start">
-          <CardTitle className="flex flex-col text-lg font-bold">
+          <CardTitle className="flex flex-col text-lg font-bold text-gray-900 dark:text-foreground">
             {deal.medicineName || "Unnamed Medicine"}
           </CardTitle>
           <Badge
             variant={deal.dealType === "sell" ? "default" : "secondary"}
-            className="whitespace-nowrap text-white"
+            className="whitespace-nowrap text-white dark:text-white"
           >
             {deal.dealType === "sell"
               ? "Sell"
@@ -114,7 +125,7 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
         </div>
       </CardHeader>
       <CardContent style={{ marginTop: "-10px" }}>
-        <div className="grid grid-cols-2 gap-4  text-sm text-muted-foreground">
+        <div className="grid grid-cols-2 gap-4  text-sm text-muted-foreground dark:text-gray-400">
           <div className="flex items-center gap-2">
             <CreditCard size={16} />
             <span>Price: EGP {parseFloat(deal.price || 0).toFixed(2)}</span>
@@ -148,11 +159,15 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
             <span>Pharmacy: {deal.pharmacy?.name || "N/A"}</span>
           </div>
         </div>
-        <div className="flex justify-between items-center mt-4 pt-4 border-t">
+        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200 dark:border-border">
           <div>{getStatusPill(status)}</div>
           {status === "Active" && !isDeleted && (
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+              <Button
+                variant="outline"
+                size="sm"
+                className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
+              >
                 <Link
                   className="flex items-center"
                   to={`/deals/edit/${deal.id}`}
@@ -163,7 +178,10 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
               <Button
                 variant="outline"
                 size="sm"
-                className={getCloseButtonColor(status)}
+                className={
+                  getCloseButtonColor(status) +
+                  " border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
+                }
                 onClick={() => onClose && onClose(deal.id)}
               >
                 <XCircle className="h-4 w-4" /> Close
@@ -171,6 +189,7 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
               <Button
                 variant="destructive"
                 size="sm"
+                className="bg-red-500 hover:bg-red-600 text-white border-red-500 dark:bg-red-700 dark:hover:bg-red-800 dark:border-red-700"
                 onClick={() => onDelete && onDelete(deal.id)}
               >
                 <Trash2 className="h-4 w-4" /> Delete
@@ -178,7 +197,7 @@ const DealCard = ({ deal, onClose, onDelete, isDeleted = false }) => {
             </div>
           )}
           {isDeleted && (
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground dark:text-gray-400">
               Deleted on: {formatDate(deal.deletedAt)}
             </div>
           )}

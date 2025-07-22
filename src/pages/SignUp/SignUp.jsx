@@ -1,4 +1,4 @@
-import { SignUpForm } from './../../components/SignUpForm';
+import { SignUpForm } from "./../../components/SignUpForm";
 
 export default function SignUp() {
   return (
@@ -9,7 +9,7 @@ export default function SignUp() {
           <h1 className="text-3xl text-primary md:text-4xl font-bold  mb-3">
             Join Our Medical Community
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Create your secure account to access comprehensive healthcare
             services and connect with medical professionals
           </p>
@@ -18,7 +18,6 @@ export default function SignUp() {
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
           {/* Left Side - Welcome Section */}
-        
 
           {/* Right Side - Form Section */}
           <div className="w-full lg:w-7/12">

@@ -62,6 +62,18 @@ export const updateDealStatus = async (dealId, isClosed) => {
   }
 };
 
+// Get remaining deals for the current user
+export const getRemainingDeals = async () => {
+  try {
+    const response = await api.get("/deals/remaining-deals");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch remaining deals"
+    );
+  }
+};
+
 // Keep the existing function for backward compatibility
 export const requestAdvertise = (data) =>
   api.post("/advertisement-request", data);

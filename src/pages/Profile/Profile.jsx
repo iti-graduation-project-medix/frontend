@@ -118,9 +118,13 @@ export default function Profile() {
     );
   }
 
-  const { user, deals: dealsRaw, pharmacies: pharmaciesRaw = [] } = userData;
-  const deals = Array.isArray(dealsRaw) ? dealsRaw : [];
+  const { user, pharmacies: pharmaciesRaw = [] } = userData;
   const pharmacies = Array.isArray(pharmaciesRaw) ? pharmaciesRaw : [];
+
+  // Aggregate all deals from all user pharmacies
+  const deals = pharmacies.flatMap((pharmacy) =>
+    Array.isArray(pharmacy.deals) ? pharmacy.deals : []
+  );
 
   // Pagination logic
   const indexOfLastDeal = currentPage * dealsPerPage;
@@ -128,8 +132,17 @@ export default function Profile() {
   const currentDeals = deals.slice(indexOfFirstDeal, indexOfLastDeal);
   const totalPages = Math.ceil(deals.length / dealsPerPage);
 
-  // Get user details from the first deal's postedBy or use basic user data
-  const userDetails = deals.length > 0 ? deals[0].postedBy : user;
+  // Always use user object for profile info
+  const userDetails = user || {
+    fullName: "Unknown User",
+    email: "",
+    phone: "",
+    createdAt: "",
+    isIdVerified: false,
+    isWorkIdVerified: "",
+    subscriptionStatus: "",
+    profilePhotoUrl: "",
+  };
 
   // Chart data preparation
   const dealsByStatus = [
@@ -168,39 +181,38 @@ export default function Profile() {
   };
 
   return (
-
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 bg-gray-50 dark:bg-background text-foreground dark:text-foreground">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="mb-8">
-          <div className="relative flex flex-col items-center bg-gradient-to-b from-gray-50 to-white rounded-2xl shadow-lg border p-0 overflow-hidden">
+          <div className="relative flex flex-col items-center bg-gradient-to-b from-gray-50 to-white dark:from-background dark:to-card rounded-2xl shadow-lg border dark:border-border p-0 overflow-hidden">
             <div className="w-full flex flex-col items-center px-6 pt-10 pb-6">
               <div className="relative">
-                <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
+                <Avatar className="h-32 w-32 border-4 border-white dark:border-background shadow-lg">
                   <AvatarImage src={userDetails.profilePhotoUrl} />
-                  <AvatarFallback className="text-4xl">
+                  <AvatarFallback className="text-4xl bg-gray-100 dark:bg-card text-gray-700 dark:text-gray-200">
                     {userDetails.fullName?.charAt(0) ||
                       userDetails.email?.charAt(0) ||
                       "U"}
                   </AvatarFallback>
                 </Avatar>
               </div>
-              <h1 className="mt-4 text-3xl font-bold text-gray-900">
+              <h1 className="mt-4 text-3xl font-bold text-gray-900 dark:text-foreground">
                 {userDetails.fullName || "Unknown User"}
               </h1>
               {/* Optional: User bio/tagline */}
               {/* <p className="text-gray-500 mt-1">Pharmacist | Health Advocate</p> */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2 text-gray-500 text-base">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2 text-gray-500 dark:text-gray-300 text-base">
                 <div className="flex items-center gap-1">
-                  <Mail className="h-5 w-5 text-indigo-400" />
+                  <Mail className="h-5 w-5 text-indigo-400 dark:text-indigo-300" />
                   <span>{userDetails.email}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Phone className="h-5 w-5 text-emerald-400" />
+                  <Phone className="h-5 w-5 text-emerald-400 dark:text-emerald-300" />
                   <span>{userDetails.phone}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Calendar className="h-5 w-5 text-purple-400" />
+                  <Calendar className="h-5 w-5 text-purple-400 dark:text-purple-300" />
                   <span>
                     Joined{" "}
                     {new Date(userDetails.createdAt).toLocaleDateString()}
@@ -241,7 +253,7 @@ export default function Profile() {
                   className={`text-xs flex items-center gap-1 px-3 py-1 shadow ${
                     userDetails.subscriptionStatus === "pro"
                       ? "bg-gradient-to-r from-emerald-400 to-indigo-400 text-white"
-                      : "bg-white text-primary border-primary"
+                      : "bg-white dark:bg-card text-primary dark:text-primary border-primary dark:border-primary"
                   }`}
                 >
                   {userDetails.subscriptionStatus === "pro" ? "Pro" : "Basic"}
@@ -254,37 +266,43 @@ export default function Profile() {
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {/* Total Deals */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4 transition hover:shadow-lg">
-            <div className="bg-blue-100 rounded-xl p-3 flex items-center justify-center">
-              <Package className="h-7 w-7 text-blue-500" />
+          <div className="bg-white dark:bg-card rounded-2xl shadow-md p-6 flex items-center gap-4 transition hover:shadow-lg">
+            <div className="bg-blue-100 dark:bg-primary/20 rounded-xl p-3 flex items-center justify-center">
+              <Package className="h-7 w-7 text-blue-500 dark:text-primary" />
             </div>
             <div>
-              <div className="text-gray-500 font-medium">Total Deals</div>
-              <div className="text-2xl font-extrabold text-gray-700">
+              <div className="text-gray-500 dark:text-gray-300 font-medium">
+                Total Deals
+              </div>
+              <div className="text-2xl font-extrabold text-gray-700 dark:text-foreground">
                 {deals.length}
               </div>
             </div>
           </div>
           {/* Active Deals */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4 transition hover:shadow-lg">
-            <div className="bg-green-100 rounded-xl p-3 flex items-center justify-center">
-              <CheckCircle className="h-7 w-7 text-green-500" />
+          <div className="bg-white dark:bg-card rounded-2xl shadow-md p-6 flex items-center gap-4 transition hover:shadow-lg">
+            <div className="bg-green-100 dark:bg-green-900/20 rounded-xl p-3 flex items-center justify-center">
+              <CheckCircle className="h-7 w-7 text-green-500 dark:text-green-400" />
             </div>
             <div>
-              <div className="text-gray-500 font-medium">Active Deals</div>
-              <div className="text-2xl font-extrabold text-gray-700">
+              <div className="text-gray-500 dark:text-gray-300 font-medium">
+                Active Deals
+              </div>
+              <div className="text-2xl font-extrabold text-gray-700 dark:text-foreground">
                 {deals.filter((deal) => !deal.isClosed).length}
               </div>
             </div>
           </div>
           {/* Pharmacies */}
-          <div className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-4 transition hover:shadow-lg">
-            <div className="bg-purple-100 rounded-xl p-3 flex items-center justify-center">
-              <Building2 className="h-7 w-7 text-purple-500" />
+          <div className="bg-white dark:bg-card rounded-2xl shadow-md p-6 flex items-center gap-4 transition hover:shadow-lg">
+            <div className="bg-purple-100 dark:bg-purple-900/20 rounded-xl p-3 flex items-center justify-center">
+              <Building2 className="h-7 w-7 text-purple-500 dark:text-purple-400" />
             </div>
             <div>
-              <div className="text-gray-500 font-medium">Pharmacies</div>
-              <div className="text-2xl font-extrabold text-gray-700">
+              <div className="text-gray-500 dark:text-gray-300 font-medium">
+                Pharmacies
+              </div>
+              <div className="text-2xl font-extrabold text-gray-700 dark:text-foreground">
                 {pharmacyStats.total}
               </div>
             </div>
@@ -293,13 +311,13 @@ export default function Profile() {
 
         {/* Charts and Details */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="flex w-full bg-gray-100 rounded-2xl px-3 shadow-sm">
+          <TabsList className="flex w-full bg-gray-100 dark:bg-card rounded-2xl px-3 shadow-sm">
             <TabsTrigger
               value="overview"
               className={`
                 flex-1 py-3 rounded-xl text-lg font-semibold transition
-                data-[state=active]:bg-white data-[state=active]:shadow data-[state=active]:text-primary/70
-                data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500 hover:bg-gray-200
+                data-[state=active]:bg-white data-[state=active]:shadow data-[state=active]:text-primary/70 dark:data-[state=active]:bg-background dark:data-[state=active]:text-primary
+                data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500 dark:data-[state=inactive]:text-gray-400 hover:bg-gray-200 dark:hover:bg-muted/10
               `}
             >
               Deals
@@ -308,8 +326,8 @@ export default function Profile() {
               value="pharmacies"
               className={`
                 flex-1 py-3 rounded-xl text-lg font-semibold transition
-                data-[state=active]:bg-white data-[state=active]:shadow data-[state=active]:text-primary/70
-                data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500 hover:bg-gray-200
+                data-[state=active]:bg-white data-[state=active]:shadow data-[state=active]:text-primary/70 dark:data-[state=active]:bg-background dark:data-[state=active]:text-primary
+                data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500 dark:data-[state=inactive]:text-gray-400 hover:bg-gray-200 dark:hover:bg-muted/10
               `}
             >
               Pharmacies
@@ -319,10 +337,12 @@ export default function Profile() {
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Deals Status Chart */}
-              <Card>
+              <Card className="bg-white dark:bg-card border dark:border-border">
                 <CardHeader className="p-6 pb-4">
-                  <CardTitle>Deals by Status</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="dark:text-foreground">
+                    Deals by Status
+                  </CardTitle>
+                  <CardDescription className="dark:text-muted-foreground">
                     Distribution of active vs closed deals
                   </CardDescription>
                 </CardHeader>
@@ -350,7 +370,7 @@ export default function Profile() {
                           opacity="0.18"
                         />
                       </svg>
-                      <p className="text-gray-500 text-lg font-medium">
+                      <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                         No data to display
                       </p>
                     </div>
@@ -381,10 +401,14 @@ export default function Profile() {
               </Card>
 
               {/* Deals by Type */}
-              <Card>
+              <Card className="bg-white dark:bg-card border dark:border-border">
                 <CardHeader className="p-6 pb-4">
-                  <CardTitle>Deals by Type</CardTitle>
-                  <CardDescription>Distribution of deal types</CardDescription>
+                  <CardTitle className="dark:text-foreground">
+                    Deals by Type
+                  </CardTitle>
+                  <CardDescription className="dark:text-muted-foreground">
+                    Distribution of deal types
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6 pt-0">
                   {deals.length === 0 ? (
@@ -421,7 +445,7 @@ export default function Profile() {
                           opacity="0.18"
                         />
                       </svg>
-                      <p className="text-gray-500 text-lg font-medium">
+                      <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                         No data to display
                       </p>
                     </div>
@@ -459,10 +483,14 @@ export default function Profile() {
             </div>
 
             {/* All Deals Table */}
-            <Card>
+            <Card className="bg-white dark:bg-card border dark:border-border">
               <CardHeader className="p-6 pb-0">
-                <CardTitle>All Deals</CardTitle>
-                <CardDescription>Complete list of user deals</CardDescription>
+                <CardTitle className="dark:text-foreground">
+                  All Deals
+                </CardTitle>
+                <CardDescription className="dark:text-muted-foreground">
+                  Complete list of user deals
+                </CardDescription>
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 {/* Desktop Table View */}
@@ -470,14 +498,14 @@ export default function Profile() {
                   {deals.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12">
                       <Package className="w-12 h-12 text-primary mb-2" />
-                      <p className="text-gray-500 text-lg font-medium">
+                      <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                         No deals found
                       </p>
                     </div>
                   ) : (
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b">
+                        <tr className="border-b dark:border-border">
                           <th className="text-left p-4">Medicine</th>
                           <th className="text-left p-4">Type</th>
                           <th className="text-left p-4">Price</th>
@@ -490,14 +518,14 @@ export default function Profile() {
                         {currentDeals.map((deal) => (
                           <tr
                             key={deal.id}
-                            className="border-b hover:bg-gray-50"
+                            className="border-b dark:border-border hover:bg-gray-50 dark:hover:bg-muted/10"
                           >
                             <td className="p-4">
                               <div>
-                                <p className="font-medium">
+                                <p className="font-medium text-gray-900 dark:text-foreground">
                                   {deal.medicineName}
                                 </p>
-                                <p className="text-sm text-gray-600">
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
                                   {deal.description}
                                 </p>
                               </div>
@@ -518,7 +546,7 @@ export default function Profile() {
                                 {deal.dealType}
                               </Badge>
                             </td>
-                            <td className="p-4 font-medium">
+                            <td className="p-4 font-medium text-gray-900 dark:text-foreground">
                               EGP{Number(deal.price).toFixed(2)}
                             </td>
                             <td className="p-4">
@@ -530,7 +558,7 @@ export default function Profile() {
                                 {deal.isClosed ? "Closed" : "Active"}
                               </Badge>
                             </td>
-                            <td className="p-4 text-sm text-gray-600">
+                            <td className="p-4 text-sm text-gray-600 dark:text-gray-400">
                               {new Date(deal.createdAt).toLocaleDateString()}
                             </td>
                             <td className="p-4">
@@ -556,7 +584,7 @@ export default function Profile() {
                   {deals.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12">
                       <Package className="w-12 h-12 text-primary mb-4" />
-                      <p className="text-gray-500 text-lg font-medium">
+                      <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                         No deals found
                       </p>
                     </div>
@@ -564,15 +592,15 @@ export default function Profile() {
                     currentDeals.map((deal) => (
                       <div
                         key={deal.id}
-                        className="border rounded-lg p-4 bg-white hover:bg-gray-50"
+                        className="border dark:border-border rounded-lg p-4 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted/10"
                       >
                         <div className="space-y-3">
                           {/* Medicine Info */}
                           <div>
-                            <h3 className="font-semibold text-gray-900">
+                            <h3 className="font-semibold text-gray-900 dark:text-foreground">
                               {deal.medicineName}
                             </h3>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               {deal.description}
                             </p>
                           </div>
@@ -580,7 +608,7 @@ export default function Profile() {
                           {/* Deal Details */}
                           <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                              <span className="text-gray-500 text-xs">
+                              <span className="text-gray-500 dark:text-gray-400 text-xs">
                                 Type
                               </span>
                               <div className="mt-1">
@@ -601,15 +629,15 @@ export default function Profile() {
                               </div>
                             </div>
                             <div>
-                              <span className="text-gray-500 text-xs">
+                              <span className="text-gray-500 dark:text-gray-400 text-xs">
                                 Price
                               </span>
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-gray-900 dark:text-foreground">
                                 EGP{Number(deal.price).toFixed(2)}
                               </p>
                             </div>
                             <div>
-                              <span className="text-gray-500 text-xs">
+                              <span className="text-gray-500 dark:text-gray-400 text-xs">
                                 Status
                               </span>
                               <div className="mt-1">
@@ -623,10 +651,10 @@ export default function Profile() {
                               </div>
                             </div>
                             <div>
-                              <span className="text-gray-500 text-xs">
+                              <span className="text-gray-500 dark:text-gray-400 text-xs">
                                 Created
                               </span>
-                              <p className="text-gray-900">
+                              <p className="text-gray-900 dark:text-foreground">
                                 {new Date(deal.createdAt).toLocaleDateString()}
                               </p>
                             </div>
@@ -653,7 +681,7 @@ export default function Profile() {
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
                   <div className="mt-6 flex items-center justify-between">
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
                       Showing {indexOfFirstDeal + 1} to{" "}
                       {Math.min(indexOfLastDeal, deals.length)} of{" "}
                       {deals.length} deals
@@ -704,10 +732,12 @@ export default function Profile() {
 
           <TabsContent value="pharmacies" className="space-y-6">
             {/* Pharmacy Details */}
-            <Card>
+            <Card className="bg-white dark:bg-card border dark:border-border">
               <CardHeader className="p-6 pb-4">
-                <CardTitle>Pharmacy Details</CardTitle>
-                <CardDescription>
+                <CardTitle className="dark:text-foreground">
+                  Pharmacy Details
+                </CardTitle>
+                <CardDescription className="dark:text-muted-foreground">
                   Detailed information about each pharmacy
                 </CardDescription>
               </CardHeader>
@@ -808,18 +838,21 @@ export default function Profile() {
                         fill="white"
                       />
                     </svg>
-                    <p className="text-gray-500 text-lg font-medium">
+                    <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                       No pharmacies found
                     </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {pharmacies.map((pharmacy) => (
-                      <div key={pharmacy.id} className="border rounded-lg p-4">
+                      <div
+                        key={pharmacy.id}
+                        className="border dark:border-border rounded-lg p-4 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted/10"
+                      >
                         <div className="flex justify-between mb-4">
                           <div className="flex flex-row  space-x-2">
                             <Building2 className="h-6 w-6 text-primary" />
-                            <h3 className="text-lg font-semibold">
+                            <h3 className="text-lg font-semibold dark:text-foreground">
                               {pharmacy.name}
                             </h3>
                           </div>
@@ -834,7 +867,7 @@ export default function Profile() {
 
                         <div className="space-y-2 text-sm">
                           <div className="flex items-center space-x-2">
-                            <div className="w-5 h-5 bg-blue-100 rounded flex items-center justify-center">
+                            <div className="w-5 h-5 bg-blue-100 dark:bg-primary/20 rounded flex items-center justify-center">
                               <svg
                                 className="w-3 h-3 text-primary"
                                 fill="none"
@@ -850,18 +883,18 @@ export default function Profile() {
                               </svg>
                             </div>
                             <div className="flex justify-between flex-1">
-                              <span className="text-gray-600 font-medium">
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">
                                 License:
                               </span>
-                              <span className="font-medium">
+                              <span className="font-medium dark:text-foreground">
                                 {pharmacy.licenseNum}
                               </span>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <div className="w-5 h-5 bg-green-100 rounded flex items-center justify-center">
+                            <div className="w-5 h-5 bg-green-100 dark:bg-green-900/20 rounded flex items-center justify-center">
                               <svg
-                                className="w-3 h-3 text-green-600"
+                                className="w-3 h-3 text-green-600 dark:text-green-400"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -875,18 +908,18 @@ export default function Profile() {
                               </svg>
                             </div>
                             <div className="flex justify-between flex-1">
-                              <span className="text-gray-600 font-medium">
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">
                                 Phone:
                               </span>
-                              <span className="font-medium">
+                              <span className="font-medium dark:text-foreground">
                                 {pharmacy.pharmacyPhone}
                               </span>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <div className="w-5 h-5 bg-purple-100 rounded flex items-center justify-center">
+                            <div className="w-5 h-5 bg-purple-100 dark:bg-purple-900/20 rounded flex items-center justify-center">
                               <svg
-                                className="w-3 h-3 text-purple-600"
+                                className="w-3 h-3 text-purple-600 dark:text-purple-400"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -900,19 +933,19 @@ export default function Profile() {
                               </svg>
                             </div>
                             <div className="flex justify-between flex-1">
-                              <span className="text-gray-600 font-medium">
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">
                                 Hours:
                               </span>
-                              <span className="font-medium">
+                              <span className="font-medium dark:text-foreground">
                                 {pharmacy.startHour} - {pharmacy.endHour}
                               </span>
                             </div>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <div className="w-5 h-5 bg-orange-100 rounded flex items-center justify-center">
+                            <div className="w-5 h-5 bg-orange-100 dark:bg-orange-900/20 rounded flex items-center justify-center">
                               {/* British Pound SVG */}
                               <svg
-                                className="w-3 h-3 text-orange-600"
+                                className="w-3 h-3 text-orange-600 dark:text-orange-400"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -926,19 +959,19 @@ export default function Profile() {
                               </svg>
                             </div>
                             <div className="flex justify-between flex-1">
-                              <span className="text-gray-600 font-medium">
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">
                                 Monthly Sales:
                               </span>
-                              <span className="font-medium">
+                              <span className="font-medium dark:text-foreground">
                                 £{pharmacy.monthlySales}
                               </span>
                             </div>
                           </div>
                           {pharmacy.isForSale && (
                             <div className="flex items-center space-x-2">
-                              <div className="w-5 h-5 bg-red-100 rounded flex items-center justify-center">
+                              <div className="w-5 h-5 bg-red-100 dark:bg-red-900/20 rounded flex items-center justify-center">
                                 <svg
-                                  className="w-3 h-3 text-red-600"
+                                  className="w-3 h-3 text-red-600 dark:text-red-400"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -952,10 +985,10 @@ export default function Profile() {
                                 </svg>
                               </div>
                               <div className="flex justify-between flex-1">
-                                <span className="text-gray-600 font-medium">
+                                <span className="text-gray-600 dark:text-gray-400 font-medium">
                                   Sale Price:
                                 </span>
-                                <span className="font-medium text-green-600">
+                                <span className="font-medium text-green-600 dark:text-green-400">
                                   EGP{pharmacy.pharmacyPrice}
                                 </span>
                               </div>
@@ -965,15 +998,15 @@ export default function Profile() {
 
                         <div className="mt-4">
                           <div className="flex items-center space-x-2 mb-2">
-                            <div className="w-5 h-5 bg-gray-100 rounded flex items-center justify-center">
-                              <MapPin className="h-3 w-3 text-gray-600" />
+                            <div className="w-5 h-5 bg-gray-100 dark:bg-gray-900/20 rounded flex items-center justify-center">
+                              <MapPin className="h-3 w-3 text-gray-600 dark:text-gray-400" />
                             </div>
-                            <span className="text-sm text-gray-600 font-medium">
+                            <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
                               Address:
                             </span>
                           </div>
                           <div className="ml-7 space-y-1">
-                            <p className="text-sm text-gray-900">
+                            <p className="text-sm text-gray-900 dark:text-foreground">
                               {pharmacy.addressLine1}
                               {pharmacy.addressLine2 && (
                                 <>
@@ -982,7 +1015,7 @@ export default function Profile() {
                                 </>
                               )}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               {pharmacy.city}, {pharmacy.governorate}{" "}
                               {pharmacy.zipCode}
                             </p>

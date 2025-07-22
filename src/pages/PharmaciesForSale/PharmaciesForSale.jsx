@@ -160,19 +160,19 @@ export default function PharmaciesForSale() {
   // Fetch pharmacies based on current filters and pagination
   useEffect(() => {
     const fetchData = async () => {
-    setLoading(true);
-    setError("");
-    try {
+      setLoading(true);
+      setError("");
+      try {
         const params = buildQueryParams();
-      const res = await getPharmaciesForSale(params, token);
-      setPharmacies(res.data.pharmacies || []);
-      setTotalPages(res.data.totalPages || 1);
-    } catch (err) {
-      setError(err.message || "Failed to load pharmacies");
-    } finally {
-      setLoading(false);
-    }
-  };
+        const res = await getPharmaciesForSale(params, token);
+        setPharmacies(res.data.pharmacies || []);
+        setTotalPages(res.data.totalPages || 1);
+      } catch (err) {
+        setError(err.message || "Failed to load pharmacies");
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchData();
     // eslint-disable-next-line
@@ -247,10 +247,10 @@ export default function PharmaciesForSale() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-background">
       <CornerAd position="allPharmcies" />
 
-      <section className="py-5 px-4 text-foreground">
+      <section className="py-5 px-4 text-foreground dark:text-foreground">
         <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">
           <h1 className="text-3xl sm:text-4xl font-bold ">
             Pharmacies for Sale
@@ -260,15 +260,15 @@ export default function PharmaciesForSale() {
       <section className="px-4">
         <div className="max-w-7xl mx-auto">
           {/* Filters Card - Unified, like deals */}
-          <Card className="p-6 mb-8">
+          <Card className="p-6 mb-8 bg-white dark:bg-card border border-gray-200 dark:border-border">
             <div className="space-y-6">
               {/* Header */}
               <div className="flex items-center justify-between flex-wrap gap-2 w-full sm:w-auto">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                     Filters
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Refine your search results
                   </p>
                 </div>
@@ -277,12 +277,12 @@ export default function PharmaciesForSale() {
                     onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <Filter className="h-4 w-4" />
                     Advanced
                     {activeFilters.length > 0 && (
-                      <Badge className="bg-zinc-600 text-white ml-1">
+                      <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white ml-1">
                         {activeFilters.length}
                       </Badge>
                     )}
@@ -296,7 +296,7 @@ export default function PharmaciesForSale() {
                     variant="outline"
                     size="sm"
                     onClick={handleClearFilters}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <X className="h-4 w-4" />
                     Clear All
@@ -308,7 +308,7 @@ export default function PharmaciesForSale() {
                     className={`flex items-center gap-2 ${
                       useLocationSort
                         ? "bg-primary text-white border-primary"
-                        : "bg-white text-primary border-primary/30 hover:bg-primary/10"
+                        : "bg-white dark:bg-background text-primary border-primary/30 dark:border-primary/40 hover:bg-primary/10 dark:hover:bg-primary/10"
                     }`}
                     title={
                       useLocationSort
@@ -357,28 +357,30 @@ export default function PharmaciesForSale() {
               </div>
               {/* Location error message */}
               {locationError && (
-                <div className="text-red-500 text-sm mb-2">{locationError}</div>
+                <div className="text-red-500 dark:text-red-400 text-sm mb-2">
+                  {locationError}
+                </div>
               )}
               {/* Basic Filters */}
               <div>
                 <div className="flex flex-col gap-3 md:flex-row md:gap-4">
                   <div className="flex-1 min-w-[180px]">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                       <Input
                         placeholder="Search by name or location"
                         value={searchInput}
                         onChange={handleSearchInput}
-                        className="pl-10"
+                        className="pl-10 bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                       />
                     </div>
                   </div>
                   <div className="w-full md:w-44">
                     <Select value={governorate} onValueChange={setGovernorate}>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Governorate" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         {[
                           "Cairo",
                           "Giza",
@@ -417,10 +419,10 @@ export default function PharmaciesForSale() {
                   </div>
                   <div className="w-full md:w-44">
                     <Select value={saleType} onValueChange={setSaleType}>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="All Types" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         <SelectItem value="pharmacy_only">
                           Pharmacy Only
                         </SelectItem>
@@ -444,10 +446,10 @@ export default function PharmaciesForSale() {
                         }
                       }}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         {sortOptions.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
@@ -458,46 +460,46 @@ export default function PharmaciesForSale() {
                   </div>
                 </div>
               </div>
-            {/* Active Filter Chips */}
-            {activeFilters.length > 0 && (
-                <div className="border-t pt-4">
+              {/* Active Filter Chips */}
+              {activeFilters.length > 0 && (
+                <div className="border-t border-gray-200 dark:border-border pt-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Active Filters:
                     </span>
-                    <Badge className="bg-zinc-600 text-white text-xs">
+                    <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white text-xs">
                       {activeFilters.length}
                     </Badge>
                   </div>
                   <div className="flex flex-nowrap gap-2 overflow-x-auto max-w-full pb-1">
-                {activeFilters.map((filter) => (
-                  <Badge
-                    key={filter.key}
-                        className="flex items-center gap-1 cursor-pointer bg-zinc-600 text-white hover:bg-zinc-600/70 transition-colors"
-                    onClick={filter.onRemove}
-                  >
-                    {filter.label}
+                    {activeFilters.map((filter) => (
+                      <Badge
+                        key={filter.key}
+                        className="flex items-center gap-1 cursor-pointer bg-zinc-600 dark:bg-zinc-800 text-white hover:bg-zinc-600/70 dark:hover:bg-zinc-700 transition-colors"
+                        onClick={filter.onRemove}
+                      >
+                        {filter.label}
                         <X className="h-3 w-3" />
-                  </Badge>
-                ))}
+                      </Badge>
+                    ))}
                   </div>
                 </div>
               )}
               {/* Advanced Filters */}
               {showAdvancedFilters && (
-                <div className="border-t pt-6">
+                <div className="border-t border-gray-200 dark:border-border pt-6">
                   <div className="mb-4">
-                    <h4 className="text-md font-semibold text-gray-900 mb-2">
+                    <h4 className="text-md font-semibold text-gray-900 dark:text-foreground mb-2">
                       Advanced Filters
                     </h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Set price range filters
                     </p>
                   </div>
                   <div className="grid grid-cols-1 gap-6">
                     {/* Price Range */}
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium text-gray-700">
+                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Price Range (EGP)
                       </Label>
                       <div className="flex gap-3">
@@ -512,7 +514,7 @@ export default function PharmaciesForSale() {
                                 min: e.target.value,
                               }))
                             }
-                            className="text-sm"
+                            className="text-sm bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                           />
                         </div>
                         <div className="flex-1">
@@ -526,17 +528,19 @@ export default function PharmaciesForSale() {
                                 max: e.target.value,
                               }))
                             }
-                            className="text-sm"
+                            className="text-sm bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                           />
                         </div>
                       </div>
                     </div>
                   </div>
-              </div>
-            )}
+                </div>
+              )}
             </div>
           </Card>
-          {error && <div className="text-red-500 mb-4">{error}</div>}
+          {error && (
+            <div className="text-red-500 dark:text-red-400 mb-4">{error}</div>
+          )}
           {loading || filteredPharmacies.length > 0 ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center flex-1 min-w-0 mb-8">
@@ -549,7 +553,7 @@ export default function PharmaciesForSale() {
               {/* Pagination Controls - deals style */}
               {!loading && !error && (totalPages || 1) > 1 && (
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground dark:text-gray-400">
                     Page {currentPage} of {totalPages || 1}
                   </div>
                   <div className="flex items-center gap-2">
@@ -560,17 +564,18 @@ export default function PharmaciesForSale() {
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={currentPage === 1}
+                      className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                     >
                       <ChevronLeft className="h-4 w-4" />
-                    Previous
+                      Previous
                     </Button>
                     <div className="flex items-center gap-1">
                       {getPageNumbers().map((page, index) => (
                         <div key={index}>
                           {page === "..." ? (
-                            <span className="px-2 py-1 text-muted-foreground">
+                            <span className="px-2 py-1 text-muted-foreground dark:text-gray-400">
                               ...
-                  </span>
+                            </span>
                           ) : (
                             <Button
                               variant={
@@ -578,7 +583,11 @@ export default function PharmaciesForSale() {
                               }
                               size="sm"
                               onClick={() => setCurrentPage(page)}
-                              className="w-8 h-8 p-0"
+                              className={`w-8 h-8 p-0 ${
+                                currentPage === page
+                                  ? "bg-primary text-white border-primary"
+                                  : "bg-white dark:bg-background text-primary border-gray-200 dark:border-border hover:bg-primary/10 dark:hover:bg-primary/10"
+                              }`}
                             >
                               {page}
                             </Button>
@@ -595,8 +604,9 @@ export default function PharmaciesForSale() {
                         )
                       }
                       disabled={currentPage === (totalPages || 1)}
-                  >
-                    Next
+                      className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
+                    >
+                      Next
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>

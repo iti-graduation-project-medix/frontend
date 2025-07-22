@@ -26,9 +26,15 @@ import Otp from "./../pages/OTP/Otp";
 // Lazy Loaded Components
 const Advertise = React.lazy(() => import("../pages/Advertise/Advertise"));
 const ContactUs = React.lazy(() => import("../pages/ContactUs/ContactUs"));
-const Subscription = React.lazy(() => import("../pages/Subscription/Subscription"));
-const SuccessPayment = React.lazy(() => import("./../pages/SuccessPayment/SuccessPayment"));
-const FailedPayment = React.lazy(() => import("./../pages/FailedPayment/FailedPayment"));
+const Subscription = React.lazy(() =>
+  import("../pages/Subscription/Subscription")
+);
+const SuccessPayment = React.lazy(() =>
+  import("./../pages/SuccessPayment/SuccessPayment")
+);
+const FailedPayment = React.lazy(() =>
+  import("./../pages/FailedPayment/FailedPayment")
+);
 
 // User Management Pages
 const Profile = React.lazy(() => import("../pages/Profile/Profile"));
@@ -37,14 +43,22 @@ const Favorites = React.lazy(() => import("../pages/Favorites/Favorites"));
 
 // Deals Management Pages
 const Deals = React.lazy(() => import("../pages/MyDeals/Deals"));
-const AvailableDeals = React.lazy(() => import("../pages/AvailableDeals/AvailableDeals"));
-const DealDetails = React.lazy(() => import("../pages/AvailableDeals/DealDetails"));
+const AvailableDeals = React.lazy(() =>
+  import("../pages/AvailableDeals/AvailableDeals")
+);
+const DealDetails = React.lazy(() =>
+  import("../pages/AvailableDeals/DealDetails")
+);
 const DealFormPage = React.lazy(() => import("../pages/DealForm/DealFormPage"));
 
 // Pharmacy Management Pages
 const AddPharmacy = React.lazy(() => import("../pages/AddPharmcy/AddPharmacy"));
-const PharmaciesForSale = React.lazy(() => import("../pages/PharmaciesForSale/PharmaciesForSale"));
-const PharmacyDetails = React.lazy(() => import("../pages/PharmaciesForSale/PharmacyDetails"));
+const PharmaciesForSale = React.lazy(() =>
+  import("../pages/PharmaciesForSale/PharmaciesForSale")
+);
+const PharmacyDetails = React.lazy(() =>
+  import("../pages/PharmaciesForSale/PharmacyDetails")
+);
 
 // Communication Pages
 const Chat = React.lazy(() => import("../pages/Chat/Chat"));
@@ -54,7 +68,7 @@ const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy"));
 export default function MainLayout() {
   return (
     <Router>
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen">
         <Routes>
           <Route path="/" element={<SharedLayout />}>
             {/* Public Routes */}

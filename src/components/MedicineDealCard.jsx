@@ -24,8 +24,8 @@ function MedicineDealCard({ deal }) {
   // Handle incomplete deal data
   if (!deal || !deal.id) {
     return (
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <div className="text-center text-gray-500">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm p-6">
+        <div className="text-center text-gray-500 dark:text-gray-400">
           <p>Deal information unavailable</p>
         </div>
       </div>
@@ -105,12 +105,12 @@ function MedicineDealCard({ deal }) {
   const isOwnDeal = deal.postedBy && deal.postedBy.id === user;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group relative">
+    <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group relative">
       <div className="p-6 flex-1 flex flex-col">
         {/* Header with badge and heart icon */}
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="font-bold text-lg text-gray-900 leading-tight pr-2">
+            <h2 className="font-bold text-lg text-gray-900 dark:text-foreground leading-tight pr-2">
               {deal.medicineName || "Medicine Name Not Available"}
             </h2>
           </div>
@@ -119,10 +119,10 @@ function MedicineDealCard({ deal }) {
             <Badge
               className={`${
                 deal.dealType === "sell"
-                  ? "bg-purple-50 text-purple-700 border-purple-200"
+                  ? "bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 border-purple-200 dark:border-purple-900"
                   : deal.dealType === "exchange"
-                  ? "bg-amber-50 text-amber-400 border-amber-200"
-                  : "bg-zinc-50 text-zinc-700 border-zinc-200"
+                  ? "bg-amber-50 dark:bg-amber-900/20 text-amber-400 dark:text-amber-300 border-amber-200 dark:border-amber-900"
+                  : "bg-zinc-50 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700"
               } border font-medium capitalize text-xs px-3 py-1`}
             >
               {deal.dealType === "both" ? "Sell / Exchange" : deal.dealType}
@@ -137,38 +137,52 @@ function MedicineDealCard({ deal }) {
             deal.dealType === "exchange" ||
             deal.dealType === "both") &&
             deal.price && (
-              <div className="flex items-center text-gray-600 text-sm">
-                <Tag size={16} className="mr-2 text-gray-400" />
+              <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+                <Tag
+                  size={16}
+                  className="mr-2 text-gray-400 dark:text-gray-300"
+                />
                 <span className="font-medium">Price:</span>
-                <span className="ml-1 text-gray-900 font-semibold">
+                <span className="ml-1 text-gray-900 dark:text-foreground font-semibold">
                   EGP {parseFloat(deal.price).toFixed(2)}
                 </span>
               </div>
             )}
           {/* Quantity - important for availability */}
           {deal.quantity && (
-            <div className="flex items-center text-gray-600 text-sm">
-              <Package size={16} className="mr-2 text-gray-400" />
+            <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+              <Package
+                size={16}
+                className="mr-2 text-gray-400 dark:text-gray-300"
+              />
               <span className="font-medium">Quantity:</span>
-              <span className="ml-1 text-gray-900">{deal.quantity}</span>
+              <span className="ml-1 text-gray-900 dark:text-foreground">
+                {deal.quantity}
+              </span>
             </div>
           )}
           {/* Expiry Date - critical for medicine safety */}
           {deal.expiryDate && (
-            <div className="flex items-center text-gray-600 text-sm">
-              <Calendar size={16} className="mr-2 text-gray-400" />
+            <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+              <Calendar
+                size={16}
+                className="mr-2 text-gray-400 dark:text-gray-300"
+              />
               <span className="font-medium">Expires:</span>
-              <span className="ml-1 text-gray-900">
+              <span className="ml-1 text-gray-900 dark:text-foreground">
                 {formatDate(deal.expiryDate)}
               </span>
             </div>
           )}
           {/* Dosage Form - important for medicine type */}
           {deal.dosageForm && (
-            <div className="flex items-center text-gray-600 text-sm">
-              <Pill size={16} className="mr-2 text-gray-400" />
+            <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+              <Pill
+                size={16}
+                className="mr-2 text-gray-400 dark:text-gray-300"
+              />
               <span className="font-medium">Dosage Form:</span>
-              <span className="ml-1 text-gray-900">
+              <span className="ml-1 text-gray-900 dark:text-foreground">
                 {deal.dosageForm.charAt(0).toUpperCase() +
                   deal.dosageForm.slice(1)}
               </span>
@@ -176,10 +190,13 @@ function MedicineDealCard({ deal }) {
           )}
           {/* Posted Date - less important, shown last */}
           {deal.createdAt && (
-            <div className="flex items-center text-gray-600 text-sm">
-              <Clock size={16} className="mr-2 text-gray-400" />
+            <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
+              <Clock
+                size={16}
+                className="mr-2 text-gray-400 dark:text-gray-300"
+              />
               <span className="font-medium">Posted:</span>
-              <span className="ml-1 text-gray-900">
+              <span className="ml-1 text-gray-900 dark:text-foreground">
                 {formatCreatedDate(deal.createdAt)}
               </span>
             </div>
@@ -188,22 +205,22 @@ function MedicineDealCard({ deal }) {
 
         {/* Description */}
         {deal.description && (
-          <div className="text-gray-700 text-sm mb-4 flex-1 leading-relaxed">
+          <div className="text-gray-700 dark:text-gray-300 text-sm mb-4 flex-1 leading-relaxed">
             {deal.description}
           </div>
         )}
 
         {/* Pharmacy info */}
         {deal.pharmacy && (
-          <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
+          <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-border">
             <div className="relative">
               <img
                 src={getPharmacyAvatar(deal.pharmacy)}
                 alt="avatar"
-                className="w-8 h-8 rounded-full border-2 border-gray-200 object-cover"
+                className="w-8 h-8 rounded-full border-2 border-gray-200 dark:border-border object-cover"
               />
               {deal.pharmacy.licenseNum && (
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 dark:bg-blue-600 rounded-full flex items-center justify-center">
                   <svg
                     className="w-2.5 h-2.5 text-white"
                     fill="currentColor"
@@ -220,13 +237,15 @@ function MedicineDealCard({ deal }) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-sm font-medium text-gray-900 truncate">
+                <span className="text-sm font-medium text-gray-900 dark:text-foreground truncate">
                   {deal.pharmacy.name || "Unknown Pharmacy"}
                 </span>
                 {/* Heart icon aligned with pharmacy name */}
                 <motion.button
-                  className={`bg-white/80 rounded-full p-1 shadow transition-all duration-200 hover:bg-white hover:shadow-lg ${
-                    isLoading || isOwnDeal ? "opacity-50 cursor-not-allowed" : ""
+                  className={`bg-white/80 dark:bg-background/80 rounded-full p-1 shadow transition-all duration-200 hover:bg-white dark:hover:bg-muted hover:shadow-lg ${
+                    isLoading || isOwnDeal
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
                   }`}
                   onClick={handleHeartClick}
                   disabled={isLoading || isOwnDeal}
@@ -260,17 +279,17 @@ function MedicineDealCard({ deal }) {
                       <Heart
                         className={`w-5 h-5 transition-colors duration-200 ${
                           isOwnDeal
-                            ? "text-gray-300"
+                            ? "text-gray-300 dark:text-gray-600"
                             : isFavorite
                             ? "text-red-500 fill-red-500"
-                            : "text-gray-400 hover:text-red-400"
+                            : "text-gray-400 dark:text-gray-300 hover:text-red-400 dark:hover:text-red-400"
                         }`}
                       />
                     </motion.div>
                   </AnimatePresence>
                 </motion.button>
               </div>
-              <div className="text-xs text-gray-500 space-y-0.5">
+              <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
                 {(deal.pharmacy.governorate || deal.pharmacy.city) && (
                   <div className="flex items-center gap-1">
                     <svg
@@ -320,7 +339,7 @@ function MedicineDealCard({ deal }) {
       {/* Action button */}
       <div className="p-6 pt-0">
         <Button
-          className="w-full transition-colors duration-200"
+          className="w-full transition-colors duration-200 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
           variant="outline"
           onClick={() => handleViewDetails(deal.id)}
           disabled={isOwnDeal}

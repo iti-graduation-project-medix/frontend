@@ -834,8 +834,6 @@ export default function AvailableDeals() {
           )}
         </div>
       </section>
-
-      <DrugAlert />
     </div>
   );
 }

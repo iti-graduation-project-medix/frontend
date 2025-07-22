@@ -191,7 +191,7 @@ export default function Subscription() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-foreground">
+    <div className="min-h-screen  dark:bg-background text-gray-900 dark:text-foreground">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 dark:from-blue-900/10 dark:to-purple-900/10"></div>

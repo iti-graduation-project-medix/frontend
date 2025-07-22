@@ -10,6 +10,7 @@ const CornerAd = ({ position = "dealDetails" }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
@@ -44,12 +45,13 @@ const CornerAd = ({ position = "dealDetails" }) => {
     }
   }, [ads.length]);
 
-  if (loading || !isVisible || !ads.length) return null;
+  if (loading || !isVisible || !ads.length || !showModal) return null;
 
   const currentAd = ads[currentAdIndex] || ads[0];
 
   const handleClose = () => {
     setIsVisible(false);
+    setShowModal(false);
   };
 
   const handleExpand = () => {
@@ -57,40 +59,42 @@ const CornerAd = ({ position = "dealDetails" }) => {
   };
 
   const handleClick = () => {
-    if (currentAd.link) {
-      window.open(currentAd.link, "_blank");
+    if (currentAd.companyUrl) {
+      window.open(currentAd.companyUrl, "_blank");
     }
   };
 
+  // Modal overlay
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60">
       <div
-        className={`bg-white dark:bg-card rounded-xl shadow-2xl border border-gray-200 dark:border-border overflow-hidden transition-all duration-300 ${
-          isExpanded ? "w-80" : "w-72"
-        }`}
+        className={`bg-white dark:bg-card rounded-2xl shadow-2xl border border-gray-200 dark:border-border overflow-hidden transition-all duration-300 w-[95vw] max-w-md animate-fade-in-up`}
+        style={{ boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)" }}
       >
         {/* Header */}
         <div className="relative">
           <img
             src={currentAd.imageUrl}
             alt={currentAd.title}
-            className="w-full h-32 object-cover"
+            className="w-full h-36 object-cover"
           />
-
+          <div className="absolute top-2 left-2 flex items-center gap-2">
+            <span className="bg-yellow-400 text-xs font-bold text-gray-900 px-2 py-0.5 rounded-full shadow-sm">
+              Sponsored
+            </span>
+            {currentAd.companyName && (
+              <span className="bg-white/80 dark:bg-card/80 text-xs font-semibold text-primary px-2 py-0.5 rounded shadow-sm border border-primary/20">
+                {currentAd.companyName}
+              </span>
+            )}
+          </div>
           <div className="absolute top-2 right-2 flex gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleExpand}
-              className="h-6 w-6 p-0 bg-white/90 dark:bg-card/90 hover:bg-white dark:hover:bg-muted/20"
-            >
-              <ExternalLink className="h-3 w-3" />
-            </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleClose}
               className="h-6 w-6 p-0 bg-white/90 dark:bg-card/90 hover:bg-white dark:hover:bg-muted/20"
+              aria-label="Close Ad"
             >
               <X className="h-3 w-3" />
             </Button>
@@ -98,22 +102,22 @@ const CornerAd = ({ position = "dealDetails" }) => {
         </div>
 
         {/* Content */}
-        <div className="p-3">
-          <h3 className="font-semibold text-sm text-gray-900 dark:text-foreground mb-1">
+        <div className="p-4 flex flex-col gap-2">
+          <h3 className="font-bold text-lg text-gray-900 dark:text-foreground mb-1">
             {currentAd.title}
           </h3>
-          <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
+          <p className="text-xs text-gray-600 dark:text-gray-300 mb-2 line-clamp-3">
             {currentAd.description}
           </p>
-          {currentAd.link ? (
+          {currentAd.companyUrl && (
             <Button
               onClick={handleClick}
-              className="w-full h-8 text-xs font-medium dark:bg-primary dark:hover:bg-primary-hover"
-              size="sm"
+              className="w-full h-10 text-base font-semibold bg-primary hover:bg-primary-hover text-white rounded-lg shadow-md mt-1"
+              size="md"
             >
               Learn More
             </Button>
-          ) : null}
+          )}
         </div>
 
         {/* Dots indicator */}
@@ -128,11 +132,19 @@ const CornerAd = ({ position = "dealDetails" }) => {
                     ? "bg-primary dark:bg-primary"
                     : "bg-gray-300 dark:bg-muted"
                 }`}
+                aria-label={`Go to ad ${index + 1}`}
               />
             ))}
           </div>
         )}
       </div>
+      <style>{`
+        @keyframes fade-in-up {
+          0% { opacity: 0; transform: translateY(40px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fade-in-up 0.5s cubic-bezier(.4,0,.2,1) both; }
+      `}</style>
     </div>
   );
 };

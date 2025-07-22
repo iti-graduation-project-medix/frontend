@@ -135,6 +135,7 @@ export default function AddPharmacy() {
     images: null,
   });
   const [existingImages, setExistingImages] = useState([]);
+  const [deletedImages, setDeletedImages] = useState([]);
   const [searchBox, setSearchBox] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -210,7 +211,6 @@ export default function AddPharmacy() {
       setSubmitError("");
       setIsSubmitting(true);
       try {
-        // Transform values to match backend
         const formData = new FormData();
         formData.append("name", values.name);
         formData.append("licenseNum", values.licenseNum);
@@ -218,15 +218,22 @@ export default function AddPharmacy() {
         formData.append("addressLine2", values.addressLine2 || "");
         formData.append("city", values.city);
         formData.append("zipCode", values.zipCode);
-        // Backend expects latitude and longitude, not a location object
         formData.append("latitude", values.location?.lat || "");
         formData.append("longitude", values.location?.lng || "");
         formData.append("startHour", values.startHour);
         formData.append("endHour", values.endHour);
         formData.append("governorate", values.governorate);
-        // Backend expects pharmacyPhone, not contactNumber
         formData.append("pharmacyPhone", values.contactNumber);
-        // Handle images (multiple)
+
+        // 1. أضف الصور القديمة (المتبقية) للـ FormData
+        for (const url of existingImages) {
+          try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            formData.append("images", blob, "old-image.jpg");
+          } catch (e) {}
+        }
+
         if (values.images && values.images.length > 0) {
           Array.from(values.images).forEach((file) => {
             formData.append("images", file);
@@ -241,7 +248,6 @@ export default function AddPharmacy() {
           resetForm();
           setMarker(null);
         }
-        // Navigate immediately to prevent limit reached message from showing
         navigate("/settings");
       } catch (err) {
         setSubmitError(
@@ -371,6 +377,7 @@ export default function AddPharmacy() {
         <div className="container mx-auto max-w-7xl">
           <div className="flex flex-col lg:flex-row items-start justify-center gap-8 lg:gap-12">
             <div className="w-full lg:w-7/12">
+
               <Card className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-background dark:via-background dark:to-background relative w-full">
                 {/* Decorative Elements */}
                 <div
@@ -379,15 +386,18 @@ export default function AddPharmacy() {
                 ></div>
                 <div
                   className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10 dark:opacity-20"
+
                   style={{ background: "var(--primary)" }}
                 ></div>
 
                 <div className="relative p-8 md:p-10">
                   <CardHeader className="px-0 pt-0 pb-4">
+
                     <CardTitle className="text-2xl font-bold text-foreground dark:text-foreground">
                       {id ? "Edit Pharmacy" : "Add Pharmacy"}
                     </CardTitle>
                     <p className="text-muted-foreground text-sm mt-1 dark:text-gray-400">
+
                       {id
                         ? "Update your pharmacy details below."
                         : "Fill out the form below to add your pharmacy."}
@@ -400,8 +410,10 @@ export default function AddPharmacy() {
                           <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
                               currentStep >= 1
+
                                 ? "bg-primary text-white dark:bg-primary dark:text-white"
                                 : "bg-gray-200 text-gray-500 dark:bg-zinc-800 dark:text-gray-400"
+
                             }`}
                           >
                             1
@@ -411,10 +423,12 @@ export default function AddPharmacy() {
                               currentStep >= 1
                                 ? "text-primary"
                                 : "text-gray-500"
+
                             } dark:${
                               currentStep >= 1
                                 ? "text-primary"
                                 : "text-gray-400"
+
                             }`}
                           >
                             Basic Information
@@ -422,17 +436,21 @@ export default function AddPharmacy() {
                         </div>
                         <div
                           className={`w-16 h-0.5 ${
+
                             currentStep >= 2
                               ? "bg-primary dark:bg-primary"
                               : "bg-gray-200 dark:bg-zinc-800"
+
                           }`}
                         ></div>
                         <div className="flex items-center">
                           <div
                             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
                               currentStep >= 2
+
                                 ? "bg-primary text-white dark:bg-primary dark:text-white"
                                 : "border-gray-200 border-2 text-gray-500 dark:border-zinc-800 dark:text-gray-400"
+
                             }`}
                           >
                             2
@@ -442,10 +460,12 @@ export default function AddPharmacy() {
                               currentStep >= 2
                                 ? "text-primary"
                                 : "text-gray-500"
+
                             } dark:${
                               currentStep >= 2
                                 ? "text-primary"
                                 : "text-gray-400"
+
                             }`}
                           >
                             Location & Address
@@ -480,7 +500,9 @@ export default function AddPharmacy() {
                                     !!formik.errors.name && formik.touched.name
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.name &&
                                       formik.errors.name &&
                                       "border-red-500"
@@ -519,7 +541,9 @@ export default function AddPharmacy() {
                                     formik.touched.licenseNum
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.licenseNum &&
                                       formik.errors.licenseNum &&
                                       "border-red-500"
@@ -559,7 +583,9 @@ export default function AddPharmacy() {
                                     formik.touched.contactPerson
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.contactPerson &&
                                       formik.errors.contactPerson &&
                                       "border-red-500"
@@ -599,7 +625,9 @@ export default function AddPharmacy() {
                                     formik.touched.contactNumber
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.contactNumber &&
                                       formik.errors.contactNumber &&
                                       "border-red-500"
@@ -642,7 +670,9 @@ export default function AddPharmacy() {
                                     formik.touched.startHour
                                   }
                                   className={cn(
+
                                     "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none",
+
                                     formik.touched.startHour &&
                                       formik.errors.startHour &&
                                       "border-red-500"
@@ -708,7 +738,9 @@ export default function AddPharmacy() {
                                     formik.touched.endHour
                                   }
                                   className={cn(
+
                                     "pl-10 pr-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white appearance-none",
+
                                     formik.touched.endHour &&
                                       formik.errors.endHour &&
                                       "border-red-500"
@@ -759,7 +791,9 @@ export default function AddPharmacy() {
                             </Label>
                             <label
                               htmlFor="images"
+
                               className="relative flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-colors mb-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+
                             >
                               <UploadCloud className="w-10 h-10 text-gray-400 mb-2" />
                               <span className="mb-1 text-sm text-gray-700 font-semibold">
@@ -801,6 +835,13 @@ export default function AddPharmacy() {
                                       className="absolute top-1 right-1 bg-white/80 rounded-full p-0.5 hover:bg-red-100"
                                       onClick={(e) => {
                                         e.preventDefault();
+
+
+                                        setDeletedImages([
+                                          ...deletedImages,
+                                          url,
+                                        ]);
+
                                         setExistingImages(
                                           existingImages.filter(
                                             (_, i) => i !== idx
@@ -903,7 +944,9 @@ export default function AddPharmacy() {
                                     formik.touched.addressLine1
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.addressLine1 &&
                                       formik.errors.addressLine1 &&
                                       "border-red-500"
@@ -938,6 +981,7 @@ export default function AddPharmacy() {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+
                                 />
                               </div>
                             </div>
@@ -960,7 +1004,9 @@ export default function AddPharmacy() {
                                     !!formik.errors.city && formik.touched.city
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.city &&
                                       formik.errors.city &&
                                       "border-red-500"
@@ -999,7 +1045,9 @@ export default function AddPharmacy() {
                                 >
                                   <SelectTrigger
                                     className={cn(
+
                                       "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white w-full",
+
                                       formik.touched.governorate &&
                                         formik.errors.governorate &&
                                         "border-red-500"
@@ -1048,7 +1096,9 @@ export default function AddPharmacy() {
                                     formik.touched.zipCode
                                   }
                                   className={cn(
+
                                     "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white",
+
                                     formik.touched.zipCode &&
                                       formik.errors.zipCode &&
                                       "border-red-500"
@@ -1073,7 +1123,9 @@ export default function AddPharmacy() {
                             <div className="space-y-2">
                               <Button
                                 type="button"
+
                                 className="mb-3 rounded-full border-2 border-primary bg-primary/10 text-primary hover:bg-primary/90 hover:text-white flex items-center gap-2 shadow-sm dark:bg-primary/20 dark:text-primary dark:hover:bg-primary/90"
+
                                 variant="outline"
                                 onClick={() => {
                                   if (navigator.geolocation) {
@@ -1111,7 +1163,9 @@ export default function AddPharmacy() {
                                 <Input
                                   ref={inputRef}
                                   placeholder="Search for your pharmacy location..."
+
                                   className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+
                                   autoComplete="off"
                                 />
                               </div>

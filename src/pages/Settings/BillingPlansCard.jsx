@@ -53,6 +53,32 @@ export default function BillingPlansCard({ pharmacistDetails }) {
   const { chats } = useChat();
   const openedChatsCount = chats.filter(chat => !chat.isClosed).length;
 
+  // Calculate chat growth percentage (this month vs last month)
+  const now = new Date();
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+  const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+
+  const chatsThisMonth = chats.filter(chat => {
+    const date = new Date(chat.createdAt || chat.updatedAt);
+    return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+  });
+  const chatsLastMonth = chats.filter(chat => {
+    const date = new Date(chat.createdAt || chat.updatedAt);
+    return date.getMonth() === lastMonth && date.getFullYear() === lastMonthYear;
+  });
+  const countThisMonth = chatsThisMonth.length;
+  const countLastMonth = chatsLastMonth.length;
+  let chatGrowth = 0;
+  if (countLastMonth === 0 && countThisMonth > 0) {
+    chatGrowth = 100;
+  } else if (countLastMonth === 0 && countThisMonth === 0) {
+    chatGrowth = 0;
+  } else {
+    chatGrowth = Math.round(((countThisMonth - countLastMonth) / countLastMonth) * 100);
+  }
+
   // Fetch current subscription and user subscriptions on component mount
   useEffect(() => {
     fetchCurrentSubscription();
@@ -159,7 +185,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
     <div className="space-y-8 max-w-6xl mx-auto">
       {/* Current Plan Section */}
       <Card className="py-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -250,7 +275,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
 
       {/* Usage Statistics */}
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -280,6 +304,40 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             </div>
           ) : (
             <>
+            {/* Premium Plan Extra Features */}
+            {currentSubscription.planName === 'premium' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                {/* Pharmacy Listings Card */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                  <div className="relative p-6 text-center">
+                    <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <MdHomeWork className="text-blue-600" size={28} />
+                    </div>
+                    <h4 className="font-bold text-lg text-blue-900 mb-2">Pharmacy Listings</h4>
+                    <p className="text-blue-700 font-medium mb-2">List your pharmacy for sale and reach more buyers.</p>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs">
+                      <MdCheckCircle className="text-blue-500" /> Active
+                    </span>
+                  </div>
+                </div>
+                {/* Drug Alerts Card */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100/50 border border-zinc-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-zinc-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                  <div className="relative p-6 text-center">
+                    <div className="p-4 bg-gradient-to-br from-zinc-100 to-zinc-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <MdNotificationsActive className="text-zinc-600" size={28} />
+                    </div>
+                    <h4 className="font-bold text-lg text-zinc-900 mb-2">Drug Alerts</h4>
+                    <p className="text-zinc-700 font-medium mb-2">Subscribe to drug alerts and stay updated on new medicines.</p>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-200 text-zinc-700 font-semibold text-xs">
+                      <MdCheckCircle className="text-zinc-500" /> Active
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Available Features */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Available Features */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
@@ -339,9 +397,11 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 <div className="flex items-center justify-center gap-2 text-green-600 mb-3">
                   <div className="p-1 bg-green-100 rounded-full">
                     <MdTrendingUp size={16} />
-              </div>
-                  <span className="text-sm font-semibold">+12% this month</span>
-            </div>
+                  </div>
+                  <span className="text-sm font-semibold">
+                    {chatGrowth >= 0 ? '+' : ''}{chatGrowth}% this month
+                  </span>
+                </div>
               </div>
               </div>
             </div>
@@ -374,7 +434,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
 
       {/* Billing History */}
       <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
@@ -421,7 +480,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 key={invoice.id}
                   className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="p-6">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                       <div className="flex items-center gap-6">

@@ -6,29 +6,29 @@ const defaultSections = [
   {
     title: "Product",
     links: [
-      { name: "Overview", href: "#" },
-      { name: "Pricing", href: "#" },
-      { name: "Marketplace", href: "#" },
-      { name: "Features", href: "#" },
+      { name: "Overview", href: "/" },
+      { name: "Pricing", href: "/subscription" },
+      { name: "Favorites", href: "/favorites" },
+      { name: "My Deals", href: "/my-deals" },
     ],
   },
   {
     title: "Company",
     links: [
-      { name: "Home", href: "#" },
-      { name: "Deals", href: "#" },
-      { name: "Requests", href: "#" },
-      { name: "Advertise", href: "#" },
-      { name: "Contacts", href: "#" },
+      { name: "Home", href: "/" },
+      { name: "Deals", href: "/deals" },
+      { name: "Pharmacies", href: "/pharmacies" },
+      { name: "Advertise", href: "/advertise" },
+      { name: "Contact Us", href: "/contact" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { name: "Help", href: "#" },
-      { name: "Login", href: "#" },
-      { name: "Sign Up", href: "#" },
-      { name: "Privacy", href: "#" },
+      { name: "Login", href: "/auth/login" },
+      { name: "Sign Up", href: "/auth/signup" },
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms and Conditions", href: "/terms" },
     ],
   },
 ];
@@ -41,8 +41,8 @@ const defaultSocialLinks = [
 ];
 
 const defaultLegalLinks = [
-  { name: "Terms and Conditions", href: "#" },
-  { name: "Privacy Policy", href: "#" },
+  { name: "Terms and Conditions", href: "/terms" },
+  { name: "Privacy Policy", href: "/privacy" },
 ];
 
 const Footer7 = ({
@@ -79,14 +79,14 @@ const Footer7 = ({
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((social, idx) => (
-                <a
+                <Link
                   key={idx}
-                  href={social.href}
+                  to={social.href}
                   aria-label={social.label}
                   className="text-muted-foreground hover:text-primary"
                 >
                   {social.icon}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -98,13 +98,13 @@ const Footer7 = ({
                 <h4 className="font-bold text-base mb-2">{section.title}</h4>
                 <div className="flex flex-wrap md:flex-col items-center md:items-center justify-center gap-2 text-sm text-muted-foreground">
                   {section.links.map((link, linkIdx) => (
-                    <a
+                    <Link
                       key={linkIdx}
-                      href={link.href}
+                      to={link.href}
                       className="hover:text-primary hover:font-semibold"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -117,13 +117,13 @@ const Footer7 = ({
           <p className="text-center md:text-left">{copyright}</p>
           <div className="flex gap-4">
             {legalLinks.map((link, idx) => (
-              <a
+              <Link
                 key={idx}
-                href={link.href}
+                to={link.href}
                 className="hover:text-primary hover:font-medium"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>

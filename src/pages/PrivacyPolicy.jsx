@@ -145,7 +145,7 @@ const privacySections = [
 export default function PrivacyPolicy() {
   return (
     <motion.div
-      className="relative min-h-screen flex flex-col items-center py-10 px-2"
+      className="relative min-h-screen flex flex-col items-center py-10 px-2 bg-white dark:bg-background text-foreground dark:text-foreground"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
@@ -157,14 +157,14 @@ export default function PrivacyPolicy() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
       >
-        <div className="bg-primary/10 rounded-full p-4 mb-4 shadow">
+        <div className="bg-primary/10 dark:bg-primary/20 rounded-full p-4 mb-4 shadow">
           <img
             src="/logo.svg"
             alt="Dawaback Logo"
             className="w-16 h-16 object-contain"
           />
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold text-primary dark:text-primary mb-2 text-center">
           Privacy Policy
         </h1>
         <p className="text-gray-600 dark:text-gray-300 text-center max-w-xl">
@@ -173,7 +173,7 @@ export default function PrivacyPolicy() {
           collect, how we use it, and your rights as a user of our pharmacy
           marketplace.
         </p>
-        <span className="mt-2 text-xs text-muted-foreground">
+        <span className="mt-2 text-xs text-muted-foreground dark:text-muted-foreground">
           Last updated: June 2024
         </span>
       </motion.div>
@@ -194,7 +194,7 @@ export default function PrivacyPolicy() {
         transition={{ delay: 0.5, duration: 0.6, ease: "easeOut" }}
       >
         <div className="text-center">
-          <h2 className="text-lg font-semibold text-primary mb-2">
+          <h2 className="text-lg font-semibold text-primary dark:text-primary mb-2">
             Need more help?
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-3">
@@ -202,7 +202,7 @@ export default function PrivacyPolicy() {
           </p>
           <a
             href="/contact"
-            className="inline-block bg-primary text-white px-6 py-2 rounded-lg shadow hover:bg-primary/90 transition"
+            className="inline-block bg-primary text-white dark:bg-primary dark:text-white px-6 py-2 rounded-lg shadow hover:bg-primary/90 dark:hover:bg-primary/80 transition"
           >
             Contact Support
           </a>

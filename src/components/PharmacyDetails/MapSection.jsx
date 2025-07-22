@@ -4,33 +4,41 @@ import { MapPin, ExternalLink, Navigation, Map } from "lucide-react";
 export default function MapSection({ location, address }) {
   if (!location?.coordinates || location.coordinates.length < 2) {
     return (
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-gray-100 dark:border-border p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-blue-600" />
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-lg flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-300" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Location</h2>
-            <p className="text-xs text-gray-500">Pharmacy location</p>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground">
+              Location
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Pharmacy location
+            </p>
           </div>
         </div>
 
-        <div className="w-full h-48 bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
+        <div className="w-full h-48 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-background dark:to-card border border-gray-200 dark:border-border rounded-xl flex items-center justify-center">
           <div className="text-center">
-            <MapPin className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-            <p className="text-gray-500 font-medium text-sm">
+            <MapPin className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+            <p className="text-gray-500 dark:text-gray-400 font-medium text-sm">
               No Map Available
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
               Location coordinates not provided
             </p>
           </div>
         </div>
 
         {address && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-xs text-gray-600 mb-1 font-medium">Address</p>
-            <p className="text-gray-900 text-sm">{address}</p>
+          <div className="mt-4 p-3 bg-gray-50 dark:bg-background rounded-lg border border-gray-200 dark:border-border">
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 font-medium">
+              Address
+            </p>
+            <p className="text-gray-900 dark:text-foreground text-sm">
+              {address}
+            </p>
           </div>
         )}
       </div>
@@ -41,16 +49,18 @@ export default function MapSection({ location, address }) {
   const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-white dark:bg-card rounded-2xl shadow-sm border border-gray-100 dark:border-border overflow-hidden">
       {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-blue-600" />
+          <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-lg flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-300" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Location</h2>
-            <p className="text-xs text-gray-500">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-foreground">
+              Location
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Pharmacy location and address
             </p>
           </div>
@@ -58,11 +68,15 @@ export default function MapSection({ location, address }) {
 
         {/* Address Display */}
         {address && (
-          <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-            <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-blue-800 rounded-lg border border-blue-100 dark:border-border">
+            <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-300 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs text-blue-700 font-medium mb-1">Address</p>
-              <p className="text-gray-900 text-sm leading-relaxed">{address}</p>
+              <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">
+                Address
+              </p>
+              <p className="text-gray-900 dark:text-foreground text-sm leading-relaxed">
+                {address}
+              </p>
             </div>
           </div>
         )}
@@ -80,6 +94,8 @@ export default function MapSection({ location, address }) {
             allowFullScreen
             src={`https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`}
           ></iframe>
+          {/* Dark mode overlay for map */}
+          <div className="absolute inset-0 pointer-events-none dark:bg-black/40"></div>
 
           {/* Map Overlay with Location Pin */}
           <div className="absolute inset-0 pointer-events-none">
@@ -100,7 +116,7 @@ export default function MapSection({ location, address }) {
             href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-2 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 rounded-lg transition-all duration-200 shadow-lg border border-gray-200 hover:shadow-xl"
+            className="flex items-center gap-2 px-3 py-2 bg-white/90 dark:bg-card/90 backdrop-blur-sm hover:bg-white dark:hover:bg-background text-gray-700 dark:text-foreground rounded-lg transition-all duration-200 shadow-lg border border-gray-200 dark:border-border hover:shadow-xl"
           >
             <ExternalLink className="w-3 h-3" />
             <span className="text-xs font-medium">View</span>
@@ -109,7 +125,7 @@ export default function MapSection({ location, address }) {
             href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-2 bg-blue-600/90 backdrop-blur-sm hover:bg-blue-600 text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="flex items-center gap-2 px-3 py-2 bg-blue-600/90 dark:bg-primary/90 backdrop-blur-sm hover:bg-blue-600 dark:hover:bg-primary text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             <Navigation className="w-3 h-3" />
             <span className="text-xs font-medium">Directions</span>
@@ -118,13 +134,15 @@ export default function MapSection({ location, address }) {
       </div>
 
       {/* Bottom Info Bar */}
-      <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">
+      <div className="px-6 py-3 bg-gray-50 dark:bg-background border-t border-gray-100 dark:border-border">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Map className="w-4 h-4 text-gray-500" />
-            <span className="text-xs text-gray-600">Interactive map</span>
+            <Map className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <span className="text-xs text-gray-600 dark:text-gray-400">
+              Interactive map
+            </span>
           </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 dark:text-gray-400">
             Click buttons for navigation
           </div>
         </div>

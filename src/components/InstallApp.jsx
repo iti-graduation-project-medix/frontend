@@ -13,10 +13,14 @@ const InstallApp = () => {
 
   useEffect(() => {
     // Check if app is already installed (standalone mode)
-    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
-    
+    setIsStandalone(
+      window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone === true
+    );
+
     // Detect iOS
-    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const iOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     setIsIOS(iOS);
 
     const handleBeforeInstallPrompt = (e) => {
@@ -32,7 +36,10 @@ const InstallApp = () => {
     window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt
+      );
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
@@ -64,17 +71,17 @@ const InstallApp = () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Dawaback App',
-          text: 'Install Dawaback - Trusted Pharmacy Platform',
+          title: "Dawaback App",
+          text: "Install Dawaback - Trusted Pharmacy Platform",
           url: window.location.href,
         });
       } catch (error) {
-        console.log('Error sharing:', error);
+        console.log("Error sharing:", error);
       }
     } else {
       // Fallback: copy URL to clipboard
       navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard! Share this link to install the app.');
+      alert("Link copied to clipboard! Share this link to install the app.");
     }
   };
 
@@ -92,7 +99,7 @@ const InstallApp = () => {
 
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={handleInstallClick}
           className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 font-semibold animate-pulse cursor-pointer"
@@ -109,7 +116,7 @@ const InstallApp = () => {
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                Install Dawaback App {isIOS ? '(iOS)' : '(Android)'}
+                Install Dawaback App {isIOS ? "(iOS)" : "(Android)"}
               </h3>
               <button
                 onClick={() => setShowIOSInstructions(false)}
@@ -118,33 +125,43 @@ const InstallApp = () => {
                 <FiX className="w-5 h-5" />
               </button>
             </div>
-            
+
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
                 <div className="bg-primary rounded-full px-2 py-.5">
                   <span className="text-white font-bold text-sm">1</span>
                 </div>
-                <p className="text-gray-700">Tap the <strong>Share</strong> button in your browser</p>
+                <p className="text-gray-700">
+                  Tap the <strong>Share</strong> button in your browser
+                </p>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="bg-primary rounded-full px-2 py-.5">
                   <span className="text-white font-bold text-sm">2</span>
                 </div>
                 <p className="text-gray-700">
                   {isIOS ? (
-                    <>Scroll down and tap <strong>"Add to Home Screen"</strong></>
+                    <>
+                      Scroll down and tap <strong>"Add to Home Screen"</strong>
+                    </>
                   ) : (
-                    <>Tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong></>
+                    <>
+                      Tap <strong>"Install App"</strong> or{" "}
+                      <strong>"Add to Home Screen"</strong>
+                    </>
                   )}
                 </p>
               </div>
-              
+
               <div className="flex items-start space-x-3">
                 <div className="bg-primary rounded-full px-2 py-.5">
                   <span className="text-white font-bold text-sm">3</span>
                 </div>
-                <p className="text-gray-700">Tap <strong>"Add"</strong> or <strong>"Install"</strong> to install the app</p>
+                <p className="text-gray-700">
+                  Tap <strong>"Add"</strong> or <strong>"Install"</strong> to
+                  install the app
+                </p>
               </div>
             </div>
 

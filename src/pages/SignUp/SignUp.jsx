@@ -9,7 +9,7 @@ export default function SignUp() {
           <h1 className="text-3xl text-primary md:text-4xl font-bold  mb-3">
             Join Our Medical Community
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Create your secure account to access comprehensive healthcare
             services and connect with medical professionals
           </p>

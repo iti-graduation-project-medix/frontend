@@ -350,14 +350,14 @@ export default function Navbar() {
         >
           <img
             src="/logo.svg"
-            className="h-10 sm:h-12 md:h-14 lg:h-16"
+            className="h-8 sm:h-10  lg:h-14 xl:h-16 transition-all duration-200"
             alt="Dawaback Logo"
           />
-          <div className="flex flex-col mb-3">
-            <span className="font-bold text-2xl sm:text-3xl md:text-4xl whitespace-nowrap text-primary dark:text-white">
+          <div className="flex flex-col mb-2 md:mb-3">
+            <span className="font-bold text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl whitespace-nowrap text-primary dark:text-white transition-all duration-200">
               Dawaback
             </span>
-            <p className="text-xs sm:text-sm text-zinc-700 ms-.5 leading-0 mt-1 dark:text-gray-400">
+            <p className="text-[10px] sm:text-xs md:text-xs lg:text-sm text-zinc-700 ms-.5 leading-0 mt-1 dark:text-gray-400 transition-all duration-200">
               Before it expires, trade it with desire
             </p>
           </div>
@@ -369,57 +369,54 @@ export default function Navbar() {
           </div>
           {isAuthenticated ? (
             <>
+              <div></div>
               <Popover
                 open={isNotificationPopoverOpen}
                 onOpenChange={setIsNotificationPopoverOpen}
               >
                 <PopoverTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="outline"
+                    size="icon"
                     className="mr-2 hidden md:inline-flex relative"
-                    style={{
-                      width: "clamp(36px, 8vw, 46px)",
-                      height: "clamp(36px, 8vw, 46px)",
-                    }}
                   >
-                    <FiBell
-                      className="text-zinc-600"
-                      style={{
-                        width: "clamp(24px, 6vw, 30px)",
-                        height: "clamp(24px, 6vw, 30px)",
-                      }}
-                    />
+                    <FiBell className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
-                      <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[20px] h-[20px] flex items-center justify-center">
+                      <Badge className="absolute bottom-6 left-7 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center z-50">
                         {unreadDrugAlerts}
                       </Badge>
                     )}
                     <span className="sr-only">Notifications</span>
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent align="end" className="w-80 p-0">
-                  <div className="p-4 border-b font-semibold text-base">
+                <PopoverContent
+                  align="end"
+                  className="w-80 p-0 bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg"
+                >
+                  <div className="p-4 border-b border-gray-100 dark:border-border font-semibold text-base text-gray-900 dark:text-foreground bg-white dark:bg-card">
                     Drug Alert Notifications
                   </div>
                   {drugAlertNotifications.length > 0 ? (
-                    <ul className="divide-y max-h-96 overflow-y-auto">
+                    <ul className="divide-y divide-gray-100 dark:divide-border max-h-96 overflow-y-auto bg-white dark:bg-card">
                       {drugAlertNotifications.map((notification) => (
                         <li
                           key={notification.id}
-                          className={`p-4 hover:bg-muted cursor-pointer text-sm ${
-                            !notification.isRead ? "bg-blue-50" : ""
-                          }`}
+                          className={`p-4 cursor-pointer text-sm transition-colors ${
+                            !notification.isRead
+                              ? "bg-blue-50 dark:bg-blue-900/30"
+                              : "bg-white dark:bg-card"
+                          } hover:bg-muted dark:hover:bg-muted/20`}
                           onClick={() => handleNotificationClick(notification)}
                         >
                           <div className="flex justify-between items-start">
                             <div>
-                              <span className="font-medium">
+                              <span className="font-medium text-gray-900 dark:text-foreground">
                                 {notification.title}
                               </span>
-                              <p className="text-gray-600 mt-1">
+                              <p className="text-gray-600 dark:text-gray-300 mt-1">
                                 {notification.message}
                               </p>
-                              <p className="text-xs text-gray-400 mt-1">
+                              <p className="text-xs text-gray-400 dark:text-gray-400 mt-1">
                                 {new Date(
                                   notification.createdAt
                                 ).toLocaleDateString()}
@@ -433,7 +430,7 @@ export default function Navbar() {
                       ))}
                     </ul>
                   ) : (
-                    <div className="p-4 text-center text-gray-500">
+                    <div className="p-4 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-card">
                       No drug alert notifications
                     </div>
                   )}
@@ -445,21 +442,8 @@ export default function Navbar() {
                 to="/favorites"
                 className="relative font-bold mr-4 hidden md:inline-flex"
               >
-                <Button
-                  variant="ghost"
-                  className=""
-                  style={{
-                    width: "clamp(36px, 8vw, 46px)",
-                    height: "clamp(36px, 8vw, 46px)",
-                  }}
-                >
-                  <Heart
-                    className="text-zinc-600"
-                    style={{
-                      width: "clamp(24px, 6vw, 30px)",
-                      height: "clamp(24px, 6vw, 30px)",
-                    }}
-                  />
+                <Button variant="outline" size="icon" className="relative">
+                  <Heart className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
                   <span className="sr-only">Favorites</span>
                 </Button>
                 {favorites.deals.length + favorites.pharmacies.length > 0 && (
@@ -751,7 +735,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/favorites"
                                 ? "text-white w-5 h-5"
-                                : "w-5 h-5 text-zinc-600"
+                                : "w-5 h-5 text-zinc-600 dark:text-white"
                             }
                           />
                           {favorites.deals.length +
@@ -780,11 +764,11 @@ export default function Navbar() {
                             className={
                               location.pathname === "/notifications"
                                 ? "text-white w-5 h-5"
-                                : "w-5 h-5 text-zinc-600"
+                                : "w-5 h-5 text-zinc-600 dark:text-white"
                             }
                           />
                           {unreadDrugAlerts > 0 && (
-                            <Badge className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
+                            <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
                               {unreadDrugAlerts}
                             </Badge>
                           )}

@@ -357,17 +357,17 @@ export default function AvailableDeals() {
   }, [deals]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background dark:bg-background">
       <CornerAd position="allDeals" />
 
-      <section className="py-5 px-4 text-foreground">
+      <section className="py-5 px-4 text-foreground dark:text-foreground">
         <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold">
             {showMyDeals ? "My Medicine Deals" : "Available Medicine Deals"}
           </h1>
           <Button
             onClick={() => navigate("/my-deals")}
-            className="text-xl text-white bg-primary"
+            className="text-xl text-white bg-primary dark:bg-primary"
           >
             My Deals
           </Button>
@@ -377,15 +377,15 @@ export default function AvailableDeals() {
       <section className="px-4">
         <div className="max-w-7xl mx-auto">
           {/* Enhanced Filters Card */}
-          <Card className="p-6 mb-8">
+          <Card className="p-6 mb-8 bg-white dark:bg-card border border-gray-200 dark:border-border">
             <div className="space-y-6">
               {/* Header */}
               <div className="flex items-center justify-between flex-wrap gap-2 w-full sm:w-auto">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                     Filters
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Refine your search results
                   </p>
                 </div>
@@ -394,7 +394,7 @@ export default function AvailableDeals() {
                     onClick={handleToggleMyDeals}
                     variant={showMyDeals ? "default" : "outline"}
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <User2 className="h-4 w-4" />
                     Show My Deals
@@ -403,12 +403,12 @@ export default function AvailableDeals() {
                     onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                     variant="outline"
                     size="sm"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <Filter className="h-4 w-4" />
                     Advanced
                     {activeFilters.length > 0 && (
-                      <Badge className="bg-zinc-600 text-white ml-1">
+                      <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white ml-1">
                         {activeFilters.length}
                       </Badge>
                     )}
@@ -422,7 +422,7 @@ export default function AvailableDeals() {
                     variant="outline"
                     size="sm"
                     onClick={handleClearFilters}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <X className="h-4 w-4" />
                     Clear All
@@ -435,7 +435,7 @@ export default function AvailableDeals() {
                     className={`flex items-center gap-2 ${
                       useLocationSort
                         ? "bg-primary text-white border-primary"
-                        : "bg-white text-primary border-primary/30 hover:bg-primary/10"
+                        : "bg-white dark:bg-background text-primary border-primary/30 dark:border-primary/40 hover:bg-primary/10 dark:hover:bg-primary/10"
                     }`}
                     title={
                       useLocationSort
@@ -455,7 +455,9 @@ export default function AvailableDeals() {
               </div>
               {/* Location error message */}
               {locationError && (
-                <div className="text-red-500 text-sm mb-2">{locationError}</div>
+                <div className="text-red-500 dark:text-red-400 text-sm mb-2">
+                  {locationError}
+                </div>
               )}
 
               {/* Basic Filters */}
@@ -463,21 +465,21 @@ export default function AvailableDeals() {
                 <div className="flex flex-col gap-3 md:flex-row md:gap-4">
                   <div className="flex-1 min-w-[180px]">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                       <Input
                         placeholder="Search by medicine name..."
                         value={searchInput}
                         onChange={handleSearchInput}
-                        className="pl-10"
+                        className="pl-10 bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                       />
                     </div>
                   </div>
                   <div className="w-full md:w-44">
                     <Select value={type} onValueChange={setType}>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Types" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         {availableTypes.map((t) => (
                           <SelectItem key={t} value={t}>
                             {t}
@@ -488,10 +490,10 @@ export default function AvailableDeals() {
                   </div>
                   <div className="w-full md:w-44">
                     <Select value={location} onValueChange={setLocation}>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Locations" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         {availableLocations.map((l) => (
                           <SelectItem key={l} value={l}>
                             {l}
@@ -502,10 +504,10 @@ export default function AvailableDeals() {
                   </div>
                   <div className="w-full md:w-44">
                     <Select value={dosageForm} onValueChange={setDosageForm}>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Forms" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         <SelectItem value="tablet">Tablet</SelectItem>
                         <SelectItem value="syrup">Syrup</SelectItem>
                         <SelectItem value="injection">Injection</SelectItem>
@@ -529,10 +531,10 @@ export default function AvailableDeals() {
                         }
                       }}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         {sortOptions.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
@@ -546,12 +548,12 @@ export default function AvailableDeals() {
 
               {/* Active Filter Chips */}
               {activeFilters.length > 0 && (
-                <div className="border-t pt-4">
+                <div className="border-t border-gray-200 dark:border-border pt-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Active Filters:
                     </span>
-                    <Badge className="bg-zinc-600 text-white text-xs">
+                    <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white text-xs">
                       {activeFilters.length}
                     </Badge>
                   </div>
@@ -559,7 +561,7 @@ export default function AvailableDeals() {
                     {activeFilters.map((filter) => (
                       <Badge
                         key={filter.key}
-                        className="flex items-center gap-1 cursor-pointer bg-zinc-600 text-white hover:bg-zinc-600/70 transition-colors"
+                        className="flex items-center gap-1 cursor-pointer bg-zinc-600 dark:bg-zinc-800 text-white hover:bg-zinc-600/70 dark:hover:bg-zinc-700 transition-colors"
                         onClick={filter.onRemove}
                       >
                         {filter.label}
@@ -572,19 +574,19 @@ export default function AvailableDeals() {
 
               {/* Advanced Filters */}
               {showAdvancedFilters && (
-                <div className="border-t pt-6">
+                <div className="border-t border-gray-200 dark:border-border pt-6">
                   <div className="mb-4">
-                    <h4 className="text-md font-semibold text-gray-900 mb-2">
+                    <h4 className="text-md font-semibold text-gray-900 dark:text-foreground mb-2">
                       Advanced Filters
                     </h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Set price range and expiry date filters
                     </p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Price Range */}
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium text-gray-700">
+                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Price Range (EGP)
                       </Label>
                       <div className="flex gap-3">
@@ -599,7 +601,7 @@ export default function AvailableDeals() {
                                 min: e.target.value,
                               }))
                             }
-                            className="text-sm"
+                            className="text-sm bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                           />
                         </div>
                         <div className="flex-1">
@@ -613,7 +615,7 @@ export default function AvailableDeals() {
                                 max: e.target.value,
                               }))
                             }
-                            className="text-sm"
+                            className="text-sm bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                           />
                         </div>
                       </div>
@@ -621,7 +623,7 @@ export default function AvailableDeals() {
 
                     {/* Date Range */}
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium text-gray-700">
+                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Expiry Date Range
                       </Label>
                       <div className="flex gap-3">
@@ -629,14 +631,14 @@ export default function AvailableDeals() {
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
-                              className="flex-1 justify-start text-left font-normal text-sm"
+                              className="flex-1 justify-start text-left font-normal text-sm border-gray-200 dark:border-border bg-white dark:bg-background text-gray-900 dark:text-foreground"
                             >
                               {dateRange.from
                                 ? format(dateRange.from, "MMM dd, yyyy")
                                 : "From date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 z-[9999]">
+                          <PopoverContent className="w-auto p-0 z-[9999] bg-white dark:bg-background text-gray-900 dark:text-foreground">
                             <Calendar
                               mode="single"
                               selected={dateRange.from}
@@ -654,14 +656,14 @@ export default function AvailableDeals() {
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
-                              className="flex-1 justify-start text-left font-normal text-sm"
+                              className="flex-1 justify-start text-left font-normal text-sm border-gray-200 dark:border-border bg-white dark:bg-background text-gray-900 dark:text-foreground"
                             >
                               {dateRange.to
                                 ? format(dateRange.to, "MMM dd, yyyy")
                                 : "To date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0 z-[9999]">
+                          <PopoverContent className="w-auto p-0 z-[9999] bg-white dark:bg-background text-gray-900 dark:text-foreground">
                             <Calendar
                               mode="single"
                               selected={dateRange.to}
@@ -682,13 +684,15 @@ export default function AvailableDeals() {
 
           {/* Loading and Error States */}
           {error && (
-            <div className="text-center py-8 text-lg text-red-500">{error}</div>
+            <div className="text-center py-8 text-lg text-red-500 dark:text-red-400">
+              {error}
+            </div>
           )}
 
           {/* Results Summary */}
           {!isLoading && !error && (
             <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground dark:text-gray-400">
                 Showing {deals?.length ? (currentPage - 1) * 9 + 1 : 0}-
                 {Math.min(currentPage * 9, totalDeals || 0)} of{" "}
                 {totalDeals || 0} deals (Page {currentPage} of {totalPages || 1}
@@ -707,7 +711,7 @@ export default function AvailableDeals() {
                   <MedicineDealCard key={deal.id} deal={deal} />
                 ))}
             {!isLoading && filteredDeals.length === 0 && (
-              <div className="col-span-full text-center text-muted-foreground py-8 flex flex-col items-center">
+              <div className="col-span-full text-center text-muted-foreground dark:text-gray-400 py-8 flex flex-col items-center">
                 <svg
                   width="80"
                   height="80"
@@ -724,7 +728,6 @@ export default function AvailableDeals() {
                     rx="6"
                     fill="#f3f4f6"
                     stroke="#888"
-                    strokeWidth="2"
                   />
                   <rect
                     x="22"
@@ -750,14 +753,7 @@ export default function AvailableDeals() {
                     rx="2"
                     fill="#d1d5db"
                   />
-                  <circle
-                    cx="58"
-                    cy="58"
-                    r="12"
-                    fill="#f3f4f6"
-                    stroke="#888"
-                    strokeWidth="2"
-                  />
+                  <circle cx="58" cy="58" r="12" fill="#f3f4f6" stroke="#888" />
                   <line
                     x1="66"
                     y1="66"
@@ -779,7 +775,7 @@ export default function AvailableDeals() {
           {/* Pagination Controls */}
           {!isLoading && !error && (totalPages || 1) > 1 && (
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground dark:text-gray-400">
                 Page {currentPage} of {totalPages || 1}
               </div>
               <div className="flex items-center gap-2">
@@ -790,6 +786,7 @@ export default function AvailableDeals() {
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
+                  className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
@@ -798,7 +795,7 @@ export default function AvailableDeals() {
                   {getPageNumbers().map((page, index) => (
                     <div key={index}>
                       {page === "..." ? (
-                        <span className="px-2 py-1 text-muted-foreground">
+                        <span className="px-2 py-1 text-muted-foreground dark:text-gray-400">
                           ...
                         </span>
                       ) : (
@@ -806,7 +803,11 @@ export default function AvailableDeals() {
                           variant={currentPage === page ? "default" : "outline"}
                           size="sm"
                           onClick={() => setCurrentPage(page)}
-                          className="w-8 h-8 p-0"
+                          className={`w-8 h-8 p-0 ${
+                            currentPage === page
+                              ? "bg-primary text-white border-primary"
+                              : "bg-white dark:bg-background text-primary border-gray-200 dark:border-border hover:bg-primary/10 dark:hover:bg-primary/10"
+                          }`}
                         >
                           {page}
                         </Button>
@@ -823,6 +824,7 @@ export default function AvailableDeals() {
                     )
                   }
                   disabled={currentPage === (totalPages || 1)}
+                  className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                 >
                   Next
                   <ChevronRight className="h-4 w-4" />

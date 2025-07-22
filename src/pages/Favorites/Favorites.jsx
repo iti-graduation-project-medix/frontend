@@ -87,28 +87,32 @@ export default function Favorites() {
   // Check if user is authenticated
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-600 mb-2">
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-background text-gray-900 dark:text-foreground">
+        <div className="text-center bg-white dark:bg-card rounded-xl shadow-lg p-8 border border-gray-100 dark:border-border">
+          <Heart className="w-16 h-16 text-gray-300 dark:text-gray-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-600 dark:text-gray-200 mb-2">
             Authentication Required
           </h2>
-          <p className="text-gray-500">Please log in to view your favorites.</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            Please log in to view your favorites.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <section className="py-5 px-4 text-foreground">
+    <div className="min-h-screen  dark:bg-background text-gray-900 dark:text-foreground">
+      <section className="py-5 px-4 text-foreground dark:text-foreground">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-3xl font-bold">My Favorites</h1>
+            <h1 className="text-3xl font-bold dark:text-foreground">
+              My Favorites
+            </h1>
             <button
               onClick={() => refreshFavorites()}
               disabled={isLoading}
-              className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-100 dark:bg-card hover:bg-gray-200 dark:hover:bg-muted/10 rounded-lg transition-colors disabled:opacity-50 border border-gray-200 dark:border-border"
             >
               <RefreshCw
                 className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
@@ -116,7 +120,7 @@ export default function Favorites() {
               Refresh
             </button>
           </div>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Manage your favorite deals and pharmacies
           </p>
         </div>
@@ -134,14 +138,17 @@ export default function Favorites() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <TabsList className="grid w-full grid-cols-2 mb-8">
-                <TabsTrigger value="deals" className="flex items-center gap-2">
+              <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 dark:bg-card border border-gray-200 dark:border-border rounded-xl overflow-hidden">
+                <TabsTrigger
+                  value="deals"
+                  className="flex items-center gap-2 dark:text-foreground"
+                >
                   <Package className="w-4 h-4" />
                   Deals ({favorites.deals.length})
                 </TabsTrigger>
                 <TabsTrigger
                   value="pharmacies"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 dark:text-foreground"
                 >
                   <Building2 className="w-4 h-4" />
                   Pharmacies ({favorites.pharmacies.length})
@@ -158,7 +165,7 @@ export default function Favorites() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="flex flex-col items-center justify-center py-12 space-y-6"
+                    className="flex flex-col items-center justify-center py-12 space-y-6 bg-white dark:bg-background rounded-xl shadow border border-gray-100 dark:border-border"
                   >
                     {/* Animated Medical Icon */}
                     <motion.div
@@ -178,7 +185,7 @@ export default function Favorites() {
 
                     {/* Loading Text */}
                     <motion.p
-                      className="text-center text-base md:text-lg font-medium"
+                      className="text-center text-base md:text-lg font-medium dark:text-foreground"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
@@ -224,7 +231,7 @@ export default function Favorites() {
                         <button
                           onClick={loadMoreDeals}
                           disabled={isLoadingMore}
-                          className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow"
                         >
                           {isLoadingMore ? (
                             <>
@@ -260,18 +267,18 @@ export default function Favorites() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <Card className="p-8 text-center">
-                      <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    <Card className="p-8 text-center bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg">
+                      <Package className="w-16 h-16 text-gray-300 dark:text-gray-500 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-200 mb-2">
                         No Favorite Deals
                       </h3>
-                      <p className="text-gray-500 mb-4">
+                      <p className="text-gray-500 dark:text-gray-400 mb-4">
                         You haven't added any deals to your favorites yet.
                       </p>
                       <div>
                         <button
                           onClick={() => navigate("/deals")}
-                          className="bg-primary text-white px-4 py-2  rounded-lg hover:bg-primary/90 transition-colors"
+                          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow"
                         >
                           Browse Deals
                         </button>
@@ -291,7 +298,7 @@ export default function Favorites() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="flex flex-col items-center justify-center py-12 space-y-6"
+                    className="flex flex-col items-center justify-center py-12 space-y-6 bg-white dark:bg-background rounded-xl shadow border border-gray-100 dark:border-border"
                   >
                     {/* Animated Medical Icon */}
                     <motion.div
@@ -309,7 +316,7 @@ export default function Favorites() {
                       />
                     </motion.div>
                     <motion.p
-                      className="text-center text-base md:text-lg font-medium"
+                      className="text-center text-base md:text-lg font-medium dark:text-foreground"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
@@ -346,18 +353,18 @@ export default function Favorites() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                   >
-                    <Card className="p-8 text-center">
-                      <Building2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    <Card className="p-8 text-center bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg">
+                      <Building2 className="w-16 h-16 text-gray-300 dark:text-gray-500 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-200 mb-2">
                         No Favorite Pharmacies
                       </h3>
-                      <p className="text-gray-500 mb-4">
+                      <p className="text-gray-500 dark:text-gray-400 mb-4">
                         You haven't added any pharmacies to your favorites yet.
                       </p>
                       <div>
                         <button
                           onClick={() => navigate("/pharmacies")}
-                          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors shadow"
                         >
                           Browse Pharmacies for Sale
                         </button>

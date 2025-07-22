@@ -21,7 +21,9 @@ const advertiseSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  content: Yup.string().required("Message is required").max(2500, "Message maximum length is 2500 characters"),
+  content: Yup.string()
+    .required("Message is required")
+    .max(2500, "Message maximum length is 2500 characters"),
 });
 
 export default function Advertise() {
@@ -65,14 +67,17 @@ export default function Advertise() {
     onSubmit: async (values, { resetForm }) => {
       setIsSubmitting(true);
       setError(null);
-      
+
       try {
         const res = await requestAdvertise(values);
         console.log("Form submitted:", res);
-        
+
         // Use the specialized advertise success handler
-        const successResult = ErrorHandler.handleAdvertiseSuccess(res, "submission");
-        
+        const successResult = ErrorHandler.handleAdvertiseSuccess(
+          res,
+          "submission"
+        );
+
         // Save to localStorage with response data if available
         localStorage.setItem(
           "advertise_request",
@@ -83,23 +88,28 @@ export default function Advertise() {
             content: values.content,
             submittedAt: new Date().toISOString(),
             requestId: res.data?.id || res.id || null,
-            status: res.data?.status || res.status || "submitted"
+            status: res.data?.status || res.status || "submitted",
           })
         );
-        
+
         resetForm();
       } catch (error) {
         console.error("Advertise error:", error);
-        
+
         // Use the specialized advertise error handler
-        const errorResult = ErrorHandler.handleAdvertiseError(error, "submission");
+        const errorResult = ErrorHandler.handleAdvertiseError(
+          error,
+          "submission"
+        );
         setError(errorResult.message);
-        
+
         // Don't show toast here as it's handled by the API
         // But we can add additional context-specific handling
         if (errorResult.type === "warning") {
           // For duplicate requests, provide additional guidance
-          console.log("Duplicate request detected - user should contact support");
+          console.log(
+            "Duplicate request detected - user should contact support"
+          );
         } else if (errorResult.type === "info") {
           // For service issues, suggest alternative contact methods
           console.log("Service issue detected - suggest alternative contact");
@@ -112,7 +122,7 @@ export default function Advertise() {
 
   return (
     <motion.div
-      className="min-h-screen font-sans"
+      className="min-h-screen font-sans  dark:bg-background text-foreground dark:text-foreground"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -121,13 +131,14 @@ export default function Advertise() {
       <section className="py-16 px-4 text-center">
         <div className="max-w-3xl mx-auto">
           <div className="flex justify-center mb-4">
-            <h1 className="text-5xl font-extrabold mb-2 text-primary">
+            <h1 className="text-5xl font-extrabold mb-2 text-primary dark:text-primary">
               Advertise with Dawaback
             </h1>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-md text-muted-foreground dark:text-muted-foreground">
             Reach health-conscious customers and grow your pharmaceutical or
-            healthcare brand with Dawaback, your trusted online medical pharmacy.
+            healthcare brand with Dawaback, your trusted online medical
+            pharmacy.
           </p>
         </div>
       </section>
@@ -141,57 +152,114 @@ export default function Advertise() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           {/* Form Container */}
-          <div className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative flex-1 p-8">
+          <div className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-background dark:via-card dark:to-background text-card-foreground dark:text-card-foreground relative flex-1 p-8">
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10" style={{ background: "var(--primary)" }}></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10" style={{ background: "var(--primary)" }}></div>
-            <h2 className="text-3xl font-bold mb-1 text-center">Get In Touch</h2>
-            <p className="text-sm text-muted-foreground mb-6 text-center">
+            <div
+              className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10 bg-blue-100 dark:bg-primary"
+              style={{ background: "var(--primary)" }}
+            ></div>
+            <div
+              className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10 bg-indigo-100 dark:bg-primary"
+              style={{ background: "var(--primary)" }}
+            ></div>
+            <h2 className="text-3xl font-bold mb-1 text-center text-primary dark:text-primary">
+              Get In Touch
+            </h2>
+            <p className="text-sm text-muted-foreground dark:text-muted-foreground mb-6 text-center">
               Fill out the form below to learn more about our advertising
               opportunities.
             </p>
-            
+
             {/* Error Display */}
             <ErrorDisplay error={error} />
-            
+
             {/* Alternative Contact Methods */}
             {showAlternativeContact && (
               <div className="mb-6 mt-3 p-6 bg-primary/30 border border-primary rounded-lg">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-primary">Alternative Contact Methods</h3>
+                  <h3 className="text-lg font-semibold text-primary">
+                    Alternative Contact Methods
+                  </h3>
                   <button
                     type="button"
                     onClick={() => setShowAlternativeContact(false)}
                     className="text-primary hover:text-primary-hover transition-colors p-1"
                   >
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
                 <div className="space-y-3 text-sm text-primary">
                   <div className="flex items-center space-x-3">
-                    <svg className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="h-4 w-4 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
-                    <span><strong>Email:</strong> advertise@dawaback.com</span>
+                    <span>
+                      <strong>Email:</strong> advertise@dawaback.com
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <svg className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    <svg
+                      className="h-4 w-4 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                      />
                     </svg>
-                    <span><strong>Phone:</strong> +20 (100) 270-8887</span>
+                    <span>
+                      <strong>Phone:</strong> +20 (100) 270-8887
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <svg className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="h-4 w-4 text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
-                    <span><strong>Business Hours:</strong> Monday - Friday, 9:00 AM - 6:00 PM</span>
+                    <span>
+                      <strong>Business Hours:</strong> Monday - Friday, 9:00 AM
+                      - 6:00 PM
+                    </span>
                   </div>
                 </div>
               </div>
             )}
-            
+
             {/* Error Recovery Actions */}
             {error && (
               <div className="my-3 flex flex-wrap flex-end gap-4">
@@ -212,7 +280,7 @@ export default function Advertise() {
                 </button>
               </div>
             )}
-            
+
             <form className="space-y-8" onSubmit={formik.handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -222,8 +290,18 @@ export default function Advertise() {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                       {/* User icon */}
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                        />
                       </svg>
                     </span>
                     <Input
@@ -232,7 +310,9 @@ export default function Advertise() {
                       name="fullName"
                       className={cn(
                         "pl-10 h-9 shadow-xs",
-                        formik.touched.fullName && formik.errors.fullName && "border-red-500"
+                        formik.touched.fullName &&
+                          formik.errors.fullName &&
+                          "border-red-500"
                       )}
                       placeholder="Enter your full name"
                       onChange={handleInputChange}
@@ -240,7 +320,13 @@ export default function Advertise() {
                       value={formik.values.fullName}
                     />
                   </div>
-                  <ErrorMessage error={formik.touched.fullName && formik.errors.fullName ? formik.errors.fullName : null} />
+                  <ErrorMessage
+                    error={
+                      formik.touched.fullName && formik.errors.fullName
+                        ? formik.errors.fullName
+                        : null
+                    }
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="font-semibold">
@@ -249,8 +335,18 @@ export default function Advertise() {
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                       {/* Phone icon */}
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
                       </svg>
                     </span>
                     <Input
@@ -259,7 +355,9 @@ export default function Advertise() {
                       name="phone"
                       className={cn(
                         "pl-10 h-9 shadow-xs",
-                        formik.touched.phone && formik.errors.phone && "border-red-500"
+                        formik.touched.phone &&
+                          formik.errors.phone &&
+                          "border-red-500"
                       )}
                       placeholder="Enter your phone number"
                       onChange={handleInputChange}
@@ -267,7 +365,13 @@ export default function Advertise() {
                       value={formik.values.phone}
                     />
                   </div>
-                  <ErrorMessage error={formik.touched.phone && formik.errors.phone ? formik.errors.phone : null} />
+                  <ErrorMessage
+                    error={
+                      formik.touched.phone && formik.errors.phone
+                        ? formik.errors.phone
+                        : null
+                    }
+                  />
                 </div>
               </div>
               <div className="space-y-2">
@@ -277,8 +381,18 @@ export default function Advertise() {
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                     {/* Envelope icon */}
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
                     </svg>
                   </span>
                   <Input
@@ -287,7 +401,9 @@ export default function Advertise() {
                     name="email"
                     className={cn(
                       "pl-10 h-9 shadow-xs",
-                      formik.touched.email && formik.errors.email && "border-red-500"
+                      formik.touched.email &&
+                        formik.errors.email &&
+                        "border-red-500"
                     )}
                     placeholder="Enter your email address"
                     onChange={handleInputChange}
@@ -295,17 +411,34 @@ export default function Advertise() {
                     value={formik.values.email}
                   />
                 </div>
-                <ErrorMessage error={formik.touched.email && formik.errors.email ? formik.errors.email : null} />
+                <ErrorMessage
+                  error={
+                    formik.touched.email && formik.errors.email
+                      ? formik.errors.email
+                      : null
+                  }
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="content" className="font-semibold">
-                  Message or Product/Service Details <span className="text-red-500">*</span>
+                  Message or Product/Service Details{" "}
+                  <span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
                   <span className="absolute left-3 mt-2.5 text-gray-400">
                     {/* Info icon */}
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                      />
                     </svg>
                   </span>
                   <textarea
@@ -314,7 +447,9 @@ export default function Advertise() {
                     rows="8"
                     className={cn(
                       "bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 pl-10 h-32 shadow-xs",
-                      formik.touched.content && formik.errors.content && "border-red-500"
+                      formik.touched.content &&
+                        formik.errors.content &&
+                        "border-red-500"
                     )}
                     placeholder="Tell us more about your advertising needs..."
                     onChange={handleInputChange}
@@ -322,7 +457,13 @@ export default function Advertise() {
                     value={formik.values.content}
                   ></textarea>
                 </div>
-                <ErrorMessage error={formik.touched.content && formik.errors.content ? formik.errors.content : null} />
+                <ErrorMessage
+                  error={
+                    formik.touched.content && formik.errors.content
+                      ? formik.errors.content
+                      : null
+                  }
+                />
               </div>
               <button
                 type="submit"
@@ -361,14 +502,22 @@ export default function Advertise() {
           </div>
 
           {/* Information Container */}
-          <div className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative flex-1 p-8">
+          <div className="overflow-hidden shadow-2xl border-0 rounded-3xl bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-background dark:via-card dark:to-background text-card-foreground dark:text-card-foreground relative flex-1 p-8">
             {/* Decorative Elements */}
-            <div className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10" style={{ background: "var(--primary)" }}></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10" style={{ background: "var(--primary)" }}></div>
-            <h2 className="text-3xl font-bold mb-6 text-center">Why Advertise with Us?</h2>
+            <div
+              className="absolute top-0 right-0 w-32 h-32 rounded-full -mr-16 -mt-16 opacity-10 bg-blue-100 dark:bg-primary"
+              style={{ background: "var(--primary)" }}
+            ></div>
+            <div
+              className="absolute bottom-0 left-0 w-40 h-40 rounded-full -ml-20 -mb-20 opacity-10 bg-indigo-100 dark:bg-primary"
+              style={{ background: "var(--primary)" }}
+            ></div>
+            <h2 className="text-3xl font-bold mb-6 text-center text-primary dark:text-primary">
+              Why Advertise with Us?
+            </h2>
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
                   <svg
                     className="w-6 h-6 text-primary"
                     fill="none"
@@ -384,16 +533,18 @@ export default function Advertise() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Targeted Audience</h3>
-                  <p className="text-gray-600">
-                    Reach health-conscious customers actively seeking pharmaceutical
-                    and healthcare solutions.
+                  <h3 className="text-lg font-semibold mb-2">
+                    Targeted Audience
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Reach health-conscious customers actively seeking
+                    pharmaceutical and healthcare solutions.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
                   <svg
                     className="w-6 h-6 text-primary"
                     fill="none"
@@ -409,8 +560,10 @@ export default function Advertise() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">High Engagement</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2">
+                    High Engagement
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
                     Our platform sees high engagement rates with users actively
                     browsing and purchasing healthcare products.
                   </p>
@@ -418,7 +571,7 @@ export default function Advertise() {
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
                   <svg
                     className="w-6 h-6 text-primary"
                     fill="none"
@@ -434,16 +587,18 @@ export default function Advertise() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Trusted Platform</h3>
-                  <p className="text-gray-600">
-                    Partner with a trusted healthcare platform that customers rely
-                    on for their medical needs.
+                  <h3 className="text-lg font-semibold mb-2">
+                    Trusted Platform
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Partner with a trusted healthcare platform that customers
+                    rely on for their medical needs.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                <div className="flex-shrink-0 w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
                   <svg
                     className="w-6 h-6 text-primary"
                     fill="none"
@@ -459,8 +614,10 @@ export default function Advertise() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Competitive Pricing</h3>
-                  <p className="text-gray-600">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Competitive Pricing
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300">
                     Get competitive advertising rates with flexible packages to
                     suit your budget and goals.
                   </p>

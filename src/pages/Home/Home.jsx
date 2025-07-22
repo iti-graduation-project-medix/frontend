@@ -24,7 +24,9 @@ export default function Home() {
           </span>
         </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-foreground mb-4 max-w-2xl mx-auto">
+
           <span className="text-primary dark:text-primary">#1</span> Platform
+
           for Pharmacists to Exchange Medicines & Sell Pharmacies
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-xl mx-auto font-light">
@@ -35,7 +37,9 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full max-w-md mx-auto mb-6">
           <Link
             to="/auth/signup"
+
             className="inline-flex items-center justify-center bg-primary dark:bg-primary hover:bg-primary-hover dark:hover:bg-primary-hover text-white font-semibold rounded-lg px-8 py-3 text-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/40"
+
           >
             <svg
               className="w-6 h-6 mr-2"
@@ -54,7 +58,9 @@ export default function Home() {
           </Link>
           <Link
             to="/explore"
+
             className="inline-flex items-center justify-center bg-white dark:bg-background border border-primary dark:border-primary text-primary dark:text-primary font-semibold rounded-lg px-8 py-3 text-lg shadow-sm hover:bg-primary/10 dark:hover:bg-primary/10 transition-all duration-200"
+
           >
             <svg
               className="w-6 h-6 mr-2"
@@ -71,7 +77,9 @@ export default function Home() {
         </div>
         {/* Features Bar */}
         <div className="flex flex-wrap justify-center gap-4 mt-4">
+
           <span className="flex items-center gap-2 bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary px-4 py-2 rounded-full text-sm font-medium">
+
             💬 Chat for Every Deal
           </span>
           <span className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium">
@@ -87,7 +95,9 @@ export default function Home() {
       </section>
       {/* How It Works Section */}
       <section className="w-full max-w-6xl mx-auto py-16 px-4 md:px-0">
+
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary dark:text-primary text-center mb-12">
+
           How Dawaback Works
         </h2>
         <div className="flex flex-col gap-1 w-full">
@@ -95,7 +105,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:gap-6 w-full items-center">
             {/* Step 1 + Brief */}
             <div className="w-full md:w-1/2">
+
               <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-primary dark:border-primary p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+
                 {/* Step */}
                 <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
                   <span className="mb-2">
@@ -116,10 +128,12 @@ export default function Home() {
                   <span className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-lg border-2 border-primary shadow mb-2">
                     1
                   </span>
+
                   <h3 className="font-bold text-lg text-primary dark:text-primary mb-1">
                     Sign Up & Verify
                   </h3>
                   <div className="w-8 border-b border-primary dark:border-primary mx-auto mb-2"></div>
+
                   <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed text-center">
                     Create your account and verify your pharmacy license with
                     your ID and Syndicate Card (front & back).
@@ -143,7 +157,9 @@ export default function Home() {
                       <circle cx="12" cy="12" r="10" />
                       <path d="M12 8v4l3 3" />
                     </svg>
+
                     <h4 className="text-base font-semibold text-primary dark:text-primary">
+
                       Why Verification?
                     </h4>
                   </div>
@@ -531,10 +547,12 @@ export default function Home() {
       {/* Why Dawaback Section */}
       <section className="w-full max-w-6xl mx-auto py-20 px-4 md:px-0">
         <div className="text-center mb-8">
+
           <span className="uppercase text-xs tracking-widest text-primary dark:text-primary font-semibold">
             Our Promise
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-primary dark:text-primary mb-2">
+
             Why Pharmacists Trust Dawaback
           </h2>
           <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mb-6">
@@ -542,12 +560,14 @@ export default function Home() {
             community built for pharmacists by pharmacists. Here’s what makes us
             different:
           </p>
+
           <div className="w-16 h-1 mx-auto bg-primary dark:bg-primary rounded-full mb-6"></div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Feature 1 */}
           <div className="bg-white dark:bg-card rounded-2xl shadow border border-primary dark:border-primary p-8 flex flex-col items-center text-center hover:border-primary dark:hover:border-primary transition">
             <div className="bg-primary/10 dark:bg-primary/20 text-primary rounded-full p-5 mb-4 shadow">
+
               <svg
                 className="w-10 h-10"
                 fill="none"
@@ -562,7 +582,9 @@ export default function Home() {
                 />
               </svg>
             </div>
+
             <h3 className="font-extrabold text-lg mb-2 text-primary dark:text-primary">
+
               Verified Community
             </h3>
             <p className="text-gray-600 dark:text-gray-300 text-base font-light mb-2">
@@ -652,7 +674,9 @@ export default function Home() {
         <div className="text-center mt-10">
           <a
             href="#how-it-works"
+
             className="inline-flex items-center gap-2 bg-primary dark:bg-primary hover:bg-primary-hover dark:hover:bg-primary-hover text-white font-semibold rounded-lg px-6 py-3 text-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/40"
+
           >
             See How It Works
             <svg
@@ -675,7 +699,9 @@ export default function Home() {
 
       <section className="w-full max-w-4xl mx-auto py-16 px-4 md:px-0">
         <div className="text-center mb-8">
+
           <h2 className="text-3xl md:text-4xl font-extrabold text-primary dark:text-primary mb-2">
+
             How Verification Works
           </h2>
           <p className="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto mb-6">
@@ -687,6 +713,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
           {/* Step 1 */}
           <div className="flex flex-col items-center text-center flex-1">
+
             <div className="w-32 h-20 min-h-[80px] rounded-lg overflow-hidden mb-3 border-2 border-primary dark:border-primary bg-primary/10 dark:bg-primary/90 flex items-center justify-center">
               <img
                 src="https://lh6.googleusercontent.com/proxy/AOOaYP1jukyrY_y0cnhYKLMaKWO9R8HIAEyc1BZMVOE_PUjJWhdWyPvBAgGrR2H_UzLkLw2rsO_L_8mq2ofGBfzXhCGk"
@@ -695,6 +722,7 @@ export default function Home() {
               />
             </div>
             <div className="min-h-[72px] flex flex-col justify-start">
+
               <h3 className="font-bold text-primary dark:text-primary mb-1 text-lg">
                 Upload National ID (Front)
               </h3>
@@ -733,7 +761,9 @@ export default function Home() {
           </div>
           {/* Step 2 */}
           <div className="flex flex-col items-center text-center flex-1">
+
             <div className="w-32 h-20 min-h-[80px] rounded-lg overflow-hidden mb-3 border-2 border-primary dark:border-primary bg-primary/10 dark:bg-primary/90 flex items-center justify-center">
+
               <img
                 src="https://gate.ahram.org.eg/Media/News/2013/3/13/2013-634988045225330147-533_main.jpg"
                 alt="ID Back"
@@ -741,7 +771,9 @@ export default function Home() {
               />
             </div>
             <div className="min-h-[72px] flex flex-col justify-start">
+
               <h3 className="font-bold text-primary dark:text-primary mb-1 text-lg">
+
                 Upload National ID (Back)
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
@@ -779,7 +811,9 @@ export default function Home() {
           </div>
           {/* Step 3 */}
           <div className="flex flex-col items-center text-center flex-1">
+
             <div className="w-32 h-20 min-h-[80px] rounded-lg overflow-hidden mb-3 border-2 border-primary dark:border-primary bg-primary/10 dark:bg-primary/90 flex items-center justify-center">
+
               <img
                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNnyy_1HBP_TzMGUr2CNbE5ZrqmdnbmjoACw&s"
                 alt="Syndicate Card"
@@ -787,7 +821,9 @@ export default function Home() {
               />
             </div>
             <div className="min-h-[72px] flex flex-col justify-start">
+
               <h3 className="font-bold text-primary dark:text-primary mb-1 text-lg">
+
                 Upload Syndicate Card (Front)
               </h3>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
@@ -798,7 +834,9 @@ export default function Home() {
           </div>
         </div>
         <div className="text-center mt-8">
+
           <p className="text-primary dark:text-primary text-base font-semibold">
+
             We automatically match your documents for maximum security and
             trust.
           </p>

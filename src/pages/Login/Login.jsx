@@ -20,7 +20,7 @@ function Login() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className=" flex lg:my-30 md:my-10 flex-col items-center justify-center p-6 md:p-10">
+    <div className=" flex lg:my-15 md:my-10 flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-3xl">
         <LoginForm />
       </div>

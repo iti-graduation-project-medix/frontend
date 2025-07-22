@@ -277,21 +277,21 @@ export function LoginForm({ className, ...props }) {
       </Card>
       <div className="text-muted-foreground text-center -mt-3 text-xs text-balance dark:text-muted-foreground">
         By clicking continue, you agree to our
-        <a
-          href="#"
+        <Link
+          to="/terms"
           className="font-bold text-primary hover:text-primary-hover underline-offset-2 hover:underline transition-colors duration-150 dark:text-primary dark:hover:text-primary-hover"
         >
           {" "}
           Terms of Service
-        </a>{" "}
+        </Link>{" "}
         and
-        <a
-          href="#"
+        <Link
+          to="/privacy"
           className="font-bold text-primary hover:text-primary-hover underline-offset-2 hover:underline transition-colors duration-150 dark:text-primary dark:hover:text-primary-hover"
         >
           {" "}
           Privacy Policy
-        </a>
+        </Link>
         .
       </div>
     </div>

@@ -426,12 +426,12 @@ export default function Deals() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background dark:bg-background">
       <section className="py-10 px-4 text-foreground">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="text-3xl sm:text-4xl font-bold">My Deals</h1>
           <Link to={"/deals/new"}>
-            <Button className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto bg-primary dark:bg-primary text-white dark:text-white">
               <PlusCircle className="h-4 w-4" />
               Create New Deal
             </Button>
@@ -442,46 +442,46 @@ export default function Deals() {
         <div className="max-w-6xl mx-auto">
           {/* Stats Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-            <Card className="py-4 border-l-8 border-green-500 bg-gradient-to-br from-green-50 to-white shadow-lg">
+            <Card className="py-4 border-l-8 border-green-500 dark:border-green-600 bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-background shadow-lg">
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-green-100 p-3 rounded-full">
-                  <TrendingUp className="w-8 h-8 text-green-500" />
+                <div className="bg-green-100 dark:bg-green-900/20 p-3 rounded-full">
+                  <TrendingUp className="w-8 h-8 text-green-500 dark:text-green-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-sm font-medium text-muted-foreground dark:text-gray-400">
                     Active Deals
                   </CardTitle>
-                  <CardDescription className="text-3xl font-bold">
+                  <CardDescription className="text-3xl font-bold text-gray-900 dark:text-foreground">
                     {activeDealsCount}
                   </CardDescription>
                 </div>
               </CardHeader>
             </Card>
-            <Card className="py-4 border-l-8 border-blue-500 bg-gradient-to-br from-blue-50 to-white shadow-lg">
+            <Card className="py-4 border-l-8 border-blue-500 dark:border-blue-600 bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-background shadow-lg">
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <CheckCircle className="w-8 h-8 text-blue-500" />
+                <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-full">
+                  <CheckCircle className="w-8 h-8 text-blue-500 dark:text-blue-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-sm font-medium text-muted-foreground dark:text-gray-400">
                     Closed Deals
                   </CardTitle>
-                  <CardDescription className="text-3xl font-bold">
+                  <CardDescription className="text-3xl font-bold text-gray-900 dark:text-foreground">
                     {closedDealsCount}
                   </CardDescription>
                 </div>
               </CardHeader>
             </Card>
-            <Card className="py-4 border-l-8 border-red-500 bg-gradient-to-br from-red-50 to-white shadow-lg">
+            <Card className="py-4 border-l-8 border-red-500 dark:border-red-600 bg-gradient-to-br from-red-50 to-white dark:from-red-900/20 dark:to-background shadow-lg">
               <CardHeader className="flex flex-row items-center gap-4">
-                <div className="bg-red-100 p-3 rounded-full">
-                  <X className="w-8 h-8 text-red-500" />
+                <div className="bg-red-100 dark:bg-red-900/20 p-3 rounded-full">
+                  <X className="w-8 h-8 text-red-500 dark:text-red-400" />
                 </div>
                 <div>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-sm font-medium text-muted-foreground dark:text-gray-400">
                     Deleted Deals
                   </CardTitle>
-                  <CardDescription className="text-3xl font-bold">
+                  <CardDescription className="text-3xl font-bold text-gray-900 dark:text-foreground">
                     {deletedDealsCount}
                   </CardDescription>
                 </div>
@@ -490,15 +490,15 @@ export default function Deals() {
           </div>
 
           {/* Enhanced Filters */}
-          <Card className="p-4 mb-8">
+          <Card className="p-4 mb-8 bg-white dark:bg-card border border-gray-200 dark:border-border">
             <div className="space-y-4">
               {/* Header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                     Filters
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Refine your search results
                   </p>
                 </div>
@@ -506,12 +506,12 @@ export default function Deals() {
                   <Button
                     onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                     variant="outline"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <Filter className="h-4 w-4" />
                     Advanced
                     {activeFilters.length > 0 && (
-                      <Badge className="bg-zinc-600 text-white ml-1">
+                      <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white ml-1">
                         {activeFilters.length}
                       </Badge>
                     )}
@@ -524,7 +524,7 @@ export default function Deals() {
                   <Button
                     variant="outline"
                     onClick={handleClearFilters}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                   >
                     <X className="h-4 w-4" />
                     Clear
@@ -538,12 +538,12 @@ export default function Deals() {
                   {/* Search */}
                   <div className="md:col-span-2 lg:col-span-1">
                     <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground dark:text-gray-500" />
                       <Input
                         onChange={handleSearchInput}
                         value={searchInput}
                         placeholder="Search medicine name..."
-                        className="pl-10"
+                        className="pl-10 bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                       />
                     </div>
                   </div>
@@ -553,10 +553,10 @@ export default function Deals() {
                       onValueChange={handleDealType}
                       value={dealType || "all"}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Types" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         <SelectItem value="all">All Types</SelectItem>
                         <SelectItem value="sell">Sell</SelectItem>
                         <SelectItem value="exchange">Exchange</SelectItem>
@@ -570,10 +570,10 @@ export default function Deals() {
                       value={status || "all"}
                       onValueChange={handleStatuses}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Status" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         <SelectItem value="all">All Status</SelectItem>
                         <SelectItem value="active">Active</SelectItem>
                         <SelectItem value="closed">Closed</SelectItem>
@@ -590,10 +590,10 @@ export default function Deals() {
                         setDosageForm(val === "all" ? "" : val)
                       }
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Forms" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         <SelectItem value="all">All Forms</SelectItem>
                         <SelectItem value="tablet">Tablet</SelectItem>
                         <SelectItem value="syrup">Syrup</SelectItem>
@@ -610,10 +610,10 @@ export default function Deals() {
                       value={sortBy ? `${sortBy}-${sortOrder}` : ""}
                       onValueChange={handleSortSelection}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
                         <SelectValue placeholder="Sort By" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         {sortOptions.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
@@ -627,12 +627,12 @@ export default function Deals() {
 
               {/* Active Filter Chips */}
               {activeFilters.length > 0 && (
-                <div className="border-t pt-4">
+                <div className="border-t border-gray-200 dark:border-border pt-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Active Filters:
                     </span>
-                    <Badge className="bg-zinc-600 text-white font-bold  text-xs">
+                    <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white font-bold  text-xs">
                       {activeFilters.length}
                     </Badge>
                   </div>
@@ -640,7 +640,7 @@ export default function Deals() {
                     {activeFilters.map((filter) => (
                       <Badge
                         key={filter.key}
-                        className="flex items-center gap-1 bg-zinc-600 text-white font-bold  cursor-pointer hover:bg-zinc-800/30 transition-colors"
+                        className="flex items-center gap-1 bg-zinc-600 dark:bg-zinc-800 text-white font-bold  cursor-pointer hover:bg-zinc-800/30 dark:hover:bg-zinc-700 transition-colors"
                         onClick={filter.onRemove}
                       >
                         {filter.label}
@@ -653,19 +653,19 @@ export default function Deals() {
 
               {/* Advanced Filters */}
               {showAdvancedFilters && (
-                <div className="border-t pt-6">
+                <div className="border-t border-gray-200 dark:border-border pt-6">
                   <div className="mb-4">
-                    <h4 className="text-md font-semibold text-gray-900 mb-2">
+                    <h4 className="text-md font-semibold text-gray-900 dark:text-foreground mb-2">
                       Advanced Filters
                     </h4>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       Set price range and expiry date filters
                     </p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Price Range */}
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium text-gray-700">
+                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Price Range (EGP)
                       </Label>
                       <div className="flex gap-3">
@@ -680,7 +680,7 @@ export default function Deals() {
                                 min: e.target.value,
                               }))
                             }
-                            className="text-sm"
+                            className="text-sm bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                           />
                         </div>
                         <div className="flex-1">
@@ -694,7 +694,7 @@ export default function Deals() {
                                 max: e.target.value,
                               }))
                             }
-                            className="text-sm"
+                            className="text-sm bg-white dark:bg-background text-gray-900 dark:text-foreground border-gray-200 dark:border-border"
                           />
                         </div>
                       </div>
@@ -702,7 +702,7 @@ export default function Deals() {
 
                     {/* Date Range */}
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium text-gray-700">
+                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                         Expiry Date Range
                       </Label>
                       <div className="flex gap-3">
@@ -710,14 +710,14 @@ export default function Deals() {
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
-                              className="flex-1 justify-start text-left font-normal text-sm"
+                              className="flex-1 justify-start text-left font-normal text-sm border-gray-200 dark:border-border bg-white dark:bg-background text-gray-900 dark:text-foreground"
                             >
                               {dateRange.from
                                 ? format(dateRange.from, "MMM dd, yyyy")
                                 : "From date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
+                          <PopoverContent className="w-auto p-0 bg-white dark:bg-background text-gray-900 dark:text-foreground">
                             <Calendar
                               mode="single"
                               selected={dateRange.from}
@@ -735,14 +735,14 @@ export default function Deals() {
                           <PopoverTrigger asChild>
                             <Button
                               variant="outline"
-                              className="flex-1 justify-start text-left font-normal text-sm"
+                              className="flex-1 justify-start text-left font-normal text-sm border-gray-200 dark:border-border bg-white dark:bg-background text-gray-900 dark:text-foreground"
                             >
                               {dateRange.to
                                 ? format(dateRange.to, "MMM dd, yyyy")
                                 : "To date"}
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
+                          <PopoverContent className="w-auto p-0 bg-white dark:bg-background text-gray-900 dark:text-foreground">
                             <Calendar
                               mode="single"
                               selected={dateRange.to}
@@ -763,18 +763,31 @@ export default function Deals() {
 
           {/* Loading and Error States */}
           {isLoading && (
-            <LoadingPage className="text-center py-8 text-lg text-muted-foreground" message="Loading my deals..." />
+            <LoadingPage
+              className="text-center py-8 text-lg text-muted-foreground dark:text-gray-400"
+              message="Loading my deals..."
+            />
           )}
           {error && (
-            <div className="text-center py-8 text-lg text-red-500">{error}</div>
+            <div className="text-center py-8 text-lg text-red-500 dark:text-red-400">
+              {error}
+            </div>
           )}
 
           {/* Results Summary */}
           {!isLoading && !error && (
             <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="text-sm text-muted-foreground">
-                Showing {status.toLowerCase() === "deleted" ? filteredDeletedDeals.length : (deals?.length || 0)} of {status.toLowerCase() === "deleted" ? deletedDealsCount : (totalDeals || 0)} {status.toLowerCase() === "deleted" ? "deleted deals" : "deals"} (Page{" "}
-                {currentPage} of {totalPages || 1})
+              <div className="text-sm text-muted-foreground dark:text-gray-400">
+                Showing{" "}
+                {status.toLowerCase() === "deleted"
+                  ? filteredDeletedDeals.length
+                  : deals?.length || 0}{" "}
+                of{" "}
+                {status.toLowerCase() === "deleted"
+                  ? deletedDealsCount
+                  : totalDeals || 0}{" "}
+                {status.toLowerCase() === "deleted" ? "deleted deals" : "deals"}{" "}
+                (Page {currentPage} of {totalPages || 1})
               </div>
             </div>
           )}
@@ -782,22 +795,32 @@ export default function Deals() {
           {/* Deals Grid */}
           {!isLoading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {(status.toLowerCase() === "deleted" ? filteredDeletedDeals : filteredDeals).map((deal, index) => (
+              {(status.toLowerCase() === "deleted"
+                ? filteredDeletedDeals
+                : filteredDeals
+              ).map((deal, index) => (
                 <DealCard
                   key={deal.id || index}
                   deal={deal}
-                  onClose={status.toLowerCase() === "deleted" ? null : handleCloseDeal}
-                  onDelete={status.toLowerCase() === "deleted" ? null : handleDeleteDeal}
+                  onClose={
+                    status.toLowerCase() === "deleted" ? null : handleCloseDeal
+                  }
+                  onDelete={
+                    status.toLowerCase() === "deleted" ? null : handleDeleteDeal
+                  }
                   isDeleted={status.toLowerCase() === "deleted"}
                 />
               ))}
-              {(status.toLowerCase() === "deleted" ? filteredDeletedDeals : filteredDeals).length === 0 && (
-                <div className="col-span-full text-center text-muted-foreground py-8">
+              {(status.toLowerCase() === "deleted"
+                ? filteredDeletedDeals
+                : filteredDeals
+              ).length === 0 && (
+                <div className="col-span-full text-center text-muted-foreground dark:text-gray-400 py-8">
                   {activeFilters.length > 0
                     ? "No deals match your filters. Try adjusting your search criteria."
-                    : status.toLowerCase() === "deleted" 
-                      ? "No deleted deals found."
-                      : "No deals found."}
+                    : status.toLowerCase() === "deleted"
+                    ? "No deleted deals found."
+                    : "No deals found."}
                 </div>
               )}
             </div>
@@ -806,7 +829,7 @@ export default function Deals() {
           {/* Pagination */}
           {!isLoading && !error && totalPages > 1 && (
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground dark:text-gray-400">
                 Page {currentPage} of {totalPages}
               </div>
               <div className="flex items-center gap-2">
@@ -815,6 +838,7 @@ export default function Deals() {
                   size="sm"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
+                  className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
@@ -823,7 +847,7 @@ export default function Deals() {
                   {getPageNumbers().map((page, index) => (
                     <div key={index}>
                       {page === "..." ? (
-                        <span className="px-2 py-1 text-muted-foreground">
+                        <span className="px-2 py-1 text-muted-foreground dark:text-gray-400">
                           ...
                         </span>
                       ) : (
@@ -831,7 +855,11 @@ export default function Deals() {
                           variant={currentPage === page ? "default" : "outline"}
                           size="sm"
                           onClick={() => handlePageChange(page)}
-                          className="w-8 h-8 p-0"
+                          className={`w-8 h-8 p-0 ${
+                            currentPage === page
+                              ? "bg-primary text-white border-primary"
+                              : "bg-white dark:bg-background text-primary border-gray-200 dark:border-border hover:bg-primary/10 dark:hover:bg-primary/10"
+                          }`}
                         >
                           {page}
                         </Button>
@@ -844,6 +872,7 @@ export default function Deals() {
                   size="sm"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
+                  className="border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                 >
                   Next
                   <ChevronRight className="h-4 w-4" />

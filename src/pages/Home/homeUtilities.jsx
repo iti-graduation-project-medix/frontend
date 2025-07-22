@@ -1,4 +1,11 @@
-import { Scale, ArrowLeftRight, CheckCircle, DollarSign, Bell, BarChart3 } from "lucide-react";
+import {
+  Scale,
+  ArrowLeftRight,
+  CheckCircle,
+  DollarSign,
+  Bell,
+  BarChart3,
+} from "lucide-react";
 
 import { UserPlus, ClipboardList, Award, Package } from "lucide-react";
 
@@ -6,22 +13,26 @@ export const features = [
   {
     icon: Scale,
     title: "Secure Bidding System",
-    description: "A transparent auction system ensures fair market value for your surplus stock.",
+    description:
+      "A transparent auction system ensures fair market value for your surplus stock.",
   },
   {
     icon: ArrowLeftRight,
     title: "Medicine Exchange",
-    description: "Easily list medications you have or find those you need for direct exchange.",
+    description:
+      "Easily list medications you have or find those you need for direct exchange.",
   },
   {
     icon: CheckCircle,
     title: "Verified Users Only",
-    description: "Strict verification process ensures all participants hold valid licenses.",
+    description:
+      "Strict verification process ensures all participants hold valid licenses.",
   },
   {
     icon: DollarSign,
     title: "Ad Space for Companies",
-    description: "Promote your products or services directly to a targeted pharmacy audience.",
+    description:
+      "Promote your products or services directly to a targeted pharmacy audience.",
   },
   {
     icon: Bell,
@@ -60,7 +71,8 @@ export const howWeWorkSteps = [
     image: "/imgs/steps.png",
     alt: "Doctors performing surgery",
     title: "Receive Offers",
-    description: "Engage with interested parties through our secure messaging and bidding system.",
+    description:
+      "Engage with interested parties through our secure messaging and bidding system.",
   },
   {
     number: "04",
@@ -68,7 +80,8 @@ export const howWeWorkSteps = [
     image: "/imgs/steps.png",
     alt: "Elderly couple smiling",
     title: "Complete Transaction",
-    description: "Arrange for the compliant transfer and logistics of the medications.",
+    description:
+      "Arrange for the compliant transfer and logistics of the medications.",
   },
 ];
 
@@ -98,11 +111,13 @@ export const faqs = [
 export const faqItems = [
   {
     question: "🩺 Expert Doctors in Every Department",
-    answer: "Each department is staffed with specialists to ensure optimal care and expertise.",
+    answer:
+      "Each department is staffed with specialists to ensure optimal care and expertise.",
   },
   {
     question: "🚑 24/7 Emergency & Ambulance Services",
-    answer: "Our ambulance fleet is always ready. Trauma care and ICU are available day and night.",
+    answer:
+      "Our ambulance fleet is always ready. Trauma care and ICU are available day and night.",
   },
   {
     question: "💊 Affordable Costs & 24/7 Pharmacy",

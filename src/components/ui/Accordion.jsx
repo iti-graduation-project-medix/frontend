@@ -8,12 +8,12 @@ export default function Accordion({ items }) {
   };
 
   return (
-    <div className="w-full rounded-xl border bg-white/80 shadow-sm divide-y">
+    <div className="w-full rounded-xl border bg-white/80 dark:bg-card dark:border-border shadow-sm divide-y dark:divide-border">
       {items.map((item, idx) => (
         <div key={idx}>
           <button
-            className={`flex w-full items-center justify-between px-6 py-4 text-left font-medium text-gray-900 transition-colors hover:bg-gray-50 focus:outline-none ${
-              openIndex === idx ? "bg-gray-50" : ""
+            className={`flex w-full items-center justify-between px-6 py-4 text-left font-medium text-gray-900 dark:text-foreground transition-colors hover:bg-gray-50 dark:hover:bg-muted/10 focus:outline-none ${
+              openIndex === idx ? "bg-gray-50 dark:bg-muted/5" : ""
             }`}
             onClick={() => toggle(idx)}
             aria-expanded={openIndex === idx}
@@ -40,7 +40,7 @@ export default function Accordion({ items }) {
             </svg>
           </button>
           {openIndex === idx && (
-            <div className="px-6 pb-4 text-gray-700 animate-fade-in">
+            <div className="px-6 pb-4 text-gray-700 dark:text-muted-foreground animate-fade-in">
               {item.content}
             </div>
           )}

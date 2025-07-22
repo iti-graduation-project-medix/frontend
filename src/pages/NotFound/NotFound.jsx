@@ -11,9 +11,9 @@ export default function NotFound() {
       opacity: 1,
       transition: {
         duration: 0.8,
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
@@ -23,9 +23,9 @@ export default function NotFound() {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut"
-      }
-    }
+        ease: "easeOut",
+      },
+    },
   };
 
   const floatingVariants = {
@@ -34,13 +34,13 @@ export default function NotFound() {
       transition: {
         duration: 3,
         repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   return (
-    <div className="min-h-svh flex items-center justify-center p-6 md:p-10">
+    <div className="min-h-svh flex items-center justify-center p-6 md:p-10 bg-white dark:bg-background text-foreground dark:text-foreground">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -51,7 +51,11 @@ export default function NotFound() {
           <div className="text-center">
             {/* Main Illustration */}
             <motion.div whileHover="hover" className="mb-8 flex justify-center">
-              <motion.div variants={floatingVariants} animate="animate" className="relative">
+              <motion.div
+                variants={floatingVariants}
+                animate="animate"
+                className="relative"
+              >
                 <img
                   src="/404 Error Page not Found with people connecting a plug-cuate.svg"
                   alt="Broken Medical Pill"
@@ -63,15 +67,19 @@ export default function NotFound() {
             {/* Main Heading */}
             <motion.h1
               variants={itemVariants}
-              className="text-4xl md:text-6xl font-extrabold text-gray-800 mb-4 leading-tight"
+              className="text-4xl md:text-6xl font-extrabold text-gray-800 dark:text-foreground mb-4 leading-tight"
             >
-              Oops! This <span className="text-primary"> shelf is empty!</span>
+              Oops! This{" "}
+              <span className="text-primary dark:text-primary">
+                {" "}
+                shelf is empty!
+              </span>
             </motion.h1>
 
             {/* Subtitle */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed"
+              className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed"
             >
               The page you're looking for seems to have expired or been moved
             </motion.p>
@@ -84,36 +92,39 @@ export default function NotFound() {
               <Button
                 variant="outline"
                 onClick={() => navigate(-1)}
-                className="bg-primary hover:bg-primary-hover hover:text-white text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="bg-primary hover:bg-primary-hover hover:text-white text-white dark:text-white px-8 py-3 rounded-full font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 Go Back
               </Button>
             </motion.div>
 
             {/* Additional Info */}
-            <motion.div variants={itemVariants} className="mt-12 pt-8 border-t border-gray-200">
-              <p className="text-sm text-gray-500 mb-4">
+            <motion.div
+              variants={itemVariants}
+              className="mt-12 pt-8 border-t border-gray-200 dark:border-border"
+            >
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                 Need help finding something? Try these popular pages:
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Button
                   variant="ghost"
                   onClick={() => navigate("/auth/login")}
-                  className="text-sm text-gray-600 hover:text-primary hover:bg-primary/10 cursor-pointer"
+                  className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 cursor-pointer"
                 >
                   Login
                 </Button>
                 <Button
                   variant="ghost"
                   onClick={() => navigate("/signup")}
-                  className="text-sm text-gray-600 hover:text-primary hover:bg-primary/10 cursor-pointer"
+                  className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 cursor-pointer"
                 >
                   Sign Up
                 </Button>
                 <Button
                   variant="ghost"
                   onClick={() => navigate("/contact-us")}
-                  className="text-sm text-gray-600 hover:text-primary hover:bg-primary/10 cursor-pointer"
+                  className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 cursor-pointer"
                 >
                   Contact Us
                 </Button>

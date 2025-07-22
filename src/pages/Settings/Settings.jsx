@@ -15,21 +15,25 @@ import { LoadingPage } from "../../components/ui/loading";
 const TABS = [
   { key: "info", label: "Info", icon: <FaUser size={16} /> },
   { key: "security", label: "Security", icon: <FaLock size={16} /> },
-  { key: "pharmacies", label: "My Pharmacies", icon: <FaClinicMedical size={16} /> },
+  {
+    key: "pharmacies",
+    label: "My Pharmacies",
+    icon: <FaClinicMedical size={16} />,
+  },
   { key: "billing", label: "Billing & Plans", icon: <MdPayment size={16} /> },
 ];
 
 export default function Settings() {
   // Simple state for active tab
   const [activeTab, setActiveTab] = useState("info");
-  
+
   const { user, token, isLoading: authLoading } = useAuth();
-  const { 
-    pharmacistDetails, 
-    isLoading, 
-    error, 
+  const {
+    pharmacistDetails,
+    isLoading,
+    error,
     fetchPharmacistDetails,
-    clearError 
+    clearError,
   } = usePharmacist();
 
   // Fetch data when user and token are available
@@ -37,13 +41,13 @@ export default function Settings() {
     if (user && token && !authLoading) {
       // Extract user ID from user object
       const userId = user?.id || user;
-      
+
       if (userId) {
         // Small delay to ensure auth state is properly set
         const timer = setTimeout(() => {
           fetchPharmacistDetails(userId, token);
         }, 100);
-        
+
         return () => clearTimeout(timer);
       }
     }
@@ -79,7 +83,9 @@ export default function Settings() {
             <div className="text-red-500 mb-4">
               <FaUserMd size={32} className="mx-auto" />
             </div>
-            <p className="text-red-600 mb-4 text-sm">Please log in to access settings</p>
+            <p className="text-red-600 mb-4 text-sm">
+              Please log in to access settings
+            </p>
           </div>
         </div>
       </div>
@@ -87,10 +93,10 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-2 md:px-0">
+    <div className="max-w-4xl mx-auto py-8 px-2 md:px-0 bg-white dark:bg-background text-gray-900 dark:text-foreground">
       {/* Top Bar with My Deals and Verified Badge */}
       <SettingsHeader pharmacistDetails={pharmacistDetails} />
-    
+
       {/* Tabs */}
       <div className="flex gap-2 mb-8 justify-center flex-col sm:flex-row">
         {TABS.map((tab) => (
@@ -98,20 +104,26 @@ export default function Settings() {
             key={tab.key}
             type="button"
             className={`rounded-lg px-4 py-2 capitalize flex items-center gap-2 text-sm font-medium transition-colors duration-150 w-full sm:w-auto ${
-              activeTab === tab.key 
-                ? 'bg-primary text-white shadow-sm' 
-                : 'bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 border border-gray-300'
+              activeTab === tab.key
+                ? "bg-primary text-white shadow-sm dark:bg-primary dark:text-white"
+                : "bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 border border-gray-300 dark:bg-background dark:hover:bg-zinc-800 dark:text-gray-200 dark:hover:text-white dark:border-border"
             }`}
             onClick={() => handleTabClick(tab.key)}
           >
-            <span className={activeTab === tab.key ? 'text-white' : 'text-primary'}>
+            <span
+              className={
+                activeTab === tab.key
+                  ? "text-white dark:text-white"
+                  : "text-primary dark:text-primary"
+              }
+            >
               {tab.icon}
             </span>
             {tab.label}
           </button>
         ))}
       </div>
-      
+
       {/* Tab Content */}
       <div className="min-h-[400px]">
         {activeTab === "info" && (
@@ -121,11 +133,17 @@ export default function Settings() {
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <div className="text-red-500 mb-4">
+                  <div className="text-red-500 mb-4 dark:text-red-400">
                     <FaUserMd size={32} className="mx-auto" />
                   </div>
-                  <p className="text-red-600 mb-4 text-sm">{error}</p>
-                  <Button onClick={handleRetry} size="sm">
+                  <p className="text-red-600 mb-4 text-sm dark:text-red-400">
+                    {error}
+                  </p>
+                  <Button
+                    onClick={handleRetry}
+                    size="sm"
+                    className="bg-primary text-white dark:bg-primary dark:text-white"
+                  >
                     Try Again
                   </Button>
                 </div>
@@ -138,19 +156,25 @@ export default function Settings() {
             )}
           </div>
         )}
-        
+
         {activeTab === "security" && (
           <div>
             {isLoading ? (
-             <LoadingPage message="Loading security settings..." />
+              <LoadingPage message="Loading security settings..." />
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <div className="text-red-500 mb-4">
+                  <div className="text-red-500 mb-4 dark:text-red-400">
                     <FaLock size={32} className="mx-auto" />
                   </div>
-                  <p className="text-red-600 mb-4 text-sm">{error}</p>
-                  <Button onClick={handleRetry} size="sm">
+                  <p className="text-red-600 mb-4 text-sm dark:text-red-400">
+                    {error}
+                  </p>
+                  <Button
+                    onClick={handleRetry}
+                    size="sm"
+                    className="bg-primary text-white dark:bg-primary dark:text-white"
+                  >
                     Try Again
                   </Button>
                 </div>
@@ -160,7 +184,7 @@ export default function Settings() {
             )}
           </div>
         )}
-        
+
         {activeTab === "pharmacies" && (
           <div>
             {isLoading ? (
@@ -168,11 +192,17 @@ export default function Settings() {
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <div className="text-red-500 mb-4">
+                  <div className="text-red-500 mb-4 dark:text-red-400">
                     <FaClinicMedical size={32} className="mx-auto" />
                   </div>
-                  <p className="text-red-600 mb-4 text-sm">{error}</p>
-                  <Button onClick={handleRetry} size="sm">
+                  <p className="text-red-600 mb-4 text-sm dark:text-red-400">
+                    {error}
+                  </p>
+                  <Button
+                    onClick={handleRetry}
+                    size="sm"
+                    className="bg-primary text-white dark:bg-primary dark:text-white"
+                  >
                     Try Again
                   </Button>
                 </div>
@@ -182,7 +212,7 @@ export default function Settings() {
             )}
           </div>
         )}
-        
+
         {activeTab === "billing" && (
           <div>
             {isLoading ? (
@@ -190,11 +220,17 @@ export default function Settings() {
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <div className="text-red-500 mb-4">
+                  <div className="text-red-500 mb-4 dark:text-red-400">
                     <MdPayment size={32} className="mx-auto" />
                   </div>
-                  <p className="text-red-600 mb-4 text-sm">{error}</p>
-                  <Button onClick={handleRetry} size="sm">
+                  <p className="text-red-600 mb-4 text-sm dark:text-red-400">
+                    {error}
+                  </p>
+                  <Button
+                    onClick={handleRetry}
+                    size="sm"
+                    className="bg-primary text-white dark:bg-primary dark:text-white"
+                  >
                     Try Again
                   </Button>
                 </div>

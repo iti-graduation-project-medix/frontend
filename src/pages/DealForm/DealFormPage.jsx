@@ -50,11 +50,10 @@ export default function DealFormPage() {
           <h1 className="text-3xl text-primary md:text-4xl font-bold mb-3">
             {isEditMode ? "Edit Your Medicine Deal" : "Post Your Medicine Deal"}
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {isEditMode 
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {isEditMode
               ? "Update your deal details to keep your listing current and accurate"
-              : "Share your medicine deals with our community. Connect with buyers and sellers in the medical marketplace"
-            }
+              : "Share your medicine deals with our community. Connect with buyers and sellers in the medical marketplace"}
           </p>
         </div>
 

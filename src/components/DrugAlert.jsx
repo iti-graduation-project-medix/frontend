@@ -123,17 +123,17 @@ export function DrugAlert() {
   return (
     <section className="w-full py-6">
       <div className="mx-auto px-4">
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-2xl mx-auto bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg">
           <CardContent className="p-8 text-center">
             <div className="flex justify-center mb-4">
               <div className="rounded-full bg-primary p-3">
                 <Bell className="h-6 w-6 text-white" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold mb-2">
+            <h2 className="text-2xl font-bold mb-2 dark:text-foreground">
               Stay Updated on When Your Target Drug Added
             </h2>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground dark:text-gray-400 mb-6">
               Get instant alerts when new information becomes available about
               your medications
             </p>
@@ -145,18 +145,18 @@ export function DrugAlert() {
                   value=""
                   onValueChange={handleDrugSelect}
                 >
-                  <SelectTrigger className="border-gray-300 rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm w-full min-w-[250px]">
+                  <SelectTrigger className="border-gray-300 dark:border-border rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 dark:bg-background/80 backdrop-blur-sm w-full min-w-[250px] text-gray-900 dark:text-foreground">
                     <SelectValue placeholder="Select drugs" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-80">
+                  <SelectContent className="max-h-80 bg-white dark:bg-card border border-gray-100 dark:border-border">
                     <div className="p-2">
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
                         <Input
                           placeholder="Search for drug..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white"
+                          className="pl-10 border-gray-300 dark:border-border rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white dark:bg-background text-gray-900 dark:text-foreground"
                           onClick={(e) => e.stopPropagation()}
                         />
                       </div>
@@ -164,8 +164,8 @@ export function DrugAlert() {
                     <div className="max-h-60 overflow-y-auto">
                       {isLoadingDrugs ? (
                         <div className="flex items-center justify-center py-4">
-                          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                          <span className="text-sm text-gray-500">
+                          <Loader2 className="h-4 w-4 animate-spin mr-2 text-primary dark:text-primary" />
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
                             {searchTerm.trim()
                               ? "Searching..."
                               : "Loading drugs..."}
@@ -177,7 +177,11 @@ export function DrugAlert() {
                             (drug) => !selectedDrugs.includes(drug.drugName)
                           )
                           .map((drug) => (
-                            <SelectItem key={drug.id} value={drug.drugName}>
+                            <SelectItem
+                              key={drug.id}
+                              value={drug.drugName}
+                              className="dark:text-foreground"
+                            >
                               <div>
                                 <div className="font-medium">
                                   {drug.drugName}
@@ -186,15 +190,15 @@ export function DrugAlert() {
                             </SelectItem>
                           ))
                       ) : searchTerm.trim() ? (
-                        <div className="py-4 text-center text-sm text-gray-500">
+                        <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                           No drugs found for "{searchTerm}"
                         </div>
                       ) : drugs.length === 0 ? (
-                        <div className="py-4 text-center text-sm text-gray-500">
+                        <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                           No drugs available
                         </div>
                       ) : (
-                        <div className="py-4 text-center text-sm text-gray-500">
+                        <div className="py-4 text-center text-sm text-gray-500 dark:text-gray-400">
                           Start typing to search for drugs
                         </div>
                       )}
@@ -203,7 +207,7 @@ export function DrugAlert() {
                 </Select>
                 <Button
                   type="submit"
-                  className="whitespace-nowrap"
+                  className="whitespace-nowrap dark:bg-primary dark:hover:bg-primary-hover"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -224,13 +228,13 @@ export function DrugAlert() {
                     <Badge
                       key={drug}
                       variant="secondary"
-                      className="flex items-center gap-1 px-3 py-1"
+                      className="flex items-center gap-1 px-3 py-1 bg-gray-100 dark:bg-muted text-gray-900 dark:text-foreground border border-gray-200 dark:border-border"
                     >
                       {drug}
                       <button
                         type="button"
                         onClick={() => removeDrug(drug)}
-                        className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                        className="ml-1 hover:bg-gray-300 dark:hover:bg-muted/30 rounded-full p-0.5"
                         disabled={isSubmitting}
                       >
                         <X className="h-3 w-3" />
@@ -240,7 +244,7 @@ export function DrugAlert() {
                 </div>
               )}
             </form>
-            <p className="text-xs text-muted-foreground mt-4">
+            <p className="text-xs text-muted-foreground dark:text-gray-400 mt-4">
               We'll notify you about safety updates, recalls, and important drug
               information.
             </p>

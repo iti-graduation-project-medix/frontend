@@ -317,15 +317,17 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // Loading state
   if (isLoading) {
     return (
-      <Card className="shadow-lg rounded-xl border border-gray-200 bg-white px-4 py-8">
+      <Card className="shadow-lg rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8">
         <CardHeader>
           <div className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
+            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 shadow-sm w-12 h-12">
               <FaClinicMedical size={24} className="text-primary" />
             </span>
             <div className="flex flex-col">
-              <span className="text-gray-900">My Pharmacies</span>
-              <p className="text-sm text-gray-600 font-normal">
+              <span className="text-gray-900 dark:text-foreground">
+                My Pharmacies
+              </span>
+              <p className="text-sm text-gray-600 font-normal dark:text-gray-400">
                 Manage your added pharmacies and their details
               </p>
             </div>
@@ -341,15 +343,17 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // Error state
   if (error) {
     return (
-      <Card className="shadow-lg rounded-xl border border-gray-200 bg-white px-4 py-8">
+      <Card className="shadow-lg rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8">
         <CardHeader>
           <div className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
+            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 shadow-sm w-12 h-12">
               <FaClinicMedical size={24} className="text-primary" />
             </span>
             <div className="flex flex-col">
-              <span className="text-gray-900">My Pharmacies</span>
-              <p className="text-sm text-gray-600 font-normal">
+              <span className="text-gray-900 dark:text-foreground">
+                My Pharmacies
+              </span>
+              <p className="text-sm text-gray-600 font-normal dark:text-gray-400">
                 Manage your registered pharmacies and their details
               </p>
             </div>
@@ -358,14 +362,16 @@ export default function PharmaciesCard({ pharmacistDetails }) {
         <CardContent className="pt-0">
           <div className="flex items-center justify-center h-32">
             <div className="text-center">
-              <div className="text-red-500 mb-2">
+              <div className="text-red-500 mb-2 dark:text-red-400">
                 <FaExclamationTriangle size={32} className="mx-auto" />
               </div>
-              <p className="text-red-600 mb-2 text-sm">{error}</p>
+              <p className="text-red-600 mb-2 text-sm dark:text-red-400">
+                {error}
+              </p>
               <Button
                 onClick={handleRetry}
                 size="sm"
-                className="bg-primary hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white"
                 disabled={actionLoading}
               >
                 {actionLoading ? (
@@ -408,7 +414,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
         {/* Main Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="truncate font-semibold text-lg text-gray-900">
+            <span className="truncate font-semibold text-lg text-gray-900 dark:text-foreground">
               {pharmacy.name}
             </span>
             <Badge
@@ -434,7 +440,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                 : "Not For Sale"}
             </Badge>
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-300 mt-0.5">
             <FaMapMarkerAlt className="text-gray-400" size={12} />
             <span className="truncate">
               {pharmacy.city}
@@ -445,7 +451,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
       </div>
     ),
     content: (
-      <Card className="mb-6 rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-lg transition-shadow p-5">
+      <Card className="mb-6 rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background shadow-md hover:shadow-lg dark:hover:shadow-xl transition-shadow p-5">
         <div className="flex flex-col md:flex-row gap-5">
           {/* Image */}
           <div className="flex-shrink-0 flex items-center justify-center">
@@ -453,10 +459,10 @@ export default function PharmaciesCard({ pharmacistDetails }) {
               <img
                 src={pharmacy.imagesUrls[0]}
                 alt={pharmacy.name}
-                className="w-20 h-20 object-cover rounded-lg border border-gray-200 bg-gray-50"
+                className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-border bg-gray-50 dark:bg-zinc-800"
               />
             ) : (
-              <div className="w-20 h-20 flex items-center justify-center bg-gray-100 rounded-lg border text-gray-400">
+              <div className="w-20 h-20 flex items-center justify-center bg-gray-100 dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-border text-gray-400 dark:text-gray-500">
                 <FaClinicMedical size={32} />
               </div>
             )}
@@ -466,33 +472,35 @@ export default function PharmaciesCard({ pharmacistDetails }) {
           <div className="flex-1 flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-bold text-lg text-gray-900 truncate">
+                <span className="font-bold text-lg text-gray-900 dark:text-foreground truncate">
                   {pharmacy.name}
                 </span>
               </div>
               <div className="flex items-center gap-1 text-gray-500 text-sm mb-2">
-                <FaMapMarkerAlt className="text-gray-400" />
-                <span className="truncate">{pharmacy.address}</span>
+                <FaMapMarkerAlt className="text-gray-400 dark:text-gray-500" />
+                <span className="truncate dark:text-gray-400">
+                  {pharmacy.address}
+                </span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
                 <div className="flex items-center gap-1">
-                  <FaPhone className="text-gray-400" />
+                  <FaPhone className="text-gray-400 dark:text-gray-500" />
                   <span>{pharmacy.phone}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <FaIdCard className="text-gray-400" />
+                  <FaIdCard className="text-gray-400 dark:text-gray-500" />
                   <span>{pharmacy.licenseNumber}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <FaClock className="text-gray-400" />
+                  <FaClock className="text-gray-400 dark:text-gray-500" />
                   <span>{pharmacy.workingHours}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <FaClinicMedical className="text-gray-400" />
+                  <FaClinicMedical className="text-gray-400 dark:text-gray-500" />
                   <span>{pharmacy.city}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <FaMapMarkerAlt className="text-gray-400" />
+                  <FaMapMarkerAlt className="text-gray-400 dark:text-gray-500" />
                   <span>{pharmacy.governorate}</span>
                 </div>
               </div>
@@ -527,7 +535,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
               <Button
                 size="sm"
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                 asChild
                 disabled={actionLoading}
               >
@@ -540,7 +548,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                 <>
                   <Button
                     size="sm"
-                    className="flex items-center gap-2 bg-zinc-700 text-white hover:bg-zinc-600 border-primary"
+                    className="flex items-center gap-2 bg-zinc-700 text-white hover:bg-zinc-600 border-primary dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-white"
                     onClick={() => handleUnlistClick(pharmacy.id)}
                     disabled={actionLoading}
                   >
@@ -549,7 +557,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                   </Button>
                   <Button
                     size="sm"
-                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white"
+                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white dark:bg-orange-700 dark:hover:bg-orange-600 dark:text-white"
                     onClick={() => handleMarkAsSoldClick(pharmacy.id)}
                     disabled={actionLoading}
                   >
@@ -562,7 +570,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex bg-green-600 hover:bg-green-500 text-white items-center gap-2"
+                    className="flex bg-green-600 hover:bg-green-500 text-white dark:bg-green-700 dark:hover:bg-green-600 dark:text-white items-center gap-2"
                     onClick={() => handleListClick(pharmacy.id)}
                     disabled={actionLoading}
                   >
@@ -574,7 +582,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
               <Button
                 size="sm"
                 variant="destructive"
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white dark:bg-red-700 dark:hover:bg-red-800 dark:text-white"
                 onClick={() => handleDeleteClick(pharmacy.id)}
                 disabled={actionLoading}
               >
@@ -590,15 +598,17 @@ export default function PharmaciesCard({ pharmacistDetails }) {
 
   return (
     <div className="space-y-6">
-      <Card className="shadow-lg rounded-xl border border-gray-200 bg-white px-4 py-8">
+      <Card className="shadow-lg rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8">
         <CardHeader>
           <div className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
-            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 shadow-sm w-12 h-12">
+            <span className="inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 shadow-sm w-12 h-12">
               <FaClinicMedical size={24} className="text-primary" />
             </span>
             <div className="flex flex-col">
-              <span className="text-gray-900">My Pharmacies</span>
-              <p className="text-sm text-gray-600 font-normal">
+              <span className="text-gray-900 dark:text-foreground">
+                My Pharmacies
+              </span>
+              <p className="text-sm text-gray-600 font-normal dark:text-gray-300">
                 Manage your added pharmacies and their details
               </p>
             </div>
@@ -607,13 +617,13 @@ export default function PharmaciesCard({ pharmacistDetails }) {
         <CardContent className="pt-0">
           {validatedPharmacies.length === 0 ? (
             <div className="text-center py-8">
-              <div className="text-gray-400 mb-4">
+              <div className="text-gray-400 dark:text-gray-500 mb-4">
                 <FaClinicMedical size={48} className="mx-auto" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground mb-2">
                 No Pharmacies Found
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
                 You haven't added any pharmacies yet.
               </p>
               <Button asChild>
@@ -623,7 +633,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
           ) : (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-foreground">
                   Your Pharmacies ({validatedPharmacies.length})
                 </h3>
                 <Button asChild>

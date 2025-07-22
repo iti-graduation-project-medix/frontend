@@ -143,7 +143,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
     <AnimatePresence mode="wait">
       {!isComplete && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center  overflow-hidden"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-white dark:bg-background text-gray-900 dark:text-foreground"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -152,7 +152,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
           {/* Animated background elements */}
           <div className="absolute inset-0 overflow-hidden">
             <motion.div
-              className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-blue-200/30 to-indigo-200/30 rounded-full blur-3xl"
+              className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-r from-blue-200/30 to-indigo-200/30 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full blur-3xl"
               animate={{
                 x: [0, 100, 0],
                 y: [0, -50, 0],
@@ -164,7 +164,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
               }}
             />
             <motion.div
-              className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-l from-purple-200/30 to-pink-200/30 rounded-full blur-3xl"
+              className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-l from-purple-200/30 to-pink-200/30 dark:from-purple-900/30 dark:to-pink-900/30 rounded-full blur-3xl"
               animate={{
                 x: [0, -100, 0],
                 y: [0, 50, 0],
@@ -177,7 +177,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
               }}
             />
             <motion.div
-              className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-to-r from-indigo-200/20 to-blue-200/20 rounded-full blur-2xl"
+              className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-to-r from-indigo-200/20 to-blue-200/20 dark:from-indigo-900/20 dark:to-blue-900/20 rounded-full blur-2xl"
               animate={{
                 scale: [1, 1.2, 1],
                 rotate: [0, 180, 360],
@@ -199,7 +199,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
               whileHover="hover"
             >
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r  rounded-full blur-xl opacity-50"
+                className="absolute inset-0 bg-gradient-to-r from-blue-200/40 to-indigo-200/40 dark:from-blue-900/40 dark:to-indigo-900/40 rounded-full blur-xl opacity-50"
                 variants={pulseVariants}
                 animate="animate"
               />
@@ -215,7 +215,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
             {/* App Name */}
             <motion.div className="text-center" variants={textVariants}>
               <motion.h1
-                className="text-4xl md:text-6xl font-bold text-primary mb-2"
+                className="text-4xl md:text-6xl font-bold text-primary dark:text-primary mb-2"
                 animate={{
                   backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
                 }}
@@ -231,7 +231,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
                 DawaBack
               </motion.h1>
               <motion.p
-                className="text-lg md:text-xl text-gray-600 font-medium"
+                className="text-lg md:text-xl text-gray-600 dark:text-gray-300 font-medium"
                 variants={textVariants}
               >
                 Before it expires, trade it with desire{" "}
@@ -252,16 +252,16 @@ const LoadingScreen = ({ onLoadingComplete }) => {
                   animate="visible"
                   exit="exit"
                 >
-                  <p className="text-lg text-gray-700 font-medium">
+                  <p className="text-lg text-gray-700 dark:text-gray-200 font-medium">
                     {loadingSteps[currentStep]}
                   </p>
                 </motion.div>
               </AnimatePresence>
 
               {/* Progress Bar */}
-              <div className="w-64 md:w-80 h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+              <div className="w-64 md:w-80 h-2 bg-gray-200 dark:bg-muted rounded-full overflow-hidden shadow-inner">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full shadow-lg"
+                  className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-500 dark:to-purple-500 rounded-full shadow-lg"
                   variants={progressVariants}
                   initial="hidden"
                   animate="visible"
@@ -273,7 +273,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
                 {[0, 1, 2].map((index) => (
                   <motion.div
                     key={index}
-                    className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                    className="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-400 dark:to-indigo-500 rounded-full"
                     animate={{
                       scale: [1, 1.2, 1],
                       opacity: [0.5, 1, 0.5],
@@ -291,7 +291,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
 
             {/* Floating elements */}
             <motion.div
-              className="absolute top-10 right-10 w-8 h-8 bg-blue-400 rounded-full opacity-60"
+              className="absolute top-10 right-10 w-8 h-8 bg-blue-400 dark:bg-blue-900 rounded-full opacity-60"
               animate={{
                 y: [0, -20, 0],
                 opacity: [0.6, 1, 0.6],
@@ -303,7 +303,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
               }}
             />
             <motion.div
-              className="absolute bottom-10 left-10 w-6 h-6 bg-indigo-400 rounded-full opacity-60"
+              className="absolute bottom-10 left-10 w-6 h-6 bg-indigo-400 dark:bg-indigo-900 rounded-full opacity-60"
               animate={{
                 y: [0, 20, 0],
                 opacity: [0.6, 1, 0.6],

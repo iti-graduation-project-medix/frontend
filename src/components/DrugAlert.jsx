@@ -123,21 +123,24 @@ export function DrugAlert() {
   return (
     <section className="w-full py-6">
       <div className="mx-auto px-4">
-        <Card className="max-w-2xl mx-auto bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg">
-          <CardContent className="p-8 text-center">
-            <div className="flex justify-center mb-4">
-              <div className="rounded-full bg-primary p-3">
-                <Bell className="h-6 w-6 text-white" />
+        <Card className="bg-muted/20 backdrop-blur-sm shadow-lg border border-border">
+          <CardContent className="py-8 px-4 md:px-8 flex flex-col items-center">
+            <div className="w-full flex flex-col items-center">
+              <div className="flex flex-row items-center justify-center w-full gap-4 mb-2">
+                <span className="hidden sm:inline-flex items-center justify-center rounded-full bg-primary/80 text-white" style={{ width: 48, height: 48, minWidth: 48, minHeight: 48 }}>
+                  <Bell className="w-7 h-7" />
+                </span>
+                <div className="flex flex-col items-start justify-center">
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground leading-tight">
+                    Stay Updated on When Your Target Drug Added
+                  </h2>
+                  <p className="text-muted-foreground text-sm mt-1">
+                    Get instant alerts when new information becomes available about your medications
+                  </p>
+                </div>
               </div>
             </div>
-            <h2 className="text-2xl font-bold mb-2 dark:text-foreground">
-              Stay Updated on When Your Target Drug Added
-            </h2>
-            <p className="text-muted-foreground dark:text-gray-400 mb-6">
-              Get instant alerts when new information becomes available about
-              your medications
-            </p>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 <Select
                   open={isSelectOpen}

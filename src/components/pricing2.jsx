@@ -30,7 +30,7 @@ const Pricing2 = ({
       monthlyPrice: "EGP50",
       yearlyPrice: "EGP200",
       features: [
-        { text: "Add up to 10 deals", available: true, yearlyText: "Add up to 120 deals" },
+        { text: "Add up to 10 deals", available: true, yearlyText: "Add up to 150 deals" },
         { text: "P2P trading using real-time chat", available: true },
         { text: "List pharmacies for sale", available: false },
         { text: "Subscribe to drug alert", available: false },

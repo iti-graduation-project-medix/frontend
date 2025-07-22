@@ -93,7 +93,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-2 md:px-0 bg-white dark:bg-background text-gray-900 dark:text-foreground">
+    <div className="max-w-4xl mx-auto py-8 px-2 md:px-0 dark:bg-background text-gray-900 dark:text-foreground">
       {/* Top Bar with My Deals and Verified Badge */}
       <SettingsHeader pharmacistDetails={pharmacistDetails} />
 

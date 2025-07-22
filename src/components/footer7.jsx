@@ -1,19 +1,11 @@
 import React from "react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { DrugAlert } from "./DrugAlert";
 
 const defaultSections = [
   {
-    title: "Product",
-    links: [
-      { name: "Overview", href: "/" },
-      { name: "Pricing", href: "/subscription" },
-      { name: "Favorites", href: "/favorites" },
-      { name: "My Deals", href: "/my-deals" },
-    ],
-  },
-  {
-    title: "Company",
+    title: "Qiuck Links",
     links: [
       { name: "Home", href: "/" },
       { name: "Deals", href: "/deals" },
@@ -22,68 +14,61 @@ const defaultSections = [
       { name: "Contact Us", href: "/contact" },
     ],
   },
-  {
-    title: "Resources",
-    links: [
-      { name: "Login", href: "/auth/login" },
-      { name: "Sign Up", href: "/auth/signup" },
-      { name: "Privacy Policy", href: "/privacy" },
-      { name: "Terms and Conditions", href: "/terms" },
-    ],
-  },
 ];
 
 const defaultSocialLinks = [
-  { icon: <FaInstagram className="size-5" />, href: "#", label: "Instagram" },
-  { icon: <FaFacebook className="size-5" />, href: "#", label: "Facebook" },
-  { icon: <FaTwitter className="size-5" />, href: "#", label: "Twitter" },
-  { icon: <FaLinkedin className="size-5" />, href: "#", label: "LinkedIn" },
+  { icon: <FaInstagram className="size-5" />, href: "https://instagram.com/dawaback", label: "Instagram" },
+  { icon: <FaFacebook className="size-5" />, href: "https://facebook.com/dawaback", label: "Facebook" },
+  { icon: <FaTwitter className="size-5" />, href: "https://twitter.com/dawaback", label: "Twitter" },
+  { icon: <FaLinkedin className="size-5" />, href: "https://linkedin.com/company/dawaback", label: "LinkedIn" },
 ];
 
 const defaultLegalLinks = [
-  { name: "Terms and Conditions", href: "/terms" },
+  { name: "Terms of Service", href: "/terms" },
   { name: "Privacy Policy", href: "/privacy" },
 ];
 
 const Footer7 = ({
   logo = {
-    url: "/home",
+    url: "/",
     src: "/DawabackNewLogo.png",
     alt: "logo",
     title: "Dawaback",
   },
   sections = defaultSections,
-  description = "A collection of components for your startup business or side project.",
+  description = "Dawaback is the #1 platform for pharmacists to exchange medicines and sell pharmacies.",
   socialLinks = defaultSocialLinks,
-  copyright = "© 2025 dawback.com. All rights reserved.",
+  copyright = "© 2025 dawaback.com. All rights reserved.",
   legalLinks = defaultLegalLinks,
 }) => {
   return (
-    <section className=" text-foreground px-6 py-10 md:px-12 lg:px-20">
+    <footer className="bg-background text-foreground p-6 md:px-16 lg:px-32 pt-3 border-t border-border shadow-inner">
       <div className="container mx-auto">
         {/* Top: Logo + Description + Socials */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between text-center md:text-left mb-12">
-          <div className="flex flex-col items-center md:items-start">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between text-center lg:text-left gap-8 lg:gap-16 w-full">
+          <div className="-mt-15 flex flex-col items-center lg:items-start max-w-lg mx-auto lg:mx-0 w-full lg:w-1/4">
             <Link to={logo.url} className="flex items-center gap-3 mb-4">
               <img
                 src={logo.src}
-                className="h-6 sm:h-7 md:h-8"
+                className="h-8 sm:h-10 md:h-12 drop-shadow-md"
                 alt={logo.alt}
               />
-              <span className="text-xl sm:text-2xl font-bold text-primary">
+              <span className="text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">
                 {logo.title}
               </span>
             </Link>
-            <p className="text-sm text-muted-foreground mb-6 max-w-full md:max-w-md lg:max-w-xl">
+            <p className="text-sm text-muted-foreground mb-6 max-w-full md:max-w-md lg:max-w-xl font-light">
               {description}
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mt-2">
               {socialLinks.map((social, idx) => (
                 <Link
                   key={idx}
                   to={social.href}
                   aria-label={social.label}
-                  className="text-muted-foreground hover:text-primary"
+                  className="text-muted-foreground hover:text-primary transition-colors duration-150"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {social.icon}
                 </Link>
@@ -91,44 +76,43 @@ const Footer7 = ({
             </div>
           </div>
 
-          {/* Links Section */}
-          <div className="grid gap-8 mt-10 md:mt-0 w-full text-center md:text-center sm:grid-cols-1 md:grid-cols-3 lg:gap-12">
-            {sections.map((section, idx) => (
-              <div key={idx}>
-                <h4 className="font-bold text-base mb-2">{section.title}</h4>
-                <div className="flex flex-wrap md:flex-col items-center md:items-center justify-center gap-2 text-sm text-muted-foreground">
-                  {section.links.map((link, linkIdx) => (
-                    <Link
-                      key={linkIdx}
-                      to={link.href}
-                      className="hover:text-primary hover:font-semibold"
-                    >
-                      {link.name}
-                    </Link>
-                  ))}
+          {/* Links Section + DrugAlert */}
+          <div className="flex flex-col w-full gap-8 lg:flex-row lg:gap-16 mt-10 lg:mt-0 items-center lg:items-center">
+            <div className="grid gap-6 w-full text-center lg:text-left sm:grid-cols-1 md:grid-cols-1 lg:gap-12 lg:w-1/4 flex-shrink-0">
+              {sections.map((section, idx) => (
+                <div key={idx} className="flex flex-col items-center lg:items-start">
+                  <h4 className="font-bold text-base mb-2 text-primary uppercase tracking-wide letter-spacing-wide">
+                    {section.title}
+                  </h4>
+                  <div className="flex flex-wrap lg:flex-col items-center lg:items-start justify-center gap-2 text-sm text-muted-foreground">
+                    {section.links.map((link, linkIdx) => (
+                      <Link
+                        key={linkIdx}
+                        to={link.href}
+                        className="hover:text-primary hover:font-semibold transition-colors duration-150 px-2 py-1 rounded-md"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <div className="w-full lg:flex-1 flex items-center justify-center lg:justify-end lg:mt-0 max-w-full">
+              <DrugAlert className="w-full max-w-xl sm:max-w-2xl" />
+            </div>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="border-t border-border mb-6" />
+
         {/* Footer Bottom */}
-        <div className="border-t pt-6 text-sm flex flex-col md:flex-row justify-between items-center text-muted-foreground gap-4">
-          <p className="text-center md:text-left">{copyright}</p>
-          <div className="flex gap-4">
-            {legalLinks.map((link, idx) => (
-              <Link
-                key={idx}
-                to={link.href}
-                className="hover:text-primary hover:font-medium"
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+        <div className="text-sm flex flex-col items-center justify-center text-muted-foreground">
+          <p className="text-center font-light">{copyright}</p>
         </div>
       </div>
-    </section>
+    </footer>
   );
 };
 

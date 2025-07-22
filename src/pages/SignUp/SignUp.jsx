@@ -1,6 +1,27 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../store/useAuth";
 import { SignUpForm } from "./../../components/SignUpForm";
+import { LoadingPage } from "@/components/ui/loading";
 
 export default function SignUp() {
+  const navigate = useNavigate();
+  const { isAuthenticated, isLoading, initializeAuth } = useAuth();
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/deals");
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isAuthenticated || isLoading) {
+    return <LoadingPage message="Loading..." />;
+  }
+
   return (
     <div className="min-h-svh ">
       <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">

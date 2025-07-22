@@ -235,6 +235,18 @@ export default function Navbar() {
     };
   }, [isUserMenuOpen]);
 
+  // Prevent background scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
@@ -338,6 +350,17 @@ export default function Navbar() {
     return firstTwo.map((word) => word[0]?.toUpperCase()).join("");
   };
 
+  // Add a handler to close the menu when any item is clicked
+  const handleMobileMenuItemClick = () => {
+    setIsMenuOpen(false);
+  };
+
+  // Custom style for hiding scrollbar
+  const hideScrollbarStyle = {
+    scrollbarWidth: "none", // Firefox
+    msOverflowStyle: "none", // IE 10+
+  };
+
   return (
     <nav
       className=" border-gray-200 "
@@ -364,7 +387,11 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {/* Theme Mode Toggle and Notification Bell */}
-          <div className={`flex items-center gap-2 ${!isAuthenticated ? 'mr-4' : 'mr-1 md:mr-2'}`}>
+          <div
+            className={`flex items-center gap-2 ${
+              !isAuthenticated ? "mr-4" : "mr-1 md:mr-2"
+            }`}
+          >
             <ModeToggle />
             {isAuthenticated && (
               <Popover
@@ -372,11 +399,7 @@ export default function Navbar() {
                 onOpenChange={setIsNotificationPopoverOpen}
               >
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="relative"
-                  >
+                  <Button variant="outline" size="icon" className="relative">
                     <FiBell className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
                       <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center z-50">
@@ -623,189 +646,267 @@ export default function Navbar() {
         </div>
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div
-              initial="closed"
-              animate="open"
-              exit="closed"
-              variants={mobileMenuVariants}
-              className="items-center justify-between w-full md:hidden md:w-auto md:order-1"
-            >
-              <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-                {/* Main Navigation */}
-                <li>
-                  <Link
-                    to="/"
-                    className={
-                      location.pathname === "/"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-primary"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-primary dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                    }
-                    aria-current="page"
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/advertise"
-                    className={
-                      location.pathname === "/advertise"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-primary"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-primary dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                    }
-                  >
-                    Advertise
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/contact"
-                    className={
-                      location.pathname === "/contact"
-                        ? "block py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-primary"
-                        : "block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-primary dark:hover:bg-primary dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                    }
-                  >
-                    Contact
-                  </Link>
-                </li>
-
-                {/* User Account Section (only for authenticated users) */}
-                {isAuthenticated && (
-                  <>
-                    {/* Divider */}
-                    <li className="border-t border-gray-200 dark:border-gray-600 my-2 md:hidden"></li>
-
-                    {/* User Profile */}
-                    <li>
-                      <Link
-                        to="/me"
-                        onClick={handleMenuClick}
-                        className={`block py-2 px-3 ${
-                          location.pathname === "/me" ||
-                          location.pathname.startsWith("/me/")
-                            ? "text-white bg-primary rounded-sm"
-                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        Profile
-                      </Link>
-                    </li>
-
-                    {/* User Content */}
-                    <li>
-                      <Link
-                        to="/deals"
-                        onClick={handleMenuClick}
-                        className={`block py-2 px-3 ${
-                          location.pathname === "/deals"
-                            ? "text-white bg-primary rounded-sm"
-                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        My Deals
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/pharmacies"
-                        onClick={handleMenuClick}
-                        className={`block py-2 px-3 ${
-                          location.pathname === "/pharmacies"
-                            ? "text-white bg-primary rounded-sm"
-                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        My Pharmacies
-                      </Link>
-                    </li>
-
-                    {/* User Actions */}
-                    <li>
-                      <Link
-                        to="/favorites"
-                        className={
-                          location.pathname === "/favorites"
-                            ? "flex items-center justify-between gap-2 py-2 px-3 text-white bg-primary rounded-sm md:bg-transparent md:text-primary md:p-0 md:dark:text-blue-500"
-                            : "flex items-center justify-between gap-2 py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                        }
-                      >
-                        <span>Favorites</span>
-                        <span className="relative">
-                          <Heart
+            <>
+              {/* Overlay */}
+              <motion.div
+                key="mobile-menu-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm"
+                onClick={() => setIsMenuOpen(false)}
+              />
+              {/* Fullscreen Menu */}
+              <motion.div
+                key="mobile-menu"
+                initial={{ x: "-100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "-100%", opacity: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 30,
+                  duration: 0.4,
+                }}
+                className="fixed inset-0 z-[9999] flex flex-col h-full bg-white dark:bg-gray-900 justify-start"
+              >
+                {/* Close button */}
+                <button
+                  className="absolute top-6 right-6 text-3xl text-gray-700 dark:text-gray-200 hover:text-primary focus:outline-none"
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-label="Close menu"
+                  style={{ zIndex: 10000 }}
+                >
+                  &times;
+                </button>
+                {/* Centered logo */}
+                <div className="flex flex-col items-center mt-12 mb-10">
+                  <img
+                    src="/logo.svg"
+                    alt="Dawaback Logo"
+                    className="h-16 mb-2"
+                  />
+                  <span className="font-bold text-3xl text-primary dark:text-white">
+                    Dawaback
+                  </span>
+                </div>
+                {/* Scrollable menu list */}
+                <div
+                  className="flex-1 w-full overflow-y-auto max-h-[calc(100vh-12rem)] px-2 scrollbar-hide"
+                  style={hideScrollbarStyle}
+                >
+                  <style>{`
+                    .scrollbar-hide::-webkit-scrollbar { display: none; }
+                  `}</style>
+                  <ul className="flex flex-col font-semibold gap-8 text-2xl w-full max-w-sm mx-auto items-center">
+                    {/* Main Navigation */}
+                    {isAuthenticated ? (
+                      <>
+                        <li>
+                          <Link
+                            to="/"
+                            onClick={handleMobileMenuItemClick}
                             className={
-                              location.pathname === "/favorites"
-                                ? "text-white w-5 h-5"
-                                : "w-5 h-5 text-zinc-600 dark:text-white"
+                              location.pathname === "/"
+                                ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
+                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
                             }
-                          />
-                          {favorites.deals.length +
-                            favorites.pharmacies.length >
-                            0 && (
-                            <Badge className="absolute bottom-3 left-3 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center">
-                              {favorites.deals.length +
-                                favorites.pharmacies.length}
-                            </Badge>
-                          )}
-                        </span>
-                      </Link>
-                    </li>
-
-                    {/* Settings & Logout */}
-                    <li>
-                      <Link
-                        to="/settings"
-                        onClick={handleMenuClick}
-                        className={`block py-2 px-3 ${
-                          location.pathname === "/settings"
-                            ? "text-white bg-primary rounded-sm"
-                            : "text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        Settings
-                      </Link>
-                    </li>
-
-                    {/* Divider before logout */}
-                    <li className="border-t border-gray-200 dark:border-gray-600 my-2 md:hidden"></li>
-
-                    <li>
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                      >
-                        Sign out
-                      </button>
-                    </li>
-                  </>
-                )}
-
-                {!isAuthenticated && (
-                  <li className="mt-4">
-                    <div className="flex justify-center items-center mx-auto space-x-4">
-                      <MotionLink
-                        to={"/auth/login"}
-                        whileTap="tap"
-                        whileHover="hover"
-                        variants={buttonVariants}
-                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-primary/30 font-medium rounded-lg text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
-                      >
-                        Login
-                      </MotionLink>
-                      <MotionLink
-                        to={"/auth/signup"}
-                        whileTap="tap"
-                        whileHover="hover"
-                        variants={buttonVariants}
-                        className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                      >
-                        Sign up
-                      </MotionLink>
-                    </div>
-                  </li>
-                )}
-              </ul>
-            </motion.div>
+                            aria-current="page"
+                          >
+                            Home
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/advertise"
+                            onClick={handleMobileMenuItemClick}
+                            className={
+                              location.pathname === "/advertise"
+                                ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
+                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                            }
+                          >
+                            Advertise
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/contact"
+                            onClick={handleMobileMenuItemClick}
+                            className={
+                              location.pathname === "/contact"
+                                ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
+                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                            }
+                          >
+                            Contact
+                          </Link>
+                        </li>
+                        <li className="border-t border-gray-700 my-2 w-full"></li>
+                        <li>
+                          <Link
+                            to="/me"
+                            onClick={handleMobileMenuItemClick}
+                            className={`block py-4 px-8 rounded-xl w-full text-left ${
+                              location.pathname === "/me" ||
+                              location.pathname.startsWith("/me/")
+                                ? "text-white bg-primary shadow-lg"
+                                : "text-gray-100 hover:bg-gray-800"
+                            }`}
+                          >
+                            Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/deals"
+                            onClick={handleMobileMenuItemClick}
+                            className={`block py-4 px-8 rounded-xl w-full text-left ${
+                              location.pathname === "/deals"
+                                ? "text-white bg-primary shadow-lg"
+                                : "text-gray-100 hover:bg-gray-800"
+                            }`}
+                          >
+                            My Deals
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/pharmacies"
+                            onClick={handleMobileMenuItemClick}
+                            className={`block py-4 px-8 rounded-xl w-full text-left ${
+                              location.pathname === "/pharmacies"
+                                ? "text-white bg-primary shadow-lg"
+                                : "text-gray-100 hover:bg-gray-800"
+                            }`}
+                          >
+                            My Pharmacies
+                          </Link>
+                        </li>
+                        <li className="relative">
+                          <Link
+                            to="/favorites"
+                            onClick={handleMobileMenuItemClick}
+                            className={`block py-4 px-8 rounded-xl w-full text-left flex items-center justify-between ${
+                              location.pathname === "/favorites"
+                                ? "text-white bg-primary shadow-lg"
+                                : "text-gray-100 hover:bg-gray-800"
+                            }`}
+                          >
+                            <span>Favorites</span>
+                            {favorites.deals.length +
+                              favorites.pharmacies.length >
+                              0 && (
+                              <span className="ml-2 relative">
+                                <svg
+                                  className="inline w-6 h-6 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                </svg>
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 py-0.5 text-xs font-semibold min-w-[20px] h-[20px] flex items-center justify-center">
+                                  {favorites.deals.length +
+                                    favorites.pharmacies.length}
+                                </span>
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/settings"
+                            onClick={handleMobileMenuItemClick}
+                            className={`block py-4 px-8 rounded-xl w-full text-left ${
+                              location.pathname === "/settings"
+                                ? "text-white bg-primary shadow-lg"
+                                : "text-gray-100 hover:bg-gray-800"
+                            }`}
+                          >
+                            Settings
+                          </Link>
+                        </li>
+                        <li className="border-t border-gray-700 my-2 w-full"></li>
+                        <li>
+                          <button
+                            onClick={() => {
+                              handleLogout();
+                              handleMobileMenuItemClick();
+                            }}
+                            className="block w-full text-left py-4 px-8 rounded-xl text-gray-100 hover:bg-gray-800 text-left"
+                          >
+                            Sign out
+                          </button>
+                        </li>
+                      </>
+                    ) : (
+                      // Not authenticated: show Login/Sign up as buttons at the bottom
+                      <>
+                        <li>
+                          <Link
+                            to="/"
+                            onClick={handleMobileMenuItemClick}
+                            className={
+                              location.pathname === "/"
+                                ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
+                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                            }
+                            aria-current="page"
+                          >
+                            Home
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/advertise"
+                            onClick={handleMobileMenuItemClick}
+                            className={
+                              location.pathname === "/advertise"
+                                ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
+                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                            }
+                          >
+                            Advertise
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/contact"
+                            onClick={handleMobileMenuItemClick}
+                            className={
+                              location.pathname === "/contact"
+                                ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
+                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                            }
+                          >
+                            Contact
+                          </Link>
+                        </li>
+                        <li className="w-full flex flex-row gap-4 justify-center mt-8">
+                          <Link
+                            to="/auth/login"
+                            onClick={handleMobileMenuItemClick}
+                            className="px-8 py-3 rounded-lg bg-primary text-white font-semibold text-lg shadow-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary"
+                          >
+                            Login
+                          </Link>
+                          <Link
+                            to="/auth/signup"
+                            onClick={handleMobileMenuItemClick}
+                            className="px-8 py-3 rounded-lg border border-gray-400 text-white font-semibold text-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                          >
+                            Sign up
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                  </ul>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
         <div className="hidden md:flex items-center justify-between w-full md:w-auto md:order-1">

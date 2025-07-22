@@ -13,13 +13,13 @@ export default function SharedLayout() {
     <>
       <Navbar />
       <OfflineIndicator />
-      <div style={{ minHeight: 'calc(100vh - 437px)' }}>
+      <div style={{ minHeight: "calc(100vh - 437px)" }}>
         <Suspense>
           <Outlet />
         </Suspense>
       </div>
       <Toaster />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

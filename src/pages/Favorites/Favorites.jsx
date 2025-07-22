@@ -102,7 +102,7 @@ export default function Favorites() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-background text-gray-900 dark:text-foreground">
+    <div className="min-h-screen  dark:bg-background text-gray-900 dark:text-foreground">
       <section className="py-5 px-4 text-foreground dark:text-foreground">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-2">

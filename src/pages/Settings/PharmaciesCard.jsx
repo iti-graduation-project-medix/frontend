@@ -414,7 +414,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
         {/* Main Info */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="truncate font-semibold text-lg text-gray-900">
+            <span className="truncate font-semibold text-lg text-gray-900 dark:text-foreground">
               {pharmacy.name}
             </span>
             <Badge
@@ -440,7 +440,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                 : "Not For Sale"}
             </Badge>
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
+          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-300 mt-0.5">
             <FaMapMarkerAlt className="text-gray-400" size={12} />
             <span className="truncate">
               {pharmacy.city}
@@ -608,7 +608,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
               <span className="text-gray-900 dark:text-foreground">
                 My Pharmacies
               </span>
-              <p className="text-sm text-gray-600 font-normal dark:text-gray-400">
+              <p className="text-sm text-gray-600 font-normal dark:text-gray-300">
                 Manage your added pharmacies and their details
               </p>
             </div>

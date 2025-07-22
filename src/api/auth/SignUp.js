@@ -89,7 +89,8 @@ export const signUp = async (formData) => {
       );
     } else {
       throw new Error(
-        error.response?.data?.message || "Signup failed. Please try again."
+        error.response?.data?.message ||
+          "Somthing went wrong. Please try again later."
       );
     }
   }

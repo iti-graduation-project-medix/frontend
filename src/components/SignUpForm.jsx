@@ -191,7 +191,9 @@ export function SignUpForm({ className, ...props }) {
         // Use the centralized error handler for better error management
         const errorResult = ErrorHandler.handleSignupError(error, "submission");
         setError(errorResult.message);
-        toast.error(errorResult.message || "Signup failed. Please try again.");
+        toast.error(
+          errorResult.message || "Somthing went wrong. Please try again later."
+        );
 
         // Don't show toast here as it's handled by ErrorHandler
         // Just set the local error state for form display

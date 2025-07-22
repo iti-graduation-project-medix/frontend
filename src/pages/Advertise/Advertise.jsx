@@ -122,7 +122,7 @@ export default function Advertise() {
 
   return (
     <motion.div
-      className="min-h-screen font-sans bg-white dark:bg-background text-foreground dark:text-foreground"
+      className="min-h-screen font-sans  dark:bg-background text-foreground dark:text-foreground"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}

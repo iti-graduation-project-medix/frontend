@@ -65,7 +65,7 @@ const CornerAd = ({ position = "dealDetails" }) => {
   return (
     <div className="fixed bottom-4 right-4 z-50 max-w-sm">
       <div
-        className={`bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden transition-all duration-300 ${
+        className={`bg-white dark:bg-card rounded-xl shadow-2xl border border-gray-200 dark:border-border overflow-hidden transition-all duration-300 ${
           isExpanded ? "w-80" : "w-72"
         }`}
       >
@@ -82,7 +82,7 @@ const CornerAd = ({ position = "dealDetails" }) => {
               variant="ghost"
               size="sm"
               onClick={handleExpand}
-              className="h-6 w-6 p-0 bg-white/90 hover:bg-white"
+              className="h-6 w-6 p-0 bg-white/90 dark:bg-card/90 hover:bg-white dark:hover:bg-muted/20"
             >
               <ExternalLink className="h-3 w-3" />
             </Button>
@@ -90,7 +90,7 @@ const CornerAd = ({ position = "dealDetails" }) => {
               variant="ghost"
               size="sm"
               onClick={handleClose}
-              className="h-6 w-6 p-0 bg-white/90 hover:bg-white"
+              className="h-6 w-6 p-0 bg-white/90 dark:bg-card/90 hover:bg-white dark:hover:bg-muted/20"
             >
               <X className="h-3 w-3" />
             </Button>
@@ -99,16 +99,16 @@ const CornerAd = ({ position = "dealDetails" }) => {
 
         {/* Content */}
         <div className="p-3">
-          <h3 className="font-semibold text-sm text-gray-900 mb-1">
+          <h3 className="font-semibold text-sm text-gray-900 dark:text-foreground mb-1">
             {currentAd.title}
           </h3>
-          <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+          <p className="text-xs text-gray-600 dark:text-gray-300 mb-3 line-clamp-2">
             {currentAd.description}
           </p>
           {currentAd.link ? (
             <Button
               onClick={handleClick}
-              className="w-full h-8 text-xs font-medium"
+              className="w-full h-8 text-xs font-medium dark:bg-primary dark:hover:bg-primary-hover"
               size="sm"
             >
               Learn More
@@ -124,7 +124,9 @@ const CornerAd = ({ position = "dealDetails" }) => {
                 key={index}
                 onClick={() => setCurrentAdIndex(index)}
                 className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentAdIndex ? "bg-primary" : "bg-gray-300"
+                  index === currentAdIndex
+                    ? "bg-primary dark:bg-primary"
+                    : "bg-gray-300 dark:bg-muted"
                 }`}
               />
             ))}

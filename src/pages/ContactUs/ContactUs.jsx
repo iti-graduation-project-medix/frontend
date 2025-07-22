@@ -104,7 +104,7 @@ export default function ContactUs() {
           transition={{ duration: 0.5 }}
         >
           <motion.h1
-            className="text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 dark:from-primary dark:to-primary/70"
+            className="text-5xl font-bold mb-6 text-primary dark:from-primary dark:to-primary/70"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}

@@ -340,30 +340,30 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             {currentSubscription.planName === 'premium' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 {/* Pharmacy Listings Card */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 border border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
-                  <div className="relative p-6 text-center">
-                    <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <MdHomeWork className="text-blue-600" size={28} />
+                <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group border border-blue-200 dark:border-blue-900 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/40 dark:to-blue-900/10">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-200/30 to-transparent dark:from-blue-900/30 dark:to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                  <div className="relative p-6 text-center flex flex-col items-center">
+                    <div className="p-4 rounded-2xl w-16 h-16 mb-4 flex items-center justify-center shadow-lg bg-blue-100 dark:bg-blue-900/60">
+                      <MdHomeWork className="text-blue-600 dark:text-blue-300" size={28} />
                     </div>
-                    <h4 className="font-bold text-lg text-blue-900 mb-2">Pharmacy Listings</h4>
-                    <p className="text-blue-700 font-medium mb-2">List your pharmacy for sale and reach more buyers.</p>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs">
-                      <MdCheckCircle className="text-blue-500" /> Active
+                    <h4 className="font-bold text-lg text-blue-900 dark:text-blue-200 mb-2">Pharmacy Listings</h4>
+                    <p className="text-blue-700 dark:text-blue-300 font-medium mb-4">List your pharmacy for sale and reach more buyers.</p>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-200 font-semibold text-xs">
+                      <MdCheckCircle className="text-blue-500 dark:text-blue-300" /> Active
                     </span>
                   </div>
                 </div>
                 {/* Drug Alerts Card */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100/50 border border-zinc-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-zinc-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
-                  <div className="relative p-6 text-center">
-                    <div className="p-4 bg-gradient-to-br from-zinc-100 to-zinc-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <MdNotificationsActive className="text-zinc-600" size={28} />
+                <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group border border-zinc-200 dark:border-zinc-800 bg-gradient-to-br from-zinc-50 to-zinc-100/50 dark:from-zinc-900/40 dark:to-zinc-900/10">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-zinc-200/30 to-transparent dark:from-zinc-900/30 dark:to-transparent rounded-full -translate-y-12 translate-x-12"></div>
+                  <div className="relative p-6 text-center flex flex-col items-center">
+                    <div className="p-4 rounded-2xl w-16 h-16 mb-4 flex items-center justify-center shadow-lg bg-zinc-100 dark:bg-zinc-900/60">
+                      <MdNotificationsActive className="text-zinc-600 dark:text-zinc-200" size={28} />
                     </div>
-                    <h4 className="font-bold text-lg text-zinc-900 mb-2">Drug Alerts</h4>
-                    <p className="text-zinc-700 font-medium mb-2">Subscribe to drug alerts and stay updated on new medicines.</p>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-200 text-zinc-700 font-semibold text-xs">
-                      <MdCheckCircle className="text-zinc-500" /> Active
+                    <h4 className="font-bold text-lg text-zinc-900 dark:text-zinc-100 mb-2">Drug Alerts</h4>
+                    <p className="text-zinc-700 dark:text-zinc-300 font-medium mb-4">Subscribe to drug alerts and stay updated on new medicines.</p>
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 font-semibold text-xs">
+                      <MdCheckCircle className="text-zinc-500 dark:text-zinc-200" /> Active
                     </span>
                   </div>
                 </div>
@@ -531,35 +531,34 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               return (
               <div
                 key={invoice.id}
-                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background border border-gray-100 dark:border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
                 >
-                  <div className="p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                       <div className="flex items-center gap-6">
                         <div className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
                           invoice.planName === 'premium' 
-                            ? 'bg-amber-100' 
-                            : 'bg-gradient-to-br from-blue-100 to-indigo-100'
+                          ? 'bg-amber-100 dark:bg-yellow-900/40'
+                          : 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/20'
                         }`}>
                           {invoice.planName === 'premium' ? (
-                            <FaCrown size={24} className="text-amber-400" />
+                          <FaCrown size={24} className="text-amber-400 dark:text-yellow-300" />
                           ) : (
-                            <Zap size={24} className="text-blue-600" />
+                          <Zap size={24} className="text-blue-600 dark:text-blue-300" />
                           )}
                         </div>
                         <div className="space-y-2">
-                          <p className="font-bold text-lg text-gray-900">{invoice.description}</p>
-                          <p className="text-sm text-gray-600 font-medium">
+                        <p className="font-bold text-lg text-gray-900 dark:text-foreground">{invoice.description}</p>
+                        <p className="text-sm text-gray-600 font-medium dark:text-gray-300">
                             {invoice.date} • {invoice.invoice}
                           </p>
                           <div className="flex items-center gap-1">
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-gray-500 font-medium">
+                            <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
                                 {invoice.subType === 'wallet' ? 'Wallet Payment' : 'Card Payment'}
                               </span>
                             </div>
                             {invoice.pan && (
-                              <span className="text-xs text-gray-400 font-medium">
+                            <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
                                 {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
                               </span>
                             )}
@@ -568,14 +567,13 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 </div>
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div className="text-right">
-                            <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
-                              {invoice.amount}
-                            </span>
+                        <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
+                          {invoice.amount}
+                        </span>
                         </div>
                         <div className="flex items-center gap-3">
                     <div className="flex items-center">
                       {getStatusBadge(invoice.status)}
-                          </div>
                         </div>
                       </div>
                     </div>

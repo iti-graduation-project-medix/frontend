@@ -364,7 +364,7 @@ export default function Navbar() {
         </Link>
         <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           {/* Theme Mode Toggle and Notification Bell */}
-          <div className="flex items-center mr-1 md:mr-2 gap-2">
+          <div className={`flex items-center gap-2 ${!isAuthenticated ? 'mr-4' : 'mr-1 md:mr-2'}`}>
             <ModeToggle />
             {isAuthenticated && (
               <Popover
@@ -579,7 +579,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
+                className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-primary/30 font-medium rounded-md text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
               >
                 Login
               </MotionLink>
@@ -588,7 +588,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
                 Sign up
               </MotionLink>
@@ -788,7 +788,7 @@ export default function Navbar() {
                         whileTap="tap"
                         whileHover="hover"
                         variants={buttonVariants}
-                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
+                        className="text-white bg-primary hover:bg-[var(--primary-hover)] focus:ring-4 focus:ring-primary/30 font-medium rounded-lg text-sm px-4 py-2  dark:hover:bg-[var(--primary-hover)] focus:outline-none "
                       >
                         Login
                       </MotionLink>

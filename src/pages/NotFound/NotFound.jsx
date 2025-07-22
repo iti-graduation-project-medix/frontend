@@ -40,7 +40,7 @@ export default function NotFound() {
   };
 
   return (
-    <div className="min-h-svh flex items-center justify-center p-6 md:p-10 bg-white dark:bg-background text-foreground dark:text-foreground">
+    <div className="min-h-svh flex items-center justify-center p-6 md:p-10  dark:bg-background text-foreground dark:text-foreground">
       <motion.div
         variants={containerVariants}
         initial="hidden"

@@ -67,7 +67,7 @@ export default function ListingHeader({ pharmacy }) {
   };
 
   return (
-    <div className="border-b border-gray-100 dark:border-border bg-white dark:bg-background">
+    <div className="border-b border-gray-100 dark:border-border  dark:bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Breadcrumbs */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400 mb-4">

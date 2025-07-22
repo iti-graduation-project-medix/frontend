@@ -55,17 +55,21 @@ const Footer7 = ({
   sections = defaultSections,
   description = "A collection of components for your startup business or side project.",
   socialLinks = defaultSocialLinks,
-  copyright = "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright = "© 2025 dawback.com. All rights reserved.",
   legalLinks = defaultLegalLinks,
 }) => {
   return (
-    <section className="bg-background text-foreground px-6 py-10 md:px-12 lg:px-20">
+    <section className=" text-foreground px-6 py-10 md:px-12 lg:px-20">
       <div className="container mx-auto">
         {/* Top: Logo + Description + Socials */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between text-center md:text-left mb-12">
           <div className="flex flex-col items-center md:items-start">
             <Link to={logo.url} className="flex items-center gap-3 mb-4">
-              <img src={logo.src} className="h-6 sm:h-7 md:h-8" alt={logo.alt} />
+              <img
+                src={logo.src}
+                className="h-6 sm:h-7 md:h-8"
+                alt={logo.alt}
+              />
               <span className="text-xl sm:text-2xl font-bold text-primary">
                 {logo.title}
               </span>

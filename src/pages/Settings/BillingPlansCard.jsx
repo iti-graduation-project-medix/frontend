@@ -60,48 +60,47 @@ export default function BillingPlansCard({ pharmacistDetails }) {
   }, [fetchCurrentSubscription, fetchUserSubscriptions]);
 
   // Helper function to get plan details
-  const getPlanDetails = (planName) => {
+  const getPlanDetails = (planName, period = 'monthly') => {
     const plans = {
-  regular: {
-    name: "Regular Plan",
-    price: "EGP50",
-    period: "month",
-    features: [
-      "Add up to 10 deals",
-      "Can't list pharmacies for sale",
-      "Can't subscribe to drug alert"
-    ],
-    icon: Zap,
-    color: "text-blue-600",
-    bgColor: "bg-blue-100"
-  },
-  premium: {
-    name: "Premium Plan",
-    price: "EGP100",
-    period: "month",
-    features: [
-      "Add unlimited deals",
-      "List pharmacies for sale",
-      "Subscribe to drug alert"
-    ],
-    icon: FaCrown,
-    color: "text-amber-400",
-    bgColor: "bg-amber-100"
-  }
-};
+      regular: {
+        name: "Regular Plan",
+        price: period === 'yearly' ? 200 : 50,
+        period: period === 'yearly' ? 'year' : 'month',
+        features: [
+          "Add up to 10 deals",
+          "Can't list pharmacies for sale",
+          "Can't subscribe to drug alert"
+        ],
+        icon: Zap,
+        color: "text-blue-600",
+        bgColor: "bg-blue-100"
+      },
+      premium: {
+        name: "Premium Plan",
+        price: period === 'yearly' ? 400 : 100,
+        period: period === 'yearly' ? 'year' : 'month',
+        features: [
+          "Add unlimited deals",
+          "List pharmacies for sale",
+          "Subscribe to drug alert"
+        ],
+        icon: FaCrown,
+        color: "text-amber-400",
+        bgColor: "bg-amber-100"
+      }
+    };
     return plans[planName] || plans.regular;
   };
 
   // Get current plan details
-  const currentPlan = currentSubscription ? getPlanDetails(currentSubscription.planName) : getPlanDetails('regular');
+  const currentPlan = currentSubscription ? getPlanDetails(currentSubscription.planName, currentSubscription.plan) : getPlanDetails('regular');
 
   // Helper function to format subscription data for billing history
   const formatSubscriptionForHistory = (subscription) => {
-    const planDetails = getPlanDetails(subscription.planName);
-    const amount = subscription.planName === 'premium' ? 'EGP100.00' : 'EGP50.00';
+    const planDetails = getPlanDetails(subscription.planName, subscription.plan);
+    const amount = `EGP${planDetails.price}.00`;
     const startDate = new Date(subscription.startDate);
     const endDate = new Date(subscription.endDate);
-    
     return {
       id: subscription.id,
       date: startDate.toISOString().split('T')[0],
@@ -228,15 +227,19 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </div>
             </div>
           ) : (
-            <div className="p-8 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-yellow-100 rounded-full">
-                  <MdWarning size={24} className="text-yellow-600" />
+            <div className="p-6 sm:p-8 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/30 rounded-2xl max-w-xs sm:max-w-lg mx-auto">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="p-3 bg-primary/20 rounded-full mx-auto">
+                  <MdWarning size={32} className="text-primary" />
                 </div>
-                <div>
-                  <p className="text-yellow-800 font-semibold text-lg">No active subscription found</p>
-                  <p className="text-yellow-700 text-sm mt-1">Please subscribe to a plan to continue using our services</p>
-                </div>
+                <p className="text-primary font-semibold text-lg sm:text-xl">No active subscription found</p>
+                <p className="text-primary/80 text-sm sm:text-base">Please subscribe to a plan to continue using our services</p>
+                <Button
+                  className="bg-primary text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:bg-primary/90 transition-all duration-300 w-full sm:w-auto"
+                  onClick={() => navigate('/subscription')}
+                >
+                  Subscribe Now
+                </Button>
               </div>
             </div>
           )}
@@ -264,6 +267,19 @@ export default function BillingPlansCard({ pharmacistDetails }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-8 pb-8">
+          {(!currentSubscription) ? (
+            <div className="flex flex-col items-center justify-center py-10 sm:py-16 max-w-xs sm:max-w-md mx-auto text-center">
+              <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-4 sm:mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full"></div>
+                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <MdInfo size={28} className="sm:size-32 text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-1 sm:mb-2">No usage features available</h3>
+              <p className="text-gray-500 text-xs sm:text-sm">Usage features will appear here once you have an active subscription</p>
+            </div>
+          ) : (
+            <>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Available Features */}
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 border border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
@@ -274,32 +290,40 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 </div>
                 <h4 className="font-bold text-lg text-purple-900 mb-2">Deals</h4>
                 <p className="text-3xl font-bold text-purple-600 mb-3">
-                  {currentSubscription 
-                    ? currentSubscription.planName === 'premium' 
-                      ? '∞ / ∞' 
-                      : `${10 - parseInt(currentSubscription.dealsNumber)} / 10`
-                    : '0 / 0'
-                  }
+                  {(() => {
+                    if (!currentSubscription) return '0 / 0';
+                    if (currentSubscription.planName === 'premium') return '∞ / ∞';
+                    // Regular plan
+                    const isYearly = currentSubscription.plan === 'yearly';
+                    const maxDeals = isYearly ? 150 : 10;
+                    const usedDeals = maxDeals - parseInt(currentSubscription.dealsNumber);
+                    return `${usedDeals} / ${maxDeals}`;
+                  })()}
                 </p>
                 <div className="w-full bg-purple-200 rounded-full h-3 mb-3 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-purple-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out" 
                     style={{ 
-                      width: currentSubscription && currentSubscription.planName === 'regular' 
-                        ? `${((10 - parseInt(currentSubscription.dealsNumber)) / 10) * 100}%` 
-                        : currentSubscription && currentSubscription.planName === 'premium' 
-                          ? '100%' 
-                          : '0%' 
+                      width: (() => {
+                        if (!currentSubscription) return '0%';
+                        if (currentSubscription.planName === 'premium') return '100%';
+                        const isYearly = currentSubscription.plan === 'yearly';
+                        const maxDeals = isYearly ? 150 : 10;
+                        const usedDeals = maxDeals - parseInt(currentSubscription.dealsNumber);
+                        return `${(usedDeals / maxDeals) * 100}%`;
+                      })()
                     }}
                   ></div>
-              </div>
+                </div>
                 <p className="text-sm text-purple-700 font-medium">
-                  {currentSubscription 
-                    ? currentSubscription.planName === 'premium' 
-                      ? 'Unlimited deals (Premium Plan)' 
-                      : `${Math.round(((10 - parseInt(currentSubscription.dealsNumber)) / 10) * 100)}% used (Regular Plan: up to 10 deals)`
-                    : 'Loading...'
-                  }
+                  {(() => {
+                    if (!currentSubscription) return 'Loading...';
+                    if (currentSubscription.planName === 'premium') return 'Unlimited deals (Premium Plan)';
+                    const isYearly = currentSubscription.plan === 'yearly';
+                    const maxDeals = isYearly ? 150 : 10;
+                    const usedDeals = maxDeals - parseInt(currentSubscription.dealsNumber);
+                    return `${Math.round((usedDeals / maxDeals) * 100)}% used (Regular Plan: up to ${maxDeals} deals${isYearly ? ' per year' : ' per month'})`;
+                  })()}
                 </p>
               </div>
             </div>
@@ -321,7 +345,6 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </div>
               </div>
             </div>
-
           {/* Premium Features Notice - Only show for Regular Plan */}
           {currentSubscription && currentSubscription.planName === 'regular' && (
             <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-2xl shadow-lg">
@@ -344,31 +367,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </div>
             </div>
           )}
-          {currentSubscription && currentSubscription.planName === 'premium' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
-              <div className="relative overflow-hidden rounded-2xl bg-red-50 border border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-full -translate-y-12 translate-x-12"></div>
-                <div className="relative p-6 text-center">
-                  <div className="p-4 bg-red-100 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <MdHomeWork className="text-red-700" size={28} />
-                  </div>
-                  <h4 className="font-bold text-lg text-red-900 mb-2">List pharmacies for sale</h4>
-                  <p className="text-xl font-bold text-red-700 mb-3">Available</p>
-                  <p className="text-sm text-red-700 font-medium">You can list pharmacies for sale with your premium plan.</p>
-                </div>
-              </div>
-              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100/50 border border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-yellow-200/30 to-transparent rounded-full -translate-y-12 translate-x-12"></div>
-                <div className="relative p-6 text-center">
-                  <div className="p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl w-16 h-16 mx-auto mb-4 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <MdNotificationsActive className="text-yellow-700" size={28} />
-                  </div>
-                  <h4 className="font-bold text-lg text-yellow-900 mb-2">Subscribe to drug alert</h4>
-                  <p className="text-xl font-bold text-yellow-700 mb-3">Enabled</p>
-                  <p className="text-sm text-yellow-800 font-medium">You are subscribed to drug alerts and get notified when new drugs are available.</p>
-            </div>
-          </div>
-            </div>
+            </>
           )}
         </CardContent>
       </Card>
@@ -389,6 +388,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 View your subscription and payment history
               </span>
             </div>
+            {currentSubscription && (
             <Button
               onClick={handleDownloadBillingHistory}
               variant="outline"
@@ -397,6 +397,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               <MdDownload className="mr-2" size={18} />
               Download All
             </Button>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent className="px-8 pb-8">

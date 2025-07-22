@@ -160,19 +160,19 @@ export default function PharmaciesForSale() {
   // Fetch pharmacies based on current filters and pagination
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      setError("");
-      try {
+    setLoading(true);
+    setError("");
+    try {
         const params = buildQueryParams();
-        const res = await getPharmaciesForSale(params, token);
-        setPharmacies(res.data.pharmacies || []);
-        setTotalPages(res.data.totalPages || 1);
-      } catch (err) {
-        setError(err.message || "Failed to load pharmacies");
-      } finally {
-        setLoading(false);
-      }
-    };
+      const res = await getPharmaciesForSale(params, token);
+      setPharmacies(res.data.pharmacies || []);
+      setTotalPages(res.data.totalPages || 1);
+    } catch (err) {
+      setError(err.message || "Failed to load pharmacies");
+    } finally {
+      setLoading(false);
+    }
+  };
 
     fetchData();
     // eslint-disable-next-line
@@ -458,8 +458,8 @@ export default function PharmaciesForSale() {
                   </div>
                 </div>
               </div>
-              {/* Active Filter Chips */}
-              {activeFilters.length > 0 && (
+            {/* Active Filter Chips */}
+            {activeFilters.length > 0 && (
                 <div className="border-t pt-4">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-sm font-medium text-gray-700">
@@ -470,16 +470,16 @@ export default function PharmaciesForSale() {
                     </Badge>
                   </div>
                   <div className="flex flex-nowrap gap-2 overflow-x-auto max-w-full pb-1">
-                    {activeFilters.map((filter) => (
-                      <Badge
-                        key={filter.key}
+                {activeFilters.map((filter) => (
+                  <Badge
+                    key={filter.key}
                         className="flex items-center gap-1 cursor-pointer bg-zinc-600 text-white hover:bg-zinc-600/70 transition-colors"
-                        onClick={filter.onRemove}
-                      >
-                        {filter.label}
+                    onClick={filter.onRemove}
+                  >
+                    {filter.label}
                         <X className="h-3 w-3" />
-                      </Badge>
-                    ))}
+                  </Badge>
+                ))}
                   </div>
                 </div>
               )}
@@ -532,8 +532,8 @@ export default function PharmaciesForSale() {
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+              </div>
+            )}
             </div>
           </Card>
           {error && <div className="text-red-500 mb-4">{error}</div>}
@@ -562,7 +562,7 @@ export default function PharmaciesForSale() {
                       disabled={currentPage === 1}
                     >
                       <ChevronLeft className="h-4 w-4" />
-                      Previous
+                    Previous
                     </Button>
                     <div className="flex items-center gap-1">
                       {getPageNumbers().map((page, index) => (
@@ -570,7 +570,7 @@ export default function PharmaciesForSale() {
                           {page === "..." ? (
                             <span className="px-2 py-1 text-muted-foreground">
                               ...
-                            </span>
+                  </span>
                           ) : (
                             <Button
                               variant={
@@ -595,8 +595,8 @@ export default function PharmaciesForSale() {
                         )
                       }
                       disabled={currentPage === (totalPages || 1)}
-                    >
-                      Next
+                  >
+                    Next
                       <ChevronRight className="h-4 w-4" />
                     </Button>
                   </div>

@@ -452,7 +452,7 @@ export default function AvailableDeals() {
                     {useLocationSort ? "Nearest" : "Sort by Nearest"}
                   </Button>
                 </div>
-              </div>
+        </div>
               {/* Location error message */}
               {locationError && (
                 <div className="text-red-500 text-sm mb-2">{locationError}</div>
@@ -464,8 +464,8 @@ export default function AvailableDeals() {
                   <div className="flex-1 min-w-[180px]">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        placeholder="Search by medicine name..."
+            <Input
+              placeholder="Search by medicine name..."
                         value={searchInput}
                         onChange={handleSearchInput}
                         className="pl-10"
@@ -473,21 +473,21 @@ export default function AvailableDeals() {
                     </div>
                   </div>
                   <div className="w-full md:w-44">
-                    <Select value={type} onValueChange={setType}>
+            <Select value={type} onValueChange={setType}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Types" />
-                      </SelectTrigger>
-                      <SelectContent>
+              </SelectTrigger>
+              <SelectContent>
                         {availableTypes.map((t) => (
                           <SelectItem key={t} value={t}>
                             {t}
                           </SelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
+              </SelectContent>
+            </Select>
                   </div>
                   <div className="w-full md:w-44">
-                    <Select value={location} onValueChange={setLocation}>
+            <Select value={location} onValueChange={setLocation}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Locations" />
                       </SelectTrigger>
@@ -504,16 +504,16 @@ export default function AvailableDeals() {
                     <Select value={dosageForm} onValueChange={setDosageForm}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Forms" />
-                      </SelectTrigger>
-                      <SelectContent>
+              </SelectTrigger>
+              <SelectContent>
                         <SelectItem value="tablet">Tablet</SelectItem>
                         <SelectItem value="syrup">Syrup</SelectItem>
                         <SelectItem value="injection">Injection</SelectItem>
                         <SelectItem value="capsule">Capsule</SelectItem>
                         <SelectItem value="powder">Powder</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
+              </SelectContent>
+            </Select>
                   </div>
                   <div className="w-full md:w-44">
                     <Select
@@ -531,19 +531,19 @@ export default function AvailableDeals() {
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Sort By" />
-                      </SelectTrigger>
-                      <SelectContent>
+              </SelectTrigger>
+              <SelectContent>
                         {sortOptions.map((opt) => (
                           <SelectItem key={opt.value} value={opt.value}>
                             {opt.label}
                           </SelectItem>
                         ))}
-                      </SelectContent>
-                    </Select>
+              </SelectContent>
+            </Select>
                   </div>
                 </div>
-              </div>
-
+          </div>
+          
               {/* Active Filter Chips */}
               {activeFilters.length > 0 && (
                 <div className="border-t pt-4">
@@ -617,8 +617,8 @@ export default function AvailableDeals() {
                           />
                         </div>
                       </div>
-                    </div>
-
+          </div>
+          
                     {/* Date Range */}
                     <div className="space-y-3">
                       <Label className="text-sm font-medium text-gray-700">
@@ -704,8 +704,8 @@ export default function AvailableDeals() {
                   <MedicineDealCardSkeleton key={i} />
                 ))
               : filteredDeals.map((deal) => (
-                  <MedicineDealCard key={deal.id} deal={deal} />
-                ))}
+              <MedicineDealCard key={deal.id} deal={deal} />
+            ))}
             {!isLoading && filteredDeals.length === 0 && (
               <div className="col-span-full text-center text-muted-foreground py-8 flex flex-col items-center">
                 <svg
@@ -775,7 +775,7 @@ export default function AvailableDeals() {
               </div>
             )}
           </div>
-
+          
           {/* Pagination Controls */}
           {!isLoading && !error && (totalPages || 1) > 1 && (
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -783,18 +783,18 @@ export default function AvailableDeals() {
                 Page {currentPage} of {totalPages || 1}
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
+              <Button
+                variant="outline"
+                size="sm"
                   onClick={() =>
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
-                  disabled={currentPage === 1}
-                >
+                disabled={currentPage === 1}
+              >
                   <ChevronLeft className="h-4 w-4" />
-                  Previous
-                </Button>
-                <div className="flex items-center gap-1">
+                Previous
+              </Button>
+              <div className="flex items-center gap-1">
                   {getPageNumbers().map((page, index) => (
                     <div key={index}>
                       {page === "..." ? (
@@ -802,32 +802,32 @@ export default function AvailableDeals() {
                           ...
                         </span>
                       ) : (
-                        <Button
+                      <Button
                           variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
+                        size="sm"
                           onClick={() => setCurrentPage(page)}
-                          className="w-8 h-8 p-0"
-                        >
+                        className="w-8 h-8 p-0"
+                      >
                           {page}
-                        </Button>
+                      </Button>
                       )}
                     </div>
                   ))}
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
                   onClick={() =>
                     setCurrentPage((prev) =>
                       Math.min(prev + 1, totalPages || 1)
                     )
                   }
                   disabled={currentPage === (totalPages || 1)}
-                >
-                  Next
+              >
+                Next
                   <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
+              </Button>
+            </div>
             </div>
           )}
         </div>

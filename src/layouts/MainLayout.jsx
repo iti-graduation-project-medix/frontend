@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // Core Layout Components
 import SharedLayout from "./SharedLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
+import SubscriptionRoute from "../components/SubscriptionRoute";
 import ProfileRedirect from "../components/ProfileRedirect";
 
 // Main Pages
@@ -194,9 +195,11 @@ export default function MainLayout() {
               path="favorites"
               element={
                 <ProtectedRoute>
-                  <OfflineRouteGuard>
-                    <Favorites />
-                  </OfflineRouteGuard>
+                  <SubscriptionRoute>
+                    <OfflineRouteGuard>
+                      <Favorites />
+                    </OfflineRouteGuard>
+                  </SubscriptionRoute>
                 </ProtectedRoute>
               }
             />
@@ -206,9 +209,11 @@ export default function MainLayout() {
               path="my-deals"
               element={
                 <ProtectedRoute>
-                  <OfflineRouteGuard>
-                    <Deals />
-                  </OfflineRouteGuard>
+                  <SubscriptionRoute>
+                    <OfflineRouteGuard>
+                      <Deals />
+                    </OfflineRouteGuard>
+                  </SubscriptionRoute>
                 </ProtectedRoute>
               }
             />
@@ -219,9 +224,11 @@ export default function MainLayout() {
                 index
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <AvailableDeals />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -229,9 +236,11 @@ export default function MainLayout() {
                 path="new"
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <DealFormPage />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -239,9 +248,11 @@ export default function MainLayout() {
                 path=":id"
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <DealDetails />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -249,9 +260,11 @@ export default function MainLayout() {
                 path="edit/:id"
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <DealFormPage />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -263,9 +276,11 @@ export default function MainLayout() {
                 index
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <PharmaciesForSale />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -273,9 +288,11 @@ export default function MainLayout() {
                 path="new"
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <AddPharmacy />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -283,9 +300,11 @@ export default function MainLayout() {
                 path=":id"
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <PharmacyDetails />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />
@@ -293,9 +312,11 @@ export default function MainLayout() {
                 path=":id/edit"
                 element={
                   <ProtectedRoute>
+                    <SubscriptionRoute>
                     <OfflineRouteGuard>
                       <AddPharmacy />
                     </OfflineRouteGuard>
+                    </SubscriptionRoute>
                   </ProtectedRoute>
                 }
               />

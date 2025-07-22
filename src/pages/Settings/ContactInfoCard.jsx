@@ -21,11 +21,19 @@ export default function ContactInfoCard({ pharmacistDetails }) {
   const { user, token } = useAuth();
   const { fetchPharmacistDetails } = usePharmacist();
 
-  // Get user ID from localStorage if not available from auth store
+  // Get user ID from auth store or localStorage
   const getUserId = () => {
-    if (user) return user;
+    if (user && user.id) return user.id;
     const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    if (storedUser) {
+      try {
+        const parsed = JSON.parse(storedUser);
+        return parsed.id || parsed._id || parsed;
+      } catch {
+        return storedUser;
+      }
+    }
+    return null;
   };
 
   // State for form data
@@ -307,7 +315,7 @@ export default function ContactInfoCard({ pharmacistDetails }) {
                 className={`px-6 py-2 rounded-md text-base transition-all duration-200 ${
                   hasChanges
                     ? "bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white"
-                    : "bg-gray-300 dark:bg-zinc-800 cursor-not-allowed text-gray-400 dark:text-gray-500"
+                    : "bg-gray-300 dark:bg-zinc-500 cursor-not-allowed text-gray-400 dark:text-white"
                 }`}
               >
                 {isLoading ? (

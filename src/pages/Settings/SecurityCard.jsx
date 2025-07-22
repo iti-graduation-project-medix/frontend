@@ -231,7 +231,7 @@ export default function SecurityCard({ pharmacistDetails }) {
                           {getPasswordStrength(values.newPassword).label}
                         </span>
                       </div>
-                      <div className="w-full bg-gray-200 dark:bg-zinc-800 rounded-full h-2">
+                      <div className="w-full bg-gray-200 dark:bg-zinc-400 rounded-full h-2">
                         <div
                           className={`h-2 rounded-full transition-all duration-300 ${
                             getPasswordStrength(values.newPassword).strength <=

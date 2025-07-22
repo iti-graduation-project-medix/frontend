@@ -37,59 +37,65 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full max-w-md mx-auto mb-6">
           <Link
             to="/auth/signup"
-
             className="inline-flex items-center justify-center bg-primary dark:bg-primary hover:bg-primary-hover dark:hover:bg-primary-hover text-white font-semibold rounded-lg px-8 py-3 text-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/40"
-
           >
-            <svg
-              className="w-6 h-6 mr-2"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M21 7L9 19l-5.5-5.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            {/* User Plus (Signup) SVG */}
+            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="8.5" cy="7" r="4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M20 8v6M23 11h-6" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             Get Started
           </Link>
           <Link
-            to="/explore"
-
+            to="/auth/login"
             className="inline-flex items-center justify-center bg-white dark:bg-background border border-primary dark:border-primary text-primary dark:text-primary font-semibold rounded-lg px-8 py-3 text-lg shadow-sm hover:bg-primary/10 dark:hover:bg-primary/10 transition-all duration-200"
-
           >
-            <svg
-              className="w-6 h-6 mr-2"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 8v4l3 3" />
+            {/* Login SVG */}
+            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+              <polyline points="10 17 15 12 10 7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="15" y1="12" x2="3" y2="12" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            Explore Platform
+            Login Now
           </Link>
         </div>
         {/* Features Bar */}
         <div className="flex flex-wrap justify-center gap-4 mt-4">
-
           <span className="flex items-center gap-2 bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary px-4 py-2 rounded-full text-sm font-medium">
-
-            💬 Chat for Every Deal
+            {/* Chat Bubble with Dots SVG */}
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4A8.5 8.5 0 0 1 12 21.5a8.38 8.38 0 0 1-5.4-1.9L3 21l1.4-3.6A8.38 8.38 0 0 1 2.5 12a8.5 8.5 0 1 1 17 0z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="8.5" cy="12" r="1" fill="currentColor" />
+              <circle cx="12" cy="12" r="1" fill="currentColor" />
+              <circle cx="15.5" cy="12" r="1" fill="currentColor" />
+            </svg>
+            Chat for Every Deal
           </span>
           <span className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium">
-            🔄 Medicine Exchange
+            {/* Capsule/Pill SVG */}
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="7" rx="2" stroke="currentColor" />
+              <path d="M8.5 11V7a3.5 3.5 0 1 1 7 0v4" stroke="currentColor" />
+              <ellipse cx="12" cy="14.5" rx="2.5" ry="1.5" fill="currentColor" />
+            </svg>
+            Medicine Exchange
           </span>
           <span className="flex items-center gap-2 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 px-4 py-2 rounded-full text-sm font-medium">
-            🏪 Sell Your Pharmacy
+            {/* Store/Shop SVG */}
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path d="M3 7l1.5-4h15L21 7M3 7h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+              <rect x="7" y="13" width="4" height="4" fill="currentColor" />
+            </svg>
+            Sell Your Pharmacy
           </span>
           <span className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-300 px-4 py-2 rounded-full text-sm font-medium">
-            🔒 Verified Pharmacists
+            {/* Shield with Checkmark SVG */}
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path d="M12 3l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V7l7-4z" stroke="currentColor" strokeLinejoin="round"/>
+              <path d="M9.5 12.5l2 2 3-3" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Verified Pharmacists
           </span>
         </div>
       </section>
@@ -106,8 +112,11 @@ export default function Home() {
             {/* Step 1 + Brief */}
             <div className="w-full md:w-1/2">
 
-              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-primary dark:border-primary p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-primary dark:border-primary p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1 relative">
 
+                <span className="absolute left-4 top-4 flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-lg border-2 border-primary shadow z-10">
+                  1
+                </span>
                 {/* Step */}
                 <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
                   <span className="mb-2">
@@ -125,10 +134,6 @@ export default function Home() {
                       />
                     </svg>
                   </span>
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold text-lg border-2 border-primary shadow mb-2">
-                    1
-                  </span>
-
                   <h3 className="font-bold text-lg text-primary dark:text-primary mb-1">
                     Sign Up & Verify
                   </h3>
@@ -147,16 +152,6 @@ export default function Home() {
                 {/* Brief */}
                 <div className="flex flex-col justify-center flex-1 px-2 py-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <svg
-                      className="w-5 h-5 text-primary"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 8v4l3 3" />
-                    </svg>
 
                     <h4 className="text-base font-semibold text-primary dark:text-primary">
 
@@ -201,7 +196,10 @@ export default function Home() {
             </div>
             {/* Step 2 + Brief */}
             <div className="w-full md:w-1/2 mt-4 md:mt-0">
-              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-yellow-100 dark:border-yellow-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-yellow-100 dark:border-yellow-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1 relative">
+                <span className="absolute left-4 top-4 flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 font-bold text-lg border-2 border-yellow-200 shadow z-10">
+                  2
+                </span>
                 {/* Step */}
                 <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
                   <span className="mb-2">
@@ -218,9 +216,6 @@ export default function Home() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </span>
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-yellow-100 text-yellow-700 font-bold text-lg border-2 border-yellow-200 shadow mb-2">
-                    2
                   </span>
                   <h3 className="font-bold text-lg text-yellow-700 dark:text-yellow-400 mb-1">
                     Subscription
@@ -239,19 +234,7 @@ export default function Home() {
                 {/* Brief */}
                 <div className="flex flex-col justify-center flex-1 px-2 py-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <svg
-                      className="w-5 h-5 text-yellow-700"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        d="M12 17.75l6.16 3.73-1.64-7.03L21.5 9.24l-7.19-.61L12 2 9.69 8.63 2.5 9.24l5.98 5.21-1.64 7.03L12 17.75z"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                  
                     <h4 className="text-base font-semibold text-yellow-700 dark:text-yellow-400">
                       Why Subscription?
                     </h4>
@@ -300,7 +283,10 @@ export default function Home() {
           <div className="flex flex-col md:flex-row md:gap-6 w-full items-center">
             {/* Step 3 + Brief */}
             <div className="w-full md:w-1/2">
-              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-purple-100 dark:border-purple-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-purple-100 dark:border-purple-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1 relative">
+                <span className="absolute left-4 top-4 flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-700 font-bold text-lg border-2 border-purple-200 shadow z-10">
+                  3
+                </span>
                 {/* Step */}
                 <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
                   <span className="mb-2">
@@ -317,9 +303,6 @@ export default function Home() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </span>
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 text-purple-700 font-bold text-lg border-2 border-purple-200 shadow mb-2">
-                    3
                   </span>
                   <h3 className="font-bold text-lg text-purple-700 dark:text-purple-400 mb-1">
                     Browse or Post Deals
@@ -338,16 +321,6 @@ export default function Home() {
                 {/* Brief */}
                 <div className="flex flex-col justify-center flex-1 px-2 py-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <svg
-                      className="w-5 h-5 text-purple-700"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <rect x="3" y="3" width="18" height="14" rx="2" />
-                      <path d="M8 17l4 4 4-4m-4-5v9" />
-                    </svg>
                     <h4 className="text-base font-semibold text-purple-700 dark:text-purple-400">
                       Why Post or Browse Deals?
                     </h4>
@@ -390,7 +363,10 @@ export default function Home() {
             </div>
             {/* Step 4 + Brief */}
             <div className="w-full md:w-1/2 mt-4 md:mt-0">
-              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-green-100 dark:border-green-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-green-100 dark:border-green-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1 relative">
+                <span className="absolute left-4 top-4 flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-700 font-bold text-lg border-2 border-green-200 shadow z-10">
+                  4
+                </span>
                 {/* Step */}
                 <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
                   <span className="mb-2">
@@ -407,9 +383,6 @@ export default function Home() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </span>
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 text-green-700 font-bold text-lg border-2 border-green-200 shadow mb-2">
-                    4
                   </span>
                   <h3 className="font-bold text-lg text-green-700 dark:text-green-400 mb-1">
                     Chat for Every Deal
@@ -428,16 +401,6 @@ export default function Home() {
                 {/* Brief */}
                 <div className="flex flex-col justify-center flex-1 px-2 py-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <svg
-                      className="w-5 h-5 text-green-700"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M8 10h.01M12 14h.01M16 10h.01" />
-                    </svg>
                     <h4 className="text-base font-semibold text-green-700 dark:text-green-400">
                       Why Chat?
                     </h4>
@@ -482,12 +445,15 @@ export default function Home() {
           {/* Row 3: Step 5 only (centered) */}
           <div className="flex flex-col md:flex-row w-full justify-center">
             <div className="w-full md:w-1/2 mx-auto">
-              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-gray-200 dark:border-gray-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1">
+              <div className="flex flex-col md:flex-row bg-white dark:bg-card rounded-2xl shadow-md border border-gray-200 dark:border-gray-900 p-4 md:p-6 items-stretch gap-0 min-h-[320px] mb-1 relative">
+                <span className="absolute left-4 top-4 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-700 font-bold text-lg border-2 border-gray-200 shadow z-10">
+                  5
+                </span>
                 {/* Step */}
                 <div className="flex flex-col items-center justify-center flex-1 px-2 py-4">
                   <span className="mb-2">
                     <svg
-                      className="w-8 h-8 text-gray-700"
+                      className="w-8 h-8 text-gray-500"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
@@ -499,9 +465,6 @@ export default function Home() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </span>
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 text-gray-700 font-bold text-lg border-2 border-gray-200 shadow mb-2">
-                    5
                   </span>
                   <h3 className="font-bold text-lg text-gray-700 dark:text-gray-400 mb-1">
                     Sell Your Pharmacy
@@ -520,16 +483,6 @@ export default function Home() {
                 {/* Brief */}
                 <div className="flex flex-col justify-center flex-1 px-2 py-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <svg
-                      className="w-5 h-5 text-gray-700"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <rect x="3" y="3" width="18" height="14" rx="2" />
-                      <path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM12 14v7m-7-7a7 7 0 0 1 14 0v7H5v-7Z" />
-                    </svg>
                     <h4 className="text-base font-semibold text-gray-700 dark:text-gray-400">
                       Why Sell Your Pharmacy?
                     </h4>
@@ -620,20 +573,12 @@ export default function Home() {
           </div>
           {/* Feature 3 */}
           <div className="bg-white dark:bg-card rounded-2xl shadow border border-purple-100 dark:border-purple-900 p-8 flex flex-col items-center text-center hover:border-purple-400 dark:hover:border-purple-400 transition">
-            <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-full p-5 mb-4 shadow">
-              <svg
-                className="w-10 h-10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-              >
-                <rect x="3" y="3" width="18" height="14" rx="2" />
-                <path
-                  d="M8 17l4 4 4-4m-4-5v9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+            <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-full p-5 mb-4 shadow flex items-center justify-center">
+              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4A8.5 8.5 0 0 1 12 21.5a8.38 8.38 0 0 1-5.4-1.9L3 21l1.4-3.6A8.38 8.38 0 0 1 2.5 12a8.5 8.5 0 1 1 17 0z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="8.5" cy="12" r="1" fill="currentColor" />
+                <circle cx="12" cy="12" r="1" fill="currentColor" />
+                <circle cx="15.5" cy="12" r="1" fill="currentColor" />
               </svg>
             </div>
             <h3 className="font-extrabold text-lg mb-2 text-purple-700 dark:text-purple-400">
@@ -646,20 +591,10 @@ export default function Home() {
           </div>
           {/* Feature 4 */}
           <div className="bg-white dark:bg-card rounded-2xl shadow border border-yellow-100 dark:border-yellow-900 p-8 flex flex-col items-center text-center hover:border-yellow-400 dark:hover:border-yellow-400 transition">
-            <div className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 rounded-full p-5 mb-4 shadow">
-              <svg
-                className="w-10 h-10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-              >
-                <rect x="3" y="3" width="18" height="14" rx="2" />
-                <path
-                  d="M8 17l4 4 4-4m-4-5v9"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+            <div className="bg-yellow-100 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300 rounded-full p-5 mb-4 shadow flex items-center justify-center">
+              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path d="M3 7l1.5-4h15L21 7M3 7h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
+                <rect x="7" y="13" width="4" height="4" fill="currentColor" />
               </svg>
             </div>
             <h3 className="font-extrabold text-lg mb-2 text-yellow-700 dark:text-yellow-400">
@@ -671,29 +606,7 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <div className="text-center mt-10">
-          <a
-            href="#how-it-works"
-
-            className="inline-flex items-center gap-2 bg-primary dark:bg-primary hover:bg-primary-hover dark:hover:bg-primary-hover text-white font-semibold rounded-lg px-6 py-3 text-lg shadow-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/40"
-
-          >
-            See How It Works
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M5 12h14M12 5l7 7-7 7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-        </div>
+       
       </section>
       {/* Verification Steps Section */}
 
@@ -859,7 +772,7 @@ export default function Home() {
                 title: (
                   <div className="flex items-center gap-4">
                     <HelpCircle className="w-8 h-8 text-primary" />
-                    <span className="flex items-center gap-2 text-primary text-lg md:text-xl font-semibold">
+                    <span className="flex items-center gap-2 text-zince-700  dark:text-white text-lg md:text-xl font-semibold">
                       What is Dawaback?
                     </span>
                   </div>
@@ -871,8 +784,8 @@ export default function Home() {
               {
                 title: (
                   <div className="flex items-center gap-4">
-                    <UserCheck className="w-8 h-8 text-green-500" />
-                    <span className="flex items-center gap-2 text-primary text-lg md:text-xl font-semibold">
+                    <UserCheck className="w-8 h-8 text-blue-500" />
+                    <span className="flex items-center gap-2 text-zince-700  dark:text-whitetext-lg md:text-xl font-semibold">
                       Who can register on Dawaback?
                     </span>
                   </div>
@@ -885,7 +798,7 @@ export default function Home() {
                 title: (
                   <div className="flex items-center gap-4">
                     <Gift className="w-8 h-8 text-purple-500" />
-                    <span className="flex items-center gap-2 text-primary text-lg md:text-xl font-semibold">
+                    <span className="flex items-center gap-2 text-zince-700  dark:text-white text-lg md:text-xl font-semibold">
                       How can I benefit from Dawaback?
                     </span>
                   </div>
@@ -897,8 +810,8 @@ export default function Home() {
               {
                 title: (
                   <div className="flex items-center gap-4">
-                    <ShieldCheck className="w-8 h-8 text-cyan-600" />
-                    <span className="flex items-center gap-2 text-primary text-lg md:text-xl font-semibold">
+                    <ShieldCheck className="w-8 h-8 text-brown-600" />
+                    <span className="flex items-center gap-2 text-zince-700  dark:text-white text-lg md:text-xl font-semibold">
                       Is my data and my deals secure?
                     </span>
                   </div>
@@ -911,7 +824,7 @@ export default function Home() {
                 title: (
                   <div className="flex items-center gap-4">
                     <CreditCard className="w-8 h-8 text-yellow-500" />
-                    <span className="flex items-center gap-2 text-primary text-lg md:text-xl font-semibold">
+                    <span className="flex items-center gap-2 text-zince-700  dark:text-whitetext-lg md:text-xl font-semibold">
                       Are there any subscription fees?
                     </span>
                   </div>

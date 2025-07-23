@@ -142,7 +142,7 @@ export default function MainLayout() {
                 }
               />
               <Route
-                path="success"
+                path="status"
                 element={
                   <ProtectedRoute>
                     <OfflineRouteGuard>
@@ -152,7 +152,7 @@ export default function MainLayout() {
                 }
               />
               <Route
-                path="failed"
+                path="status"
                 element={
                   <ProtectedRoute>
                     <OfflineRouteGuard>

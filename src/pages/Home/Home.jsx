@@ -7,6 +7,9 @@ import {
   Gift,
   ShieldCheck,
   CreditCard,
+  MessagesSquare,
+  MessageSquare,
+  Info,
 } from "lucide-react";
 import { useAuth } from "@/store/useAuth";
 
@@ -63,17 +66,12 @@ export default function Home() {
         )}
         {/* Features Bar */}
         <div className="flex flex-wrap justify-center gap-4 mt-4">
-          <span className="flex items-center gap-2 bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary px-4 py-2 rounded-full text-sm font-medium">
+          <span className="flex items-center gap-2 bg-primary/20 dark:bg-primary/20 text-primary dark:text-primary px-4 py-2 rounded-full text-sm font-medium">
             {/* Chat Bubble with Dots SVG */}
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4A8.5 8.5 0 0 1 12 21.5a8.38 8.38 0 0 1-5.4-1.9L3 21l1.4-3.6A8.38 8.38 0 0 1 2.5 12a8.5 8.5 0 1 1 17 0z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="8.5" cy="12" r="1" fill="currentColor" />
-              <circle cx="12" cy="12" r="1" fill="currentColor" />
-              <circle cx="15.5" cy="12" r="1" fill="currentColor" />
-            </svg>
+            <MessagesSquare className="w-5 h-5" />
             Chat for Every Deal
           </span>
-          <span className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 px-4 py-2 rounded-full text-sm font-medium">
+          <span className="flex items-center gap-2 bg-slate-600 dark:bg-slate-900/50 text-slate-300 dark:text-slate-300 px-4 py-2 rounded-full text-sm font-medium">
             {/* Capsule/Pill SVG */}
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <rect x="3" y="11" width="18" height="7" rx="2" stroke="currentColor" />
@@ -82,7 +80,7 @@ export default function Home() {
             </svg>
             Medicine Exchange
           </span>
-          <span className="flex items-center gap-2 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 px-4 py-2 rounded-full text-sm font-medium">
+          <span className="flex items-center gap-2 bg-green-200 dark:bg-green-900/50 text-green-800 dark:text-green-500 px-4 py-2 rounded-full text-sm font-medium">
             {/* Store/Shop SVG */}
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M3 7l1.5-4h15L21 7M3 7h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
@@ -90,7 +88,7 @@ export default function Home() {
             </svg>
             Sell Your Pharmacy
           </span>
-          <span className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900/20 text-gray-800 dark:text-gray-300 px-4 py-2 rounded-full text-sm font-medium">
+          <span className="flex items-center gap-2 bg-gray-300 dark:bg-gray-900/20 text-gray-800 dark:text-gray-300 px-4 py-2 rounded-full text-sm font-medium">
             {/* Shield with Checkmark SVG */}
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path d="M12 3l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V7l7-4z" stroke="currentColor" strokeLinejoin="round"/>
@@ -522,19 +520,7 @@ export default function Home() {
           <div className="bg-white dark:bg-card rounded-2xl shadow border border-primary dark:border-primary p-8 flex flex-col items-center text-center hover:border-primary dark:hover:border-primary transition">
             <div className="bg-primary/10 dark:bg-primary/20 text-primary rounded-full p-5 mb-4 shadow">
 
-              <svg
-                className="w-10 h-10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M12 11v2m0 4h.01M21 12c0 4.418-4.03 8-9 8s-9-3.582-9-8a9 9 0 1 1 18 0Z"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <Info className="w-10 h-10" />
             </div>
 
             <h3 className="font-extrabold text-lg mb-2 text-primary dark:text-primary">
@@ -575,12 +561,7 @@ export default function Home() {
           {/* Feature 3 */}
           <div className="bg-white dark:bg-card rounded-2xl shadow border border-purple-100 dark:border-purple-900 p-8 flex flex-col items-center text-center hover:border-purple-400 dark:hover:border-purple-400 transition">
             <div className="bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 rounded-full p-5 mb-4 shadow flex items-center justify-center">
-              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path d="M21 11.5a8.38 8.38 0 0 1-1.9 5.4A8.5 8.5 0 0 1 12 21.5a8.38 8.38 0 0 1-5.4-1.9L3 21l1.4-3.6A8.38 8.38 0 0 1 2.5 12a8.5 8.5 0 1 1 17 0z" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"/>
-                <circle cx="8.5" cy="12" r="1" fill="currentColor" />
-                <circle cx="12" cy="12" r="1" fill="currentColor" />
-                <circle cx="15.5" cy="12" r="1" fill="currentColor" />
-              </svg>
+              <MessageSquare className="w-10 h-10" />
             </div>
             <h3 className="font-extrabold text-lg mb-2 text-purple-700 dark:text-purple-400">
               Real-Time Chat

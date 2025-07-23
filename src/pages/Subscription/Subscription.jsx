@@ -7,9 +7,6 @@ import {
   CardContent,
 } from "../../components/ui/card";
 import { useNavigate } from "react-router-dom";
-import SuccessPayment from "../SuccessPayment/SuccessPayment";
-import FailedPayment from "../FailedPayment/FailedPayment";
-import { useLocation } from "react-router-dom";
 
 // SVG Icons for FAQ items
 const FAQIcons = {
@@ -188,16 +185,6 @@ const accordionItems = [
 
 export default function Subscription() {
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Check for ?success=true in the query params
-  const params = new URLSearchParams(location.search);
-  const isPaymentResult = params.has("success");
-  const isSuccess = params.get("success") === "true";
-
-  if (isPaymentResult) {
-    return isSuccess ? <SuccessPayment /> : <FailedPayment />;
-  }
 
   const handleContactSupport = () => {
     navigate("/contact");

@@ -318,26 +318,20 @@ export default function Profile() {
 
         {/* Charts and Details */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="flex w-full bg-gray-100 dark:bg-card rounded-2xl px-3 shadow-sm">
+          <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 dark:bg-card border border-gray-200 dark:border-border rounded-xl overflow-hidden">
             <TabsTrigger
               value="overview"
-              className={`
-                flex-1 py-3 rounded-xl text-lg font-semibold transition
-                data-[state=active]:bg-white data-[state=active]:shadow data-[state=active]:text-primary/70 dark:data-[state=active]:bg-background dark:data-[state=active]:text-primary
-                data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500 dark:data-[state=inactive]:text-gray-400 hover:bg-gray-200 dark:hover:bg-muted/10
-              `}
+              className="flex items-center gap-2 dark:text-foreground"
             >
-              Deals
+              <Package className="w-4 h-4" />
+              Deals ({deals.length})
             </TabsTrigger>
             <TabsTrigger
               value="pharmacies"
-              className={`
-                flex-1 py-3 rounded-xl text-lg font-semibold transition
-                data-[state=active]:bg-white data-[state=active]:shadow data-[state=active]:text-primary/70 dark:data-[state=active]:bg-background dark:data-[state=active]:text-primary
-                data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500 dark:data-[state=inactive]:text-gray-400 hover:bg-gray-200 dark:hover:bg-muted/10
-              `}
+              className="flex items-center gap-2 dark:text-foreground"
             >
-              Pharmacies
+              <Building2 className="w-4 h-4" />
+              Pharmacies ({pharmacies.length})
             </TabsTrigger>
           </TabsList>
 

@@ -419,7 +419,7 @@ export function DealForm({ className, dealData: initialDealData, ...props }) {
                           </p>
                           {subscriptionInfo && (
                             <div className="flex items-center gap-2 text-xs text-green-600 dark:text-green-200">
-                              <div className="w-full bg-green-200 rounded-full h-2 dark:bg-green-900/60">
+                              <div className="w-full bg-green-200 rounded-full h-2 dark:bg-green-700">
                                 <div
                                   className="bg-green-500 h-2 rounded-full transition-all duration-300 dark:bg-green-400"
                                   style={{

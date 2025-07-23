@@ -6,7 +6,9 @@ import {
   CardTitle,
   CardContent,
 } from "../../components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 // SVG Icons for FAQ items
 const FAQIcons = {
@@ -184,7 +186,20 @@ const accordionItems = [
 ];
 
 export default function Subscription() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const toastShownRef = useRef(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("reason") === "not_subscribed" && !toastShownRef.current) {
+      toast.error("Please subscribe to use our services.");
+      toastShownRef.current = true;
+      // Remove the query param for a clean URL
+      params.delete("reason");
+      navigate({ pathname: location.pathname, search: params.toString() }, { replace: true });
+    }
+  }, [location, navigate]);
 
   const handleContactSupport = () => {
     navigate("/contact");

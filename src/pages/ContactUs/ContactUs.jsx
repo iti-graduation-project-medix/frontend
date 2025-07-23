@@ -110,6 +110,31 @@ export default function ContactUs() {
         <meta name="twitter:title" content="Contact Us | Dawaback" />
         <meta name="twitter:description" content="Contact Dawaback for questions, support, or partnership inquiries. We're here to help pharmacists and healthcare professionals." />
         <meta name="twitter:image" content="https://dawaback.com/og-image.jpg" />
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "Contact Us",
+            "url": "https://dawaback.com/contact",
+            "description": "Contact Dawaback for questions, support, or partnership inquiries. We're here to help pharmacists and healthcare professionals."
+          }
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Dawaback",
+            "url": "https://dawaback.com/",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+20-100-000-0000",
+              "contactType": "customer support",
+              "areaServed": "EG",
+              "availableLanguage": ["en","ar"]
+            }
+          }
+        `}</script>
       </Helmet>
       <motion.div
         className="min-h-screen bg-gradient-to-b from-background to-muted/20 dark:from-background dark:to-muted/10 text-foreground dark:text-foreground"

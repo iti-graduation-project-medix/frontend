@@ -142,6 +142,30 @@ export default function Advertise() {
         <meta name="twitter:title" content="Advertise with Dawaback" />
         <meta name="twitter:description" content="Advertise your pharmaceutical or healthcare brand with Dawaback. Reach a targeted audience of pharmacists and pharmacy owners." />
         <meta name="twitter:image" content="https://dawaback.com/og-image.jpg" />
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Advertise with Dawaback",
+            "url": "https://dawaback.com/advertise",
+            "description": "Advertise your pharmaceutical or healthcare brand with Dawaback. Reach a targeted audience of pharmacists and pharmacy owners."
+          }
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "serviceType": "Advertising",
+            "provider": {
+              "@type": "Organization",
+              "name": "Dawaback",
+              "url": "https://dawaback.com/"
+            },
+            "areaServed": "EG",
+            "description": "Advertise your pharmaceutical or healthcare brand with Dawaback. Reach a targeted audience of pharmacists and pharmacy owners."
+          }
+        `}</script>
       </Helmet>
       <motion.div
       className="min-h-screen font-sans  dark:bg-background text-foreground dark:text-foreground"

@@ -43,6 +43,24 @@ export default function SignUp() {
         <meta name="twitter:title" content="Sign Up | Dawaback Medical Community" />
         <meta name="twitter:description" content="Join Dawaback to access secure pharmacy deals, medicine exchange, and professional networking for pharmacists." />
         <meta name="twitter:image" content="https://dawaback.com/og-image.jpg" />
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Sign Up | Dawaback Medical Community",
+            "url": "https://dawaback.com/auth/signup",
+            "description": "Join Dawaback to access secure pharmacy deals, medicine exchange, and professional networking for pharmacists."
+          }
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "RegisterAction",
+            "target": "https://dawaback.com/auth/signup",
+            "name": "Sign Up for Dawaback"
+          }
+        `}</script>
       </Helmet>
       <div className="min-h-svh ">
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">

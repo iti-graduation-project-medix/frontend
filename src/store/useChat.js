@@ -362,12 +362,20 @@ const useChat = create(
 
         // Listen for errors
         socket.on("error", (error) => {
+          if (
+            error &&
+            error.message === "Failed to join room" &&
+            error.details &&
+            error.details.includes("not found")
+          ) {
+            console.info("Socket info:", error);
+            return;
+          }
           console.error("Socket error:", error);
           set({ error: error.message || "Socket connection error" });
         });
 
         socket.on("connect", () => {
-          console.log("Connected to chat server:", socket.id);
           // On reconnect, reload chats and re-join active chat
           const { loadUserChats, activeChat, getCurrentUserId } = get();
           loadUserChats();

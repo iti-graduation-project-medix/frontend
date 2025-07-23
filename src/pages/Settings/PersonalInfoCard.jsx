@@ -29,7 +29,7 @@ export default function PersonalInfoCard({ pharmacistDetails }) {
       key: "birthOfDate",
       label: "Date of Birth",
       value: details.birthOfDate || "Not available",
-      icon: <FaBirthdayCake className="text-zinc-600" />,
+      icon: <FaBirthdayCake className="text-zinc-600 dark:text-zinc-400" />,
     },
     {
       key: "gender",
@@ -70,7 +70,7 @@ export default function PersonalInfoCard({ pharmacistDetails }) {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-gray-100 dark:bg-zinc-800 group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors duration-200">
+                  <div className="p-2 rounded-lg bg-gray-100 dark:bg-slate-700 group-hover:bg-primary/10 dark:group-hover:bg-primary/20 transition-colors duration-200">
                     {field.icon}
                   </div>
                   <div>

@@ -1,4 +1,4 @@
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 const API_BASE_URL = `${baseURL}/api/v1`;
 
 export const getChatHistory = async (chatRoomId) => {

@@ -222,7 +222,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 </p>
               </div>
             </div>
-          ) : currentSubscription ? (
+          ) : currentSubscription && currentSubscription.status === true ? (
             <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/30  border-gray-100 shadow-lg dark:from-background dark:to-background border  dark:border-border">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/5 to-transparent rounded-full -translate-y-16 translate-x-16"></div>
               <div className="relative p-8">
@@ -321,18 +321,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-8 pb-8">
-          {(!currentSubscription) ? (
-            <div className="flex flex-col items-center justify-center py-10 sm:py-16 max-w-xs sm:max-w-md mx-auto text-center">
-              <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-4 sm:mb-6">
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full"></div>
-                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-lg">
-                  <MdInfo size={28} className="sm:size-32 text-gray-400" />
-                </div>
-              </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">No usage features available</h3>
-              <p className="text-gray-500 text-xs sm:text-sm">Usage features will appear here once you have an active subscription</p>
-            </div>
-          ) : (
+          {currentSubscription && currentSubscription.status === true ? (
             <>
             {/* Premium Plan Extra Features */}
             {currentSubscription.planName === 'premium' && (
@@ -473,6 +462,17 @@ export default function BillingPlansCard({ pharmacistDetails }) {
             </div>
           )}
             </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-10 sm:py-16 max-w-xs sm:max-w-md mx-auto text-center">
+              <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 mb-4 sm:mb-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full"></div>
+                <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <MdInfo size={28} className="sm:size-32 text-gray-400" />
+                </div>
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">No usage features available</h3>
+              <p className="text-gray-500 text-xs sm:text-sm">Usage features will appear here once you have an active subscription</p>
+            </div>
           )}
         </CardContent>
       </Card>

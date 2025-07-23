@@ -12,6 +12,15 @@ const CornerAd = ({ position = "dealDetails" }) => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(true);
 
+  // Check sessionStorage on mount to see if ad was closed for this page/position
+  useEffect(() => {
+    const adKey = `cornerAdClosed_${position}`;
+    if (sessionStorage.getItem(adKey) === "true") {
+      setIsVisible(false);
+      setShowModal(false);
+    }
+  }, [position]);
+
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -52,6 +61,9 @@ const CornerAd = ({ position = "dealDetails" }) => {
   const handleClose = () => {
     setIsVisible(false);
     setShowModal(false);
+    // Set sessionStorage flag for this page/position
+    const adKey = `cornerAdClosed_${position}`;
+    sessionStorage.setItem(adKey, "true");
   };
 
   const handleExpand = () => {
@@ -68,7 +80,7 @@ const CornerAd = ({ position = "dealDetails" }) => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60">
       <div
-        className={`bg-white dark:bg-card rounded-2xl shadow-2xl border border-gray-200 dark:border-border overflow-hidden transition-all duration-300 w-[95vw] max-w-md animate-fade-in-up`}
+        className={`bg-white dark:bg-card rounded-2xl shadow-2xl border border-gray-200 dark:border-border overflow-hidden transition-all duration-300 w-[98vw] max-w-2xl animate-fade-in-up`}
         style={{ boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)" }}
       >
         {/* Header */}
@@ -76,8 +88,8 @@ const CornerAd = ({ position = "dealDetails" }) => {
           <img
             src={currentAd.imageUrl}
             alt={currentAd.title}
-            className="w-full h-36 object-cover"
-          />
+            className="w-full h-56 object-cover"
+          />{" "}
           <div className="absolute top-2 left-2 flex items-center gap-2">
             <span className="bg-yellow-400 text-xs font-bold text-gray-900 px-2 py-0.5 rounded-full shadow-sm">
               Sponsored

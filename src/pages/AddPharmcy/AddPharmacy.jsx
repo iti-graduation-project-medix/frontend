@@ -401,63 +401,47 @@ export default function AddPharmacy() {
                       </p>
 
                       {/* Step Indicator */}
-                      <div className="flex items-center justify-center mt-6 mb-4">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex items-center">
-                            <div
-                              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
-                                currentStep >= 1
-                                  ? "bg-primary text-white dark:bg-primary dark:text-white"
-                                  : "bg-gray-200 text-gray-500 dark:bg-zinc-800 dark:text-gray-400"
-                              }`}
-                            >
-                              1
-                            </div>
-                            <span
-                              className={`ml-2 text-sm font-medium ${
-                                currentStep >= 1
-                                  ? "text-primary"
-                                  : "text-gray-500"
-                              } dark:${
-                                currentStep >= 1
-                                  ? "text-primary"
-                                  : "text-gray-400"
-                              }`}
-                            >
-                              Basic Information
-                            </span>
-                          </div>
+                      <div className="flex items-center justify-center space-x-6 mb-8 mt-6">
+                        <div
+                          className={`flex items-center ${
+                            currentStep === 1
+                              ? "text-primary dark:text-primary"
+                              : "text-gray-400 dark:text-gray-500"
+                          }`}
+                        >
                           <div
-                            className={`w-16 h-0.5 ${
-                              currentStep >= 2
-                                ? "bg-primary dark:bg-primary"
-                                : "bg-gray-200 dark:bg-zinc-800"
+                            className={`w-10 h-10 rounded-full flex items-center justify-center border-2 font-semibold ${
+                              currentStep === 1
+                                ? "border-primary bg-primary text-white"
+                                : "border-gray-300 dark:border-border"
                             }`}
-                          ></div>
-                          <div className="flex items-center">
-                            <div
-                              className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${
-                                currentStep >= 2
-                                  ? "bg-primary text-white dark:bg-primary dark:text-white"
-                                  : "border-gray-200 border-2 text-gray-500 dark:border-zinc-800 dark:text-gray-400"
-                              }`}
-                            >
-                              2
-                            </div>
-                            <span
-                              className={`ml-2 text-sm font-medium ${
-                                currentStep >= 2
-                                  ? "text-primary"
-                                  : "text-gray-500"
-                              } dark:${
-                                currentStep >= 2
-                                  ? "text-primary"
-                                  : "text-gray-400"
-                              }`}
-                            >
-                              Location & Address
-                            </span>
+                          >
+                            1
                           </div>
+                          <span className="ml-3 text-sm font-medium">
+                            Basic Information
+                          </span>
+                        </div>
+                        <div className="w-16 h-0.5 bg-gray-300 dark:bg-border"></div>
+                        <div
+                          className={`flex items-center ${
+                            currentStep === 2
+                              ? "text-primary dark:text-primary"
+                              : "text-gray-400 dark:text-gray-500"
+                          }`}
+                        >
+                          <div
+                            className={`w-10 h-10 rounded-full flex items-center justify-center border-2 font-semibold ${
+                              currentStep === 2
+                                ? "border-primary bg-primary text-white"
+                                : "border-gray-300 dark:border-border"
+                            }`}
+                          >
+                            2
+                          </div>
+                          <span className="ml-3 text-sm font-medium">
+                            Location & Address
+                          </span>
                         </div>
                       </div>
                     </CardHeader>

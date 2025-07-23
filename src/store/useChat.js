@@ -368,7 +368,6 @@ const useChat = create(
             error.details &&
             error.details.includes("not found")
           ) {
-            console.info("Socket info:", error);
             return;
           }
           console.error("Socket error:", error);

@@ -11,13 +11,6 @@ export default function SubscriptionRoute({ children }) {
   const fetchCurrentSubscription = useSubscribe(state => state.fetchCurrentSubscription);
   const location = useLocation();
 
-  // Debug log for troubleshooting
-  console.log({
-    subscriptionLoading,
-    currentSubscription,
-    isAuthenticated
-  });
-
   // Always fetch subscription on mount and on route change
   useEffect(() => {
     if (isAuthenticated) {

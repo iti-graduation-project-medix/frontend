@@ -10,6 +10,7 @@ import { ErrorDisplay, ErrorMessage } from "@/components/ui/error-display";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
+import { Textarea } from "@/components/ui/textarea";
 
 const advertiseSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -424,7 +425,7 @@ export default function Advertise() {
                   Message or Product/Service Details{" "}
                   <span className="text-red-500">*</span>
                 </Label>
-                <div className="relative">
+                <div className="relative flex-1">
                   <span className="absolute left-3 mt-2.5 text-gray-400">
                     {/* Info icon */}
                     <svg
@@ -441,21 +442,20 @@ export default function Advertise() {
                       />
                     </svg>
                   </span>
-                  <textarea
+                  <Textarea
                     id="content"
                     name="content"
-                    rows="8"
+                    placeholder="Tell us more about your advertising needs..."
                     className={cn(
-                      "bg-gray-50 border resize-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 pl-10 h-32 shadow-xs",
+                      "pl-10 border-gray-300 focus:border-primary focus:ring-primary min-h-[120px] resize-none",
                       formik.touched.content &&
                         formik.errors.content &&
                         "border-red-500"
                     )}
-                    placeholder="Tell us more about your advertising needs..."
                     onChange={handleInputChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.content}
-                  ></textarea>
+                  />
                 </div>
                 <ErrorMessage
                   error={

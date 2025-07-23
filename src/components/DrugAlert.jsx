@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bell, ChevronDown, Search, Loader2, X } from "lucide-react";
+import { Bell, ChevronDown, Search, Loader2, X, Info } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -15,6 +15,7 @@ import { useAuth } from "@/store/useAuth";
 import { fetchDrugs, createDrugAlert } from "@/api/drugs";
 import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 export function DrugAlert() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,6 +26,7 @@ export function DrugAlert() {
   const [selectedDrugs, setSelectedDrugs] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { token } = useAuth();
+  const isAuthenticated = Boolean(token);
 
   // Async search function
   const searchDrugs = useCallback(
@@ -121,34 +123,37 @@ export function DrugAlert() {
   };
 
   return (
-    <section className="w-full py-6">
-      <div className="mx-auto px-4">
-        <Card className="bg-muted/20 backdrop-blur-sm shadow-lg border border-border">
-          <CardContent className="py-8 px-4 md:px-8 flex flex-col items-center">
-            <div className="w-full flex flex-col items-center">
-              <div className="flex flex-row items-center justify-center w-full gap-4 mb-2">
-                <span className="hidden sm:inline-flex items-center justify-center rounded-full bg-primary/80 text-white" style={{ width: 48, height: 48, minWidth: 48, minHeight: 48 }}>
-                  <Bell className="w-7 h-7" />
-                </span>
-                <div className="flex flex-col items-start justify-center">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground leading-tight">
-                    Stay Updated on When Your Target Drug Added
-                  </h2>
-                  <p className="text-muted-foreground text-sm mt-1">
-                    Get instant alerts when new information becomes available about your medications
-                  </p>
-                </div>
+    <section className="w-full pb-7">
+      <div className="mx-auto px-2">
+        <Card className=" shadow-lg rounded-xl dark:bg-gradient-to-br dark:from-blue-900/60 dark:via-background/80 dark:to-indigo-900/60 dark:border-0 dark:shadow-2xl dark:rounded-2xl dark:backdrop-blur-md">
+          <CardContent className="py-5 px-3 md:px-8 flex flex-col items-center">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center w-full md:w-auto text-center md:text-left">
+              <div className="bg-primary/90 rounded-full p-2.5 mb-2 md:mb-0 shadow-md mx-auto md:mx-0">
+                <Bell className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl md:text-2xl font-extrabold text-primary text-center md:text-left mb-1">
+                  Stay Updated on When Your Target Drug Added
+                </h2>
               </div>
             </div>
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              <div className="flex flex-col sm:flex-row gap-3">
+            <p className="text-muted-foreground text-sm text-center md:text-left mb-2">
+              Get instant alerts when new information becomes available about
+              your medications.
+            </p>
+            <form onSubmit={handleSubmit} className="mt-2 space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mb-2">
                 <Select
                   open={isSelectOpen}
                   onOpenChange={setIsSelectOpen}
                   value=""
                   onValueChange={handleDrugSelect}
+                  disabled={!isAuthenticated}
                 >
-                  <SelectTrigger className="border-gray-300 dark:border-border rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 dark:bg-background/80 backdrop-blur-sm w-full min-w-[250px] text-gray-900 dark:text-foreground">
+                  <SelectTrigger
+                    className="border-gray-300 dark:border-border rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 dark:bg-background/80 backdrop-blur-sm w-full min-w-[250px] text-gray-900 dark:text-foreground"
+                    disabled={!isAuthenticated}
+                  >
                     <SelectValue placeholder="Select drugs" />
                   </SelectTrigger>
                   <SelectContent className="max-h-80 bg-white dark:bg-card border border-gray-100 dark:border-border">
@@ -161,6 +166,7 @@ export function DrugAlert() {
                           onChange={(e) => setSearchTerm(e.target.value)}
                           className="pl-10 border-gray-300 dark:border-border rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white dark:bg-background text-gray-900 dark:text-foreground"
                           onClick={(e) => e.stopPropagation()}
+                          disabled={!isAuthenticated}
                         />
                       </div>
                     </div>
@@ -211,7 +217,7 @@ export function DrugAlert() {
                 <Button
                   type="submit"
                   className="whitespace-nowrap dark:bg-primary dark:hover:bg-primary-hover"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isAuthenticated}
                 >
                   {isSubmitting ? (
                     <>
@@ -223,9 +229,23 @@ export function DrugAlert() {
                   )}
                 </Button>
               </div>
-
+              {!isAuthenticated && (
+                <div className="flex items-center justify-center bg-muted/40 rounded-md px-3 py-2 mt-2 text-xs text-muted-foreground">
+                  <Info className="w-4 h-4 mr-2 text-primary" />
+                  <span>
+                    This feature is for subscribed users. Please{" "}
+                    <Link
+                      to="/auth/login"
+                      className="text-primary underline hover:text-primary-hover"
+                    >
+                      log in
+                    </Link>{" "}
+                    to use drug alerts.
+                  </span>
+                </div>
+              )}
               {/* Selected Drugs Display */}
-              {selectedDrugs.length > 0 && (
+              {selectedDrugs.length > 0 && isAuthenticated && (
                 <div className="flex flex-wrap gap-2 justify-center">
                   {selectedDrugs.map((drug) => (
                     <Badge
@@ -247,7 +267,7 @@ export function DrugAlert() {
                 </div>
               )}
             </form>
-            <p className="text-xs text-muted-foreground dark:text-gray-400 mt-4">
+            <p className="text-xs text-muted-foreground mt-4 text-center">
               We'll notify you about safety updates, recalls, and important drug
               information.
             </p>

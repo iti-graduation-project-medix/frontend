@@ -143,7 +143,7 @@ export function DealForm({ className, dealData: initialDealData, ...props }) {
         setSubscriptionInfo({
           plan: response.data.plan,
           planName: response.data.planName,
-          totalDeals: response.data.plan === "monthly" ? 10 : 120,
+          totalDeals: response.data.plan === "monthly" ? 10 : 150,
         });
       } catch (error) {
         console.error("Error fetching subscription info:", error);

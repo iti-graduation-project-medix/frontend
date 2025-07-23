@@ -58,10 +58,10 @@ const Footer7 = ({
   legalLinks = defaultLegalLinks,
 }) => {
   return (
-    <footer className="bg-background text-foreground p-6 md:px-16 lg:px-32 pt-20 lg:pt-3 border-t border-border shadow-inner">
+    <footer className="bg-background text-foreground p-6 md:px-16 lg:px-26 pt-20 lg:pt-7 border-t border-border shadow-inner">
       <div className="container mx-auto">
         {/* Top: Logo + Description + Socials */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between text-center lg:text-left gap-8 lg:gap-16 w-full">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between text-center lg:text-left gap-2 lg:gap-16 w-full">
           <div className="-mt-15 flex flex-col items-center lg:items-start max-w-lg mx-auto lg:mx-0 w-full lg:w-1/4">
             <Link to={logo.url} className="flex items-center gap-3 mb-4">
               <img
@@ -93,7 +93,7 @@ const Footer7 = ({
           </div>
 
           {/* Links Section + DrugAlert */}
-          <div className="flex flex-col w-full gap-8 lg:flex-row lg:gap-16 mt-10 lg:mt-0 items-center lg:items-center">
+          <div className="flex flex-col w-full gap-8 lg:flex-row  mt-10 lg:mt-0 items-center lg:items-center">
             <div className="grid gap-6 w-full text-center lg:text-left sm:grid-cols-1 md:grid-cols-1 lg:gap-12 lg:w-1/4 flex-shrink-0">
               {sections.map((section, idx) => (
                 <div

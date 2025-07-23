@@ -46,6 +46,7 @@ export const useSubscribe = create((set, get) => ({
 
   // fetch current subscription
   fetchCurrentSubscription: async (token) => {
+    if (get().subscriptionLoading) return; // Prevent duplicate fetches
     set({ subscriptionLoading: true, error: null });
     try {
       let finalToken = token;
@@ -61,6 +62,7 @@ export const useSubscribe = create((set, get) => ({
       }
 
       const res = await getCurrentSubscription(finalToken);
+      console.log("fetchCurrentSubscription API response", res.data);
       set({
         subscriptionLoading: false,
         currentSubscription: res.data,

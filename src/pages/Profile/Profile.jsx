@@ -48,6 +48,7 @@ import {
   AlertCircle,
   Eye,
 } from "lucide-react";
+import { useSubscribe } from "@/store/useSubscribe";
 
 export default function Profile() {
   const { id } = useParams();
@@ -57,6 +58,7 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [dealsPerPage] = useState(5);
+  const { currentSubscription, fetchCurrentSubscription, subscriptionLoading } = useSubscribe();
 
   const handleViewDeal = (dealId) => {
     navigate(`/deals/${dealId}`);
@@ -87,6 +89,12 @@ export default function Profile() {
       fetchUserDetails();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (!currentSubscription && !subscriptionLoading) {
+      fetchCurrentSubscription();
+    }
+  }, [currentSubscription, subscriptionLoading, fetchCurrentSubscription]);
 
   if (loading) {
     return <LoadingPage message="Loading profile..." />;
@@ -244,20 +252,19 @@ export default function Profile() {
                     ? "Work ID Verified"
                     : "Work ID Pending"}
                 </Badge>
-                <Badge
-                  variant={
-                    userDetails.subscriptionStatus === "pro"
-                      ? "success"
-                      : "outline"
-                  }
-                  className={`text-xs flex items-center gap-1 px-3 py-1 shadow ${
-                    userDetails.subscriptionStatus === "pro"
-                      ? "bg-gradient-to-r from-emerald-400 to-indigo-400 text-white"
-                      : "bg-white dark:bg-card text-primary dark:text-primary border-primary dark:border-primary"
-                  }`}
-                >
-                  {userDetails.subscriptionStatus === "pro" ? "Pro" : "Basic"}
-                </Badge>
+                {/* Subscription Badge: Show only if subscribed */}
+                {currentSubscription && currentSubscription.status && (
+                  <Badge
+                    variant={currentSubscription.planName === "premium" ? "success" : "outline"}
+                    className={`text-xs flex items-center gap-1 px-3 py-1 shadow ${
+                      currentSubscription.planName === "premium"
+                        ? "bg-gradient-to-r from-amber-400 to-yellow-400 text-white"
+                        : "bg-white dark:bg-card text-primary dark:text-primary border-primary dark:border-primary"
+                    }`}
+                  >
+                    {currentSubscription.planName === "premium" ? "Premium" : "Regular"}
+                  </Badge>
+                )}
               </div>
             </div>
           </div>

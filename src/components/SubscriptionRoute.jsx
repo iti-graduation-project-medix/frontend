@@ -35,15 +35,24 @@ export default function SubscriptionRoute({ children }) {
     }
   }, [currentSubscription, subscriptionLoading, location.pathname]);
 
+  // Debug log for troubleshooting
+  console.log("DEBUG SubscriptionRoute", {
+    subscriptionLoading,
+    currentSubscription,
+    status: currentSubscription?.status
+  });
+
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" />;
   }
 
-  if (subscriptionLoading) {
-    return null;
+  // Wait for loading or for the subscription to be set
+  if (subscriptionLoading || typeof subscriptionLoading === 'undefined' || currentSubscription === null) {
+    return null; // or a spinner
   }
 
-  if (!currentSubscription || !currentSubscription.status) {
+  // Only redirect if status is NOT true
+  if (!currentSubscription.status) {
     return <Navigate to="/subscription" />;
   }
 

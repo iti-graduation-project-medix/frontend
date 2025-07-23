@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { Textarea } from "@/components/ui/textarea";
+import { Helmet } from 'react-helmet-async';
 
 const advertiseSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -122,7 +123,27 @@ export default function Advertise() {
   });
 
   return (
-    <motion.div
+    <>
+      <Helmet>
+        <title>Advertise with Dawaback</title>
+        <meta name="description" content="Advertise your pharmaceutical or healthcare brand with Dawaback. Reach a targeted audience of pharmacists and pharmacy owners." />
+        <meta name="keywords" content="advertise, pharmacy marketing, healthcare advertising, Dawaback, pharmacy audience, إعلان, تسويق صيدلية, إعلان صحي, جمهور صيدلية, دواباك" />
+        <link rel="canonical" href="https://dawaback.com/advertise" />
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://dawaback.com/advertise" />
+        <meta property="og:title" content="Advertise with Dawaback" />
+        <meta property="og:description" content="Advertise your pharmaceutical or healthcare brand with Dawaback. Reach a targeted audience of pharmacists and pharmacy owners." />
+        <meta property="og:image" content="https://dawaback.com/og-image.jpg" />
+        <meta property="og:site_name" content="Dawaback" />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://dawaback.com/advertise" />
+        <meta name="twitter:title" content="Advertise with Dawaback" />
+        <meta name="twitter:description" content="Advertise your pharmaceutical or healthcare brand with Dawaback. Reach a targeted audience of pharmacists and pharmacy owners." />
+        <meta name="twitter:image" content="https://dawaback.com/og-image.jpg" />
+      </Helmet>
+      <motion.div
       className="min-h-screen font-sans  dark:bg-background text-foreground dark:text-foreground"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -628,5 +649,6 @@ export default function Advertise() {
         </motion.div>
       </section>
     </motion.div>
+    </>
   );
 }

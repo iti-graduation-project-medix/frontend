@@ -12,11 +12,32 @@ import {
   Info,
 } from "lucide-react";
 import { useAuth } from "@/store/useAuth";
+import { Helmet } from 'react-helmet-async';
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
   return (
-    <main className="min-h-screen dark:from-background dark:via-background dark:to-background flex flex-col items-center justify-start font-sans text-foreground dark:text-foreground">
+    <>
+      <Helmet>
+        <title>Dawaback | #1 Platform to Sell & Exchange Medicines</title>
+        <meta name="description" content="Dawaback connects pharmacists to exchange surplus or near-expiry medicines, chat directly about each deal, and list pharmacies for sale. Secure, trusted, and built for the pharmacy community." />
+        <meta name="keywords" content="pharmacy, medicine exchange, pharmacist, pharmacy deals, pharmacy chat, sell pharmacy, Dawaback, صيدلية, تبادل أدوية, صيدلي, صفقات صيدلية, دردشة صيدلية, بيع صيدلية, دواباك" />
+        <link rel="canonical" href="https://dawaback.com/" />
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://dawaback.com/" />
+        <meta property="og:title" content="Dawaback | #1 Platform to Sell & Exchange Medicines" />
+        <meta property="og:description" content="Dawaback connects pharmacists to exchange surplus or near-expiry medicines, chat directly about each deal, and list pharmacies for sale. Secure, trusted, and built for the pharmacy community." />
+        <meta property="og:image" content="https://dawaback.com/og-image.jpg" />
+        <meta property="og:site_name" content="Dawaback" />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://dawaback.com/" />
+        <meta name="twitter:title" content="Dawaback | #1 Platform to Sell & Exchange Medicines" />
+        <meta name="twitter:description" content="Dawaback connects pharmacists to exchange surplus or near-expiry medicines, chat directly about each deal, and list pharmacies for sale. Secure, trusted, and built for the pharmacy community." />
+        <meta name="twitter:image" content="https://dawaback.com/og-image.jpg" />
+      </Helmet>
+      <main className="min-h-screen dark:from-background dark:via-background dark:to-background flex flex-col items-center justify-start font-sans text-foreground dark:text-foreground">
       {/* Hero Section */}
       <section className="w-full flex flex-col items-center justify-center pt-10 pb-8 px-4 text-center">
         <span className="uppercase tracking-widest text-xs font-semibold text-primary dark:text-primary mb-2">
@@ -820,5 +841,6 @@ export default function Home() {
         </div>
       </section>
     </main>
+    </>
   );
 }

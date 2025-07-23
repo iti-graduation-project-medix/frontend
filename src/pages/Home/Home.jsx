@@ -36,6 +36,36 @@ export default function Home() {
         <meta name="twitter:title" content="Dawaback | #1 Platform to Sell & Exchange Medicines" />
         <meta name="twitter:description" content="Dawaback connects pharmacists to exchange surplus or near-expiry medicines, chat directly about each deal, and list pharmacies for sale. Secure, trusted, and built for the pharmacy community." />
         <meta name="twitter:image" content="https://dawaback.com/og-image.jpg" />
+        {/* JSON-LD Structured Data */}
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Dawaback",
+            "url": "https://dawaback.com/",
+            "logo": "https://dawaback.com/logo.svg",
+            "sameAs": [
+              "https://facebook.com/dawaback",
+              "https://instagram.com/dawaback",
+              "https://twitter.com/dawaback",
+              "https://linkedin.com/company/dawaback"
+            ],
+            "description": "Dawaback is the #1 platform for pharmacists to exchange medicines and sell pharmacies."
+          }
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Dawaback",
+            "url": "https://dawaback.com/",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://dawaback.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          }
+        `}</script>
       </Helmet>
       <main className="min-h-screen dark:from-background dark:via-background dark:to-background flex flex-col items-center justify-start font-sans text-foreground dark:text-foreground">
       {/* Hero Section */}

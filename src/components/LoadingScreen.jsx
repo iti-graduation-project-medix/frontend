@@ -228,7 +228,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
                   backgroundSize: "200% 200%",
                 }}
               >
-                DawaBack
+                Dawaback
               </motion.h1>
               <motion.p
                 className="text-lg md:text-xl text-gray-600 dark:text-gray-300 font-medium"

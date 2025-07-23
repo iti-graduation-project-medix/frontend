@@ -135,12 +135,13 @@ export function DrugAlert() {
                 <h2 className="text-xl md:text-2xl font-extrabold text-primary text-center md:text-left mb-1">
                   Stay Updated on When Your Target Drug Added
                 </h2>
+                <p className="text-muted-foreground text-sm text-center md:text-left mb-2">
+                  Get instant alerts when new information becomes available
+                  about your medications.
+                </p>
               </div>
             </div>
-            <p className="text-muted-foreground text-sm text-center md:text-left mb-2">
-              Get instant alerts when new information becomes available about
-              your medications.
-            </p>
+
             <form onSubmit={handleSubmit} className="mt-2 space-y-4">
               <div className="flex flex-col sm:flex-row gap-4 w-full justify-center mb-2">
                 <Select

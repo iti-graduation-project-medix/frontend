@@ -22,7 +22,7 @@ export default function App() {
 
   // // Show loading screen first
   if (isLoading) {
-    return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
+    // return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
   }
 
   if (isOffline && currentPath === "/") {

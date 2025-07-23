@@ -277,14 +277,14 @@ export default function ContactInfoCard({ pharmacistDetails }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between pt-4">
+          <div className="flex items-center justify-between  pt-4">
             <div className="flex items-center gap-4">
               {!isEditing ? (
                 <Button
                   type="button"
                   onClick={() => setIsEditing(true)}
                   variant="outline"
-                  className="px-6 py-2 rounded-md text-base border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
+                  className="px-6 py-2 rounded-md text-base border-gray-200  dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
                 >
                   Edit Information
                 </Button>
@@ -315,7 +315,7 @@ export default function ContactInfoCard({ pharmacistDetails }) {
                 className={`px-6 py-2 rounded-md text-base transition-all duration-200 ${
                   hasChanges
                     ? "bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white"
-                    : "bg-gray-300 dark:bg-zinc-500 cursor-not-allowed text-gray-400 dark:text-white"
+                    : "bg-gray-300 dark:bg-gray-600 cursor-not-allowed text-gray-400 dark:text-white"
                 }`}
               >
                 {isLoading ? (

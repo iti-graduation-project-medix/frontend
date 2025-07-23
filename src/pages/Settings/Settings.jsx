@@ -106,7 +106,7 @@ export default function Settings() {
             className={`rounded-lg px-4 py-2 capitalize flex items-center gap-2 text-sm font-medium transition-colors duration-150 w-full sm:w-auto ${
               activeTab === tab.key
                 ? "bg-primary text-white shadow-sm dark:bg-primary dark:text-white"
-                : "bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 border border-gray-300 dark:bg-background dark:hover:bg-zinc-800 dark:text-gray-200 dark:hover:text-white dark:border-border"
+                : "bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 border border-gray-300 dark:bg-background dark:hover:bg-slate-700 dark:text-gray-200 dark:hover:text-white dark:border-border"
             }`}
             onClick={() => handleTabClick(tab.key)}
           >

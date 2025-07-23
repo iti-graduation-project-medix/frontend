@@ -36,6 +36,7 @@ const SuccessPayment = React.lazy(() =>
 const FailedPayment = React.lazy(() =>
   import("./../pages/FailedPayment/FailedPayment")
 );
+const PaymentStatusPage = React.lazy(() => import("../pages/Subscription/PaymentStatusPage"));
 
 // User Management Pages
 const Profile = React.lazy(() => import("../pages/Profile/Profile"));
@@ -142,21 +143,11 @@ export default function MainLayout() {
                 }
               />
               <Route
-                path="success"
+                path="status"
                 element={
                   <ProtectedRoute>
                     <OfflineRouteGuard>
-                      <SuccessPayment />
-                    </OfflineRouteGuard>
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="failed"
-                element={
-                  <ProtectedRoute>
-                    <OfflineRouteGuard>
-                      <FailedPayment />
+                      <PaymentStatusPage />
                     </OfflineRouteGuard>
                   </ProtectedRoute>
                 }

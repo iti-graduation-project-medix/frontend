@@ -30,11 +30,7 @@ const Pricing2 = ({
       monthlyPrice: "EGP50",
       yearlyPrice: "EGP200",
       features: [
-        {
-          text: "Add up to 10 deals",
-          available: true,
-          yearlyText: "Add up to 150 deals",
-        },
+        { text: "Add up to 10 deals", available: true, yearlyText: "Add up to 150 deals" },
         { text: "P2P trading using real-time chat", available: true },
         { text: "List pharmacies for sale", available: false },
         { text: "Subscribe to drug alert", available: false },
@@ -76,7 +72,7 @@ const Pricing2 = ({
   };
 
   // Function to handle payment completion redirect
-  const handlePaymentRedirect = (isSuccess, queryParams = "") => {
+  const handlePaymentRedirect = (isSuccess, queryParams = '') => {
     setPaymentStatus(null);
 
     // Redirect to appropriate page
@@ -90,49 +86,48 @@ const Pricing2 = ({
     }
   };
 
+
+
   // Listen for messages from payment provider (if supported)
   useEffect(() => {
     const handleMessage = (event) => {
       // Check if the message is from the payment provider
-      if (event.data && event.data.type === "PAYMENT_COMPLETED") {
+      if (event.data && event.data.type === 'PAYMENT_COMPLETED') {
         // Handle success redirect
         if (event.data.successUrl) {
           window.location.href = event.data.successUrl;
         } else {
-          handlePaymentRedirect(true, event.data.queryParams || "");
+          handlePaymentRedirect(true, event.data.queryParams || '');
         }
-      } else if (event.data && event.data.type === "PAYMENT_FAILED") {
+      } else if (event.data && event.data.type === 'PAYMENT_FAILED') {
         // Handle failed payment
-        handlePaymentRedirect(false, event.data.queryParams || "");
+        handlePaymentRedirect(false, event.data.queryParams || '');
       }
     };
 
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, [navigate]);
 
   // Handle URL parameters for payment completion
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const success = urlParams.get("success");
-    const failed = urlParams.get("failed");
-    const status = urlParams.get("status");
-    const result = urlParams.get("result");
+    const success = urlParams.get('success');
+    const failed = urlParams.get('failed');
+    const status = urlParams.get('status');
+    const result = urlParams.get('result');
 
     // Check various possible success/failure indicators
-    const isSuccess =
-      success === "true" || status === "success" || result === "success";
-    const isFailed =
-      failed === "true" ||
-      status === "failed" ||
-      result === "failed" ||
-      status === "error";
+    const isSuccess = success === 'true' || status === 'success' || result === 'success';
+    const isFailed = failed === 'true' || status === 'failed' || result === 'failed' || status === 'error';
 
     if (isSuccess || isFailed) {
       // Use the redirect function to handle the completion
       handlePaymentRedirect(isSuccess, window.location.search);
     }
   }, []);
+
+
 
   const handleSubscribe = async (planId) => {
     if (!user || !token) {
@@ -149,7 +144,7 @@ const Pricing2 = ({
       });
       if (res && res.iframeUrl) {
         // Redirect current window to payment URL
-        setPaymentStatus("processing");
+        setPaymentStatus('processing');
         toast.success("Redirecting to payment gateway...");
         window.location.href = res.iframeUrl;
       } else {
@@ -169,10 +164,10 @@ const Pricing2 = ({
     <section className="py-8">
       <div className="container">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">
-          <h2 className="text-4xl font-semibold text-pretty lg:text-6xl">
+          <h2 className="text-4xl font-semibold dark:text-white text-primary lg:text-6xl">
             {heading}
           </h2>
-          <p className="text-muted-foreground lg:text-xl">{description}</p>
+          <p className="text-muted-foreground lg:text-xl -mt-2">{description}</p>
           <div className="flex items-center gap-3 text-lg">
             Monthly
             <Switch
@@ -183,34 +178,32 @@ const Pricing2 = ({
           </div>
 
           {/* Payment Status Indicator */}
-          {paymentStatus === "processing" && (
-            <div className="bg-gray-50 border border-primary/50 rounded-lg p-4 max-w-md">
-              <LoadingPage size={40} message="" />
+          {paymentStatus === 'processing' && (
+            <div className="bg-gray-50 border border-primary/50 dark:border-primary/50 dark:bg-primary/20 rounded-lg p-4 max-w-md">
+              <LoadingPage size={40} message=""/>
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="font-medium text-primary">
-                    Redirecting to Payment
-                  </p>
-                  <p className="text-sm text-primary/80">
-                    You will be redirected to complete your payment
-                  </p>
+                  <p className="font-medium text-primary dark:text-white">Redirecting to Payment</p>
+                  <p className="text-sm text-primary/80 dark:text-gray-400">You will be redirected to complete your payment</p>
                 </div>
               </div>
             </div>
           )}
+
+
 
           <div className="flex flex-col items-stretch gap-6 md:flex-row">
             {plans.map((plan, index) => (
               <Card
                 key={plan.id}
                 className={`flex w-80 flex-col justify-between text-left px-4 py-8 relative overflow-hidden ${
-                  plan.id === "Premium"
-                    ? "ring-2 ring-blue-600 shadow-xl scale-105"
+                  plan.id === "Premium" 
+                    ? "ring-2 ring-primary shadow-xl scale-105" 
                     : "hover:shadow-lg transition-all duration-300"
                 }`}
               >
                 {plan.id === "Premium" && (
-                  <div className="absolute top-0 right-0 bg-blue-600 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-primary text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
                     Most Popular
                   </div>
                 )}
@@ -236,35 +229,18 @@ const Pricing2 = ({
                     {plan.features.map((feature, index) => (
                       <li
                         key={index}
-                        className={`flex items-center gap-2 text-sm ${
-                          feature.available
-                            ? "text-gray-900 dark:text-gray-100"
-                            : "text-gray-500 dark:text-gray-400"
-                        }`}
+                        className={`flex items-center gap-2 text-sm`}
                       >
                         {feature.available ? (
-                          <CircleCheck className="size-4 text-green-600" />
+                          <CircleCheck className="size-4 text-green-600 dark:text-green-400" />
                         ) : (
-                          <svg
-                            className="size-4 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
+                          <svg className="size-4 text-red-500 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 9l-6 6m0-6l6 6" />
                           </svg>
                         )}
-                        <span
-                          className={feature.available ? "" : "line-through"}
-                        >
-                          {isYearly && feature.yearlyText
-                            ? feature.yearlyText
-                            : feature.text}
+                        <span className={feature.available ? 'text-gray-900 dark:text-white font-semibold' : 'line-through text-gray-500 dark:text-red-400'}>
+                          {isYearly && feature.yearlyText ? feature.yearlyText : feature.text}
                         </span>
                       </li>
                     ))}

@@ -10,12 +10,17 @@ export default function SubscriptionRoute({ children }) {
   const location = useLocation();
   const toastShownRef = useRef({});
 
+  // Always refetch subscription when route changes if missing or expired
   useEffect(() => {
-    if (isAuthenticated && !currentSubscription && !subscriptionLoading) {
+    if (
+      isAuthenticated &&
+      (!currentSubscription || !currentSubscription.status) &&
+      !subscriptionLoading
+    ) {
       fetchCurrentSubscription();
     }
     // eslint-disable-next-line
-  }, [isAuthenticated]);
+  }, [isAuthenticated, location.pathname]);
 
   useEffect(() => {
     // Only show toast once per location (route)

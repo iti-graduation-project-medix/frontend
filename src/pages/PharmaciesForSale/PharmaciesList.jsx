@@ -8,30 +8,30 @@ export default function PharmaciesList({ pharmacies, loading, onViewDetails }) {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="bg-white rounded-xl shadow-md border border-gray-100 w-full min-w-[300px] max-w-[400px] mx-auto overflow-hidden flex flex-col animate-pulse"
+            className="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 w-full min-w-[300px] max-w-[400px] mx-auto overflow-hidden flex flex-col animate-pulse"
           >
             {/* Image skeleton */}
-            <div className="relative aspect-video w-full bg-gray-200">
+            <div className="relative aspect-video w-full bg-gray-200 dark:bg-gray-800">
               <div
-                className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-[shimmer_1.5s_infinite]"
+                className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 animate-[shimmer_1.5s_infinite]"
                 style={{ backgroundSize: "200% 100%" }}
               />
             </div>
             {/* Content skeleton */}
             <div className="p-4 flex flex-col gap-2 flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <div className="h-6 w-24 bg-gray-200 rounded" />
-                <div className="h-4 w-12 bg-gray-200 rounded" />
+                <div className="h-6 w-24 bg-gray-200 dark:bg-gray-800 rounded" />
+                <div className="h-4 w-12 bg-gray-200 dark:bg-gray-800 rounded" />
               </div>
-              <div className="h-5 w-32 bg-gray-200 rounded mb-1" />
-              <div className="h-4 w-40 bg-gray-200 rounded mb-1" />
+              <div className="h-5 w-32 bg-gray-200 dark:bg-gray-800 rounded mb-1" />
+              <div className="h-4 w-40 bg-gray-200 dark:bg-gray-800 rounded mb-1" />
               <div className="flex items-center gap-2 mb-1">
-                <div className="h-4 w-4 bg-gray-200 rounded-full" />
-                <div className="h-4 w-24 bg-gray-200 rounded" />
+                <div className="h-4 w-4 bg-gray-200 dark:bg-gray-900 rounded-full" />
+                <div className="h-4 w-24 bg-gray-200 dark:bg-gray-800 rounded" />
               </div>
               <div className="flex items-center gap-2">
-                <div className="h-4 w-4 bg-gray-200 rounded-full" />
-                <div className="h-4 w-12 bg-gray-200 rounded" />
+                <div className="h-4 w-4 bg-gray-200 dark:bg-gray-900 rounded-full" />
+                <div className="h-4 w-12 bg-gray-200 dark:bg-gray-800 rounded" />
               </div>
             </div>
           </div>

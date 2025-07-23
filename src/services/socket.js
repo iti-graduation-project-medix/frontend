@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 let socket = null;
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = import.meta.env.VITE_API_BASE_URL;
 export const getSocket = (userId = null) => {
   if (!socket) {
     // Get user ID from localStorage if not provided

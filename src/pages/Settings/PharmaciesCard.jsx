@@ -317,7 +317,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // Loading state
   if (isLoading) {
     return (
-      <Card className="shadow-lg rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8">
+      <Card className="shadow-lg rounded-xl  border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8">
         <CardHeader>
           <div className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
             <span className="inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 shadow-sm w-12 h-12">
@@ -531,11 +531,10 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             )}
 
             {/* Actions */}
-            <div className="flex gap-2 mt-4 justify-end">
+            <div className="flex flex-wrap gap-2 mt-4 justify-center sm:justify-end">
               <Button
                 size="sm"
-                variant="outline"
-                className="flex items-center gap-2 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
+                className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white dark:bg-indigo-700 dark:hover:bg-indigo-600 dark:text-white"
                 asChild
                 disabled={actionLoading}
               >
@@ -557,7 +556,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                   </Button>
                   <Button
                     size="sm"
-                    className="flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white dark:bg-orange-700 dark:hover:bg-orange-600 dark:text-white"
+                    className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white dark:bg-emerald-700 dark:hover:bg-emerald-600 dark:text-white"
                     onClick={() => handleMarkAsSoldClick(pharmacy.id)}
                     disabled={actionLoading}
                   >
@@ -569,7 +568,6 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                 !pharmacy.isSold && (
                   <Button
                     size="sm"
-                    variant="outline"
                     className="flex bg-green-600 hover:bg-green-500 text-white dark:bg-green-700 dark:hover:bg-green-600 dark:text-white items-center gap-2"
                     onClick={() => handleListClick(pharmacy.id)}
                     disabled={actionLoading}
@@ -598,14 +596,14 @@ export default function PharmaciesCard({ pharmacistDetails }) {
 
   return (
     <div className="space-y-6">
-      <Card className="shadow-lg rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8">
-        <CardHeader>
-          <div className="inline-flex items-center gap-3 font-bold text-xl tracking-wide">
+      <Card className="shadow-lg  rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8 max-w-full w-full" style={{ maxWidth: '100%' }}>
+        <CardHeader >
+          <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 font-bold text-xl tracking-wide w-full">
             <span className="inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 shadow-sm w-12 h-12">
               <FaClinicMedical size={24} className="text-primary" />
             </span>
-            <div className="flex flex-col">
-              <span className="text-gray-900 dark:text-foreground">
+            <div className="flex flex-col w-full">
+              <span className="text-gray-900 dark:text-foreground text-base sm:text-xl">
                 My Pharmacies
               </span>
               <p className="text-sm text-gray-600 font-normal dark:text-gray-300">
@@ -614,7 +612,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent>
           {validatedPharmacies.length === 0 ? (
             <div className="text-center py-8">
               <div className="text-gray-400 dark:text-gray-500 mb-4">

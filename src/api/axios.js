@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "https://backend.dawaback.com";
+const baseURL = import.meta.env.VITE_API_URL;
 
 // Create axios instance with default config
 const api = axios.create({

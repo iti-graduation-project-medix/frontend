@@ -1,4 +1,5 @@
-const API_BASE_URL = "https://backend.dawaback.com/api/v1";
+const baseURL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = `${baseURL}/api/v1`;
 
 export const getChatHistory = async (chatRoomId) => {
   try {

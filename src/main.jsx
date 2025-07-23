@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { ThemeProvider } from "@/components/theme-provider";
+import { HelmetProvider } from 'react-helmet-async';
 
 // Register service worker for PWA
 if ("serviceWorker" in navigator) {
@@ -13,10 +14,13 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
+    <HelmetProvider>
       <App />
+      </HelmetProvider>
     </ThemeProvider>
   </StrictMode>
 );

@@ -187,7 +187,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
     <div className="space-y-8 max-w-6xl mx-auto text-gray-900 dark:text-foreground">
       {/* Current Plan Section */}
 
-      <Card className="py-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+      <Card className="py-10 mb-8 rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border dark:border-border">
         {/* Removed the colored border above the navbar */}
 
         <CardHeader>
@@ -273,24 +273,22 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </div>
             </div>
           ) : (
-            <div className="p-8 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-700 rounded-2xl">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-full">
+            <div className="p-8 bg-primary/10 border border-primary dark:bg-primary/10 dark:border-primary rounded-2xl">
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <div className="p-3 bg-primary/20 rounded-full">
                   <MdWarning
-                    size={24}
-                    className="text-yellow-600 dark:text-yellow-300"
+                    size={28}
+                    className="text-primary"
                   />
                 </div>
-                <div>
-                  <p className="text-yellow-800 font-semibold text-lg dark:text-yellow-200">
+                <div className="flex-1 min-w-0">
+                  <p className="text-primary font-semibold text-lg sm:text-xl truncate">
                     No active subscription found
                   </p>
-                  <p className="text-yellow-700 text-sm mt-1 dark:text-yellow-300">
+                  <p className="text-primary/80 text-sm sm:text-base truncate">
                     Please subscribe to a plan to continue using our services
                   </p>
                 </div>
-                <p className="text-primary font-semibold text-lg sm:text-xl">No active subscription found</p>
-                <p className="text-primary/80 text-sm sm:text-base">Please subscribe to a plan to continue using our services</p>
                 <Button
                   className="bg-primary text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:bg-primary/90 transition-all duration-300 w-full sm:w-auto"
                   onClick={() => navigate('/subscription')}
@@ -304,7 +302,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
       </Card>
 
       {/* Usage Statistics */}
-      <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+      <Card className="pt-10 mb-8 rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border dark:border-border">
         {/* Removed the colored border above the navbar */}
 
         <CardHeader>
@@ -331,7 +329,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                   <MdInfo size={28} className="sm:size-32 text-gray-400" />
                 </div>
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-gray-700 mb-1 sm:mb-2">No usage features available</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1 sm:mb-2">No usage features available</h3>
               <p className="text-gray-500 text-xs sm:text-sm">Usage features will appear here once you have an active subscription</p>
             </div>
           ) : (
@@ -480,30 +478,30 @@ export default function BillingPlansCard({ pharmacistDetails }) {
       </Card>
 
       {/* Billing History */}
-      <Card className="pt-10 mb-8 rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+      <Card className="pt-10 mb-8 rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border dark:border-border">
         {/* Removed the colored border above the navbar */}
         <CardHeader>
           <CardTitle className="flex items-center gap-4">
             <span className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg w-14 h-14">
               <MdReceipt size={28} className="text-primary" />
             </span>
-            <div>
+            <div className="flex-1 min-w-0">
               <span className="font-bold text-2xl text-gray-900 dark:text-foreground block">
-              Billing History
-            </span>
+                Billing History
+              </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
                 View your subscription and payment history
               </span>
             </div>
-            {currentSubscription && (
-            <Button
-              onClick={handleDownloadBillingHistory}
-              variant="outline"
+            {userSubscriptions && userSubscriptions.length > 0 && (
+              <Button
+                onClick={handleDownloadBillingHistory}
+                variant="outline"
                 className="ml-auto bg-gradient-to-r from-primary/10 to-primary/20 dark:from-primary/20 dark:to-primary/30 text-primary dark:text-primary font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
-            >
-              <MdDownload className="mr-2" size={18} />
-              Download All
-            </Button>
+              >
+                <MdDownload className="mr-2" size={18} />
+                Download All
+              </Button>
             )}
           </CardTitle>
         </CardHeader>
@@ -525,63 +523,65 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               </div>
             </div>
           ) : userSubscriptions && userSubscriptions.length > 0 ? (
-          <div className="space-y-4">
-            {userSubscriptions.map((subscription, index) => {
-              const invoice = formatSubscriptionForHistory(subscription);
-              return (
-              <div
-                key={invoice.id}
-                  className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background border border-gray-100 dark:border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                >
-                  <div className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div className="flex items-center gap-6">
-                        <div className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                          invoice.planName === 'premium' 
-                          ? 'bg-amber-100 dark:bg-yellow-900/40'
-                          : 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/20'
-                        }`}>
-                          {invoice.planName === 'premium' ? (
-                          <FaCrown size={24} className="text-amber-400 dark:text-yellow-300" />
-                          ) : (
-                          <Zap size={24} className="text-blue-600 dark:text-blue-300" />
-                          )}
-                        </div>
-                        <div className="space-y-2">
-                        <p className="font-bold text-lg text-gray-900 dark:text-foreground">{invoice.description}</p>
-                        <p className="text-sm text-gray-600 font-medium dark:text-gray-300">
-                            {invoice.date} • {invoice.invoice}
-                          </p>
-                          <div className="flex items-center gap-1">
-                            <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
-                                {invoice.subType === 'wallet' ? 'Wallet Payment' : 'Card Payment'}
-                              </span>
-                            </div>
-                            {invoice.pan && (
-                            <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
-                                {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
-                              </span>
+            <>
+              <div className="space-y-4">
+                {userSubscriptions.map((subscription, index) => {
+                  const invoice = formatSubscriptionForHistory(subscription);
+                  return (
+                    <div
+                      key={invoice.id}
+                      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background border border-gray-100 dark:border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                    >
+                      <div className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-center gap-6">
+                          <div className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                            invoice.planName === 'premium' 
+                              ? 'bg-amber-100 dark:bg-yellow-900/40'
+                              : 'bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/20'
+                          }`}>
+                            {invoice.planName === 'premium' ? (
+                              <FaCrown size={24} className="text-amber-400 dark:text-yellow-300" />
+                            ) : (
+                              <Zap size={24} className="text-blue-600 dark:text-blue-300" />
                             )}
-                  </div>
-                  </div>
-                </div>
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                        <div className="text-right">
-                        <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
-                          {invoice.amount}
-                        </span>
+                          </div>
+                          <div className="space-y-2">
+                            <p className="font-bold text-lg text-gray-900 dark:text-foreground">{invoice.description}</p>
+                            <p className="text-sm text-gray-600 font-medium dark:text-gray-300">
+                              {invoice.date} • {invoice.invoice}
+                            </p>
+                            <div className="flex items-center gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
+                                  {invoice.subType === 'wallet' ? 'Wallet Payment' : 'Card Payment'}
+                                </span>
+                              </div>
+                              {invoice.pan && (
+                                <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
+                                  {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                    <div className="flex items-center">
-                      {getStatusBadge(invoice.status)}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                          <div className="text-right">
+                            <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
+                              {invoice.amount}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center">
+                              {getStatusBadge(invoice.status)}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
+            </>
           ) : (
             <div className="p-12 text-center">
               <div className="relative mx-auto w-24 h-24 mb-6">
@@ -600,7 +600,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                 Your subscription history will appear here once you have active
                 subscriptions
               </p>
-          </div>
+            </div>
           )}
         </CardContent>
       </Card>

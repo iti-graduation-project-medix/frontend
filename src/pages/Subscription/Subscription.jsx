@@ -243,13 +243,17 @@ export default function Subscription() {
       </div>
 
       {/* Pricing Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <Pricing2 />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <Card className="mt-15 bg-white/80 dark:bg-background/80 backdrop-blur-sm border border-gray-200 dark:border-border shadow-xl">
+          <CardContent className="px-8 pb-8">
+            <Pricing2 />
+          </CardContent>
+        </Card>
       </div>
 
       {/* FAQ Section */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <Card className="bg-white/80 dark:bg-background/80 backdrop-blur-sm border-0 shadow-xl">
+        <Card className="bg-white/80 dark:bg-background/80 backdrop-blur-sm border border-gray-200 dark:border-border shadow-xl">
           <CardHeader className="text-center pb-8">
             <div className="inline-flex mx-auto mt-10 items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6">
               <svg
@@ -291,9 +295,9 @@ export default function Subscription() {
 
       {/* Contact Support Section */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <Card className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-900 dark:to-purple-900 text-white border-0 shadow-xl">
+        <Card className="bg-white/80 dark:bg-background/80 backdrop-blur-sm border border-gray-200 dark:border-border shadow-xl">
           <CardContent className="p-8 text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-6">
               <svg
                 className="w-8 h-8 text-white"
                 fill="none"
@@ -309,13 +313,13 @@ export default function Subscription() {
               </svg>
             </div>
             <h3 className="text-2xl font-bold mb-4">Still Have Questions?</h3>
-            <p className="text-blue-100 dark:text-blue-200 mb-6 max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-2xl mx-auto">
               Our support team is here to help you with any questions about our
               subscription plans or platform features.
             </p>
             <button
               onClick={handleContactSupport}
-              className="bg-white dark:bg-background text-blue-600 dark:text-blue-400 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+              className="bg-primary text-white font-semibold px-8 py-3 rounded-lg shadow hover:bg-primary/90 transition-colors"
             >
               Contact Support
             </button>

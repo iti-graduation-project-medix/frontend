@@ -164,10 +164,10 @@ const Pricing2 = ({
     <section className="py-8">
       <div className="container">
         <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 text-center">
-          <h2 className="text-4xl font-semibold text-pretty lg:text-6xl">
+          <h2 className="text-4xl font-semibold dark:text-white text-primary lg:text-6xl">
             {heading}
           </h2>
-          <p className="text-muted-foreground lg:text-xl">{description}</p>
+          <p className="text-muted-foreground lg:text-xl -mt-2">{description}</p>
           <div className="flex items-center gap-3 text-lg">
             Monthly
             <Switch
@@ -183,8 +183,8 @@ const Pricing2 = ({
               <LoadingPage size={40} message=""/>
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="font-medium text-primary dark:text-primary">Redirecting to Payment</p>
-                  <p className="text-sm text-primary/80 dark:text-primary/80">You will be redirected to complete your payment</p>
+                  <p className="font-medium text-primary dark:text-white">Redirecting to Payment</p>
+                  <p className="text-sm text-primary/80 dark:text-gray-400">You will be redirected to complete your payment</p>
                 </div>
               </div>
             </div>
@@ -229,18 +229,17 @@ const Pricing2 = ({
                     {plan.features.map((feature, index) => (
                       <li
                         key={index}
-                        className={`flex items-center gap-2 text-sm ${
-                          feature.available ? 'text-gray-900' : 'text-gray-500'
-                        }`}
+                        className={`flex items-center gap-2 text-sm`}
                       >
                         {feature.available ? (
-                          <CircleCheck className="size-4 text-green-600" />
+                          <CircleCheck className="size-4 text-green-600 dark:text-green-400" />
                         ) : (
-                          <svg className="size-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          <svg className="size-4 text-red-500 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 9l-6 6m0-6l6 6" />
                           </svg>
                         )}
-                        <span className={feature.available ? '' : 'line-through'}>
+                        <span className={feature.available ? 'text-gray-900 dark:text-white font-semibold' : 'line-through text-gray-500 dark:text-red-400'}>
                           {isYearly && feature.yearlyText ? feature.yearlyText : feature.text}
                         </span>
                       </li>

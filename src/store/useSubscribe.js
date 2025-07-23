@@ -72,7 +72,6 @@ export const useSubscribe = create((set, get) => ({
         currentSubscription: subscription,
         error: null
       });
-      console.log("STORE SET currentSubscription", subscription);
       return subscription;
     } catch (err) {
       set({

@@ -448,13 +448,9 @@ export default function Navbar() {
             </p>
           </div>
         </Link>
-        <div className="flex items-center md:order-2 space-x-2 xs:space-x-3 md:space-x-0 rtl:space-x-reverse min-w-0">
+        <div className="flex items-center md:order-2 gap-2 xs:gap-3 min-w-0">
           {/* Theme Mode Toggle and Notification Bell */}
-          <div
-            className={`flex items-center gap-1 xs:gap-2 ${
-              !isAuthenticated ? "mr-4 md:mr-2 xs:mr-6" : "mr-2 md:mr-2"
-            }`}
-          >
+          <div className={`flex items-center gap-2 xs:gap-3`}>
             <ModeToggle />
             {isAuthenticated && (
               <Popover
@@ -591,11 +587,10 @@ export default function Navbar() {
           </div>
           {isAuthenticated ? (
             <>
-              <div></div>
               {/* Favorites Icon */}
               <Link
                 to="/favorites"
-                className="relative font-bold mr-3 hidden md:inline-flex"
+                className="relative font-bold hidden md:inline-flex"
               >
                 <Button variant="outline" size="icon" className="relative">
                   <Heart className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
@@ -742,7 +737,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 -ms-2"
               >
                 Sign up
               </MotionLink>
@@ -750,7 +745,7 @@ export default function Navbar() {
           )}
           <motion.button
             type="button"
-            className="relative inline-flex items-center justify-center md:hidden border border-gray-200 dark:border-border bg-white dark:bg-card rounded-md w-9 h-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600 -ms-2"
+            className="relative inline-flex items-center justify-center md:hidden border border-gray-200 dark:border-border bg-white dark:bg-card rounded-md w-9 h-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             animate={isMenuOpen ? "open" : "closed"}
             whileTap="tap"
@@ -1028,7 +1023,7 @@ export default function Navbar() {
                           <Link
                             to="/auth/signup"
                             onClick={handleMobileMenuItemClick}
-                            className="px-8 py-3 rounded-lg text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="px-8 py-3 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl  hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                           >
                             Sign up
                           </Link>

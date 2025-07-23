@@ -178,6 +178,7 @@ export default function ContactInfoCard({ pharmacistDetails }) {
               <FaEnvelope size={24} className="text-primary" />
             </span>
             <div className="flex flex-col">
+              
               <span className="text-gray-900 dark:text-foreground">
                 Contact Information
               </span>

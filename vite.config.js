@@ -48,7 +48,7 @@ export default defineConfig({
         skipWaiting: true,
         maximumFileSizeToCacheInBytes: 6 * 1024 * 1024, // Allow up to 6 MB for large font files
         disableDevLogs: true, // Disable Workbox console logs
-        globPatterns: ["**/*.{js,jsx,css,ico,png,svg,webmanifest,html,webp,ttf}", "manifest.json", "favicon.ico", "index.html", "imgs/*", "avatars/*"],
+        globPatterns: ["**/*.{js,jsx,css,ico,png,svg,webmanifest,html,webp,ttf}"],
         additionalManifestEntries: [
           { url: '/', revision: null },
         ],

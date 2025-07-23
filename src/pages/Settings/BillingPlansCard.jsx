@@ -321,7 +321,9 @@ export default function BillingPlansCard({ pharmacistDetails }) {
           </CardTitle>
         </CardHeader>
         <CardContent className="px-8 pb-8">
-          {currentSubscription && currentSubscription.status === true ? (
+          {subscriptionLoading ? (
+            <LoadingPage message="Loading usage features..." />
+          ) : currentSubscription && currentSubscription.status === true ? (
             <>
             {/* Premium Plan Extra Features */}
             {currentSubscription.planName === 'premium' && (

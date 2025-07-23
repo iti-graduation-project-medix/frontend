@@ -13,7 +13,6 @@ const drugAlertService = {
           _t: Date.now(), // Add timestamp to prevent caching
         },
       });
-      console.log("📋 Drug alert notifications response:", response.data);
       return response.data.data || [];
     } catch (error) {
       console.error("Error fetching drug alert notifications:", error);

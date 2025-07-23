@@ -179,12 +179,12 @@ const Pricing2 = ({
 
           {/* Payment Status Indicator */}
           {paymentStatus === 'processing' && (
-            <div className="bg-gray-50 border border-primary/50 rounded-lg p-4 max-w-md">
+            <div className="bg-gray-50 border border-primary/50 dark:border-primary/50 dark:bg-primary/20 rounded-lg p-4 max-w-md">
               <LoadingPage size={40} message=""/>
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="font-medium text-primary">Redirecting to Payment</p>
-                  <p className="text-sm text-primary/80">You will be redirected to complete your payment</p>
+                  <p className="font-medium text-primary dark:text-primary">Redirecting to Payment</p>
+                  <p className="text-sm text-primary/80 dark:text-primary/80">You will be redirected to complete your payment</p>
                 </div>
               </div>
             </div>
@@ -198,12 +198,12 @@ const Pricing2 = ({
                 key={plan.id}
                 className={`flex w-80 flex-col justify-between text-left px-4 py-8 relative overflow-hidden ${
                   plan.id === "Premium" 
-                    ? "ring-2 ring-blue-600 shadow-xl scale-105" 
+                    ? "ring-2 ring-primary shadow-xl scale-105" 
                     : "hover:shadow-lg transition-all duration-300"
                 }`}
               >
                 {plan.id === "Premium" && (
-                  <div className="absolute top-0 right-0 bg-blue-600 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
+                  <div className="absolute top-0 right-0 bg-primary text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
                     Most Popular
                   </div>
                 )}

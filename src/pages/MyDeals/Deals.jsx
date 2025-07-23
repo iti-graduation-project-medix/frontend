@@ -511,7 +511,7 @@ export default function Deals() {
                     <Filter className="h-4 w-4" />
                     Advanced
                     {activeFilters.length > 0 && (
-                      <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white ml-1">
+                      <Badge className="bg-zinc-600 dark:bg-zinc-400 dark:text-gray-700 text-white ml-1">
                         {activeFilters.length}
                       </Badge>
                     )}
@@ -632,7 +632,7 @@ export default function Deals() {
                     <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       Active Filters:
                     </span>
-                    <Badge className="bg-zinc-600 dark:bg-zinc-800 text-white font-bold  text-xs">
+                    <Badge className="bg-zinc-600 dark:bg-zinc-400 dark:text-gray-700 text-white font-bold  text-xs">
                       {activeFilters.length}
                     </Badge>
                   </div>
@@ -640,7 +640,7 @@ export default function Deals() {
                     {activeFilters.map((filter) => (
                       <Badge
                         key={filter.key}
-                        className="flex items-center gap-1 bg-zinc-600 dark:bg-zinc-800 text-white font-bold  cursor-pointer hover:bg-zinc-800/30 dark:hover:bg-zinc-700 transition-colors"
+                        className="flex items-center gap-1 bg-zinc-600 dark:text-gray-700 dark:bg-zinc-400 text-white  font-bold  cursor-pointer hover:bg-zinc-800/30 dark:hover:bg-zinc-700 transition-colors"
                         onClick={filter.onRemove}
                       >
                         {filter.label}

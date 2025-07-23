@@ -439,8 +439,8 @@ export default function BillingPlansCard({ pharmacistDetails }) {
           {/* Premium Features Notice - Only show for Regular Plan */}
           {currentSubscription && currentSubscription.planName === "regular" && (
             <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 border border-primary/20 dark:border-primary/40 rounded-2xl shadow-lg">
-              <div className="flex items-center gap-4">
-                <div className="p-3 -mt-5 bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/10 rounded-2xl shadow-lg">
+              <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <div className="p-3 mb-2 sm:mb-0 sm:-mt-5 bg-gradient-to-br from-primary/20 to-primary/10 dark:from-primary/30 dark:to-primary/10 rounded-2xl shadow-lg flex-shrink-0">
                   <FaCrown
                     className="text-primary dark:text-amber-400"
                     size={24}
@@ -453,10 +453,10 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                   <p className="text-sm text-gray-700 dark:text-gray-400 leading-relaxed">
                     Upgrade to Premium Plan to access: <strong className="text-primary">Unlimited Deals</strong>, <strong className="text-primary">Pharmacy Listings</strong>, and <strong className="text-primary">Drug Alerts</strong>
                   </p>
-              </div>
+                </div>
                 <Button 
                   onClick={() => handleUpgrade({ name: "Premium Plan" })}
-                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-white dark:bg-primary dark:hover:bg-primary/90 dark:text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                 >
                   Upgrade Now
                 </Button>
@@ -560,7 +560,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
                               </div>
                               {invoice.pan && (
                                 <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
-                                  {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan}
+                                  {invoice.subType === 'wallet' ? 'Number' : 'Card'}: ****{invoice.pan.slice(-4)}
                                 </span>
                               )}
                             </div>

@@ -96,7 +96,7 @@ ChatBubbleMessage.displayName = "ChatBubbleMessage";
 
 // ChatBubbleTimestamp
 const ChatBubbleTimestamp = ({ timestamp, className, ...props }) => (
-  <div className={cn("text-xs  mt-2 text-right", className)} {...props}>
+  <div className={cn("text-xs text-right", className)} {...props}>
     {timestamp}
   </div>
 );

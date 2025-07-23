@@ -136,6 +136,9 @@
   --sidebar-accent-foreground: #23293a;
   --sidebar-border: #3a4256;
   --sidebar-ring: #636ae8;
+  .custom-scrollbar {
+    scrollbar-color: #374151 #1e293b;
+  }
 }
 
 /* Custom scrollbar for chat widget */
@@ -143,12 +146,6 @@
   scrollbar-width: thin;
   scrollbar-color: #9ca3af #f1f5f9;
   /* thumb color, track color */
-}
-
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar {
-    scrollbar-color: #374151 #1e293b;
-  }
 }
 
 /* For Chrome, Edge, and Safari */

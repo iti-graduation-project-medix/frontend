@@ -397,7 +397,7 @@ export default function Navbar() {
           {/* Theme Mode Toggle and Notification Bell */}
           <div
             className={`flex items-center gap-1 xs:gap-2 ${
-              !isAuthenticated ? "mr-2 xs:mr-4" : "mr-1 md:mr-2"
+              !isAuthenticated ? "mr-4 md:mr-2 xs:mr-6" : "mr-2 md:mr-2"
             }`}
           >
             <ModeToggle />
@@ -407,14 +407,10 @@ export default function Navbar() {
                 onOpenChange={setIsNotificationPopoverOpen}
               >
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="relative p-1 xs:p-2 h-8 w-8 xs:h-9 xs:w-9"
-                  >
+                  <Button variant="outline" size="icon" className="relative ">
                     <FiBell className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
-                      <Badge className="absolute bottom-5 left-3 bg-red-500 text-white rounded-full px-1 py-0.5 text-xs font-semibold min-w-[18px] h-[18px] flex items-center justify-center z-50">
+                      <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
                         {unreadDrugAlerts}
                       </Badge>
                     )}
@@ -423,24 +419,37 @@ export default function Navbar() {
                 </PopoverTrigger>
                 <PopoverContent
                   align="end"
-                  className="w-80 p-0 bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg"
+                  className="w-80 p-0 bg-white/95 dark:bg-gray-900/95 border border-gray-200 dark:border-gray-800 shadow-2xl rounded-xl overflow-hidden"
                 >
-                  <div className="p-4 border-b border-gray-100 dark:border-border font-semibold text-base text-gray-900 dark:text-foreground bg-white dark:bg-card">
-                    Drug Alert Notifications
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-800 font-bold text-lg flex items-center gap-2  text-primary dark:text-primary tracking-wide">
+                    <svg
+                      className="w-5 h-5 text-primary dark:text-primary"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                      />
+                    </svg>
+                    Drug Alerts
                   </div>
                   {drugAlertNotifications.length > 0 ? (
-                    <ul className="divide-y divide-gray-100 dark:divide-border max-h-96 overflow-y-auto bg-white dark:bg-card">
+                    <ul className="divide-y divide-gray-100 dark:divide-gray-800 max-h-80 overflow-y-auto bg-white/95 dark:bg-gray-900/95 custom-scrollbar">
                       {drugAlertNotifications.map((notification) => (
                         <li
                           key={notification.id}
-                          className={`p-4 cursor-pointer text-sm transition-colors ${
+                          className={`p-4 cursor-pointer text-sm transition-colors flex flex-col gap-1 rounded-lg mx-2 my-2 shadow-sm border border-transparent ${
                             !notification.isRead
-                              ? "bg-blue-50 dark:bg-blue-900/30"
-                              : "bg-white dark:bg-card"
-                          } hover:bg-muted dark:hover:bg-muted/20`}
+                              ? "bg-primary/10 dark:bg-primary/20 border-primary/30 dark:border-primary/40"
+                              : "bg-white/80 dark:bg-card border-gray-100 dark:border-gray-800"
+                          } hover:bg-primary/20 dark:hover:bg-primary/30 hover:border-primary/50 dark:hover:border-primary/60`}
                           onClick={() => handleNotificationClick(notification)}
                         >
-                          <div className="flex justify-between items-start">
+                          <div className="flex justify-between items-start gap-2">
                             <div>
                               <span className="font-medium text-gray-900 dark:text-foreground">
                                 {notification.title}
@@ -455,14 +464,27 @@ export default function Navbar() {
                               </p>
                             </div>
                             {!notification.isRead && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                              <div className="w-2.5 h-2.5 bg-primary rounded-full mt-1 animate-pulse"></div>
                             )}
                           </div>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <div className="p-4 text-center text-gray-500 dark:text-gray-400 bg-white dark:bg-card">
+                    <div className="p-6 text-center text-gray-600 dark:text-white bg-white/95 dark:bg-gray-900/95">
+                      <svg
+                        className="mx-auto mb-2 w-8 h-8 text-gray-600 dark:text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+                        />
+                      </svg>
                       No drug alert notifications
                     </div>
                   )}
@@ -479,7 +501,7 @@ export default function Navbar() {
                 className="relative font-bold mr-3 hidden md:inline-flex"
               >
                 <Button variant="outline" size="icon" className="relative">
-                  <Heart className="h-[1.2rem] w-[1.2rem] text-zinc-600 dark:text-white" />
+                  <Heart className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
                   <span className="sr-only">Favorites</span>
                 </Button>
                 {favorites.deals.length + favorites.pharmacies.length > 0 && (
@@ -722,7 +744,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 hover:text-white dark:text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
                             }
                             aria-current="page"
                           >
@@ -736,7 +758,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/advertise"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 hover:text-white transition-colors  dark:text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
                             }
                           >
                             Advertise
@@ -749,7 +771,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/contact"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 hover:text-white transition-colors  dark:text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
                             }
                           >
                             Contact
@@ -764,7 +786,7 @@ export default function Navbar() {
                               location.pathname === "/me" ||
                               location.pathname.startsWith("/me/")
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-100 hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800"
                             }`}
                           >
                             Profile
@@ -777,10 +799,10 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left ${
                               location.pathname === "/deals"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-100 hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800"
                             }`}
                           >
-                            My Deals
+                            Deals
                           </Link>
                         </li>
                         <li>
@@ -790,20 +812,21 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left ${
                               location.pathname === "/pharmacies"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-100 hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800"
                             }`}
                           >
-                            My Pharmacies
+                            Pharmacies
                           </Link>
                         </li>
                         <li className="relative">
+                          {/* when hover in link make svg color change to primary color */}
                           <Link
                             to="/favorites"
                             onClick={handleMobileMenuItemClick}
                             className={`block py-4 px-8 rounded-xl w-full text-left flex items-center justify-between ${
                               location.pathname === "/favorites"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-100 hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white group  transition-colors rounded-xl hover:bg-gray-800"
                             }`}
                           >
                             <span>Favorites</span>
@@ -812,7 +835,7 @@ export default function Navbar() {
                               0 && (
                               <span className="ml-2 relative">
                                 <svg
-                                  className="inline w-6 h-6 text-white"
+                                  className="inline w-6 h-6 text-zinc-600 dark:text-white group-hover:text-white transition-colors"
                                   fill="none"
                                   stroke="currentColor"
                                   strokeWidth="2"
@@ -835,7 +858,7 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left ${
                               location.pathname === "/settings"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-100 hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800"
                             }`}
                           >
                             Settings
@@ -848,7 +871,7 @@ export default function Navbar() {
                               handleLogout();
                               handleMobileMenuItemClick();
                             }}
-                            className="block w-full text-left py-4 px-8 rounded-xl text-gray-100 hover:bg-gray-800 text-left"
+                            className="block w-full  py-4 px-8  text-gray-700 dark:text-gray-100 cursor-pointer hover:text-white transition-colors rounded-xl hover:bg-gray-800"
                           >
                             Sign out
                           </button>
@@ -864,7 +887,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800 w-full text-left"
                             }
                             aria-current="page"
                           >
@@ -878,7 +901,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/advertise"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 w-full text-left"
                             }
                           >
                             Advertise
@@ -891,7 +914,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/contact"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 w-full text-left"
                             }
                           >
                             Contact
@@ -908,7 +931,7 @@ export default function Navbar() {
                           <Link
                             to="/auth/signup"
                             onClick={handleMobileMenuItemClick}
-                            className="px-8 py-3 rounded-lg border border-gray-400 text-white font-semibold text-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="px-8 py-3 rounded-lg text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                           >
                             Sign up
                           </Link>

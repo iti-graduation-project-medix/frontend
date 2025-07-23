@@ -116,14 +116,14 @@ export default function NotFound() {
                 </Button>
                 <Button
                   variant="ghost"
-                  onClick={() => navigate("/signup")}
+                  onClick={() => navigate("/auth/signup")}
                   className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 cursor-pointer"
                 >
                   Sign Up
                 </Button>
                 <Button
                   variant="ghost"
-                  onClick={() => navigate("/contact-us")}
+                  onClick={() => navigate("/contact")}
                   className="text-sm text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 cursor-pointer"
                 >
                   Contact Us

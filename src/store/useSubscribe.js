@@ -62,20 +62,24 @@ export const useSubscribe = create((set, get) => ({
       }
 
       const res = await getCurrentSubscription(finalToken);
-      console.log("fetchCurrentSubscription API response", res.data);
+      let subscription = res.data;
+      // Force to { status: false } if null or not subscribed
+      if (!subscription || subscription.status !== true) {
+        subscription = { status: false };
+      }
       set({
         subscriptionLoading: false,
-        currentSubscription: res.data,
+        currentSubscription: subscription,
         error: null
       });
-      return res.data;
+      console.log("STORE SET currentSubscription", subscription);
+      return subscription;
     } catch (err) {
       set({
         subscriptionLoading: false,
         error: err.message || "Failed to fetch subscription",
-        currentSubscription: null,
+        currentSubscription: { status: false }, // Set to falsy subscription to prevent infinite loading
       });
-      throw err;
     }
   },
 

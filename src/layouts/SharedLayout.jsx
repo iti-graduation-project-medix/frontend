@@ -14,7 +14,7 @@ export default function SharedLayout() {
       <Navbar />
       <OfflineIndicator />
       <div style={{ minHeight: "calc(100vh - 437px)" }}>
-        <Suspense>
+        <Suspense fallback={<LoadingPage />}>
           <Outlet />
         </Suspense>
       </div>

@@ -2,59 +2,47 @@ import React, { useEffect, useRef } from 'react';
 import { useSubscribe } from '@/store/useSubscribe';
 import { useAuth } from '@/store/useAuth';
 import { Navigate, useLocation } from 'react-router-dom';
+import { LoadingPage } from '@/components/ui/loading';
 import { toast } from 'sonner';
 
 export default function SubscriptionRoute({ children }) {
-  const { isAuthenticated } = useAuth(state => state);
-  const { currentSubscription, fetchCurrentSubscription, subscriptionLoading } = useSubscribe();
+  const { isAuthenticated } = useAuth();
+  const {
+    currentSubscription,
+    fetchCurrentSubscription,
+    subscriptionLoading,
+  } = useSubscribe();
   const location = useLocation();
   const toastShownRef = useRef({});
 
-  // Always refetch subscription when route changes if missing or expired
+  // Always fetch subscription on mount and on route change
   useEffect(() => {
-    if (
-      isAuthenticated &&
-      (!currentSubscription || !currentSubscription.status) &&
-      !subscriptionLoading
-    ) {
+    if (isAuthenticated) {
       fetchCurrentSubscription();
     }
     // eslint-disable-next-line
   }, [isAuthenticated, location.pathname]);
 
-  useEffect(() => {
-    // Only show toast once per location (route)
-    if (
-      !subscriptionLoading &&
-      (!currentSubscription || !currentSubscription.status)
-    ) {
-      if (!toastShownRef.current[location.pathname]) {
-        toast.error('Please subscribe to use our services.');
-        toastShownRef.current[location.pathname] = true;
-      }
-    }
-  }, [currentSubscription, subscriptionLoading, location.pathname]);
+  // Show loading spinner while fetching
+  if (subscriptionLoading || typeof subscriptionLoading === 'undefined') {
+    return <LoadingPage message="Checking subscription..." />;
+  }
 
-  // Debug log for troubleshooting
-  console.log("DEBUG SubscriptionRoute", {
-    subscriptionLoading,
-    currentSubscription,
-    status: currentSubscription?.status
-  });
-
+  // If not authenticated, let login guard handle it
   if (!isAuthenticated) {
-    return <Navigate to="/auth/login" />;
+    return children;
   }
 
-  // Wait for loading or for the subscription to be set
-  if (subscriptionLoading || typeof subscriptionLoading === 'undefined' || currentSubscription === null) {
-    return null; // or a spinner
+  // If not subscribed, show toast and redirect
+  const isSubscribed =
+    currentSubscription &&
+    (currentSubscription.status === true || currentSubscription.status === 'active');
+
+  if (!isSubscribed) {
+    // Only add query param to signal redirect reason
+    return <Navigate to="/subscription?reason=not_subscribed" />;
   }
 
-  // Only redirect if status is NOT true
-  if (!currentSubscription.status) {
-    return <Navigate to="/subscription" />;
-  }
-
+  // If subscribed, render children
   return children;
 } 

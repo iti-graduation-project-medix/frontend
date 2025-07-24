@@ -192,6 +192,10 @@ export default function BillingPlansCard({ pharmacistDetails }) {
     XLSX.writeFile(wb, "BillingHistory.xlsx");
   };
 
+  // Add state for pagination
+  const [billingPage, setBillingPage] = useState(1);
+  const itemsPerPage = 5;
+
   return (
     <div className="space-y-8 max-w-6xl mx-auto text-gray-900 dark:text-foreground">
       {/* Current Plan Section */}
@@ -205,7 +209,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               <MdCardMembership size={28} className="text-primary" />
             </span>
             <div>
-              <span className="font-bold text-2xl text-gray-900 dark:text-foreground block">
+              <span className="font-bold text-xl text-gray-900 dark:text-foreground block">
                 Current Plan
               </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
@@ -320,7 +324,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               <MdInfo size={28} className="text-primary" />
             </span>
             <div>
-              <span className="font-bold text-2xl text-gray-900 dark:text-foreground block">
+              <span className="font-bold text-xl text-gray-900 dark:text-foreground block">
                 Usage Features
               </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
@@ -547,7 +551,7 @@ export default function BillingPlansCard({ pharmacistDetails }) {
               <MdReceipt size={28} className="text-primary" />
             </span>
             <div className="flex-1 min-w-0">
-              <span className="font-bold text-2xl text-gray-900 dark:text-foreground block">
+              <span className="font-bold text-xl text-gray-900 dark:text-foreground block">
                 Billing History
               </span>
               <span className="text-sm text-gray-500 font-medium dark:text-gray-400">
@@ -589,77 +593,126 @@ export default function BillingPlansCard({ pharmacistDetails }) {
           ) : userSubscriptions && userSubscriptions.length > 0 ? (
             <>
               <div className="space-y-4">
-                {userSubscriptions.map((subscription, index) => {
-                  const invoice = formatSubscriptionForHistory(subscription);
-                  return (
-                    <div
-                      key={invoice.id}
-                      className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background border border-gray-100 dark:border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-                    >
-                      <div className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div className="flex items-center gap-6">
-                          <div
-                            className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                              invoice.planName === "premium"
-                                ? "bg-amber-100 dark:bg-yellow-900/40"
-                                : "bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/20"
-                            }`}
-                          >
-                            {invoice.planName === "premium" ? (
-                              <FaCrown
-                                size={24}
-                                className="text-amber-400 dark:text-yellow-300"
-                              />
-                            ) : (
-                              <Zap
-                                size={24}
-                                className="text-blue-600 dark:text-blue-300"
-                              />
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <p className="font-bold text-lg text-gray-900 dark:text-foreground">
-                              {invoice.description}
-                            </p>
-                            <p className="text-sm text-gray-600 font-medium dark:text-gray-300">
-                              {invoice.date} • {invoice.invoice}
-                            </p>
-                            <div className="flex items-center gap-1">
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
-                                  {invoice.subType === "wallet"
-                                    ? "Wallet Payment"
-                                    : "Card Payment"}
-                                </span>
-                              </div>
-                              {invoice.pan && (
-                                <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
-                                  {invoice.subType === "wallet"
-                                    ? "Number"
-                                    : "Card"}
-                                  : ****{invoice.pan.slice(-4)}
-                                </span>
+                {userSubscriptions
+                  .slice(
+                    (billingPage - 1) * itemsPerPage,
+                    billingPage * itemsPerPage
+                  )
+                  .map((subscription, index) => {
+                    const invoice = formatSubscriptionForHistory(subscription);
+                    return (
+                      <div
+                        key={invoice.id}
+                        className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50/50 dark:from-background dark:to-background border border-gray-100 dark:border-border shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                      >
+                        <div className="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                          <div className="flex items-center gap-6">
+                            <div
+                              className={`p-3 -mt-7 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                                invoice.planName === "premium"
+                                  ? "bg-amber-100 dark:bg-yellow-900/40"
+                                  : "bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/20"
+                              }`}
+                            >
+                              {invoice.planName === "premium" ? (
+                                <FaCrown
+                                  size={24}
+                                  className="text-amber-400 dark:text-yellow-300"
+                                />
+                              ) : (
+                                <Zap
+                                  size={24}
+                                  className="text-blue-600 dark:text-blue-300"
+                                />
                               )}
                             </div>
+                            <div className="space-y-2">
+                              <p className="font-bold text-lg text-gray-900 dark:text-foreground">
+                                {invoice.description}
+                              </p>
+                              <p className="text-sm text-gray-600 font-medium dark:text-gray-300">
+                                {invoice.date} • {invoice.invoice}
+                              </p>
+                              <div className="flex items-center gap-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-gray-500 font-medium dark:text-gray-400">
+                                    {invoice.subType === "wallet"
+                                      ? "Wallet Payment"
+                                      : "Card Payment"}
+                                  </span>
+                                </div>
+                                {invoice.pan && (
+                                  <span className="text-xs text-gray-400 font-medium dark:text-gray-500">
+                                    {invoice.subType === "wallet"
+                                      ? "Number"
+                                      : "Card"}
+                                    : ****{invoice.pan.slice(-4)}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                          <div className="text-right">
-                            <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
-                              {invoice.amount}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center">
-                              {getStatusBadge(invoice.status)}
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                            <div className="text-right">
+                              <span className="font-bold text-2xl text-gray-900 dark:text-foreground">
+                                {invoice.amount}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center">
+                                {getStatusBadge(invoice.status)}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
+              {/* Pagination Controls */}
+              {userSubscriptions.length > itemsPerPage && (
+                <div className="flex justify-center mt-6 gap-2">
+                  <button
+                    className="px-3 py-1 rounded bg-gray-200 dark:bg-zinc-700 text-gray-700 dark:text-gray-200 font-semibold disabled:opacity-50"
+                    onClick={() => setBillingPage((p) => Math.max(1, p - 1))}
+                    disabled={billingPage === 1}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({
+                    length: Math.ceil(userSubscriptions.length / itemsPerPage),
+                  }).map((_, idx) => (
+                    <button
+                      key={idx}
+                      className={`px-3 py-1 rounded font-semibold ${
+                        billingPage === idx + 1
+                          ? "bg-primary text-white"
+                          : "bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200"
+                      }`}
+                      onClick={() => setBillingPage(idx + 1)}
+                    >
+                      {idx + 1}
+                    </button>
+                  ))}
+                  <button
+                    className="px-3 py-1 rounded bg-gray-200 dark:bg-zinc-700 text-gray-700 dark:text-gray-200 font-semibold disabled:opacity-50"
+                    onClick={() =>
+                      setBillingPage((p) =>
+                        Math.min(
+                          Math.ceil(userSubscriptions.length / itemsPerPage),
+                          p + 1
+                        )
+                      )
+                    }
+                    disabled={
+                      billingPage ===
+                      Math.ceil(userSubscriptions.length / itemsPerPage)
+                    }
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </>
           ) : (
             <div className="p-12 text-center">

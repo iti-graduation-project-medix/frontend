@@ -25,6 +25,7 @@ import {
 import drugAlertService from "../../services/drugAlert";
 import { ModeToggle } from "../mode-toggle";
 import { X } from "lucide-react";
+import { useUserDetails } from "../../store/useUserDetails";
 
 export default function Navbar() {
   const isOffline = useOffline();
@@ -36,6 +37,8 @@ export default function Navbar() {
   const [drugAlertNotifications, setDrugAlertNotifications] = useState([]);
   const [unreadDrugAlerts, setUnreadDrugAlerts] = useState(0);
   const { user, isAuthenticated, logout, initializeAuth, token } = useAuth();
+  const { userDetails, fetchUserDetails } = useUserDetails();
+  const [imgLoaded, setImgLoaded] = useState(false);
   const userMenuRef = useRef(null);
   const userButtonRef = useRef(null);
   const { favorites, fetchFavorites } = useFav();
@@ -61,6 +64,12 @@ export default function Navbar() {
   // Use real unread messages count from chat store
   const unreadCount = useChat((state) => state.totalUnreadCount);
   const { loadUserChats, initializeSocket, getCurrentUserId } = useChat();
+
+  useEffect(() => {
+    if (isAuthenticated && user && user.id && token && !userDetails) {
+      fetchUserDetails(user.id, token);
+    }
+  }, [isAuthenticated, user, token, fetchUserDetails, userDetails]);
 
   useEffect(() => {
     if (user && token) {
@@ -619,14 +628,24 @@ export default function Navbar() {
                 >
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10">
-                    <AvatarFallback>
-                      {getInitials(
-                        user?.fullName ||
-                          user?.name ||
-                          pharmacistDetails?.fullName ||
-                          "User"
-                      )}
-                    </AvatarFallback>
+                    {userDetails && userDetails.profilePhotoUrl ? (
+                      <AvatarImage
+                        src={userDetails.profilePhotoUrl}
+                        alt="Profile"
+                        onLoad={() => setImgLoaded(true)}
+                        style={{ display: imgLoaded ? 'block' : 'none' }}
+                      />
+                    ) : null}
+                    {(!userDetails || !userDetails.profilePhotoUrl || !imgLoaded) && (
+                      <AvatarFallback>
+                        {getInitials(
+                          userDetails?.fullName ||
+                            user?.fullName ||
+                            user?.name ||
+                            "User"
+                        )}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                 </motion.button>
                 <AnimatePresence>

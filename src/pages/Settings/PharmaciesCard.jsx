@@ -334,7 +334,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
           </div>
         </CardHeader>
         <CardContent className="pt-0">
-          <LoadingPage message="Loading pharmacies..." />
+          <LoadingPage message="Loading pharmacies..." fullscreen={false} />
         </CardContent>
       </Card>
     );
@@ -596,8 +596,11 @@ export default function PharmaciesCard({ pharmacistDetails }) {
 
   return (
     <div className="space-y-6">
-      <Card className="shadow-lg  rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8 max-w-full w-full" style={{ maxWidth: '100%' }}>
-        <CardHeader >
+      <Card
+        className="shadow-lg  rounded-xl border border-gray-200 dark:border-border bg-white dark:bg-background px-4 py-8 max-w-full w-full"
+        style={{ maxWidth: "100%" }}
+      >
+        <CardHeader>
           <div className="inline-flex flex-col sm:flex-row items-start sm:items-center gap-3 font-bold text-xl tracking-wide w-full">
             <span className="inline-flex items-center justify-center rounded-full bg-primary/10 dark:bg-primary/20 shadow-sm w-12 h-12">
               <FaClinicMedical size={24} className="text-primary" />

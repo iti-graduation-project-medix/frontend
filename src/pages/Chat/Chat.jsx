@@ -254,7 +254,7 @@ export default function Chat() {
         {/* Outer glow ring */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-primary-hover opacity-80 group-hover:opacity-100 animate-pulse blur-lg transition-all duration-300"></div>
         {/* Main button */}
-        <div className="relative w-15 h-15 rounded-full bg-gradient-to-br from-primary to-primary-hover shadow-lg group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 flex items-center justify-center">
+        <div className="relative w-15 h-15 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg group-hover:shadow-primary/40 transition-all duration-500 group-hover:scale-110 flex items-center justify-center">
           {/* Lucide MessageCircle icon, styled */}
           <MessagesSquare className="w-8 h-8 text-white font-bold drop-shadow-md" />
         </div>

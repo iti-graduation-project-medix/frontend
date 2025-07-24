@@ -448,9 +448,13 @@ export default function Navbar() {
             </p>
           </div>
         </Link>
-        <div className="flex items-center md:order-2 gap-2 xs:gap-3 min-w-0">
+        <div className="flex items-center md:order-2 space-x-2 xs:space-x-3 md:space-x-0 rtl:space-x-reverse min-w-0">
           {/* Theme Mode Toggle and Notification Bell */}
-          <div className={`flex items-center gap-2 xs:gap-3`}>
+          <div
+            className={`flex items-center gap-1 xs:gap-2 ${
+              !isAuthenticated ? "mr-4 md:mr-2 xs:mr-6" : "mr-2 md:mr-2"
+            }`}
+          >
             <ModeToggle />
             {isAuthenticated && (
               <Popover
@@ -459,7 +463,6 @@ export default function Navbar() {
               >
                 <PopoverTrigger asChild>
                   <Button variant="outline" size="icon" className="relative ">
-
                     <FiBell className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
                       <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
@@ -541,56 +544,16 @@ export default function Navbar() {
                     </div>
                   )}
                 </PopoverContent>
-                {/* Toast Notification */}
-                {toastNotification && (
-                  <>
-                    <style>{`
-                      @keyframes toast-pop {
-                        0% { opacity: 0; transform: translateY(24px) scale(0.85); }
-                        60% { opacity: 1; transform: translateY(-4px) scale(1.04); }
-                        100% { opacity: 1; transform: translateY(0) scale(1); }
-                      }
-                      .animate-toast-pop {
-                        animation: toast-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-                      }
-                    `}</style>
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 32,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        zIndex: 9999,
-                      }}
-                      className="w-[90vw] max-w-xs md:max-w-sm bg-white dark:bg-card border border-gray-100 dark:border-border shadow-lg rounded-lg px-4 py-3 flex flex-col gap-1 animate-toast-pop"
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <div className="font-medium text-gray-900 dark:text-foreground truncate">
-                          {toastNotification.title}
-                        </div>
-                        <button
-                          onClick={() => setToastNotification(null)}
-                          className="ml-2 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          aria-label="Dismiss notification"
-                        >
-                          <X className="w-4 h-4 text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white" />
-                        </button>
-                      </div>
-                      <div className="text-sm text-gray-700 dark:text-gray-300 truncate">
-                        {toastNotification.message}
-                      </div>
-                    </div>
-                  </>
-                )}
               </Popover>
             )}
           </div>
           {isAuthenticated ? (
             <>
+              <div></div>
               {/* Favorites Icon */}
               <Link
                 to="/favorites"
-                className="relative font-bold hidden md:inline-flex"
+                className="relative font-bold mr-3 hidden md:inline-flex"
               >
                 <Button variant="outline" size="icon" className="relative">
                   <Heart className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
@@ -737,7 +700,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 -ms-2"
+                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
                 Sign up
               </MotionLink>
@@ -745,7 +708,7 @@ export default function Navbar() {
           )}
           <motion.button
             type="button"
-            className="relative inline-flex items-center justify-center md:hidden border border-gray-200 dark:border-border bg-white dark:bg-card rounded-md w-9 h-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
+            className="relative inline-flex items-center justify-center md:hidden border border-gray-200 dark:border-border bg-white dark:bg-card rounded-md w-9 h-9 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600 -ms-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             animate={isMenuOpen ? "open" : "closed"}
             whileTap="tap"
@@ -795,7 +758,7 @@ export default function Navbar() {
                   damping: 30,
                   duration: 0.4,
                 }}
-                className="fixed inset-0 z-[9999] flex flex-col h-full bg-white dark:bg-gray-900 justify-start"
+                className="fixed inset-0 z-[9999] flex flex-col h-full bg-background dark:bg-background justify-start"
               >
                 {/* Close button */}
                 <button
@@ -1023,7 +986,7 @@ export default function Navbar() {
                           <Link
                             to="/auth/signup"
                             onClick={handleMobileMenuItemClick}
-                            className="px-8 py-3 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl  hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="px-8 py-3 rounded-lg text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
                           >
                             Sign up
                           </Link>

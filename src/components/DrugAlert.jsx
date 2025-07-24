@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/store/useAuth";
+import { useSubscribe } from "@/store/useSubscribe";
 import { fetchDrugs, createDrugAlert } from "@/api/drugs";
 import { useDebounce } from "@/hooks/useDebounce";
 import { toast } from "sonner";
@@ -27,6 +28,12 @@ export function DrugAlert() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { token } = useAuth();
   const isAuthenticated = Boolean(token);
+  const { currentSubscription } = useSubscribe();
+  const isPremium =
+    isAuthenticated &&
+    currentSubscription &&
+    currentSubscription.status === true &&
+    currentSubscription.planName === "premium";
 
   // Async search function
   const searchDrugs = useCallback(
@@ -149,11 +156,11 @@ export function DrugAlert() {
                   onOpenChange={setIsSelectOpen}
                   value=""
                   onValueChange={handleDrugSelect}
-                  disabled={!isAuthenticated}
+                  disabled={!isPremium}
                 >
                   <SelectTrigger
                     className="border-gray-300 dark:border-border rounded-lg h-11 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 dark:bg-background/80 backdrop-blur-sm w-full min-w-[250px] text-gray-900 dark:text-foreground"
-                    disabled={!isAuthenticated}
+                    disabled={!isPremium}
                   >
                     <SelectValue placeholder="Select drugs" />
                   </SelectTrigger>
@@ -167,7 +174,7 @@ export function DrugAlert() {
                           onChange={(e) => setSearchTerm(e.target.value)}
                           className="pl-10 border-gray-300 dark:border-border rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white dark:bg-background text-gray-900 dark:text-foreground"
                           onClick={(e) => e.stopPropagation()}
-                          disabled={!isAuthenticated}
+                          disabled={!isPremium}
                         />
                       </div>
                     </div>
@@ -218,7 +225,7 @@ export function DrugAlert() {
                 <Button
                   type="submit"
                   className="whitespace-nowrap dark:bg-primary dark:hover:bg-primary-hover"
-                  disabled={isSubmitting || !isAuthenticated}
+                  disabled={isSubmitting || !isPremium}
                 >
                   {isSubmitting ? (
                     <>
@@ -230,18 +237,31 @@ export function DrugAlert() {
                   )}
                 </Button>
               </div>
-              {!isAuthenticated && (
+              {!isPremium && (
                 <div className="flex items-center justify-center bg-muted/40 rounded-md px-3 py-2 mt-2 text-xs text-muted-foreground">
                   <Info className="w-4 h-4 mr-2 text-primary" />
                   <span>
-                    This feature is for subscribed users. Please{" "}
-                    <Link
-                      to="/auth/login"
-                      className="text-primary underline hover:text-primary-hover"
-                    >
-                      log in
-                    </Link>{" "}
-                    to use drug alerts.
+                    This feature is only available for Premium subscribers.
+                    Please{" "}
+                    {isAuthenticated ? (
+                      <>
+                        upgrade your subscription to{" "}
+                        <span className="text-primary font-semibold">
+                          Premium
+                        </span>
+                        .
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          to="/auth/login"
+                          className="text-primary underline hover:text-primary-hover"
+                        >
+                          log in
+                        </Link>{" "}
+                        to use drug alerts.
+                      </>
+                    )}
                   </span>
                 </div>
               )}

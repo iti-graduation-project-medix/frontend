@@ -38,7 +38,11 @@ export default function Navbar() {
   const [drugAlertNotifications, setDrugAlertNotifications] = useState([]);
   const [unreadDrugAlerts, setUnreadDrugAlerts] = useState(0);
   const { user, isAuthenticated, logout, initializeAuth, token } = useAuth();
-  const { userDetails, fetchUserDetails, isLoading: userDetailsLoading } = useUserDetails();
+  const {
+    userDetails,
+    fetchUserDetails,
+    isLoading: userDetailsLoading,
+  } = useUserDetails();
   const [imgLoaded, setImgLoaded] = useState(false);
   const userMenuRef = useRef(null);
   const userButtonRef = useRef(null);
@@ -426,6 +430,34 @@ export default function Navbar() {
     msOverflowStyle: "none", // IE 10+
   };
 
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const menuList = document.querySelector(
+      ".fixed.inset-0 .flex-1.overflow-y-auto"
+    );
+    const indicator = document.getElementById("mobile-menu-scroll-indicator");
+    if (menuList && indicator) {
+      const checkScroll = () => {
+        if (
+          menuList.scrollHeight > menuList.clientHeight &&
+          menuList.scrollTop + menuList.clientHeight <
+            menuList.scrollHeight - 10
+        ) {
+          indicator.style.opacity = "1";
+        } else {
+          indicator.style.opacity = "0";
+        }
+      };
+      checkScroll();
+      menuList.addEventListener("scroll", checkScroll);
+      window.addEventListener("resize", checkScroll);
+      return () => {
+        menuList.removeEventListener("scroll", checkScroll);
+        window.removeEventListener("resize", checkScroll);
+      };
+    }
+  }, [isMenuOpen]);
+
   return (
     <nav
       className=" border-gray-200 "
@@ -592,9 +624,15 @@ export default function Navbar() {
                 >
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 relative">
-                    {(userDetailsLoading || !userDetails || !userDetails.profilePhotoUrl || !imgLoaded) && (
+                    {(userDetailsLoading ||
+                      !userDetails ||
+                      !userDetails.profilePhotoUrl ||
+                      !imgLoaded) && (
                       <span className="absolute inset-0 flex items-center justify-center z-10">
-                        <FaSpinner className="animate-spin text-primary" size={20} />
+                        <FaSpinner
+                          className="animate-spin text-primary"
+                          size={20}
+                        />
                       </span>
                     )}
                     {userDetails && userDetails.profilePhotoUrl && (
@@ -602,7 +640,7 @@ export default function Navbar() {
                         src={userDetails.profilePhotoUrl}
                         alt="Profile"
                         onLoad={() => setImgLoaded(true)}
-                        style={{ display: imgLoaded ? 'block' : 'none' }}
+                        style={{ display: imgLoaded ? "block" : "none" }}
                       />
                     )}
                   </Avatar>
@@ -803,7 +841,7 @@ export default function Navbar() {
                   <style>{`
                     .scrollbar-hide::-webkit-scrollbar { display: none; }
                   `}</style>
-                  <ul className="flex flex-col font-semibold gap-8 text-2xl w-full max-w-sm mx-auto items-center">
+                  <ul className="flex flex-col font-semibold gap-4 text-2xl w-full max-w-sm mx-auto items-center relative">
                     {/* Main Navigation */}
                     {isAuthenticated ? (
                       <>
@@ -1009,6 +1047,25 @@ export default function Navbar() {
                       </>
                     )}
                   </ul>
+                </div>
+                {/* Add a scroll indicator arrow at the bottom of the menu, only visible if the menu is scrollable */}
+                <div
+                  id="mobile-menu-scroll-indicator"
+                  className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none transition-opacity duration-300 opacity-0"
+                >
+                  <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="feather feather-chevron-down text-primary animate-bounce"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
                 </div>
               </motion.div>
             </>

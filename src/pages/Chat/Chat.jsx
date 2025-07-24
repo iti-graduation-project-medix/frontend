@@ -768,7 +768,7 @@ export default function Chat() {
                   <div className="text-base font-semibold text-primary mb-0.5">
                     Chat Closed
                   </div>
-                  <div className="text-xs text-gray-600 text-center">
+                  <div className="text-xs text-gray-600 dark:text-gray-300 text-center">
                     This chat is no longer available.
                     <br />
                     You can view previous messages, but cannot send new ones.

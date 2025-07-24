@@ -32,6 +32,7 @@ import { useAuth } from "../../store/useAuth";
 import { Link } from "react-router-dom";
 import { leaveRoom } from "../../services/socket";
 import { motion, AnimatePresence } from "framer-motion";
+import { getUserDetails } from "../../api/profile/UserDetails";
 
 export default function Chat() {
   const [message, setMessage] = useState("");
@@ -193,6 +194,37 @@ export default function Chat() {
       el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
     }
   }, [mode, currentMessages.length, activeChat?.roomId]);
+
+  // Add this effect after activeChat and messages are defined
+  useEffect(() => {
+    async function updateReceiverProfilePhoto() {
+      if (!activeChat || !activeChat.otherUser?.id) return;
+      try {
+        const userDetails = await getUserDetails(activeChat.otherUser.id);
+        const newPhotoUrl = userDetails?.profilePhotoUrl || userDetails?.avatar;
+        if (
+          newPhotoUrl &&
+          newPhotoUrl !== activeChat.otherUser.profilePhotoUrl
+        ) {
+          // Update the activeChat in the chat store
+          // If you have a setActiveChat or updateActiveChat method, use it. Otherwise, update in place:
+          useChat.setState((state) => ({
+            activeChat: {
+              ...state.activeChat,
+              otherUser: {
+                ...state.activeChat.otherUser,
+                profilePhotoUrl: newPhotoUrl,
+              },
+            },
+          }));
+        }
+      } catch (error) {
+        // Optionally handle error
+      }
+    }
+    updateReceiverProfilePhoto();
+    // eslint-disable-next-line
+  }, [activeChat, messages[activeChat?.roomId]?.length]);
 
   if (!isAuthenticated) {
     return <></>;
@@ -692,15 +724,6 @@ export default function Chat() {
                     key={msg.id}
                     variant={msg.isOwn ? "sent" : "received"}
                   >
-                    {!msg.isOwn && (
-                      <ChatBubbleAvatar
-                        src={msg.avatar}
-                        fallback={msg.sender
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      />
-                    )}
                     <ChatBubbleMessage
                       variant={msg.isOwn ? "sent" : "received"}
                       className={
@@ -745,7 +768,7 @@ export default function Chat() {
                   <div className="text-base font-semibold text-primary mb-0.5">
                     Chat Closed
                   </div>
-                  <div className="text-xs text-gray-600 text-center">
+                  <div className="text-xs text-gray-600 dark:text-gray-300 text-center">
                     This chat is no longer available.
                     <br />
                     You can view previous messages, but cannot send new ones.

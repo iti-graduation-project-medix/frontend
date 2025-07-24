@@ -708,7 +708,11 @@ export default function AvailableDeals() {
                   <MedicineDealCardSkeleton key={i} />
                 ))
               : filteredDeals.map((deal) => (
-                  <MedicineDealCard key={deal.id} deal={deal} />
+                  <MedicineDealCard
+                    key={deal.id}
+                    deal={deal}
+                    isOwnDeal={showMyDeals}
+                  />
                 ))}
             {!isLoading && filteredDeals.length === 0 && (
               <div className="col-span-full text-center text-muted-foreground dark:text-gray-400 py-8 flex flex-col items-center">

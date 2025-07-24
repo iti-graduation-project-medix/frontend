@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PiTagChevronBold } from "react-icons/pi";
 import { BsPatchCheckFill } from "react-icons/bs";
-import { FaUserEdit, FaCog } from "react-icons/fa";
+import { FaUserEdit, FaCog, FaSpinner } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../store/useAuth";
+import { useUserDetails } from "../../store/useUserDetails";
 
-export default function SettingsHeader({ pharmacistDetails }) {
-  // Add null check and default values
-  const details = pharmacistDetails || {};
+export default function SettingsHeader() {
+  const { user, token } = useAuth();
+  const { userDetails, isLoading, error, fetchUserDetails } = useUserDetails();
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  useEffect(() => {
+    if (user && user.id && token && !userDetails) {
+      fetchUserDetails(user.id, token);
+    }
+  }, [user, token, fetchUserDetails, userDetails]);
+
+  const details = userDetails || {};
   const getInitials = (name = "") => {
     const words = name.trim().split(" ");
     const firstTwo = words.slice(0, 2);
@@ -21,6 +32,16 @@ export default function SettingsHeader({ pharmacistDetails }) {
   const capitalizeWords = (str = "") =>
     str.replace(/\b\w/g, (char) => char.toUpperCase());
 
+  if (isLoading) {
+    return <FaSpinner className="animate-spin mx-auto my-10 text-primary" size={20} />;
+  }
+  if (error) {
+    return <div className="p-6 text-red-500">{error}</div>;
+  }
+  if (!userDetails) {
+    return null;
+  }
+
   return (
     <div className="bg-white dark:bg-background rounded-2xl p-6 mb-8 border border-gray-100 dark:border-border shadow-sm">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -30,9 +51,19 @@ export default function SettingsHeader({ pharmacistDetails }) {
           <div className="relative">
             <div className="relative">
               <Avatar className="size-20 shadow-lg border-4 border-white dark:border-background">
-                <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold">
-                  {initials}
-                </AvatarFallback>
+                {details.profilePhotoUrl ? (
+                  <AvatarImage
+                    src={details.profilePhotoUrl}
+                    alt="Profile"
+                    onLoad={() => setImgLoaded(true)}
+                    style={{ display: imgLoaded ? 'block' : 'none' }}
+                  />
+                ) : null}
+                {(!details.profilePhotoUrl || !imgLoaded) && (
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold">
+                    {initials}
+                  </AvatarFallback>
+                )}
               </Avatar>
               {/* Status Indicator */}
               <div className="absolute -bottom-1 -right-1 bg-white dark:bg-background rounded-full p-1 shadow-md border-2 border-white dark:border-background">

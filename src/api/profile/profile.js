@@ -14,3 +14,18 @@ export const getPharmacistDetails = async (id, token) => {
     );
   }
 };
+
+export const getUserDetailsById = async (id, token) => {
+  try {
+    const response = await api.get(`/user/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch user details"
+    );
+  }
+};

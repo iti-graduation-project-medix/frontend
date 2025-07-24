@@ -71,7 +71,7 @@ export default function Settings() {
 
   // Show loading while auth is initializing
   if (authLoading) {
-    return <LoadingPage message="Loading settings..." />;
+    return <LoadingPage message="Loading settings..." fullscreen={false} />;
   }
 
   // Show error if no user or token
@@ -129,7 +129,10 @@ export default function Settings() {
         {activeTab === "info" && (
           <div className="space-y-6">
             {isLoading ? (
-              <LoadingPage message="Loading personal information..." />
+              <LoadingPage
+                message="Loading personal information..."
+                fullscreen={false}
+              />
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
@@ -160,7 +163,10 @@ export default function Settings() {
         {activeTab === "security" && (
           <div>
             {isLoading ? (
-              <LoadingPage message="Loading security settings..." />
+              <LoadingPage
+                message="Loading security settings..."
+                fullscreen={false}
+              />
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
@@ -188,7 +194,7 @@ export default function Settings() {
         {activeTab === "pharmacies" && (
           <div>
             {isLoading ? (
-              <LoadingPage message="Loading pharmacies..." />
+              <LoadingPage message="Loading pharmacies..." fullscreen={false} />
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">
@@ -216,7 +222,10 @@ export default function Settings() {
         {activeTab === "billing" && (
           <div>
             {isLoading ? (
-              <LoadingPage message="Loading billing information..." />
+              <LoadingPage
+                message="Loading billing information..."
+                fullscreen={false}
+              />
             ) : error ? (
               <div className="flex items-center justify-center h-64">
                 <div className="text-center">

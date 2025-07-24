@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-export const LoadingCard = ({ message = "Loading..." }) => {
+// LoadingCard: Use fullscreen=true for page-level loading, or omit for inline loading (e.g., in Settings)
+export const LoadingCard = ({ message = "Loading...", fullscreen = false }) => {
   return (
-    <div className="flex flex-col items-center justify-center p-8 space-y-6 bg-white dark:bg-card rounded-2xl shadow-xl border border-gray-100 dark:border-border backdrop-blur-sm">
+    <div
+      className={`flex flex-col items-center justify-center p-8 space-y-6 bg-white dark:bg-card rounded-2xl shadow-xl border border-gray-100 dark:border-border backdrop-blur-sm${
+        fullscreen ? " min-h-screen" : ""
+      }`}
+    >
       {/* Modern capsule-themed spinner */}
       <div className="relative">
         <div className="w-20 h-10 rounded-full border-3 border-transparent border-t-gray-400 dark:border-t-gray-700 border-r-gray-500 dark:border-r-gray-600 animate-spin shadow-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-muted dark:to-muted-foreground/10"></div>
@@ -59,15 +64,20 @@ export const LoadingSkeleton = ({ lines = 3, className = "" }) => {
   );
 };
 
-// Custom loader with two SVGs: wrapper spins around capsule
+// LoadingPage: Use fullscreen=true (default) for page-level loading, or fullscreen={false} for inline loading (e.g., in Settings)
 export const LoadingPage = ({
   size = 80,
   className = "",
   message = "Loading...",
+  fullscreen = true,
 }) => {
   const wrapperSize = size * 1; // Make wrapper larger than capsule
   return (
-    <div className={`flex flex-col items-center justify-center ${className}`}>
+    <div
+      className={`flex flex-col items-center justify-center${
+        fullscreen ? " min-h-screen" : ""
+      } ${className}`}
+    >
       <div
         style={{
           position: "relative",

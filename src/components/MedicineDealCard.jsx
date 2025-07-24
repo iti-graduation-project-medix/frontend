@@ -8,7 +8,7 @@ import { useFav } from "@/store/useFav";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
-function MedicineDealCard({ deal }) {
+function MedicineDealCard({ deal, isOwnDeal: isOwnDealProp }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isDealFavorite, toggleDealFavorite, fetchFavorites, isLoading } =
@@ -16,12 +16,10 @@ function MedicineDealCard({ deal }) {
 
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Fetch favorites on component mount
   useEffect(() => {
     fetchFavorites();
   }, [fetchFavorites]);
 
-  // Handle incomplete deal data
   if (!deal || !deal.id) {
     return (
       <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm p-6">
@@ -32,20 +30,15 @@ function MedicineDealCard({ deal }) {
     );
   }
 
-  // Check if this deal is in favorites
   const isFavorite = isDealFavorite(deal.id);
 
-  // Handle heart click
   const handleHeartClick = async (e) => {
-    e.stopPropagation(); // Prevent card click
-
-    // Start animation
+    e.stopPropagation();
     setIsAnimating(true);
 
     try {
       await toggleDealFavorite(deal.id);
 
-      // Show success toast
       if (isFavorite) {
         toast.success(`${deal.medicineName} removed from favorites`);
       } else {
@@ -55,7 +48,6 @@ function MedicineDealCard({ deal }) {
       console.error("Failed to toggle favorite:", error);
       toast.error("Failed to update favorites. Please try again.");
     } finally {
-      // Stop animation after a short delay
       setTimeout(() => setIsAnimating(false), 300);
     }
   };
@@ -64,7 +56,6 @@ function MedicineDealCard({ deal }) {
     navigate(`/deals/${dealId}`);
   };
 
-  // Helper function to format date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -74,7 +65,6 @@ function MedicineDealCard({ deal }) {
     });
   };
 
-  // Helper function to format created date with time
   const formatCreatedDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -86,28 +76,29 @@ function MedicineDealCard({ deal }) {
     });
   };
 
-  // Helper function to determine status
   const getStatus = (deal) => {
     if (deal.isClosed) return "closed";
     if (!deal.isValid) return "expired";
     return "active";
   };
 
-  // Helper function to get pharmacy avatar
   const getPharmacyAvatar = (pharmacy) => {
     if (!pharmacy) return "/public/avatars/client1.webp";
     return pharmacy.imagesUrls && pharmacy.imagesUrls.length > 0
       ? pharmacy.imagesUrls[0]
-      : "/public/avatars/client1.webp"; // fallback avatar
+      : "/public/avatars/client1.webp";
   };
 
   const status = getStatus(deal);
-  const isOwnDeal = deal.postedBy && deal.postedBy.id === user;
+  const isOwnDeal =
+    typeof isOwnDealProp === "boolean"
+      ? isOwnDealProp
+      : deal.postedBy && deal.postedBy.id === user;
 
   return (
     <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col h-full group relative">
       <div className="p-6 flex-1 flex flex-col">
-        {/* Header with badge and heart icon */}
+        {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div>
             <h2 className="font-bold text-lg text-gray-900 dark:text-foreground leading-tight pr-2">
@@ -115,7 +106,6 @@ function MedicineDealCard({ deal }) {
             </h2>
           </div>
           <div className="flex flex-col gap-2 items-end">
-            {/* Remove Heart icon from here, keep only the Badge */}
             <Badge
               className={`${
                 deal.dealType === "sell"
@@ -127,12 +117,56 @@ function MedicineDealCard({ deal }) {
             >
               {deal.dealType === "both" ? "Sell / Exchange" : deal.dealType}
             </Badge>
+            <motion.button
+              className={`bg-white/80 dark:bg-background/80 rounded-full p-1 shadow transition-all duration-200 hover:bg-white dark:hover:bg-muted hover:shadow-lg ${
+                isLoading || isOwnDeal ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={handleHeartClick}
+              disabled={isLoading || isOwnDeal}
+              whileHover={!isOwnDeal ? { scale: 1.1 } : {}}
+              whileTap={!isOwnDeal ? { scale: 0.9 } : {}}
+              animate={
+                isAnimating
+                  ? {
+                      scale: [1, 1.3, 1],
+                      rotate: [0, 10, -10, 0],
+                    }
+                  : {}
+              }
+              transition={{
+                duration: 0.3,
+                ease: "easeInOut",
+              }}
+              title={isOwnDeal ? "You cannot favorite your own deal" : ""}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={isFavorite ? "filled-header" : "empty-header"}
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  exit={{ scale: 0, rotate: 180 }}
+                  transition={{
+                    duration: 0.2,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <Heart
+                    className={`w-5 h-5 transition-colors duration-200 ${
+                      isOwnDeal
+                        ? "text-gray-300 dark:text-gray-600"
+                        : isFavorite
+                        ? "text-red-500 fill-red-500"
+                        : "text-gray-400 dark:text-gray-300 hover:text-red-400 dark:hover:text-red-400"
+                    }`}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </motion.button>
           </div>
         </div>
 
-        {/* Deal info with icons - rearranged by importance */}
+        {/* Deal Info */}
         <div className="space-y-3 mb-4">
-          {/* Price - most important for buyers */}
           {(deal.dealType === "sell" ||
             deal.dealType === "exchange" ||
             deal.dealType === "both") &&
@@ -148,7 +182,6 @@ function MedicineDealCard({ deal }) {
                 </span>
               </div>
             )}
-          {/* Quantity - important for availability */}
           {deal.quantity && (
             <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
               <Package
@@ -161,7 +194,6 @@ function MedicineDealCard({ deal }) {
               </span>
             </div>
           )}
-          {/* Expiry Date - critical for medicine safety */}
           {deal.expiryDate && (
             <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
               <Calendar
@@ -174,7 +206,6 @@ function MedicineDealCard({ deal }) {
               </span>
             </div>
           )}
-          {/* Dosage Form - important for medicine type */}
           {deal.dosageForm && (
             <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
               <Pill
@@ -188,7 +219,6 @@ function MedicineDealCard({ deal }) {
               </span>
             </div>
           )}
-          {/* Posted Date - less important, shown last */}
           {deal.createdAt && (
             <div className="flex items-center text-gray-600 dark:text-gray-400 text-sm">
               <Clock
@@ -210,7 +240,7 @@ function MedicineDealCard({ deal }) {
           </div>
         )}
 
-        {/* Pharmacy info */}
+        {/* Pharmacy Info */}
         {deal.pharmacy && (
           <div className="flex items-center gap-3 pt-4 border-t border-gray-100 dark:border-border">
             <div className="relative">
@@ -240,54 +270,6 @@ function MedicineDealCard({ deal }) {
                 <span className="text-sm font-medium text-gray-900 dark:text-foreground truncate">
                   {deal.pharmacy.name || "Unknown Pharmacy"}
                 </span>
-                {/* Heart icon aligned with pharmacy name */}
-                <motion.button
-                  className={`bg-white/80 dark:bg-background/80 rounded-full p-1 shadow transition-all duration-200 hover:bg-white dark:hover:bg-muted hover:shadow-lg ${
-                    isLoading || isOwnDeal
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  onClick={handleHeartClick}
-                  disabled={isLoading || isOwnDeal}
-                  whileHover={!isOwnDeal ? { scale: 1.1 } : {}}
-                  whileTap={!isOwnDeal ? { scale: 0.9 } : {}}
-                  animate={
-                    isAnimating
-                      ? {
-                          scale: [1, 1.3, 1],
-                          rotate: [0, 10, -10, 0],
-                        }
-                      : {}
-                  }
-                  transition={{
-                    duration: 0.3,
-                    ease: "easeInOut",
-                  }}
-                  title={isOwnDeal ? "You cannot favorite your own deal" : ""}
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={isFavorite ? "filled-bottom" : "empty-bottom"}
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={{ scale: 1, rotate: 0 }}
-                      exit={{ scale: 0, rotate: 180 }}
-                      transition={{
-                        duration: 0.2,
-                        ease: "easeInOut",
-                      }}
-                    >
-                      <Heart
-                        className={`w-5 h-5 transition-colors duration-200 ${
-                          isOwnDeal
-                            ? "text-gray-300 dark:text-gray-600"
-                            : isFavorite
-                            ? "text-red-500 fill-red-500"
-                            : "text-gray-400 dark:text-gray-300 hover:text-red-400 dark:hover:text-red-400"
-                        }`}
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.button>
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
                 {(deal.pharmacy.governorate || deal.pharmacy.city) && (
@@ -336,14 +318,12 @@ function MedicineDealCard({ deal }) {
         )}
       </div>
 
-      {/* Action button */}
+      {/* Action Button */}
       <div className="p-6 pt-0">
         <Button
           className="w-full transition-colors duration-200 border-gray-200 dark:border-border bg-white dark:bg-background text-primary dark:text-primary"
           variant="outline"
           onClick={() => handleViewDetails(deal.id)}
-          disabled={isOwnDeal}
-          title={isOwnDeal ? "You cannot view details of your own deal" : ""}
         >
           View Details
         </Button>

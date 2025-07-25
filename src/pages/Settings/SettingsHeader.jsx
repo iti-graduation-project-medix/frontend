@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { useUserDetails } from "../../store/useUserDetails";
 import { updateUserProfileImage } from '../../api/profile/profile';
+import { toast } from "sonner";
 
 export default function SettingsHeader() {
   const { user, token } = useAuth();
@@ -51,6 +52,7 @@ export default function SettingsHeader() {
       if (fetchUserDetails && user && user.id && token) {
         await fetchUserDetails(user.id, token);
       }
+      toast("Profile image updated successfully!");
     } catch (err) {
       setUploadError(err.message);
     } finally {
@@ -69,16 +71,16 @@ export default function SettingsHeader() {
   }
 
   return (
-    <div className="bg-white dark:bg-background rounded-2xl p-6 mb-8 border border-gray-100 dark:border-border shadow-sm">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+    <div className="bg-white dark:bg-background rounded-2xl p-4 sm:p-6 mb-8 border border-gray-100 dark:border-border shadow-sm">
+      <div className="flex flex-col gap-y-6 sm:gap-y-0 sm:flex-row sm:items-center sm:justify-between">
         {/* Profile Section */}
-        <div className="flex items-center gap-6 w-full justify-between">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:justify-between">
           {/* Avatar and Info */}
-          <div className="flex items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 w-full">
             {/* Avatar with Status */}
-            <div className="relative">
+            <div className="relative mb-2 sm:mb-0">
               <div className="relative">
-                <Avatar className="size-20 shadow-lg border-4 border-white dark:border-background">
+                <Avatar className="size-16 sm:size-20 shadow-lg border-4 border-white dark:border-background">
                   {details.profilePhotoUrl ? (
                     <AvatarImage
                       src={details.profilePhotoUrl}
@@ -88,14 +90,14 @@ export default function SettingsHeader() {
                     />
                   ) : null}
                   {(!details.profilePhotoUrl || !imgLoaded) && (
-                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-xl font-bold">
+                    <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-lg sm:text-xl font-bold">
                       {initials}
                     </AvatarFallback>
                   )}
                 </Avatar>
                 {/* Status Indicator */}
                 <div className="absolute -bottom-1 -right-1 bg-white dark:bg-background rounded-full p-1 shadow-md border-2 border-white dark:border-background">
-                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full flex items-center justify-center">
                     <BsPatchCheckFill size={12} className="text-white" />
                   </div>
                 </div>
@@ -103,9 +105,9 @@ export default function SettingsHeader() {
             </div>
 
             {/* Profile Info */}
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-foreground tracking-tight">
+            <div className="flex-1 text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-2">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-foreground tracking-tight">
                   {capitalizeWords(details.fullName)}
                 </h1>
                 <Badge
@@ -119,7 +121,7 @@ export default function SettingsHeader() {
               <p className="text-gray-600 text-base mb-3 dark:text-gray-400">
                 Professional Pharmacist • Account Settings
               </p>
-              <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <span className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   Active Account
@@ -131,20 +133,20 @@ export default function SettingsHeader() {
               </div>
             </div>
           </div>
-          {/* Upload Button aligned right */}
-          <div className="flex flex-col items-end justify-center ml-4">
+          {/* Upload Button aligned right or bottom on mobile */}
+          <div className="flex flex-col items-center sm:items-end justify-center mt-4 sm:mt-0 w-full sm:w-auto">
             <button
               type="button"
-              className="flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-md shadow hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary"
+              className={`flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-md shadow hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary ${(uploading || isLoading) ? 'opacity-60 cursor-not-allowed' : ''} md:whitespace-nowrap mx-auto sm:mx-0`}
               onClick={handleUploadClick}
-              disabled={uploading}
+              disabled={uploading || isLoading}
             >
               {uploading ? (
                 <FaSpinner className="animate-spin" size={16} />
               ) : (
                 <FaUpload size={16} />
               )}
-              <span>Upload Image</span>
+              <span className="whitespace-normal md:whitespace-nowrap">Upload Image</span>
             </button>
             <input
               type="file"
@@ -152,7 +154,7 @@ export default function SettingsHeader() {
               ref={fileInputRef}
               style={{ display: 'none' }}
               onChange={handleFileChange}
-              disabled={uploading}
+              disabled={uploading || isLoading}
             />
             {uploadError && (
               <span className="text-xs text-red-500 mt-1">{uploadError}</span>

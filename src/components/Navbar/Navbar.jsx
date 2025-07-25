@@ -504,7 +504,7 @@ export default function Navbar() {
                 onOpenChange={setIsNotificationPopoverOpen}
               >
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="icon" className="relative ">
+                  <Button variant="outline" size="icon" className="relative ms-1 ">
                     <FiBell className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
                       <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
@@ -612,7 +612,7 @@ export default function Navbar() {
                 <motion.button
                   ref={userButtonRef}
                   type="button"
-                  className="flex items-center justify-center mr-2 text-xl bg-primary rounded-full md:me-0 focus:ring-4 focus:ring-primary/30 dark:focus:ring-primary/30 relative"
+                  className="flex items-center justify-center mr-2 text-xl border border-primary rounded-full md:me-0 focus:ring-4 focus:ring-primary/30 dark:focus:ring-primary/30 relative"
                   style={{
                     width: "clamp(36px, 8vw, 46px)",
                     height: "clamp(36px, 8vw, 46px)",
@@ -753,7 +753,7 @@ export default function Navbar() {
                 whileTap="tap"
                 whileHover="hover"
                 variants={buttonVariants}
-                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="text-gray-900 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-4 py-2 dark:bg-input/30 dark:text-white dark:border-gray-600 -ms-2 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
               >
                 Sign up
               </MotionLink>
@@ -852,7 +852,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-700 hover:text-white dark:text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 hover:text-white dark:text-gray-100 rounded-xl hover:bg-primary/80  w-full text-left"
                             }
                             aria-current="page"
                           >
@@ -866,7 +866,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/advertise"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-700 hover:text-white transition-colors  dark:text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 hover:text-white transition-colors  dark:text-gray-100 rounded-xl  hover:bg-primary/80 w-full text-left"
                             }
                           >
                             Advertise
@@ -879,7 +879,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/contact"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-700 hover:text-white transition-colors  dark:text-gray-100 rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 hover:text-white transition-colors  dark:text-gray-100 rounded-xl  hover:bg-primary/80 w-full text-left"
                             }
                           >
                             Contact
@@ -894,7 +894,7 @@ export default function Navbar() {
                               location.pathname === "/me" ||
                               location.pathname.startsWith("/me/")
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl  hover:bg-primary/80"
                             }`}
                           >
                             Profile
@@ -907,7 +907,7 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left ${
                               location.pathname === "/deals"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl  hover:bg-primary/80"
                             }`}
                           >
                             Deals
@@ -920,7 +920,7 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left ${
                               location.pathname === "/pharmacies"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl  hover:bg-primary/80"
                             }`}
                           >
                             Pharmacies
@@ -934,7 +934,7 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left flex items-center justify-between ${
                               location.pathname === "/favorites"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-700 dark:text-gray-100 hover:text-white group  transition-colors rounded-xl hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white group  transition-colors rounded-xl  hover:bg-primary/80"
                             }`}
                           >
                             <span>Favorites</span>
@@ -966,7 +966,7 @@ export default function Navbar() {
                             className={`block py-4 px-8 rounded-xl w-full text-left ${
                               location.pathname === "/settings"
                                 ? "text-white bg-primary shadow-lg"
-                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800"
+                                : "text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-primary/80"
                             }`}
                           >
                             Settings
@@ -979,7 +979,7 @@ export default function Navbar() {
                               handleLogout();
                               handleMobileMenuItemClick();
                             }}
-                            className="block w-full  py-4 px-8  text-gray-700 dark:text-gray-100 cursor-pointer hover:text-white transition-colors rounded-xl hover:bg-gray-800"
+                            className="block w-full  py-4 px-8  text-gray-700 dark:text-gray-100 cursor-pointer hover:text-white transition-colors rounded-xl mb-4 hover:bg-primary/80"
                           >
                             Sign out
                           </button>
@@ -995,7 +995,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors  rounded-xl hover:bg-primary/80 w-full text-left"
                             }
                             aria-current="page"
                           >
@@ -1009,7 +1009,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/advertise"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-primary/80 w-full text-left"
                             }
                           >
                             Advertise
@@ -1022,7 +1022,7 @@ export default function Navbar() {
                             className={
                               location.pathname === "/contact"
                                 ? "block py-4 px-8 text-white bg-primary rounded-xl shadow-lg w-full text-left"
-                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 w-full text-left"
+                                : "block py-4 px-8 text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-primary/80 w-full text-left"
                             }
                           >
                             Contact
@@ -1039,7 +1039,7 @@ export default function Navbar() {
                           <Link
                             to="/auth/signup"
                             onClick={handleMobileMenuItemClick}
-                            className="px-8 py-3 rounded-lg text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-xl hover:bg-gray-800 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="px-8 py-3  text-gray-700 dark:text-gray-100 hover:text-white transition-colors rounded-lg  hover:bg-primary/80 focus:outline-none border border-white focus:ring-2 focus:ring-primary"
                           >
                             Sign up
                           </Link>

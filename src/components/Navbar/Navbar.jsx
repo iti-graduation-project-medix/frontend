@@ -504,7 +504,11 @@ export default function Navbar() {
                 onOpenChange={setIsNotificationPopoverOpen}
               >
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="icon" className="relative ms-1 ">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="relative ms-1 "
+                  >
                     <FiBell className="h-5 w-5 xs:h-[1.2rem] xs:w-[1.2rem] text-zinc-600 dark:text-white" />
                     {unreadDrugAlerts > 0 && (
                       <Badge className="absolute bottom-6 left-4 bg-red-500 text-white rounded-full px-1.5 py-0.5 text-xs font-semibold min-w-[24px] h-[24px] flex items-center justify-center">
@@ -624,10 +628,8 @@ export default function Navbar() {
                 >
                   <span className="sr-only">Open user menu</span>
                   <Avatar className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 relative">
-                    {(userDetailsLoading ||
-                      !userDetails ||
-                      !userDetails.profilePhotoUrl ||
-                      !imgLoaded) && (
+                    {/* Show loading spinner only when userDetails is still loading */}
+                    {userDetailsLoading && (
                       <span className="absolute inset-0 flex items-center justify-center z-10">
                         <FaSpinner
                           className="animate-spin text-primary"
@@ -635,14 +637,33 @@ export default function Navbar() {
                         />
                       </span>
                     )}
+
+                    {/* Show profile image if available and loaded */}
                     {userDetails && userDetails.profilePhotoUrl && (
                       <AvatarImage
                         src={userDetails.profilePhotoUrl}
                         alt="Profile"
                         onLoad={() => setImgLoaded(true)}
+                        onError={() => setImgLoaded(false)}
                         style={{ display: imgLoaded ? "block" : "none" }}
                       />
                     )}
+
+                    {/* Show fallback with user initials when no image or image failed to load */}
+                    {!userDetailsLoading &&
+                      (!userDetails ||
+                        !userDetails.profilePhotoUrl ||
+                        !imgLoaded) && (
+                        <AvatarFallback className="bg-gradient-to-br from-primary to-primary-hover dark:from-primary dark:to-primary-hover text-white text-sm font-bold">
+                          {getInitials(
+                            user?.fullName ||
+                              user?.name ||
+                              pharmacistDetails?.fullName ||
+                              userDetails?.fullName ||
+                              "U"
+                          )}
+                        </AvatarFallback>
+                      )}
                   </Avatar>
                 </motion.button>
                 <AnimatePresence>

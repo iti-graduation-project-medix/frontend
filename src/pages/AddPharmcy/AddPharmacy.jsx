@@ -542,50 +542,6 @@ export default function AddPharmacy() {
                               <div className="space-y-2">
                                 <Label
                                   className="font-semibold"
-                                  htmlFor="contactNumber"
-                                >
-                                  Contact Number{" "}
-                                  <span className="text-red-500">*</span>
-                                </Label>
-                                <div className="relative">
-                                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
-                                    <Phone className="w-5 h-5" />
-                                  </span>
-                                  <Input
-                                    id="contactNumber"
-                                    name="contactNumber"
-                                    placeholder="Contact Number"
-                                    value={formik.values.contactNumber}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    aria-invalid={
-                                      !!formik.errors.contactNumber &&
-                                      formik.touched.contactNumber
-                                    }
-                                    className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
-
-                                      formik.touched.contactNumber &&
-                                        formik.errors.contactNumber &&
-                                        "border-red-500"
-                                    )}
-                                  />
-                                </div>
-                                <ErrorMessage
-                                  error={
-                                    formik.touched.contactNumber &&
-                                    formik.errors.contactNumber
-                                      ? formik.errors.contactNumber
-                                      : null
-                                  }
-                                />
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <div className="space-y-2">
-                                <Label
-                                  className="font-semibold"
                                   htmlFor="startHour"
                                 >
                                   Start Hour{" "}
@@ -715,6 +671,47 @@ export default function AddPharmacy() {
                                     formik.touched.endHour &&
                                     formik.errors.endHour
                                       ? formik.errors.endHour
+                                      : null
+                                  }
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label
+                                  className="font-semibold"
+                                  htmlFor="contactNumber"
+                                >
+                                  Contact Number{" "}
+                                  <span className="text-red-500">*</span>
+                                </Label>
+                                <div className="relative">
+                                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
+                                    <Phone className="w-5 h-5" />
+                                  </span>
+                                  <Input
+                                    id="contactNumber"
+                                    name="contactNumber"
+                                    placeholder="Contact Number"
+                                    value={formik.values.contactNumber}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    aria-invalid={
+                                      !!formik.errors.contactNumber &&
+                                      formik.touched.contactNumber
+                                    }
+                                    className={cn(
+                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
+
+                                      formik.touched.contactNumber &&
+                                        formik.errors.contactNumber &&
+                                        "border-red-500"
+                                    )}
+                                  />
+                                </div>
+                                <ErrorMessage
+                                  error={
+                                    formik.touched.contactNumber &&
+                                    formik.errors.contactNumber
+                                      ? formik.errors.contactNumber
                                       : null
                                   }
                                 />

@@ -23,6 +23,7 @@ import {
   Clock,
   FileText,
   MapPinIcon,
+  Lock,
 } from "lucide-react";
 import {
   Select,
@@ -80,7 +81,6 @@ const EGYPT_GOVERNORATES = [
 const PharmacySchema = Yup.object().shape({
   name: Yup.string().required("Pharmacy name is required"),
   licenseNum: Yup.string().required("License number is required"),
-  contactPerson: Yup.string().required("Contact person is required"),
   contactNumber: Yup.string()
     .required("phone number is required  ")
     .matches(
@@ -122,7 +122,6 @@ export default function AddPharmacy() {
   const [initialValues, setInitialValues] = useState({
     name: "",
     licenseNum: "",
-    contactPerson: "",
     contactNumber: "",
     addressLine1: "",
     addressLine2: "",
@@ -170,7 +169,6 @@ export default function AddPharmacy() {
         setInitialValues({
           name: pharm.name || "",
           licenseNum: pharm.licenseNum || "",
-          contactPerson: "",
           contactNumber: pharm.pharmacyPhone || "",
           addressLine1: pharm.addressLine1 || "",
           addressLine2: pharm.addressLine2 || "",
@@ -302,7 +300,6 @@ export default function AddPharmacy() {
     const step1Fields = [
       "name",
       "licenseNum",
-      "contactPerson",
       "contactNumber",
       "startHour",
       "endHour",
@@ -341,20 +338,30 @@ export default function AddPharmacy() {
   if (hasMaxPharmacies && !isSubmitting && !formik.isSubmitting && !isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-full p-8 text-center shadow-xl">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold text-red-600">
+        <Card className="w-full max-w-lg p-10 text-center shadow-2xl rounded-3xl border-0 bg-white/90 dark:bg-background relative">
+          <div className="flex flex-col items-center mb-6">
+            <span className="mb-2 rounded-full bg-red-100 p-4 flex items-center justify-center">
+              <Lock size={48} className="text-red-500" />
+            </span>
+            <CardTitle className="text-3xl font-bold text-red-600 mb-2">
               Limit Reached
             </CardTitle>
-          </CardHeader>
+          </div>
           <CardContent>
-            <p className="text-lg mb-4">
-              You have already registered the maximum number of pharmacies (2).
+            <p className="text-lg font-medium mb-3 text-gray-700 dark:text-gray-200">
+              You have already registered the maximum number of pharmacies{" "}
+              <span className="font-bold">(2)</span>.
             </p>
-            <p className="text-gray-500">
+            <p className="text-gray-500 mb-6 dark:text-gray-400">
               If you need to update your existing pharmacies, please use the
-              edit option.
+              edit option below.
             </p>
+            <Button
+              className="w-full max-w-xs mx-auto bg-primary text-white hover:bg-primary/90 transition-colors rounded-lg shadow"
+              onClick={() => navigate("/settings")}
+            >
+              Go to My Pharmacies
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -528,47 +535,6 @@ export default function AddPharmacy() {
                                     formik.touched.licenseNum &&
                                     formik.errors.licenseNum
                                       ? formik.errors.licenseNum
-                                      : null
-                                  }
-                                />
-                              </div>
-                              <div className="space-y-2">
-                                <Label
-                                  className="font-semibold"
-                                  htmlFor="contactPerson"
-                                >
-                                  Contact Person{" "}
-                                  <span className="text-red-500">*</span>
-                                </Label>
-                                <div className="relative">
-                                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">
-                                    <User className="w-5 h-5" />
-                                  </span>
-                                  <Input
-                                    id="contactPerson"
-                                    name="contactPerson"
-                                    placeholder="Contact Person"
-                                    value={formik.values.contactPerson}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    aria-invalid={
-                                      !!formik.errors.contactPerson &&
-                                      formik.touched.contactPerson
-                                    }
-                                    className={cn(
-                                      "pl-10 border-gray-300 rounded-lg h-9 focus:border-primary focus:ring-1 focus:ring-primary bg-white/80 backdrop-blur-sm dark:bg-gray-900 dark:border-gray-700 dark:text-white",
-
-                                      formik.touched.contactPerson &&
-                                        formik.errors.contactPerson &&
-                                        "border-red-500"
-                                    )}
-                                  />
-                                </div>
-                                <ErrorMessage
-                                  error={
-                                    formik.touched.contactPerson &&
-                                    formik.errors.contactPerson
-                                      ? formik.errors.contactPerson
                                       : null
                                   }
                                 />

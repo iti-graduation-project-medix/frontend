@@ -46,7 +46,7 @@ export default function AvailableDeals() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [type, setType] = useState("");
-  const [location, setLocation] = useState("");
+  const [governorate, setGovernorate] = useState("");
   const [dosageForm, setDosageForm] = useState("");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [dateRange, setDateRange] = useState({ from: null, to: null });
@@ -54,8 +54,7 @@ export default function AvailableDeals() {
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [availableTypes, setAvailableTypes] = useState([]);
-  const [availableLocations, setAvailableLocations] = useState([]);
+  // Removed availableLocations since we're using static governorate list
   const [showMyDeals, setShowMyDeals] = useState(false);
   const [userLocation, setUserLocation] = useState({ lat: null, long: null });
   const [useLocationSort, setUseLocationSort] = useState(false);
@@ -130,9 +129,11 @@ export default function AvailableDeals() {
       status: "active",
     };
     if (search) params.search = search;
-    if (type) params.type = type;
-    if (location) params.location = location;
-    if (dosageForm) params.dosageForm = dosageForm;
+    if (type) params.dealType = type;
+    // Temporarily disable backend governorate filter to test frontend filtering
+    // if (governorate) params.governorate = governorate;
+    // Temporarily disable backend dosageForm filter to test frontend filtering
+    // if (dosageForm) params.dosageForm = dosageForm;
     if (priceRange.min) params.minPrice = priceRange.min;
     if (priceRange.max) params.maxPrice = priceRange.max;
     if (dateRange.from)
@@ -162,8 +163,8 @@ export default function AvailableDeals() {
   }, [
     search,
     type,
-    location,
-    dosageForm,
+    // governorate, // Removed since we're doing frontend filtering
+    // dosageForm, // Removed since we're doing frontend filtering
     priceRange.min,
     priceRange.max,
     dateRange.from,
@@ -180,31 +181,28 @@ export default function AvailableDeals() {
 
   // Fetch deals from backend when filters/pagination change
   useEffect(() => {
-    fetchDeals(buildQueryParams());
+    const params = buildQueryParams();
+    fetchDeals(params).then(() => {
+      if (deals && deals.length > 0) {
+        console.log("Sample deal structure:", deals[0]);
+        console.log("Available dosage forms:", [
+          ...new Set(deals.map((d) => d.dosageForm)),
+        ]);
+        console.log("Available governorates:", [
+          ...new Set(deals.map((d) => d.pharmacy?.governorate).filter(Boolean)),
+        ]);
+      }
+    });
   }, [buildQueryParams]);
 
-  // Update available types and locations whenever deals change
-  useEffect(() => {
-    setAvailableTypes(
-      Array.from(
-        new Set((deals || []).map((deal) => deal.dealType).filter(Boolean))
-      )
-    );
-    setAvailableLocations(
-      Array.from(
-        new Set(
-          (deals || []).map((deal) => deal.pharmacy?.city).filter(Boolean)
-        )
-      )
-    );
-  }, [deals]);
+  // Removed since we're using static governorate list
 
   // Clear all filters
   const handleClearFilters = useCallback(() => {
     setSearch("");
     setSearchInput("");
     setType("");
-    setLocation("");
+    setGovernorate("");
     setDosageForm("");
     setPriceRange({ min: "", max: "" });
     setDateRange({ from: null, to: null });
@@ -236,17 +234,24 @@ export default function AvailableDeals() {
         },
       });
     if (type)
-      filters.push({ key: "type", label: type, onRemove: () => setType("") });
-    if (location)
       filters.push({
-        key: "location",
-        label: location,
-        onRemove: () => setLocation(""),
+        key: "type",
+        label:
+          type === "sell" ? "Sell" : type === "exchange" ? "Exchange" : "Both",
+        onRemove: () => setType(""),
+      });
+    if (governorate)
+      filters.push({
+        key: "governorate",
+        label: governorate,
+        onRemove: () => setGovernorate(""),
       });
     if (dosageForm)
       filters.push({
         key: "dosageForm",
-        label: dosageForm,
+        label: `Form: ${
+          dosageForm.charAt(0).toUpperCase() + dosageForm.slice(1)
+        }`,
         onRemove: () => setDosageForm(""),
       });
     if (priceRange.min)
@@ -351,10 +356,24 @@ export default function AvailableDeals() {
     { value: "medicineName-asc", label: "Name (A to Z)" },
   ];
 
-  // Remove frontend filtering - let backend handle all filtering
+  // Frontend filtering as fallback for dosageForm and governorate
   const filteredDeals = useMemo(() => {
-    return deals || [];
-  }, [deals]);
+    let filtered = deals || [];
+
+    // Apply dosageForm filter on frontend if backend doesn't support it
+    if (dosageForm) {
+      filtered = filtered.filter((deal) => deal.dosageForm === dosageForm);
+    }
+
+    // Apply governorate filter on frontend if backend doesn't support it
+    if (governorate) {
+      filtered = filtered.filter(
+        (deal) => deal.pharmacy?.governorate === governorate
+      );
+    }
+
+    return filtered;
+  }, [deals, dosageForm, governorate]);
 
   return (
     <div className="min-h-screen bg-background dark:bg-background">
@@ -480,23 +499,49 @@ export default function AvailableDeals() {
                         <SelectValue placeholder="Types" />
                       </SelectTrigger>
                       <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
-                        {availableTypes.map((t) => (
-                          <SelectItem key={t} value={t}>
-                            {t}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value="sell">Sell</SelectItem>
+                        <SelectItem value="exchange">Exchange</SelectItem>
+                        <SelectItem value="both">Both</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="w-full md:w-44">
-                    <Select value={location} onValueChange={setLocation}>
+                    <Select value={governorate} onValueChange={setGovernorate}>
                       <SelectTrigger className="w-full bg-white dark:bg-background border-gray-200 dark:border-border text-gray-900 dark:text-foreground">
-                        <SelectValue placeholder="Locations" />
+                        <SelectValue placeholder="Governorate" />
                       </SelectTrigger>
                       <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
-                        {availableLocations.map((l) => (
-                          <SelectItem key={l} value={l}>
-                            {l}
+                        {[
+                          "Cairo",
+                          "Giza",
+                          "Alexandria",
+                          "Dakahlia",
+                          "Red Sea",
+                          "Beheira",
+                          "Fayoum",
+                          "Gharbiya",
+                          "Ismailia",
+                          "Menofia",
+                          "Minya",
+                          "Qaliubiya",
+                          "New Valley",
+                          "Suez",
+                          "Aswan",
+                          "Assiut",
+                          "Beni Suef",
+                          "Port Said",
+                          "Damietta",
+                          "Sharkia",
+                          "South Sinai",
+                          "Kafr El Sheikh",
+                          "Matrouh",
+                          "Luxor",
+                          "Qena",
+                          "North Sinai",
+                          "Sohag",
+                        ].map((gov) => (
+                          <SelectItem key={gov} value={gov}>
+                            {gov}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -509,11 +554,18 @@ export default function AvailableDeals() {
                       </SelectTrigger>
                       <SelectContent className="bg-white dark:bg-background text-gray-900 dark:text-foreground">
                         <SelectItem value="tablet">Tablet</SelectItem>
+                        <SelectItem value="capsule">Capsule</SelectItem>
                         <SelectItem value="syrup">Syrup</SelectItem>
                         <SelectItem value="injection">Injection</SelectItem>
-                        <SelectItem value="capsule">Capsule</SelectItem>
+                        <SelectItem value="ointment">Ointment</SelectItem>
+                        <SelectItem value="cream">Cream</SelectItem>
+                        <SelectItem value="gel">Gel</SelectItem>
+                        <SelectItem value="spray">Spray</SelectItem>
+                        <SelectItem value="drops">Drops</SelectItem>
+                        <SelectItem value="suppository">Suppository</SelectItem>
                         <SelectItem value="powder">Powder</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="inhaler">Inhaler</SelectItem>
+                        <SelectItem value="patch">Patch</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -561,7 +613,7 @@ export default function AvailableDeals() {
                     {activeFilters.map((filter) => (
                       <Badge
                         key={filter.key}
-                        className="flex items-center gap-1 cursor-pointer bg-zinc-600 dark:text-gray-700 dark:bg-zinc-400 text-white hover:bg-zinc-600/70 dark:hover:bg-zinc-700 transition-colors"
+                        className="flex items-center gap-1 cursor-pointer bg-zinc-600 dark:text-gray-700 dark:bg-zinc-400 text-white hover:bg-zinc-600/70 dark:hover:bg-zinc-700 dark:hover:text-white transition-colors"
                         onClick={filter.onRemove}
                       >
                         {filter.label}

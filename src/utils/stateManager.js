@@ -5,21 +5,21 @@
  * This ensures that persisted state is properly loaded
  */
 export const initializeStores = () => {
-    // The stores will automatically rehydrate from localStorage
-    // when they are first accessed, thanks to the persist middleware
+  // The stores will automatically rehydrate from localStorage
+  // when they are first accessed, thanks to the persist middleware
 
-    // You can add any additional initialization logic here
-    // For example, checking if user is authenticated and loading user-specific data
+  // You can add any additional initialization logic here
+  // For example, checking if user is authenticated and loading user-specific data
 
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
 
-    if (token && user) {
-        // User is authenticated, stores will rehydrate automatically
-    } else {
-        // No authentication found, clearing persisted state
-        clearAllStores();
-    }
+  if (token && user) {
+    // User is authenticated, stores will rehydrate automatically
+  } else {
+    // No authentication found, clearing persisted state
+    clearAllStores();
+  }
 };
 
 /**
@@ -27,21 +27,21 @@ export const initializeStores = () => {
  * Useful for logout or when you want to reset the application state
  */
 export const clearAllStores = () => {
-    const storeKeys = [
-        'deals-storage',
-        'favorites-storage',
-        'pharmacies-storage',
-        'chat-storage',
-        'subscription-storage',
-        'advertise-storage',
-        'pharmacist-storage'
-    ];
+  const storeKeys = [
+    "deals-storage",
+    "favorites-storage",
+    "pharmacies-storage",
+    "chat-storage",
+    "subscription-storage",
+    "advertise-storage",
+    "pharmacist-storage",
+  ];
 
-    storeKeys.forEach(key => {
-        localStorage.removeItem(key);
-    });
+  storeKeys.forEach((key) => {
+    localStorage.removeItem(key);
+  });
 
-    // All store data cleared
+  // All store data cleared
 };
 
 /**
@@ -49,65 +49,65 @@ export const clearAllStores = () => {
  * Useful for debugging storage usage
  */
 export const getStoreSizes = () => {
-    const storeKeys = [
-        'deals-storage',
-        'favorites-storage',
-        'pharmacies-storage',
-        'chat-storage',
-        'subscription-storage',
-        'advertise-storage',
-        'pharmacist-storage'
-    ];
+  const storeKeys = [
+    "deals-storage",
+    "favorites-storage",
+    "pharmacies-storage",
+    "chat-storage",
+    "subscription-storage",
+    "advertise-storage",
+    "pharmacist-storage",
+  ];
 
-    const sizes = {};
+  const sizes = {};
 
-    storeKeys.forEach(key => {
-        const data = localStorage.getItem(key);
-        if (data) {
-            sizes[key] = {
-                size: new Blob([data]).size,
-                sizeKB: (new Blob([data]).size / 1024).toFixed(2)
-            };
-        }
-    });
+  storeKeys.forEach((key) => {
+    const data = localStorage.getItem(key);
+    if (data) {
+      sizes[key] = {
+        size: new Blob([data]).size,
+        sizeKB: (new Blob([data]).size / 1024).toFixed(2),
+      };
+    }
+  });
 
-    return sizes;
+  return sizes;
 };
 
 /**
  * Check if a store has data
  */
 export const hasStoreData = (storeName) => {
-    const data = localStorage.getItem(storeName);
-    return data !== null;
+  const data = localStorage.getItem(storeName);
+  return data !== null;
 };
 
 /**
  * Export store data for debugging
  */
 export const exportStoreData = () => {
-    const storeKeys = [
-        'deals-storage',
-        'favorites-storage',
-        'pharmacies-storage',
-        'chat-storage',
-        'subscription-storage',
-        'advertise-storage',
-        'pharmacist-storage'
-    ];
+  const storeKeys = [
+    "deals-storage",
+    "favorites-storage",
+    "pharmacies-storage",
+    "chat-storage",
+    "subscription-storage",
+    "advertise-storage",
+    "pharmacist-storage",
+  ];
 
-    const data = {};
+  const data = {};
 
-    storeKeys.forEach(key => {
-        const storeData = localStorage.getItem(key);
-        if (storeData) {
-            try {
-                data[key] = JSON.parse(storeData);
-            } catch (error) {
-                data[key] = storeData;
-            }
-        }
-    });
+  storeKeys.forEach((key) => {
+    const storeData = localStorage.getItem(key);
+    if (storeData) {
+      try {
+        data[key] = JSON.parse(storeData);
+      } catch (error) {
+        data[key] = storeData;
+      }
+    }
+  });
 
-    return data;
-}; 
+  return data;
+};

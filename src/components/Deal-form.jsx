@@ -36,6 +36,7 @@ import { toast } from "sonner";
 import { usePharmacies } from "@/store/usePharmcies";
 import { useAuth } from "@/store/useAuth";
 import { useDeals } from "@/store/useDeals";
+import { useSubscribe } from "@/store/useSubscribe";
 import { fetchDrugs } from "@/api/drugs";
 import { getRemainingDeals } from "@/api/deals";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -95,8 +96,17 @@ export function DealForm({ className, dealData: initialDealData, ...props }) {
     React.useState(true);
   const { pharmacies, fetchPharmacies } = usePharmacies();
   const { user, token } = useAuth();
+  const { currentSubscription } = useSubscribe();
   const { createDeal, updateDeal, fetchDeal, isSubmitting, error, clearError } =
     useDeals();
+
+  // Premium subscription check
+  const isAuthenticated = Boolean(token);
+  const isPremium =
+    isAuthenticated &&
+    currentSubscription &&
+    currentSubscription.status === true &&
+    currentSubscription.planName === "premium";
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -152,6 +162,14 @@ export function DealForm({ className, dealData: initialDealData, ...props }) {
 
     getSubscriptionInfo();
   }, [isEditMode]);
+
+  // Fetch current subscription on component mount
+  React.useEffect(() => {
+    if (token && !isEditMode) {
+      const { fetchCurrentSubscription } = useSubscribe.getState();
+      fetchCurrentSubscription(token);
+    }
+  }, [token, isEditMode]);
 
   const searchDrugs = React.useCallback(
     async (searchValue) => {
@@ -351,7 +369,7 @@ export function DealForm({ className, dealData: initialDealData, ...props }) {
                       Checking your remaining deals...
                     </span>
                   </div>
-                ) : remainingDeals !== null ? (
+                ) : remainingDeals !== null && !isPremium ? (
                   remainingDeals === 0 ? (
                     // No remaining deals - Enhanced design
                     <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 sm:p-6 shadow-sm dark:from-red-900 dark:to-orange-900 dark:border-red-900">

@@ -8,6 +8,7 @@ import {
 import { changePassword } from "../api/auth/ChangePassword";
 import { clearAllStores } from "../utils/stateManager";
 import { ErrorHandler } from "../utils/errorHandler";
+import { useUserDetails } from "./useUserDetails";
 
 export const useAuth = create((set, get) => ({
   user: null,
@@ -26,6 +27,12 @@ export const useAuth = create((set, get) => ({
       // Store user data and token
       const userData = response.data || response;
       const token = userData.token || userData.accessToken;
+
+      // Reset user details store to clear previous user's data
+      const { resetUserDetails } = useUserDetails.getState();
+      if (resetUserDetails) {
+        resetUserDetails();
+      }
 
       // Save to localStorage - store the full user object, not just the ID
       localStorage.setItem("user", JSON.stringify(userData));
@@ -63,7 +70,9 @@ export const useAuth = create((set, get) => ({
       if (data.email) sessionStorage.setItem("resetEmail", data.email);
       const response = await resetPassword(data);
       set({ isLoading: false, error: null });
-      ErrorHandler.handleSuccess("Password reset instructions sent to your email");
+      ErrorHandler.handleSuccess(
+        "Password reset instructions sent to your email"
+      );
       return response;
     } catch (error) {
       const errorResult = ErrorHandler.handleApiError(error, "reset-password");
@@ -104,7 +113,10 @@ export const useAuth = create((set, get) => ({
       ErrorHandler.handleSuccess("Password has been successfully changed!");
       return response;
     } catch (error) {
-      const errorResult = ErrorHandler.handleApiError(error, "confirm-password");
+      const errorResult = ErrorHandler.handleApiError(
+        error,
+        "confirm-password"
+      );
       set({
         isLoading: false,
         error: errorResult.message,
@@ -140,6 +152,12 @@ export const useAuth = create((set, get) => ({
 
     // Clear all other store data
     clearAllStores();
+
+    // Reset user details store
+    const { resetUserDetails } = useUserDetails.getState();
+    if (resetUserDetails) {
+      resetUserDetails();
+    }
 
     set({
       user: null,

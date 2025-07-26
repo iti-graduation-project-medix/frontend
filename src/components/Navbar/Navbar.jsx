@@ -71,10 +71,11 @@ export default function Navbar() {
   const { loadUserChats, initializeSocket, getCurrentUserId } = useChat();
 
   useEffect(() => {
-    if (isAuthenticated && user && user.id && token && !userDetails) {
+    if (isAuthenticated && user && user.id && token) {
+      // Always fetch user details when user changes, regardless of existing userDetails
       fetchUserDetails(user.id, token);
     }
-  }, [isAuthenticated, user, token, fetchUserDetails, userDetails]);
+  }, [isAuthenticated, user?.id, token, fetchUserDetails]);
 
   useEffect(() => {
     if (user && token) {

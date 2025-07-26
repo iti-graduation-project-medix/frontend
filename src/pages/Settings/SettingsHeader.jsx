@@ -8,7 +8,7 @@ import { FaUserEdit, FaCog, FaSpinner, FaUpload } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../store/useAuth";
 import { useUserDetails } from "../../store/useUserDetails";
-import { updateUserProfileImage } from '../../api/profile/profile';
+import { updateUserProfileImage } from "../../api/profile/profile";
 import { toast } from "sonner";
 
 export default function SettingsHeader() {
@@ -20,10 +20,11 @@ export default function SettingsHeader() {
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (user && user.id && token && !userDetails) {
+    if (user && user.id && token) {
+      // Always fetch user details when user changes, regardless of existing userDetails
       fetchUserDetails(user.id, token);
     }
-  }, [user, token, fetchUserDetails, userDetails]);
+  }, [user?.id, token, fetchUserDetails]);
 
   const details = userDetails || {};
   const getInitials = (name = "") => {
@@ -61,7 +62,12 @@ export default function SettingsHeader() {
   };
 
   if (isLoading) {
-    return <FaSpinner className="animate-spin mx-auto my-10 text-primary" size={20} />;
+    return (
+      <FaSpinner
+        className="animate-spin mx-auto my-10 text-primary"
+        size={20}
+      />
+    );
   }
   if (error) {
     return <div className="p-6 text-red-500">{error}</div>;
@@ -86,7 +92,7 @@ export default function SettingsHeader() {
                       src={details.profilePhotoUrl}
                       alt="Profile"
                       onLoad={() => setImgLoaded(true)}
-                      style={{ display: imgLoaded ? 'block' : 'none' }}
+                      style={{ display: imgLoaded ? "block" : "none" }}
                     />
                   ) : null}
                   {(!details.profilePhotoUrl || !imgLoaded) && (
@@ -137,7 +143,9 @@ export default function SettingsHeader() {
           <div className="flex flex-col items-center sm:items-end justify-center mt-4 sm:mt-0 w-full sm:w-auto">
             <button
               type="button"
-              className={`flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-md shadow hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary ${(uploading || isLoading) ? 'opacity-60 cursor-not-allowed' : ''} md:whitespace-nowrap mx-auto sm:mx-0`}
+              className={`flex items-center gap-2 px-3 py-1.5 bg-primary text-white rounded-md shadow hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary ${
+                uploading || isLoading ? "opacity-60 cursor-not-allowed" : ""
+              } md:whitespace-nowrap mx-auto sm:mx-0`}
               onClick={handleUploadClick}
               disabled={uploading || isLoading}
             >
@@ -146,13 +154,15 @@ export default function SettingsHeader() {
               ) : (
                 <FaUpload size={16} />
               )}
-              <span className="whitespace-normal md:whitespace-nowrap">Upload Image</span>
+              <span className="whitespace-normal md:whitespace-nowrap">
+                Upload Image
+              </span>
             </button>
             <input
               type="file"
               accept="image/*"
               ref={fileInputRef}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={handleFileChange}
               disabled={uploading || isLoading}
             />

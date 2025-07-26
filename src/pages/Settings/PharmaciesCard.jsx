@@ -23,10 +23,12 @@ import {
   FaClock,
   FaChartBar,
   FaCapsules,
+  FaInfo,
 } from "react-icons/fa";
 import { RiCapsuleLine } from "react-icons/ri";
 import { useAuth } from "../../store/useAuth";
 import { usePharmacies } from "../../store/usePharmcies";
+import { useSubscribe } from "../../store/useSubscribe";
 import ConfirmDialog from "./ConfirmDialog";
 import { Link } from "react-router-dom";
 import ListPharmacyForSaleModal from "./ListPharmacyForSaleModal";
@@ -43,6 +45,7 @@ export default function PharmaciesCard({ pharmacistDetails }) {
   // Add null check and default values
   const details = pharmacistDetails || {};
   const { token, user } = useAuth();
+  const { currentSubscription } = useSubscribe();
   const {
     pharmacies,
     isLoading,
@@ -51,6 +54,14 @@ export default function PharmaciesCard({ pharmacistDetails }) {
     deletePharmacyById,
     clearError,
   } = usePharmacies();
+
+  // Premium subscription check
+  const isAuthenticated = Boolean(token);
+  const isPremium =
+    isAuthenticated &&
+    currentSubscription &&
+    currentSubscription.status === true &&
+    currentSubscription.planName === "premium";
 
   // Modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -566,15 +577,26 @@ export default function PharmaciesCard({ pharmacistDetails }) {
                 </>
               ) : (
                 !pharmacy.isSold && (
-                  <Button
-                    size="sm"
-                    className="flex bg-green-600 hover:bg-green-500 text-white dark:bg-green-700 dark:hover:bg-green-600 dark:text-white items-center gap-2"
-                    onClick={() => handleListClick(pharmacy.id)}
-                    disabled={actionLoading}
-                  >
-                    <FaTag size={14} />
-                    List for Sale
-                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      size="sm"
+                      className="flex bg-green-600 hover:bg-green-500 text-white dark:bg-green-700 dark:hover:bg-green-600 dark:text-white items-center gap-2"
+                      onClick={() => handleListClick(pharmacy.id)}
+                      disabled={actionLoading || !isPremium}
+                    >
+                      <FaTag size={14} />
+                      List for Sale
+                    </Button>
+                    {!isPremium && (
+                      <div className="flex items-center justify-center bg-muted/40 rounded-md px-2 py-1 text-xs text-muted-foreground">
+                        <FaInfo className="w-3 h-3 mr-1 text-primary" />
+                        <span className="text-primary font-semibold">
+                          Premium&nbsp;
+                        </span>
+                        feature
+                      </div>
+                    )}
+                  </div>
                 )
               )}
               <Button

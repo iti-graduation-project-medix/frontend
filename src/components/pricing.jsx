@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import React from "react";
 
 export default function Pricing() {
   return (
@@ -28,9 +29,8 @@ export default function Pricing() {
                 </div>
 
                 <p className="text-muted-foreground mt-12 text-sm">
-                  Includes: Secure access, unlimited medicine listings, advanced
-                  search, in-platform messaging, and full access to all premium
-                  features.
+                  Includes: Secure access, unlimited medicine listings, advanced search, in-platform
+                  messaging, and full access to all premium features.
                 </p>
               </div>
               <div className="relative">
@@ -48,8 +48,8 @@ export default function Pricing() {
                   ))}
                 </ul>
                 <p className="text-muted-foreground mt-6 text-sm">
-                  Team can be any size, and you can add or switch members as
-                  needed. Companies using our platform include:
+                  Team can be any size, and you can add or switch members as needed. Companies using
+                  our platform include:
                 </p>
                 <div className="mt-12 flex flex-wrap items-center justify-between gap-6">
                   <img

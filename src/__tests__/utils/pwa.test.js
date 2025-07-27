@@ -1,94 +1,121 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import * as pwaUtils from '../../utils/pwa';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { isOnline, isOffline, showOfflinePage, handleOnlineStatus, checkNetworkStatus, retryConnection } from '../../utils/pwa';
 
-let hrefSetter;
-
-describe('pwa utils', () => {
+describe('PWA Utils', () => {
   beforeEach(() => {
-    Object.defineProperty(window.navigator, 'onLine', {
-      configurable: true,
-      get: vi.fn(() => true),
-    });
-    // Mock window.location.href setter
-    hrefSetter = vi.fn();
-    Object.defineProperty(window, 'location', {
-      configurable: true,
-      value: {
-        get href() {
-          return 'https://example.com/';
-        },
-        set href(val) {
-          hrefSetter(val);
-        },
-      },
-    });
+    vi.clearAllMocks();
   });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('isOnline returns true when online', () => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
-    expect(pwaUtils.isOnline()).toBe(true);
+  it('should check online status', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: true,
+      writable: true,
+    });
+
+    expect(isOnline()).toBe(true);
+    expect(isOffline()).toBe(false);
   });
 
-  it('isOffline returns true when offline', () => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
-    expect(pwaUtils.isOffline()).toBe(true);
+  it('should check offline status', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: false,
+      writable: true,
+    });
+
+    expect(isOnline()).toBe(false);
+    expect(isOffline()).toBe(true);
   });
 
-  it('showOfflinePage redirects when offline', () => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
-    pwaUtils.showOfflinePage();
-    expect(hrefSetter).toHaveBeenCalledWith('/offline.html');
+  it('should show offline page when offline', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: false,
+      writable: true,
+    });
+
+    Object.defineProperty(window, 'location', {
+      value: { href: '' },
+      writable: true,
+    });
+
+    showOfflinePage();
+
+    expect(window.location.href).toBe('/offline.html');
   });
 
-  it('showOfflinePage does not redirect when online', () => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
-    pwaUtils.showOfflinePage();
-    expect(hrefSetter).not.toHaveBeenCalled();
+  it('should not show offline page when online', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: true,
+      writable: true,
+    });
+
+    Object.defineProperty(window, 'location', {
+      value: { href: '' },
+      writable: true,
+    });
+
+    showOfflinePage();
+
+    expect(window.location.href).toBe('');
   });
 
-  it('handleOnlineStatus adds and removes event listeners', () => {
-    const addSpy = vi.spyOn(window, 'addEventListener');
-    const removeSpy = vi.spyOn(window, 'removeEventListener');
-    const cleanup = pwaUtils.handleOnlineStatus();
-    expect(addSpy).toHaveBeenCalledWith('online', expect.any(Function));
-    expect(addSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+  it('should handle online status events', () => {
+    const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+
+    const cleanup = handleOnlineStatus();
+
+    expect(addEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function));
+    expect(addEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+
+    // Test cleanup
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
     cleanup();
-    expect(removeSpy).toHaveBeenCalledWith('online', expect.any(Function));
-    expect(removeSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function));
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function));
   });
 
-  it('navigateToHome redirects to /', () => {
-    pwaUtils.navigateToHome();
-    expect(hrefSetter).toHaveBeenCalledWith('/');
-  });
+  it('should check network status', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true });
 
-  it('checkNetworkStatus returns true for ok response', async () => {
-    window.fetch = vi.fn().mockResolvedValue({ ok: true });
-    const result = await pwaUtils.checkNetworkStatus();
+    const result = await checkNetworkStatus();
+
     expect(result).toBe(true);
+    expect(fetch).toHaveBeenCalledWith('/api/health', {
+      method: 'HEAD',
+      cache: 'no-cache'
+    });
   });
 
-  it('checkNetworkStatus returns false for error', async () => {
-    window.fetch = vi.fn().mockRejectedValue(new Error('fail'));
-    const result = await pwaUtils.checkNetworkStatus();
+  it('should handle network status error', async () => {
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
+
+    const result = await checkNetworkStatus();
+
     expect(result).toBe(false);
   });
 
-  it('retryConnection navigates to home if connected', async () => {
-    window.fetch = vi.fn().mockResolvedValue({ ok: true });
-    const result = await pwaUtils.retryConnection();
-    expect(hrefSetter).toHaveBeenCalledWith('/');
+  it('should retry connection successfully', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true });
+    Object.defineProperty(window, 'location', {
+      value: { href: '' },
+      writable: true,
+    });
+
+    const result = await retryConnection();
+
     expect(result).toBe(true);
+    expect(window.location.href).toBe('/');
   });
 
-  it('retryConnection returns false if not connected', async () => {
-    window.fetch = vi.fn().mockResolvedValue({ ok: false });
-    const navSpy = vi.spyOn(pwaUtils, 'navigateToHome');
-    const result = await pwaUtils.retryConnection();
-    expect(navSpy).not.toHaveBeenCalled();
+  it('should retry connection unsuccessfully', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false });
+
+    const result = await retryConnection();
+
     expect(result).toBe(false);
   });
 });

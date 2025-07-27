@@ -1,11 +1,10 @@
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { useOffline } from '../../hooks/useOffline';
 
 describe('useOffline', () => {
   beforeEach(() => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -13,25 +12,62 @@ describe('useOffline', () => {
   });
 
   it('should return false when online', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: true,
+      writable: true,
+    });
+
     const { result } = renderHook(() => useOffline());
     expect(result.current).toBe(false);
   });
 
   it('should return true when offline', () => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
+    Object.defineProperty(navigator, 'onLine', {
+      value: false,
+      writable: true,
+    });
+
     const { result } = renderHook(() => useOffline());
     expect(result.current).toBe(true);
   });
 
-  it('should update when going offline and online', () => {
-    const { result } = renderHook(() => useOffline());
-    act(() => {
-      window.dispatchEvent(new Event('offline'));
+  it('should update when online event fires', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: false,
+      writable: true,
     });
+
+    const { result } = renderHook(() => useOffline());
     expect(result.current).toBe(true);
+
     act(() => {
+      Object.defineProperty(navigator, 'onLine', {
+        value: true,
+        writable: true,
+      });
       window.dispatchEvent(new Event('online'));
     });
+
     expect(result.current).toBe(false);
+  });
+
+  it('should update when offline event fires', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: true,
+      writable: true,
+    });
+
+    const { result } = renderHook(() => useOffline());
+    expect(result.current).toBe(false);
+
+    act(() => {
+      Object.defineProperty(navigator, 'onLine', {
+        value: false,
+        writable: true,
+      });
+      window.dispatchEvent(new Event('offline'));
+    });
+
+    expect(result.current).toBe(true);
   });
 });

@@ -1,34 +1,59 @@
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { useIsMobile } from '../../hooks/use-mobile';
+import { describe, it, expect, beforeEach } from "vitest";
+import "@testing-library/jest-dom";
+import { renderHook } from "@testing-library/react";
+import { useIsMobile } from "../../hooks/use-mobile";
 
-describe('useIsMobile', () => {
-  let originalInnerWidth;
+describe("useIsMobile", () => {
   beforeEach(() => {
-    originalInnerWidth = window.innerWidth;
-    window.innerWidth = 500;
-    window.matchMedia = vi.fn().mockImplementation(query => ({
-      matches: window.innerWidth < 768,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }));
+    // Reset window.innerWidth
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
   });
-  afterEach(() => {
-    window.innerWidth = originalInnerWidth;
-  });
-  it('should return true if width < 768', () => {
+
+  it("should return true for mobile screen width", () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 300,
+    });
+
     const { result } = renderHook(() => useIsMobile());
     expect(result.current).toBe(true);
   });
-  it('should return false if width >= 768', () => {
-    window.innerWidth = 1024;
-    window.matchMedia = vi.fn().mockImplementation(query => ({
-      matches: window.innerWidth < 768,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }));
+
+  it("should return false for desktop screen width", () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1920,
+    });
+
     const { result } = renderHook(() => useIsMobile());
     expect(result.current).toBe(false);
+  });
+
+  it("should use default breakpoint of 768px", () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 769,
+    });
+
+    const { result } = renderHook(() => useIsMobile());
+    expect(result.current).toBe(false);
+  });
+
+  it("should return true for exactly 767px width", () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 767,
+    });
+
+    const { result } = renderHook(() => useIsMobile());
+    expect(result.current).toBe(true);
   });
 });

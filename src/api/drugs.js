@@ -15,7 +15,7 @@ export const fetchDrugs = async (token, options = {}) => {
 
     const params = {
       page: page.toString(),
-      size: size.toString(),
+      size: size.toString()
     };
 
     if (search.trim()) {
@@ -24,9 +24,9 @@ export const fetchDrugs = async (token, options = {}) => {
 
     const response = await api.get("/drug-details", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       },
-      params,
+      params
     });
 
     return response.data;
@@ -47,8 +47,8 @@ export const createDrugAlert = async (token, alertData) => {
   try {
     const response = await api.post("/drug-alert", alertData, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     });
 
     return response.data;
@@ -63,10 +63,10 @@ export const createDrugAlert = async (token, alertData) => {
  * @param {string} token - JWT token for authentication
  * @returns {Promise<Array>} - Array of drug names
  */
-export const fetchAllDrugNames = async (token) => {
+export const fetchAllDrugNames = async token => {
   try {
     const response = await fetchDrugs(token, { size: 1000 }); // Get a large number to fetch all
-    return response.data?.drugs || [];
+    return response.drugs || []; // response is already the data object
   } catch (error) {
     console.error("Error fetching all drug names:", error);
     return [];

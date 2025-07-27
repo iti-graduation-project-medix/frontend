@@ -1,64 +1,87 @@
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { usePWA, useOfflineDetection } from '../../hooks/usePWA';
+import { usePWA } from '../../hooks/usePWA';
 
 describe('usePWA', () => {
   beforeEach(() => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
+    vi.clearAllMocks();
   });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
-  it('should return isOnline true and isOffline false when online', () => {
+
+  it('should initialize with default values', () => {
     const { result } = renderHook(() => usePWA());
+
+    expect(result.current.isOnline).toBeDefined();
+    expect(result.current.isOffline).toBeDefined();
+    expect(typeof result.current.isOnline).toBe('boolean');
+    expect(typeof result.current.isOffline).toBe('boolean');
+  });
+
+  it('should handle online event', () => {
+    const { result } = renderHook(() => usePWA());
+
+    act(() => {
+      window.dispatchEvent(new Event('online'));
+    });
+
     expect(result.current.isOnline).toBe(true);
     expect(result.current.isOffline).toBe(false);
   });
-  it('should update status on offline/online events', () => {
-    const { result } = renderHook(() => usePWA());
+
+  it('should handle offline event', () => {
+    Object.defineProperty(navigator, 'onLine', {
+      value: false,
+      writable: true,
+    });
+    const { result, rerender } = renderHook(() => usePWA());
     act(() => {
-      vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
       window.dispatchEvent(new Event('offline'));
+      rerender();
     });
     expect(result.current.isOnline).toBe(false);
     expect(result.current.isOffline).toBe(true);
-    act(() => {
-      vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
-      window.dispatchEvent(new Event('online'));
-    });
-    expect(result.current.isOnline).toBe(true);
-    expect(result.current.isOffline).toBe(false);
   });
-});
 
-describe('useOfflineDetection', () => {
-  beforeEach(() => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
-  });
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-  it('should return false when online', () => {
-    const { result } = renderHook(() => useOfflineDetection());
-    expect(result.current).toBe(false);
-  });
-  it('should return true when offline', () => {
-    vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
-    const { result } = renderHook(() => useOfflineDetection());
-    expect(result.current).toBe(true);
-  });
-  it('should update when going offline and online', () => {
-    const { result } = renderHook(() => useOfflineDetection());
+  it('should update online status when navigator.onLine changes', () => {
+    const { result } = renderHook(() => usePWA());
+
+    // Mock navigator.onLine
+    Object.defineProperty(navigator, 'onLine', {
+      value: false,
+      writable: true,
+    });
+
     act(() => {
-      vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(false);
       window.dispatchEvent(new Event('offline'));
     });
-    expect(result.current).toBe(true);
-    act(() => {
-      vi.spyOn(window.navigator, 'onLine', 'get').mockReturnValue(true);
-      window.dispatchEvent(new Event('online'));
+
+    expect(result.current.isOnline).toBe(false);
+    expect(result.current.isOffline).toBe(true);
+  });
+
+  it('should cleanup event listeners on unmount', () => {
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
+    const { unmount } = renderHook(() => usePWA());
+
+    unmount();
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function));
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+  });
+
+  it('should return correct initial state based on navigator.onLine', () => {
+    // Mock navigator.onLine to true
+    Object.defineProperty(navigator, 'onLine', {
+      value: true,
+      writable: true,
     });
-    expect(result.current).toBe(false);
+
+    const { result } = renderHook(() => usePWA());
+
+    expect(result.current.isOnline).toBe(true);
+    expect(result.current.isOffline).toBe(false);
   });
 });

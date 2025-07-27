@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Bell, ChevronDown, Search, Loader2, X, Info } from "lucide-react";
+import React from "react";
 import {
   Select,
   SelectContent,

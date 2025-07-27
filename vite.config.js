@@ -3,6 +3,10 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { fileURLToPath, URL } from "node:url";
+import path from 'path';
+
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   base: "/",
@@ -203,9 +207,21 @@ export default defineConfig({
       selfDestroying: true,
     }),
   ],
+   optimizeDeps: {
+    include: ['tw-merge']
+  },
   resolve: {
     alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@": path.resolve(__dirname, './src'),
+      "services": fileURLToPath(new URL("../services", import.meta.url)),
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/__tests__/jest.setup.js',
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
   },
   server: {

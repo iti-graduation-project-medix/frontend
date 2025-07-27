@@ -36,7 +36,9 @@ const SuccessPayment = React.lazy(() =>
 const FailedPayment = React.lazy(() =>
   import("./../pages/FailedPayment/FailedPayment")
 );
-const PaymentStatusPage = React.lazy(() => import("../pages/Subscription/PaymentStatusPage"));
+const PaymentStatusPage = React.lazy(() =>
+  import("../pages/Subscription/PaymentStatusPage")
+);
 
 // User Management Pages
 const Profile = React.lazy(() => import("../pages/Profile/Profile"));
@@ -66,6 +68,7 @@ const PharmacyDetails = React.lazy(() =>
 const Chat = React.lazy(() => import("../pages/Chat/Chat"));
 const TermsOfService = React.lazy(() => import("../pages/TermsOfService"));
 const PrivacyPolicy = React.lazy(() => import("../pages/PrivacyPolicy"));
+import UserManual from "../pages/UserManual/UserManual";
 
 export default function MainLayout() {
   return (
@@ -77,6 +80,7 @@ export default function MainLayout() {
             {/* Public Routes */}
             <Route index element={<Home />} />
             <Route path="under-review" element={<UnderReview />} />
+            <Route path="user-manual" element={<UserManual />} />
 
             {/* Authentication Routes */}
             <Route path="auth">

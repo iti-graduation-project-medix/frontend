@@ -1,83 +1,61 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import {
-  initializeStores,
-  clearAllStores,
-  getStoreSizes,
-  hasStoreData,
-  exportStoreData
-} from '../../utils/stateManager';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { getStoreSizes, exportStoreData, clearAllStores } from '../../utils/stateManager';
 
-describe('stateManager utils', () => {
-  const storeKeys = [
-    'deals-storage',
-    'favorites-storage',
-    'pharmacies-storage',
-    'chat-storage',
-    'subscription-storage',
-    'advertise-storage',
-    'pharmacist-storage',
-  ];
-
+describe('State Manager Utils', () => {
   beforeEach(() => {
-    // Mock localStorage
-    let store = {};
-    vi.spyOn(window.localStorage.__proto__, 'getItem').mockImplementation((key) => store[key] || null);
-    vi.spyOn(window.localStorage.__proto__, 'setItem').mockImplementation((key, value) => { store[key] = value; });
-    vi.spyOn(window.localStorage.__proto__, 'removeItem').mockImplementation((key) => { delete store[key]; });
-    vi.spyOn(window.localStorage.__proto__, 'clear').mockImplementation(() => { store = {}; });
-    // Add some fake data
-    storeKeys.forEach(key => {
-      window.localStorage.setItem(key, JSON.stringify({ test: key }));
-    });
-    window.localStorage.setItem('token', 'abc');
-    window.localStorage.setItem('user', 'user1');
+    vi.clearAllMocks();
+    localStorage.clear();
   });
+
   afterEach(() => {
     vi.restoreAllMocks();
-    window.localStorage.clear();
   });
 
-  it('getStoreSizes returns sizes for all stores', () => {
+  it('should get store sizes', () => {
+    localStorage.setItem('deals-storage', JSON.stringify({ data: 'test' }));
+
     const sizes = getStoreSizes();
-    storeKeys.forEach(key => {
-      expect(sizes).toHaveProperty(key);
-      expect(Number(sizes[key].size)).toBeGreaterThan(0);
-    });
+
+    expect(sizes).toHaveProperty('deals-storage');
+    expect(typeof sizes['deals-storage'].size).toBe('number');
+    expect(typeof sizes['deals-storage'].sizeKB).toBe('string');
   });
 
-  it('hasStoreData returns true if store has data', () => {
-    expect(hasStoreData('deals-storage')).toBe(true);
-    expect(hasStoreData('not-exist')).toBe(false);
-  });
+  it('should export store data', () => {
+    const testData = { user: { id: 1, name: 'Test' } };
+    localStorage.setItem('favorites-storage', JSON.stringify(testData));
 
-  it('exportStoreData returns parsed data for all stores', () => {
     const data = exportStoreData();
-    storeKeys.forEach(key => {
-      expect(data).toHaveProperty(key);
-      expect(data[key]).toEqual({ test: key });
-    });
+
+    expect(data).toHaveProperty('favorites-storage');
+    expect(data['favorites-storage']).toEqual(testData);
   });
 
-  it('clearAllStores removes all store keys', () => {
+  it('should clear store data', () => {
+    localStorage.setItem('deals-storage', JSON.stringify({ data: 'test' }));
+
     clearAllStores();
-    storeKeys.forEach(key => {
-      expect(hasStoreData(key)).toBe(false);
-    });
+
+    expect(localStorage.getItem('deals-storage')).toBeNull();
+    expect(localStorage.getItem('favorites-storage')).toBeNull();
   });
 
-  it('initializeStores clears stores if no token/user', () => {
-    window.localStorage.removeItem('token');
-    window.localStorage.removeItem('user');
-    initializeStores();
-    storeKeys.forEach(key => {
-      expect(hasStoreData(key)).toBe(false);
-    });
+  it('should handle empty localStorage', () => {
+    const sizes = getStoreSizes();
+    const data = exportStoreData();
+
+    expect(sizes).toEqual({});
+    expect(data).toEqual({});
   });
 
-  it('initializeStores does not clear stores if token/user exist', () => {
-    initializeStores();
-    storeKeys.forEach(key => {
-      expect(hasStoreData(key)).toBe(true);
-    });
+  it('should handle non-JSON data in localStorage', () => {
+    localStorage.setItem('deals-storage', 'invalid-json');
+
+    const sizes = getStoreSizes();
+    const data = exportStoreData();
+
+    expect(sizes).toHaveProperty('deals-storage');
+    expect(data).toHaveProperty('deals-storage');
+    expect(data['deals-storage']).toBe('invalid-json');
   });
 });

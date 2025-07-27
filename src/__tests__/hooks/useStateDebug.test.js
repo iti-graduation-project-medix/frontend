@@ -1,46 +1,63 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import '@testing-library/jest-dom';
-
-vi.mock('../../utils/stateManager', () => ({
-  getStoreSizes: vi.fn(() => ({ a: 1 })),
-  exportStoreData: vi.fn(() => ({ b: 2 })),
-}));
 import { useStateDebug } from '../../hooks/useStateDebug';
 
+vi.mock('../../utils/stateManager', () => ({
+  getStoreSizes: vi.fn(() => ({ store1: '1KB', store2: '2KB' })),
+  exportStoreData: vi.fn(() => ({ store1: { data: 'test' }, store2: { data: 'test2' } })),
+}));
+
 describe('useStateDebug', () => {
-  const OLD_ENV = process.env;
   beforeEach(() => {
-    vi.resetModules();
-    process.env = { ...OLD_ENV, NODE_ENV: 'development' };
-    localStorage.clear();
+    vi.clearAllMocks();
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+    // Mock import.meta.env for development mode
+    if (!import.meta.env) {
+      import.meta.env = {};
+    }
+    import.meta.env.NODE_ENV = 'development';
   });
+
   afterEach(() => {
-    process.env = OLD_ENV;
+    vi.restoreAllMocks();
   });
-  it('should initialize storeSizes and storeData', () => {
+
+  it('should initialize with store sizes and data', () => {
     const { result } = renderHook(() => useStateDebug());
-    expect(result.current.storeSizes).toEqual({ a: 1 });
-    expect(result.current.storeData).toEqual({ b: 2 });
+
+    expect(result.current.storeSizes).toEqual({ store1: '1KB', store2: '2KB' });
+    expect(result.current.storeData).toEqual({ store1: { data: 'test' }, store2: { data: 'test2' } });
   });
-  it('should log store data in development', () => {
+
+  it('should log store data when logStoreData is called', () => {
     const { result } = renderHook(() => useStateDebug());
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
     act(() => {
       result.current.logStoreData();
     });
-    expect(logSpy).toHaveBeenCalledWith('Store Sizes:', { a: 1 });
-    expect(logSpy).toHaveBeenCalledWith('Store Data:', { b: 2 });
-    logSpy.mockRestore();
+
+    expect(console.log).toHaveBeenCalledWith('Store Sizes:', { store1: '1KB', store2: '2KB' });
+    expect(console.log).toHaveBeenCalledWith('Store Data:', { store1: { data: 'test' }, store2: { data: 'test2' } });
   });
-  it('should clear all data', () => {
+
+  it('should clear all data when clearAllData is called', () => {
     const { result } = renderHook(() => useStateDebug());
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
     act(() => {
       result.current.clearAllData();
     });
+
     expect(result.current.storeSizes).toEqual({});
     expect(result.current.storeData).toEqual({});
-    logSpy.mockRestore();
+    expect(console.log).toHaveBeenCalledWith('All localStorage data cleared');
+  });
+
+  it('should not run in production mode', () => {
+    import.meta.env.NODE_ENV = 'production';
+
+    const { result } = renderHook(() => useStateDebug());
+
+    expect(result.current.storeSizes).toEqual({});
+    expect(result.current.storeData).toEqual({});
   });
 });

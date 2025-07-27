@@ -4,14 +4,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+import React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/store/useAuth";
@@ -120,13 +115,9 @@ const Pricing2 = ({
     const result = urlParams.get("result");
 
     // Check various possible success/failure indicators
-    const isSuccess =
-      success === "true" || status === "success" || result === "success";
+    const isSuccess = success === "true" || status === "success" || result === "success";
     const isFailed =
-      failed === "true" ||
-      status === "failed" ||
-      result === "failed" ||
-      status === "error";
+      failed === "true" || status === "failed" || result === "failed" || status === "error";
 
     if (isSuccess || isFailed) {
       // Use the redirect function to handle the completion
@@ -172,15 +163,10 @@ const Pricing2 = ({
           <h2 className="text-4xl font-semibold dark:text-white text-primary lg:text-6xl">
             {heading}
           </h2>
-          <p className="text-muted-foreground lg:text-xl -mt-2">
-            {description}
-          </p>
+          <p className="text-muted-foreground lg:text-xl -mt-2">{description}</p>
           <div className="flex items-center gap-3 text-lg">
             Monthly
-            <Switch
-              checked={isYearly}
-              onCheckedChange={() => setIsYearly(!isYearly)}
-            />
+            <Switch checked={isYearly} onCheckedChange={() => setIsYearly(!isYearly)} />
             Yearly
           </div>
 
@@ -190,9 +176,7 @@ const Pricing2 = ({
               <LoadingPage size={40} message="" fullscreen={false} />
               <div className="flex items-center gap-3">
                 <div>
-                  <p className="font-medium text-primary dark:text-white">
-                    Redirecting to Payment
-                  </p>
+                  <p className="font-medium text-primary dark:text-white">Redirecting to Payment</p>
                   <p className="text-sm text-primary/80 dark:text-gray-400">
                     You will be redirected to complete your payment
                   </p>
@@ -220,9 +204,7 @@ const Pricing2 = ({
                   <CardTitle>
                     <p>{plan.name}</p>
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {plan.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{plan.description}</p>
                   <div className="flex items-end">
                     <span className="text-4xl font-semibold">
                       {isYearly ? plan.yearlyPrice : plan.monthlyPrice}
@@ -236,10 +218,7 @@ const Pricing2 = ({
                   <Separator className="mb-6" />
                   <ul className="space-y-4">
                     {plan.features.map((feature, index) => (
-                      <li
-                        key={index}
-                        className={`flex items-center gap-2 text-sm`}
-                      >
+                      <li key={index} className={`flex items-center gap-2 text-sm`}>
                         {feature.available ? (
                           <CircleCheck className="size-4 text-green-600 dark:text-green-400" />
                         ) : (
@@ -272,9 +251,7 @@ const Pricing2 = ({
                               : "line-through text-gray-500 dark:text-red-400"
                           }
                         >
-                          {isYearly && feature.yearlyText
-                            ? feature.yearlyText
-                            : feature.text}
+                          {isYearly && feature.yearlyText ? feature.yearlyText : feature.text}
                         </span>
                       </li>
                     ))}

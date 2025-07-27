@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../store/useAuth";
 import { LoadingPage } from "./ui/loading";
+import React from "react";
 
 export default function ProfileRedirect() {
   const { user, isAuthenticated } = useAuth();
@@ -12,12 +13,12 @@ export default function ProfileRedirect() {
       // Extract user ID from the user object
       // The user object structure might vary, so we need to handle different cases
       let userId;
-      
+
       if (user.data && user.data.id) {
         userId = user.data.id;
       } else if (user.id) {
         userId = user.id;
-      } else if (typeof user === 'string') {
+      } else if (typeof user === "string") {
         // If user is stored as a string (ID), use it directly
         userId = user;
       }
@@ -26,14 +27,14 @@ export default function ProfileRedirect() {
         navigate(`/me/${userId}`, { replace: true });
       } else {
         // If we can't get the user ID, redirect to login
-        navigate('/auth/login', { replace: true });
+        navigate("/auth/login", { replace: true });
       }
     } else {
       // If not authenticated, redirect to login
-      navigate('/auth/login', { replace: true });
+      navigate("/auth/login", { replace: true });
     }
   }, [user, isAuthenticated, navigate]);
 
   // Show loading while redirecting
   return <LoadingPage message="Redirecting to your profile..." />;
-} 
+}

@@ -19,8 +19,7 @@ const InstallApp = () => {
     );
 
     // Detect iOS
-    const iOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     setIsIOS(iOS);
 
     const handleBeforeInstallPrompt = (e) => {
@@ -36,10 +35,7 @@ const InstallApp = () => {
     window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt
-      );
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
   }, []);
@@ -147,8 +143,7 @@ const InstallApp = () => {
                     </>
                   ) : (
                     <>
-                      Tap <strong>"Install App"</strong> or{" "}
-                      <strong>"Add to Home Screen"</strong>
+                      Tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong>
                     </>
                   )}
                 </p>
@@ -159,8 +154,7 @@ const InstallApp = () => {
                   <span className="text-white font-bold text-sm">3</span>
                 </div>
                 <p className="text-gray-700">
-                  Tap <strong>"Add"</strong> or <strong>"Install"</strong> to
-                  install the app
+                  Tap <strong>"Add"</strong> or <strong>"Install"</strong> to install the app
                 </p>
               </div>
             </div>

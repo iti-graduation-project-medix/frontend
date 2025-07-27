@@ -28,6 +28,7 @@ import {
   Share2,
   ExternalLink,
   Navigation,
+  Loader2,
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -73,6 +74,7 @@ export default function DealDetails() {
     isLoading: favLoading,
   } = useFav();
   const [isAnimating, setIsAnimating] = React.useState(false);
+  const [isChatLoading, setIsChatLoading] = React.useState(false);
   React.useEffect(() => {
     fetchFavorites();
   }, [fetchFavorites]);
@@ -127,6 +129,7 @@ export default function DealDetails() {
       return;
     }
 
+    setIsChatLoading(true);
     try {
       // Start chat with the deal poster
       await startChat(currentUserId, deal.postedBy.id, deal.id, "deal", {
@@ -151,6 +154,8 @@ export default function DealDetails() {
     } catch (error) {
       console.error("Error starting chat:", error);
       alert("Failed to start chat. Please try again.");
+    } finally {
+      setIsChatLoading(false);
     }
   };
 
@@ -632,20 +637,32 @@ export default function DealDetails() {
                       <Button
                         onClick={handleChat}
                         className={`w-full bg-primary hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary-hover text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm transition-all text-xs sm:text-base flex items-center justify-center gap-2 ${
-                          isOwner ? "opacity-50 cursor-not-allowed" : ""
+                          isOwner || isChatLoading
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
                         }`}
-                        disabled={isOwner}
+                        disabled={isOwner || isChatLoading}
                         title={
                           isOwner
                             ? "You cannot chat with yourself"
+                            : isChatLoading
+                            ? "Starting chat..."
                             : `Chat with ${
                                 deal.postedBy.fullName.split(" ")[0]
                               }`
                         }
                       >
-                        <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        {isChatLoading ? (
+                          <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                        ) : (
+                          <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                        )}
                         <span className="xl:inline">
-                          Chat with {deal.postedBy.fullName.split(" ")[0]}
+                          {isChatLoading
+                            ? "Starting chat..."
+                            : `Chat with ${
+                                deal.postedBy.fullName.split(" ")[0]
+                              }`}
                         </span>
                       </Button>
                       <Button

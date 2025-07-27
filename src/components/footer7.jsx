@@ -7,11 +7,11 @@ const defaultSections = [
   {
     title: "Qiuck Links",
     links: [
-      { name: "Home", href: "/" },
       { name: "Deals", href: "/deals" },
       { name: "Pharmacies", href: "/pharmacies" },
       { name: "Advertise", href: "/advertise" },
       { name: "Contact Us", href: "/contact" },
+      { name: "User Manual", href: "/user-manual" },
     ],
   },
 ];

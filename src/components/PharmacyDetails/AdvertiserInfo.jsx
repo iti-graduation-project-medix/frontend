@@ -1,5 +1,5 @@
 import React from "react";
-import { User2, CheckCircle2, MessageCircle } from "lucide-react";
+import { User2, CheckCircle2, MessageCircle, Loader2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -22,6 +22,7 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
     useChat();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [isChatLoading, setIsChatLoading] = React.useState(false);
   const currentUserId = (() => {
     try {
       const user = localStorage.getItem("user");
@@ -40,7 +41,8 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
       alert("Please login to start a chat");
       return;
     }
-    //hh
+
+    setIsChatLoading(true);
     try {
       // Start chat with the pharmacy owner
       await startChat(currentUserId, owner.id, pharmacyId, "pharmacy", {
@@ -60,6 +62,8 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
     } catch (error) {
       console.error("Error starting chat:", error);
       alert("Failed to start chat. Please try again.");
+    } finally {
+      setIsChatLoading(false);
     }
   };
 
@@ -114,17 +118,27 @@ export default function AdvertiserInfo({ owner, pharmacyId }) {
           <Button
             onClick={handleChat}
             className={`w-full bg-primary hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary-hover text-white font-semibold px-4 py-2 rounded-lg shadow-sm transition-all text-xs flex items-center justify-center gap-2 ${
-              isOwner ? "opacity-50 cursor-not-allowed" : ""
+              isOwner || isChatLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
-            disabled={isOwner}
+            disabled={isOwner || isChatLoading}
             title={
               isOwner
                 ? "You cannot chat with yourself"
+                : isChatLoading
+                ? "Starting chat..."
                 : `Chat with ${owner?.fullName?.split(" ")[0] || "Owner"}`
             }
           >
-            <MessageCircle className="w-4 h-4" />
-            <span>Chat with {owner?.fullName?.split(" ")[0] || "Owner"}</span>
+            {isChatLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <MessageCircle className="w-4 h-4" />
+            )}
+            <span>
+              {isChatLoading
+                ? "Starting chat..."
+                : `Chat with ${owner?.fullName?.split(" ")[0] || "Owner"}`}
+            </span>
           </Button>
           <Button
             onClick={handleProfile}
